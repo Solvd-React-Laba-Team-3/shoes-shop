@@ -30,7 +30,7 @@ export const Checkbox: FC<LabeledCheckboxProps> = ({ label, ...rest }) => {
     <FormControlLabel
       control={control}
       label={<Typography variant="body2">{label}</Typography>}
-      sx={{ gap: '12px' }}
+      sx={{ gap: '12px', marginLeft: '0px' }}
     />
   ) : (
     control
