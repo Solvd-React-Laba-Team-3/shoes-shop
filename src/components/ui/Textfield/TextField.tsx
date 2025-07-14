@@ -27,15 +27,12 @@ export default function BasicTextFields({
 }: ReusableTextFieldsProps) {
   return (
     <Box
-      component="form"
       sx={{
         '& > :not(style)': {
           m: [1, 1, 1, 3],
           width: '436px',
         },
       }}
-      noValidate
-      autoComplete="off"
     >
       <FormControl>
         <FormLabel
