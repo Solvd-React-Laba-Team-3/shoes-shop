@@ -20,7 +20,7 @@ export const palette = {
   action: {
     active: '#FE645E',
     contrast: '#FFFFFF',
-    disabled: '#98A2B3',
+    disabled: '#FFFFFF',
     disabledBackground: '#98A2B3',
   },
 };
