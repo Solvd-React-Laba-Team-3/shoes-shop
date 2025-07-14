@@ -6,12 +6,14 @@ import FormControl from '@mui/material/FormControl';
 import FormLabel from '@mui/material/FormLabel';
 
 type ReusableTextFieldsProps = {
-  id: string,
+  id: string;
   label?: string;
   value?: string;
   onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
   placeholder: string;
   name?: string;
+  error?: boolean;
+  helperText?: string;
 };
 
 export default function BasicTextFields(props: ReusableTextFieldsProps) {
@@ -47,12 +49,20 @@ export default function BasicTextFields(props: ReusableTextFieldsProps) {
           onChange={onChange}
           placeholder={placeholder}
           fullWidth
+          error={props.error}
+          helperText={props.helperText}
           sx={{
             marginTop: '8px',
             '& .MuiOutlinedInput-root': {
               '& fieldset': {
-                borderColor: '#494949',
+                borderColor: props.error ? '#d32f2f' : '#494949',
                 borderRadius: '8px',
+              },
+              '&:hover fieldset': {
+                borderColor: props.error ? '#d32f2f' : '#000000',
+              },
+              '&.Mui-focused fieldset': {
+                borderColor: props.error ? '#d32f2f' : '#000000',
               },
               '& input': {
                 color: '#5C5C5C',
