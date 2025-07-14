@@ -16,9 +16,15 @@ type ReusableTextFieldsProps = {
   helperText?: string;
 };
 
-export default function BasicTextFields(props: ReusableTextFieldsProps) {
-  const { id, value, placeholder, onChange, label } = props;
-
+export default function BasicTextFields({
+  id,
+  value,
+  placeholder,
+  onChange,
+  label,
+  error,
+  helperText,
+}: ReusableTextFieldsProps) {
   return (
     <Box
       component="form"
@@ -49,20 +55,20 @@ export default function BasicTextFields(props: ReusableTextFieldsProps) {
           onChange={onChange}
           placeholder={placeholder}
           fullWidth
-          error={props.error}
-          helperText={props.helperText}
+          error={error}
+          helperText={helperText}
           sx={{
             marginTop: '8px',
             '& .MuiOutlinedInput-root': {
               '& fieldset': {
-                borderColor: props.error ? '#d32f2f' : '#494949',
+                borderColor: error ? '#d32f2f' : '#494949',
                 borderRadius: '8px',
               },
               '&:hover fieldset': {
-                borderColor: props.error ? '#d32f2f' : '#000000',
+                borderColor: error ? '#d32f2f' : '#000000',
               },
               '&.Mui-focused fieldset': {
-                borderColor: props.error ? '#d32f2f' : '#000000',
+                borderColor: error ? '#d32f2f' : '#000000',
               },
               '& input': {
                 color: '#5C5C5C',
