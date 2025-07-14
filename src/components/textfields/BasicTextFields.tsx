@@ -6,6 +6,7 @@ import FormControl from '@mui/material/FormControl';
 import FormLabel from '@mui/material/FormLabel';
 
 type ReusableTextFieldsProps = {
+  id: string,
   label?: string;
   value?: string;
   onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
@@ -14,7 +15,7 @@ type ReusableTextFieldsProps = {
 };
 
 export default function BasicTextFields(props: ReusableTextFieldsProps) {
-  const { value, placeholder, onChange, label } = props;
+  const { id, value, placeholder, onChange, label } = props;
 
   return (
     <Box
@@ -30,7 +31,7 @@ export default function BasicTextFields(props: ReusableTextFieldsProps) {
     >
       <FormControl>
         <FormLabel
-          htmlFor="outlined-basic"
+          htmlFor={id}
           sx={{
             color: '#000000',
             '& .MuiFormLabel-asterisk': { color: 'red' },
@@ -40,7 +41,7 @@ export default function BasicTextFields(props: ReusableTextFieldsProps) {
           {label}
         </FormLabel>
         <TextField
-          id="outlined-basic"
+          id={id}
           variant="outlined"
           value={value}
           onChange={onChange}
