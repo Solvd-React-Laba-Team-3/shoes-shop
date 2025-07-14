@@ -1,3 +1,4 @@
+'use client';
 import * as React from 'react';
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
@@ -20,7 +21,7 @@ export default function BasicTextFields(props: ReusableTextFieldsProps) {
       component="form"
       sx={{
         '& > :not(style)': {
-          m: 1,
+          m: [1, 1, 1, 3],
           width: '436px',
         },
       }}
