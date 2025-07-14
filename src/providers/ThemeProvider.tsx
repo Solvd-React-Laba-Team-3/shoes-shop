@@ -12,6 +12,9 @@ export const ThemeProvider: FC<PropsWithChildren> = ({ children }) => {
   const theme = createTheme({
     palette,
     typography,
+    shape: {
+      borderRadius: '8px',
+    },
   });
 
   return <MuiThemeProvider theme={theme}>{children}</MuiThemeProvider>;

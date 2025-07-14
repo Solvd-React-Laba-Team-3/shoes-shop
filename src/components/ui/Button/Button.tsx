@@ -29,6 +29,9 @@ export const StyledButton = styled(MUIButton)<MUIButtonProps>(
   })
 );
 
-export const Button: FC<MUIButtonProps> = (props) => {
-  return <StyledButton disableRipple {...props} />;
+export const Button: FC<MUIButtonProps> = ({
+  variant = 'contained',
+  ...props
+}) => {
+  return <StyledButton disableRipple variant={variant} {...props} />;
 };
