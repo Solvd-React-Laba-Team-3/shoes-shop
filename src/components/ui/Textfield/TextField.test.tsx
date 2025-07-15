@@ -32,13 +32,15 @@ describe('LabeledTextfield', () => {
   });
 
   it('label has the required attribute rendered', () => {
-    render(<LabeledTextfield id="test-input" label="test label" value="" />);
+    render(
+      <LabeledTextfield id="test-input" label="test label" value="" required />
+    );
 
     const label = screen.getByText(/test label/i);
-
     const asterisk = label.querySelector('.MuiInputLabel-asterisk');
 
     expect(asterisk).toBeInTheDocument();
-    expect(asterisk).toHaveTextContent(/\*/);
+    expect(asterisk).toHaveTextContent('*');
   });
+
 });
