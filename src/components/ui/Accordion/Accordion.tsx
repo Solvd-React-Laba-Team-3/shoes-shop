@@ -31,7 +31,7 @@ export const Accordion: FC<BaseAccordionProps> = ({
         expandIcon={<ExpandMoreIcon />}
         sx={{
           minHeight: 48,
-          padding: '0 14px 0 0',
+          padding: '0 20px 0 0',
           '& .MuiTypography-root': { margin: 0 },
           '& .MuiAccordionSummary-expandIconWrapper svg': {
             color: 'text.primary',
