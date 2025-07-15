@@ -7,8 +7,7 @@ interface HydrateProps {
   children: React.ReactNode;
 }
 
-const Hydrate: React.FC<HydrateProps> = ({ state, children }) => (
+export const Hydrate: React.FC<HydrateProps> = ({ state, children }) => (
   <HydrationBoundary state={state}>{children}</HydrationBoundary>
 );
 
-export default Hydrate;
