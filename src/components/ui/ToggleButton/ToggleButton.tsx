@@ -35,7 +35,8 @@ export const StyledToggleButton = styled(MUIToggleButton)<ToggleButtonProps>(
     '&.MuiToggleButtonGroup-grouped': {
       border: '1px solid #494949',
       borderRadius: '8px',
-      margin: '0 4px',
+      margin: '0',
+      padding: '0',
     },
   })
 );
