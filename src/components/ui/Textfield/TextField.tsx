@@ -1,11 +1,11 @@
 'use client';
 import * as React from 'react';
 import Box from '@mui/material/Box';
-import TextField from '@mui/material/TextField';
+import Input from '@mui/material/Input';
 import FormControl from '@mui/material/FormControl';
-import FormLabel from '@mui/material/FormLabel';
+import InputLabel from '@mui/material/InputLabel';
 
-type ReusableTextFieldsProps = {
+type LabeledTextfieldProps = {
   id: string;
   label?: string;
   value?: string;
@@ -16,15 +16,15 @@ type ReusableTextFieldsProps = {
   helperText?: string;
 };
 
-export default function BasicTextFields({
+export default function LabeledTextfield({
   id,
   value,
   placeholder,
   onChange,
   label,
-  error,
-  helperText,
-}: ReusableTextFieldsProps) {
+  error = false,
+  name,
+}: LabeledTextfieldProps) {
   return (
     <Box
       sx={{
@@ -34,43 +34,45 @@ export default function BasicTextFields({
         },
       }}
     >
-      <FormControl>
-        <FormLabel
-          htmlFor={id}
-          sx={{
-            color: '#000000',
-            '& .MuiFormLabel-asterisk': { color: 'red' },
-          }}
-          required
-        >
-          {label}
-        </FormLabel>
-        <TextField
+      <FormControl fullWidth error={error}>
+        <Box>
+          <InputLabel
+            htmlFor={id}
+            required
+            shrink
+            sx={{
+              color: '#494949',
+              fontSize: '15px',
+              fontWeight: 500,
+              marginBottom: '8px',
+              transform: 'none',
+              position: 'static',
+              '& .MuiInputLabel-asterisk': {
+                color: '#FE645E',
+              },
+              '&.Mui-focused': {
+                color: '#494949',
+              },
+            }}
+          >
+            {label}
+          </InputLabel>
+        </Box>
+
+        <Input
           id={id}
-          variant="outlined"
           value={value}
           onChange={onChange}
           placeholder={placeholder}
-          fullWidth
-          error={error}
-          helperText={helperText}
+          name={name}
+          disableUnderline
           sx={{
-            marginTop: '8px',
-            '& .MuiOutlinedInput-root': {
-              '& fieldset': {
-                borderColor: error ? '#d32f2f' : '#494949',
-                borderRadius: '8px',
-              },
-              '&:hover fieldset': {
-                borderColor: error ? '#d32f2f' : '#000000',
-              },
-              '&.Mui-focused fieldset': {
-                borderColor: error ? '#d32f2f' : '#000000',
-              },
-              '& input': {
-                color: '#5C5C5C',
-              },
-            },
+            padding: '12px 16px',
+            border: '1px solid',
+            borderColor: error ? '#d32f2f' : '#494949',
+            borderRadius: '8px',
+            color: '#5C5C5C',
+            fontSize: '15px',
           }}
         />
       </FormControl>
