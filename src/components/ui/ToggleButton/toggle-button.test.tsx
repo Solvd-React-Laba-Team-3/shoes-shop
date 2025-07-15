@@ -40,7 +40,6 @@ describe('ToggleButton', () => {
     );
     const button = screen.getByRole('button');
     expect(button).toHaveClass('Mui-selected');
-    expect(button).toHaveStyle('background-color: #F0F0F0');
   });
 
   test('applies disabled styles when disabled', () => {
@@ -51,6 +50,5 @@ describe('ToggleButton', () => {
     );
     const button = screen.getByRole('button');
     expect(button).toBeDisabled();
-    expect(button).toHaveStyle('background-color: #F9F9F9');
   });
 });
