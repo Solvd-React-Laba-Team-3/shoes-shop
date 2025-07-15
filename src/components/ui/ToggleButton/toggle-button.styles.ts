@@ -16,10 +16,6 @@ export const StyledToggleButton = styled(MUIToggleButton)<ToggleButtonProps>(
       color: theme.palette.grey[400],
     },
 
-    '&.Mui-selected:hover': {
-      backgroundColor: theme.palette.grey[300],
-    },
-
     '&.Mui-disabled': {
       backgroundColor: theme.palette.grey[100],
       color: theme.palette.grey[300],
