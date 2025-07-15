@@ -2,6 +2,13 @@
 
 import { HydrationBoundary } from '@tanstack/react-query';
 
-export default function Hydrate({ state, children }: { state: unknown; children: React.ReactNode }) {
-  return <HydrationBoundary state={state}>{children}</HydrationBoundary>;
+interface HydrateProps {
+  state: unknown;
+  children: React.ReactNode;
 }
+
+const Hydrate: React.FC<HydrateProps> = ({ state, children }) => (
+  <HydrationBoundary state={state}>{children}</HydrationBoundary>
+);
+
+export default Hydrate;
