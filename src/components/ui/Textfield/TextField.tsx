@@ -1,22 +1,12 @@
-'use client';
-import * as React from 'react';
+'use client'
+import React, { FC } from 'react';
 import Box from '@mui/material/Box';
 import Input from '@mui/material/Input';
 import FormControl from '@mui/material/FormControl';
 import InputLabel from '@mui/material/InputLabel';
+import { TextFieldProps } from '@mui/material/TextField';
 
-type LabeledTextfieldProps = {
-  id: string;
-  label?: string;
-  value?: string;
-  onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
-  placeholder: string;
-  name?: string;
-  error?: boolean;
-  helperText?: string;
-};
-
-export default function LabeledTextfield({
+export const LabeledTextfield: FC<TextFieldProps> = ({
   id,
   value,
   placeholder,
@@ -24,7 +14,7 @@ export default function LabeledTextfield({
   label,
   error = false,
   name,
-}: LabeledTextfieldProps) {
+}) => {
   return (
     <Box
       sx={{
@@ -53,6 +43,9 @@ export default function LabeledTextfield({
               '&.Mui-focused': {
                 color: '#494949',
               },
+              '&.Mui-error': {
+                color: '#494949',
+              },
             }}
           >
             {label}
@@ -78,4 +71,4 @@ export default function LabeledTextfield({
       </FormControl>
     </Box>
   );
-}
+};
