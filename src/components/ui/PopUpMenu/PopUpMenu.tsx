@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { FC } from 'react';
 import { MenuProps } from '@mui/material/Menu';
-import { StyledMenu } from './pop-up-menu.styles';
+import { StyledMenu } from './popUpMenu.styles';
 
 export const PopUpMenu: FC<MenuProps> = (props) => {
   return (
