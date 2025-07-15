@@ -10,4 +10,3 @@ interface HydrateProps {
 export const Hydrate: React.FC<HydrateProps> = ({ state, children }) => (
   <HydrationBoundary state={state}>{children}</HydrationBoundary>
 );
-
