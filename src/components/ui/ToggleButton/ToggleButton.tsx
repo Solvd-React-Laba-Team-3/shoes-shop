@@ -5,5 +5,5 @@ import { ToggleButtonProps } from '@mui/material/ToggleButton';
 import { StyledToggleButton } from './toggle-button.styles';
 
 export const ToggleButton: FC<ToggleButtonProps> = ({ ...props }) => {
-  return <StyledToggleButton {...props} />;
+  return <StyledToggleButton disableRipple {...props} />;
 };
