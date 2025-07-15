@@ -1,78 +1,68 @@
 'use client';
 import { FC } from 'react';
 import Box from '@mui/material/Box';
-import Input from '@mui/material/Input';
 import FormControl from '@mui/material/FormControl';
 import InputLabel from '@mui/material/InputLabel';
-import { InputProps } from '@mui/material/Input';
+import Input, { InputProps } from '@mui/material/Input';
+import { styled } from '@mui/material/styles';
+import { Theme } from '@mui/material/styles';
 
-type LabeledTextfieldProps = InputProps & {
+interface LabeledTextfieldProps extends InputProps {
   label: string;
-};
+}
+
+const StyledInputLabel = styled(InputLabel)(({ theme }: { theme: Theme }) => ({
+  color: theme.palette.text.secondary,
+  fontSize: '15px',
+  fontWeight: 500,
+  marginBottom: '8px',
+  transform: 'none',
+  position: 'static',
+  '& .MuiInputLabel-asterisk': {
+    color: theme.palette.error.main,
+  },
+  '&.Mui-focused': {
+    color: theme.palette.text.secondary,
+  },
+  '&.Mui-error': {
+    color: theme.palette.text.secondary,
+  },
+}));
+
+const StyledInput = styled(Input)<{ error?: boolean }>(
+  ({ theme }: { theme: Theme }) => ({
+    padding: '12px 16px',
+    border: '1px solid',
+    borderRadius: '8px',
+    color: theme.palette.text.secondary,
+    fontSize: '15px',
+  })
+);
 
 export const LabeledTextfield: FC<LabeledTextfieldProps> = ({
-  id,
-  value,
-  placeholder,
-  onChange,
   label,
   error = false,
-  name,
+  id,
+  required,
+  ...props
 }) => {
   return (
-    <Box
+    <FormControl
+      fullWidth
+      error={error}
       sx={{
         '& > :not(style)': {
-          m: [1, 1, 1, 3],
           width: '436px',
         },
       }}
     >
-      <FormControl fullWidth error={error}>
-        <Box>
-          <InputLabel
-            htmlFor={id}
-            required
-            shrink
-            sx={{
-              color: '#494949',
-              fontSize: '15px',
-              fontWeight: 500,
-              marginBottom: '8px',
-              transform: 'none',
-              position: 'static',
-              '& .MuiInputLabel-asterisk': {
-                color: '#FE645E',
-              },
-              '&.Mui-focused': {
-                color: '#494949',
-              },
-              '&.Mui-error': {
-                color: '#494949',
-              },
-            }}
-          >
-            {label}
-          </InputLabel>
-        </Box>
+      <Box>
+        <StyledInputLabel htmlFor={id} required={required} shrink>
+          {label}
+        </StyledInputLabel>
+      </Box>
 
-        <Input
-          id={id}
-          value={value}
-          onChange={onChange}
-          placeholder={placeholder}
-          name={name}
-          disableUnderline
-          sx={{
-            padding: '12px 16px',
-            border: '1px solid',
-            borderColor: error ? '#d32f2f' : '#494949',
-            borderRadius: '8px',
-            color: '#5C5C5C',
-            fontSize: '15px',
-          }}
-        />
-      </FormControl>
-    </Box>
+      <StyledInput id={id} error={error} disableUnderline {...props} />
+    </FormControl>
   );
 };
