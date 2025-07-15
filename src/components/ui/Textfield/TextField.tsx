@@ -1,12 +1,16 @@
-'use client'
-import React, { FC } from 'react';
+'use client';
+import { FC } from 'react';
 import Box from '@mui/material/Box';
 import Input from '@mui/material/Input';
 import FormControl from '@mui/material/FormControl';
 import InputLabel from '@mui/material/InputLabel';
-import { TextFieldProps } from '@mui/material/TextField';
+import { InputProps } from '@mui/material/Input';
 
-export const LabeledTextfield: FC<TextFieldProps> = ({
+type LabeledTextfieldProps = InputProps & {
+  label: string;
+};
+
+export const LabeledTextfield: FC<LabeledTextfieldProps> = ({
   id,
   value,
   placeholder,
