@@ -43,6 +43,7 @@ export const Select: FC<SelectProps> = ({ children, ...props }) => {
       variant="outlined"
       IconComponent={ExpandMoreIcon}
       input={<StyledOutlinedInput />}
+      sx={{width: '210px'}}
       {...props}
     >
       {children}
