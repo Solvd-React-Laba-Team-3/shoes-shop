@@ -5,5 +5,5 @@ export type StrapiQueryParams<Fields extends string> = {
   };
   sort?: `${Fields}:${'asc' | 'desc'}` | Array<`${Fields}:${'asc' | 'desc'}`>;
   populate?: '*' | Fields | Fields[];
-  filters?: Partial<Record<Fields, unknown>>;
+  filters?: Partial<Record<Fields, string | number | boolean | string[]>>;
 };
