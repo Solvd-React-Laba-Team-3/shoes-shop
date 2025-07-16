@@ -15,9 +15,7 @@ const StyledSelect = styled(MUISelect)(({ theme }) => ({
   },
   '& .MuiSelect-icon': {
     color: theme.palette.text.secondary,
-    fontSize: '12px',
-    width: '12px',
-    height: '12px',
+    fontSize: '24px'
   },
 }));
 
@@ -43,7 +41,7 @@ export const Select: FC<SelectProps> = ({ children, ...props }) => {
       variant="outlined"
       IconComponent={ExpandMoreIcon}
       input={<StyledOutlinedInput />}
-      sx={{width: '210px'}}
+      sx={{ minWidth: '72px' }}
       {...props}
     >
       {children}
