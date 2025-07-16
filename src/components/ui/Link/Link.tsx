@@ -6,12 +6,19 @@ import { styled } from '@mui/material/styles';
 import NextLink from 'next/link';
 import { FC } from 'react';
 
+interface LinkProps extends MUILinkProps {
+  href: string;
+  size?: 'regular' | 'small' | 'thin';
+  active?: boolean;
+}
+
+
 const sizeStyles = {
   thin: {
     fontSize: '15px',
     fontWeight: 300,
   },
-  medium: {
+  regular: {
     fontSize: '16px',
     fontWeight: 500,
   },
@@ -22,9 +29,9 @@ const sizeStyles = {
 };
 
 export const StyledLink = styled(MUILink)<Omit<LinkProps, 'href'>>(
-  ({ theme, active, size = 'medium' }) => ({
+  ({ theme, active, size = 'regular' }) => ({
     color:
-      active || size !== 'medium'
+      active || size !== 'regular'
         ? theme.palette.primary.main
         : theme.palette.text.primary,
     textDecoration: 'none',
@@ -33,20 +40,14 @@ export const StyledLink = styled(MUILink)<Omit<LinkProps, 'href'>>(
     '&:hover': {
       textDecoration: 'underline',
     },
-    ...sizeStyles[size as keyof typeof sizeStyles],
+    ...sizeStyles[size],
   })
 );
 
-interface LinkProps extends MUILinkProps {
-  href: string;
-  size?: 'regular' | 'small' | 'thin';
-  active?: boolean;
-}
-
-export const Link: FC<LinkProps> = ({ href, active = false, ...props }) => {
+export const Link: FC<LinkProps> = ({ href, ...props }) => {
   return (
     <NextLink style={{ textDecoration: 'none' }} href={href}>
-      <StyledLink active={active} {...props} />
+      <StyledLink {...props} />
     </NextLink>
   );
 };
