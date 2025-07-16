@@ -7,4 +7,10 @@ describe('DasicSelect', () => {
 
     expect(screen.getByText('Male')).toBeInTheDocument();
   });
+
+  test('renders label correctly', () => {
+    render(<BasicSelect value="female" label="Gender" />);
+
+    expect(screen.getByText('Gender')).toBeInTheDocument();
+  });
 });
