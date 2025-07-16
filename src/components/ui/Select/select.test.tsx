@@ -6,7 +6,7 @@ const options = [
   { value: 'female', label: 'Female' },
 ];
 
-describe('DasicSelect', () => {
+describe('BasicSelect', () => {
   test('renders with correct selected value', () => {
     render(<BasicSelect value="male" label="gender" options={options} />);
 
