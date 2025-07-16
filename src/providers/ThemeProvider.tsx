@@ -8,14 +8,14 @@ import {
 import { palette } from '@/styles/palette';
 import { typography } from '@/styles/typography';
 
-export const ThemeProvider: FC<PropsWithChildren> = ({ children }) => {
-  const theme = createTheme({
-    palette,
-    typography,
-    shape: {
-      borderRadius: '8px',
-    },
-  });
+export const theme = createTheme({
+  palette,
+  typography,
+  shape: {
+    borderRadius: '8px',
+  },
+});
 
+export const ThemeProvider: FC<PropsWithChildren> = ({ children }) => {
   return <MuiThemeProvider theme={theme}>{children}</MuiThemeProvider>;
 };
