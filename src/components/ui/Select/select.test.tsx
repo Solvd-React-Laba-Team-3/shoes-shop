@@ -1,35 +1,34 @@
 import { render, screen, fireEvent } from '@testing-library/react';
-import { BasicSelect } from './Select';
+import { Select, StyledMenuItem } from './Select';
+import '@testing-library/jest-dom';
 
-const options = [
-  { value: 'male', label: 'Male' },
-  { value: 'female', label: 'Female' },
-];
-
-describe('BasicSelect', () => {
+describe('Select component', () => {
   test('renders with correct selected value', () => {
-    render(<BasicSelect value="male" label="gender" options={options} />);
+    render(
+      <Select value="male" onChange={() => {}}>
+        <StyledMenuItem value="male">Male</StyledMenuItem>
+        <StyledMenuItem value="female">Female</StyledMenuItem>
+      </Select>
+    );
 
     expect(screen.getByText('Male')).toBeInTheDocument();
   });
 
-  test('renders label correctly', () => {
-    render(<BasicSelect value="female" label="Gender" options={options} />);
-
-    expect(screen.getByText('Gender')).toBeInTheDocument();
-  });
-
   test('renders all options when select is open', () => {
     render(
-      <BasicSelect value="" label="Gender" id="gender" options={options} />
+      <Select value="" onChange={() => {}} displayEmpty>
+        <StyledMenuItem value="" disabled>
+          Select gender
+        </StyledMenuItem>
+        <StyledMenuItem value="male">Male</StyledMenuItem>
+        <StyledMenuItem value="female">Female</StyledMenuItem>
+      </Select>
     );
 
-    const label = screen.getByText('Gender');
-    const select = label.parentElement?.querySelector('[role="combobox"]');
+    const select = screen.getByRole('combobox');
+    expect(select).toBeInTheDocument();
 
-    expect(select).toBeTruthy();
-
-    fireEvent.mouseDown(select as Element);
+    fireEvent.mouseDown(select);
 
     expect(screen.getByText('Male')).toBeInTheDocument();
     expect(screen.getByText('Female')).toBeInTheDocument();
