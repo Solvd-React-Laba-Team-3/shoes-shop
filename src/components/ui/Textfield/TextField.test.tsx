@@ -42,5 +42,4 @@ describe('LabeledTextfield', () => {
     expect(asterisk).toBeInTheDocument();
     expect(asterisk).toHaveTextContent('*');
   });
-
 });
