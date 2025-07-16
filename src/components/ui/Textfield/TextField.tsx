@@ -13,7 +13,7 @@ interface LabeledTextfieldProps extends InputProps {
 
 const StyledInputLabel = styled(InputLabel)(({ theme }: { theme: Theme }) => ({
   color: theme.palette.text.secondary,
-  fontSize: '15px',
+  ...theme.typography.caption,
   fontWeight: 500,
   marginBottom: '8px',
   transform: 'none',
@@ -21,27 +21,19 @@ const StyledInputLabel = styled(InputLabel)(({ theme }: { theme: Theme }) => ({
   '& .MuiInputLabel-asterisk': {
     color: theme.palette.error.main,
   },
-  '&.Mui-focused': {
-    color: theme.palette.text.secondary,
-  },
-  '&.Mui-error': {
-    color: theme.palette.text.secondary,
-  },
 }));
 
-const StyledInput = styled(Input)<{ error?: boolean }>(
-  ({ theme }: { theme: Theme }) => ({
-    padding: '12px 16px',
-    border: '1px solid',
-    borderRadius: '8px',
-    color: theme.palette.text.secondary,
-    fontSize: '15px',
-  })
-);
+const StyledInput = styled(Input)(({ theme }: { theme: Theme }) => ({
+  padding: '12px 16px',
+  border: '1px solid',
+  borderRadius: '8px',
+  color: theme.palette.text.secondary,
+  fontSize: '15px',
+}));
 
 export const LabeledTextfield: FC<LabeledTextfieldProps> = ({
   label,
-  error = false,
+  error,
   id,
   required,
   ...props
@@ -50,9 +42,10 @@ export const LabeledTextfield: FC<LabeledTextfieldProps> = ({
     <FormControl
       fullWidth
       error={error}
+      color="secondary"
       sx={{
-        '& > :not(style)': {
-          width: '436px',
+        '& .MuiInputBase-root': {
+          maxWidth: '436px',
         },
       }}
     >
