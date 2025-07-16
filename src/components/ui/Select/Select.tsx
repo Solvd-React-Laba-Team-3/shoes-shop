@@ -18,6 +18,7 @@ interface BasicSelectProps extends Omit<SelectProps, 'value'> {
 
 const StyledSelect = styled(Select)(({ theme }) => ({
   fontSize: 15,
+
   color: theme.palette.text.secondary,
   '& .MuiSelect-select': {
     padding: '8px 8px',
@@ -31,6 +32,9 @@ const StyledSelect = styled(Select)(({ theme }) => ({
 const StyledMenuItem = styled(MenuItem)(({ theme }) => ({
   fontSize: '15px',
   color: theme.palette.text.secondary,
+  '&&.Mui-selected': {
+    backgroundColor: 'white',
+  },
 }));
 
 const StyledOutlinedInput = styled(OutlinedInput)(({ theme }) => ({
