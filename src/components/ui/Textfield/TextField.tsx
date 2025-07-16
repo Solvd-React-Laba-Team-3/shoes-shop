@@ -23,12 +23,15 @@ const StyledInputLabel = styled(InputLabel)(({ theme }: { theme: Theme }) => ({
   },
 }));
 
-const StyledInput = styled(Input)(({ theme }: { theme: Theme }) => ({
+const StyledInput = styled(Input, {
+  shouldForwardProp: (propName) => propName !== 'error',
+})<{ error?: boolean }>(({ theme, error }) => ({
   padding: '12px 16px',
   border: '1px solid',
   borderRadius: '8px',
   color: theme.palette.text.secondary,
-  fontSize: '15px',
+  ...theme.typography.caption,
+  borderColor: error ? theme.palette.error.main : theme.palette.text.secondary,
 }));
 
 export const LabeledTextfield: FC<LabeledTextfieldProps> = ({
