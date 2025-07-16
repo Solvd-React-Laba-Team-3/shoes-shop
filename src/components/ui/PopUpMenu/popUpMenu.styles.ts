@@ -3,7 +3,6 @@ import Menu, { MenuProps } from '@mui/material/Menu';
 
 export const StyledMenu = styled(Menu)<MenuProps>(({ theme }) => ({
   '& .MuiPaper-root': {
-    borderRadius: theme.shape.borderRadius,
     minWidth: 75,
     boxShadow: `0px 4px 10px rgba(0, 0, 0, 0.15)`,
     '& .MuiMenu-list': {

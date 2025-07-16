@@ -1,4 +1,3 @@
-import * as React from 'react';
 import { FC } from 'react';
 import { MenuProps } from '@mui/material/Menu';
 import { StyledMenu } from './popUpMenu.styles';
