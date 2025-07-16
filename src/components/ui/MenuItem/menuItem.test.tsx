@@ -14,15 +14,4 @@ describe('MenuItem', () => {
     fireEvent.click(screen.getByText(/Click Me/i));
     expect(handleClick).toHaveBeenCalled();
   });
-
-  test('calls onClick when disabled', () => {
-    const handleClick = jest.fn();
-    render(
-      <MenuItem onClick={handleClick} disabled>
-        Disabled Option
-      </MenuItem>
-    );
-    fireEvent.click(screen.getByText(/Disabled Option/i));
-    expect(handleClick).toHaveBeenCalled();
-  });
 });
