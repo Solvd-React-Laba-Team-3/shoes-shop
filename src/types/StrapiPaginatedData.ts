@@ -1,6 +1,6 @@
 import { StrapiResponse } from './StrapiResponse';
 
-export interface PaginatedData<T> {
+export interface StrapiPaginatedData<T> {
   data: StrapiResponse<T>[];
   meta: {
     pagination: {
