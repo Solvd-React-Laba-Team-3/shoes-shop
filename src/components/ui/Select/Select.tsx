@@ -10,15 +10,20 @@ import Select, { SelectProps } from '@mui/material/Select';
 import { styled } from '@mui/material/styles';
 import { FC } from 'react';
 
+interface SelectOption {
+  label: string;
+  value: string;
+}
+
 interface BasicSelectProps extends Omit<SelectProps, 'value'> {
   value: string;
   label?: string;
   error?: boolean;
+  options: SelectOption[];
 }
 
 const StyledSelect = styled(Select)(({ theme }) => ({
   fontSize: 15,
-
   color: theme.palette.text.secondary,
   '& .MuiSelect-select': {
     padding: '8px 8px',
@@ -50,7 +55,8 @@ export const BasicSelect: FC<BasicSelectProps> = ({
   label,
   id,
   name,
-  error = false,
+  error,
+  options = [],
   ...props
 }) => {
   return (
@@ -70,8 +76,11 @@ export const BasicSelect: FC<BasicSelectProps> = ({
           input={<StyledOutlinedInput />}
           {...props}
         >
-          <StyledMenuItem value="male">Male</StyledMenuItem>
-          <StyledMenuItem value="female">Female</StyledMenuItem>
+          {options.map((option) => (
+            <StyledMenuItem key={option.value} value={option.value}>
+              {option.label}
+            </StyledMenuItem>
+          ))}
         </StyledSelect>
       </FormControl>
     </Box>
