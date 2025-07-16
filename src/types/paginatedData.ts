@@ -1,8 +1,7 @@
+import { StrapiResponse } from './StrapiResponse';
+
 export interface PaginatedData<T> {
-  data: Array<{
-    id: number;
-    attributes: T;
-  }>;
+  data: StrapiResponse<T>[];
   meta: {
     pagination: {
       page: number;
@@ -11,14 +10,4 @@ export interface PaginatedData<T> {
       total: number;
     };
   };
-}
-
-export type StrapiGetResponse<T, U> = PaginatedData<T>;
-
-export interface StrapiDefaultQueryParams<T> {
-  'pagination[page]'?: number;
-  pageSize?: number;
-  sort?: string;
-  filters?: U;
-  fields: keyof T | (keyof T)[];
 }
