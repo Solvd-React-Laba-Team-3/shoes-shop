@@ -7,11 +7,9 @@ import NextLink from 'next/link';
 import { FC } from 'react';
 
 interface LinkProps extends MUILinkProps {
-  href: string;
   size?: 'regular' | 'small' | 'thin';
   active?: boolean;
 }
-
 
 const sizeStyles = {
   thin: {
@@ -44,7 +42,7 @@ export const StyledLink = styled(MUILink)<Omit<LinkProps, 'href'>>(
   })
 );
 
-export const Link: FC<LinkProps> = ({ href, ...props }) => {
+export const Link: FC<LinkProps> = ({ href = '/', ...props }) => {
   return (
     <NextLink style={{ textDecoration: 'none' }} href={href}>
       <StyledLink {...props} />
