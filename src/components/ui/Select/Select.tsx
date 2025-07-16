@@ -1,49 +1,27 @@
 'use client';
 
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import Box from '@mui/material/Box';
-import FormControl from '@mui/material/FormControl';
-import FormHelperText from '@mui/material/FormHelperText';
 import MenuItem from '@mui/material/MenuItem';
 import OutlinedInput from '@mui/material/OutlinedInput';
-import Select, { SelectProps } from '@mui/material/Select';
+import MUISelect, { SelectProps } from '@mui/material/Select';
 import { styled } from '@mui/material/styles';
 import { FC } from 'react';
 
-interface SelectOption {
-  label: string;
-  value: string | number;
-}
-
-interface BasicSelectProps<TValue = unknown>
-  extends Omit<SelectProps<TValue>, 'value' | 'children'> {
-  value: TValue;
-  label?: string;
-  error?: boolean;
-  options: SelectOption[];
-}
-
-const StyledSelect = styled(Select)(({ theme }) => ({
-  fontSize: 15,
+const StyledSelect = styled(MUISelect)(({ theme }) => ({
+  ...theme.typography.caption,
   color: theme.palette.text.secondary,
   '& .MuiSelect-select': {
     padding: '8px 8px',
   },
   '& .MuiSelect-icon': {
     color: theme.palette.text.secondary,
-    width: '13px',
+    fontSize: '12px',
+    width: '12px',
+    height: '12px',
   },
 }));
 
-const StyledMenuItem = styled(MenuItem)(({ theme }) => ({
-  fontSize: '15px',
-  color: theme.palette.text.secondary,
-  '&&.Mui-selected': {
-    backgroundColor: 'white',
-  },
-}));
-
-const StyledOutlinedInput = styled(OutlinedInput)(({ theme }) => ({
+export const StyledOutlinedInput = styled(OutlinedInput)(({ theme }) => ({
   '&.MuiOutlinedInput-root': {
     '& .MuiOutlinedInput-notchedOutline': {
       borderColor: theme.palette.grey[400],
@@ -51,39 +29,23 @@ const StyledOutlinedInput = styled(OutlinedInput)(({ theme }) => ({
   },
 }));
 
-export const BasicSelect: FC<BasicSelectProps> = ({
-  value,
-  label,
-  id,
-  name,
-  error,
-  options = [],
-  ...props
-}) => {
-  return (
-    <Box sx={{ maxWidth: 152 }}>
-      <FormHelperText id={`${id}-label`} sx={{ mb: '5px' }} error={error}>
-        {label}
-      </FormHelperText>
+export const StyledMenuItem = styled(MenuItem)(({ theme }) => ({
+  ...theme.typography.caption,
+  color: theme.palette.text.secondary,
+  '&&.Mui-selected': {
+    backgroundColor: 'white',
+  },
+}));
 
-      <FormControl fullWidth>
-        <StyledSelect
-          id={id}
-          name={name}
-          value={value}
-          IconComponent={ExpandMoreIcon}
-          error={error}
-          variant="outlined"
-          input={<StyledOutlinedInput />}
-          {...props}
-        >
-          {options.map((option) => (
-            <StyledMenuItem key={option.value} value={option.value}>
-              {option.label}
-            </StyledMenuItem>
-          ))}
-        </StyledSelect>
-      </FormControl>
-    </Box>
+export const Select: FC<SelectProps> = ({ children, ...props }) => {
+  return (
+    <StyledSelect
+      variant="outlined"
+      IconComponent={ExpandMoreIcon}
+      input={<StyledOutlinedInput />}
+      {...props}
+    >
+      {children}
+    </StyledSelect>
   );
 };
