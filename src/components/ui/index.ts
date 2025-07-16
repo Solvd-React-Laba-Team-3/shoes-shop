@@ -6,3 +6,5 @@ export { Accordion } from './Accordion/Accordion';
 export { PopUpMenu } from './PopUpMenu/PopUpMenu';
 export { MenuItem } from './MenuItem/MenuItem';
 export { Link } from './Link/Link';
+export { Select } from './Select/Select';
+export { LabeledTextfield } from './LabeledTextfield/LabeledTextField';

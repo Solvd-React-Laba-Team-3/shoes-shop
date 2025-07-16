@@ -1,7 +1,6 @@
 'use client';
 
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import MenuItem from '@mui/material/MenuItem';
 import OutlinedInput from '@mui/material/OutlinedInput';
 import MUISelect, { SelectProps } from '@mui/material/Select';
 import { styled } from '@mui/material/styles';
@@ -15,36 +14,28 @@ const StyledSelect = styled(MUISelect)(({ theme }) => ({
   },
   '& .MuiSelect-icon': {
     color: theme.palette.text.secondary,
-    fontSize: '24px'
+    fontSize: '24px',
   },
 }));
 
-export const StyledOutlinedInput = styled(OutlinedInput)(({ theme }) => ({
-  '&.MuiOutlinedInput-root': {
-    '& .MuiOutlinedInput-notchedOutline': {
-      borderColor: theme.palette.grey[400],
-    },
-  },
-}));
-
-export const StyledMenuItem = styled(MenuItem)(({ theme }) => ({
-  ...theme.typography.caption,
-  color: theme.palette.text.secondary,
-  '&&.Mui-selected': {
-    backgroundColor: 'white',
-  },
-}));
-
-export const Select: FC<SelectProps> = ({ children, ...props }) => {
+export const Select: FC<SelectProps> = (props) => {
   return (
     <StyledSelect
       variant="outlined"
       IconComponent={ExpandMoreIcon}
-      input={<StyledOutlinedInput />}
+      input={
+        <OutlinedInput
+          sx={{
+            '&.MuiOutlinedInput-root': {
+              '& .MuiOutlinedInput-notchedOutline': {
+                borderColor: (theme) => theme.palette.grey[400],
+              },
+            },
+          }}
+        />
+      }
       sx={{ minWidth: '72px' }}
       {...props}
-    >
-      {children}
-    </StyledSelect>
+    />
   );
 };

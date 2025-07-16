@@ -1,13 +1,14 @@
 import { render, screen, fireEvent } from '@testing-library/react';
-import { Select, StyledMenuItem } from './Select';
+import { Select } from './Select';
+import { MenuItem } from '../MenuItem/MenuItem';
 import '@testing-library/jest-dom';
 
 describe('Select component', () => {
   test('renders with correct selected value', () => {
     render(
       <Select value="male" onChange={() => {}}>
-        <StyledMenuItem value="male">Male</StyledMenuItem>
-        <StyledMenuItem value="female">Female</StyledMenuItem>
+        <MenuItem value="male">Male</MenuItem>
+        <MenuItem value="female">Female</MenuItem>
       </Select>
     );
 
@@ -17,11 +18,11 @@ describe('Select component', () => {
   test('renders all options when select is open', () => {
     render(
       <Select value="" onChange={() => {}} displayEmpty>
-        <StyledMenuItem value="" disabled>
+        <MenuItem value="" disabled>
           Select gender
-        </StyledMenuItem>
-        <StyledMenuItem value="male">Male</StyledMenuItem>
-        <StyledMenuItem value="female">Female</StyledMenuItem>
+        </MenuItem>
+        <MenuItem value="male">Male</MenuItem>
+        <MenuItem value="female">Female</MenuItem>
       </Select>
     );
 

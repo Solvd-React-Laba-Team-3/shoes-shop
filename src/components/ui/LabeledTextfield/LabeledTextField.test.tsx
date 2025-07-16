@@ -1,7 +1,7 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
-import { LabeledTextfield } from './TextField';
+import { LabeledTextfield } from './LabeledTextField';
 
 describe('LabeledTextfield', () => {
   it('renders input and label correctly', () => {
