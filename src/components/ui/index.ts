@@ -5,3 +5,4 @@ export { Checkbox } from './Checkbox/Checkbox';
 export { Accordion } from './Accordion/Accordion';
 export { PopUpMenu } from './PopUpMenu/PopUpMenu';
 export { MenuItem } from './MenuItem/MenuItem';
+export { Link } from './Link/Link';
