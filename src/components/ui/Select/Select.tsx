@@ -12,11 +12,12 @@ import { FC } from 'react';
 
 interface SelectOption {
   label: string;
-  value: string;
+  value: string | number;
 }
 
-interface BasicSelectProps extends Omit<SelectProps, 'value'> {
-  value: string;
+interface BasicSelectProps<TValue = unknown>
+  extends Omit<SelectProps<TValue>, 'value' | 'children'> {
+  value: TValue;
   label?: string;
   error?: boolean;
   options: SelectOption[];
