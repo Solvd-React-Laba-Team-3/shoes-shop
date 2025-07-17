@@ -3,7 +3,7 @@
 import { FC } from 'react';
 import MUICheckbox, { CheckboxProps } from '@mui/material/Checkbox';
 
-export const Checkbox: FC<CheckboxProps> = ({ ...rest }) => {
+export const Checkbox: FC<CheckboxProps> = (props) => {
   return (
     <MUICheckbox
       disableRipple
@@ -14,7 +14,7 @@ export const Checkbox: FC<CheckboxProps> = ({ ...rest }) => {
         padding: 0,
         borderRadius: 2,
       }}
-      {...rest}
+      {...props}
     />
   );
 };

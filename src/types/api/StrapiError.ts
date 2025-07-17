@@ -5,8 +5,9 @@ export type StrapiError<Field extends string = string> = {
     message: string;
     details?: {
       errors?: Array<{
-        path: Field;
+        path: Field[];
         message: string;
+        name: string;
       }>;
     };
   };
