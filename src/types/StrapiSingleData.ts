@@ -1,5 +1,5 @@
 import { StrapiResponse } from './StrapiResponse';
 
-export type StripSingleData<T> = {
+export type StrapiSingleData<T> = {
   data: StrapiResponse<T>;
 };
