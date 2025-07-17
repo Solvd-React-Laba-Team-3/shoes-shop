@@ -5,13 +5,14 @@ import { Box, Stack } from '@mui/material';
 export const SignUp = () => {
   return (
     <>
-      <Typography variant="h2" component="h2">
-        Create an account
-      </Typography>
+      <Typography variant="h2">Create an account</Typography>
       <Typography
         variant="caption"
         component="p"
-        sx={{ margin: '16px 0 48px 0;', color: '#5C5C5C' }}
+        sx={(theme) => ({
+          margin: '16px 0 48px 0',
+          color: theme.palette.text.secondary,
+        })}
       >
         Create an account to get an easy access to your dream shopping
       </Typography>
@@ -59,9 +60,9 @@ export const SignUp = () => {
         <Box width="calc(100% - 100px)">
           <Stack direction="row" spacing={1} alignItems="center">
             <Typography
-              variant="caption"
+              variant="subtitle2"
               component="p"
-              sx={{ fontWeight: '500', color: ' #494949' }}
+              sx={{ color: 'text.secondary' }}
             >
               Already have an account?
             </Typography>
@@ -69,7 +70,7 @@ export const SignUp = () => {
               Log in
             </Link> */}
             <Link href="/signin" size="thin">
-              <Typography variant="caption" color="primary">
+              <Typography variant="subtitle2">
                 Log in
               </Typography>
             </Link>
