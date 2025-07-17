@@ -26,19 +26,27 @@ export const SignUp = () => {
         width="100%"
         maxWidth={400}
       >
-        <LabeledTextfield label="Name" required placeholder="Hayman Andrews" />
         <LabeledTextfield
+          id="name"
+          label="Name"
+          required
+          placeholder="Hayman Andrews"
+        />
+        <LabeledTextfield
+          id="email"
           label="Email"
           required
           placeholder="example@mail.com"
         />
         <LabeledTextfield
+          id="password"
           label="Password"
           required
           placeholder="at least 8 characters"
           type="password"
         />
         <LabeledTextfield
+          id="confirmPassword"
           label="Confirm password"
           required
           placeholder="at least 8 characters"
