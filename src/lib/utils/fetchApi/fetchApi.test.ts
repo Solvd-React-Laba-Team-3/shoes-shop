@@ -144,4 +144,94 @@ describe('fetchApi', () => {
       },
     });
   });
+
+  it('should append simple query parameters to the URL', async () => {
+    const mockResponse = { data: 'with-query' };
+    fetchMock.mockResolvedValueOnce(createSuccessResponse(mockResponse));
+
+    const queryParams = { foo: 'bar', num: 42, bool: true };
+    await fetchApi<typeof mockResponse>({
+      endpoint: '/test',
+      method: 'GET',
+      queryParams,
+    });
+
+    expect(fetchMock).toHaveBeenCalledWith(
+      `${process.env.NEXT_PUBLIC_API_URL}/test?foo=bar&num=42&bool=true`,
+      expect.any(Object)
+    );
+  });
+
+  it('should append array query parameters to the URL', async () => {
+    const mockResponse = { data: 'with-array-query' };
+    fetchMock.mockResolvedValueOnce(createSuccessResponse(mockResponse));
+
+    const queryParams = {
+      ids: [1, 2, 3],
+      tags: ['new', 'sale'],
+      flags: [true, false],
+    };
+    await fetchApi<typeof mockResponse>({
+      endpoint: '/items',
+      method: 'GET',
+      queryParams,
+    });
+
+    expect(fetchMock).toHaveBeenCalledWith(
+      expect.stringContaining(
+        `${process.env.NEXT_PUBLIC_API_URL}/items?ids[]=1&ids[]=2&ids[]=3&tags[]=new&tags[]=sale&flags[]=true&flags[]=false`
+      ),
+      expect.any(Object)
+    );
+  });
+
+  it('should append nested arrays in query parameters to the URL', async () => {
+    const mockResponse = { data: 'with-nested-array-query' };
+    fetchMock.mockResolvedValueOnce(createSuccessResponse(mockResponse));
+
+    const queryParams = {
+      filter: {
+        categories: ['shoes', 'boots'],
+        prices: [10, 20],
+      },
+      sort: 'asc',
+    };
+    await fetchApi<typeof mockResponse>({
+      endpoint: '/products',
+      method: 'GET',
+      queryParams,
+    });
+
+    expect(fetchMock).toHaveBeenCalledWith(
+      expect.stringContaining(
+        `${process.env.NEXT_PUBLIC_API_URL}/products?filter%5Bcategories%5D[]=shoes&filter%5Bcategories%5D[]=boots&filter%5Bprices%5D[]=10&filter%5Bprices%5D[]=20&sort=asc`
+      ),
+      expect.any(Object)
+    );
+  });
+
+  it('should append nested object query parameters to the URL', async () => {
+    const mockResponse = { data: 'with-nested-query' };
+    fetchMock.mockResolvedValueOnce(createSuccessResponse(mockResponse));
+
+    const queryParams = {
+      filter: {
+        name: 'shoes',
+        price: { gte: 10, lte: 100 },
+      },
+      sort: 'desc',
+    };
+    await fetchApi<typeof mockResponse>({
+      endpoint: '/products',
+      method: 'GET',
+      queryParams,
+    });
+
+    expect(fetchMock).toHaveBeenCalledWith(
+      expect.stringContaining(
+        `${process.env.NEXT_PUBLIC_API_URL}/products?filter%5Bname%5D=shoes&filter%5Bprice%5D%5Bgte%5D=10&filter%5Bprice%5D%5Blte%5D=100&sort=desc`
+      ),
+      expect.any(Object)
+    );
+  });
 });
