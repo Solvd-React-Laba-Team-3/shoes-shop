@@ -1,10 +1,52 @@
-import { StrapiError } from '@/types/api/StrapiError';
-
+type QueryParam = Record<
+  string,
+  | string
+  | number
+  | boolean
+  | Record<string, unknown>
+  | Array<string | number | boolean>
+>;
 interface FetchOptions {
   endpoint: string;
   method: 'GET' | 'POST' | 'PUT' | 'DELETE';
   token?: string;
   body?: unknown;
+  queryParams?: QueryParam;
+}
+
+/**
+ * Converts an object of query parameters into a URL-encoded query string.
+ *
+ * @param {Record<string, string | number | boolean>} [queryParams] - The query parameters to convert
+ * @returns {string} The URL-encoded query string, starting with '?' if parameters exist, otherwise an empty string
+ */
+function toQueryString(queryParams?: QueryParam): string {
+  if (!queryParams || Object.keys(queryParams).length === 0) {
+    return '';
+  }
+
+  function buildParams(obj: QueryParam, prefix = ''): string[] {
+    return Object.entries(obj).flatMap(([key, value]) => {
+      const paramKey = prefix ? `${prefix}[${key}]` : key;
+      if (
+        typeof value === 'object' &&
+        value !== null &&
+        !Array.isArray(value)
+      ) {
+        return buildParams(value as QueryParam, paramKey);
+      } else if (Array.isArray(value)) {
+        return value.map(
+          (v) =>
+            `${encodeURIComponent(paramKey)}[]=${encodeURIComponent(String(v))}`
+        );
+      } else {
+        return `${encodeURIComponent(paramKey)}=${encodeURIComponent(String(value))}`;
+      }
+    });
+  }
+
+  const params = buildParams(queryParams).join('&');
+  return params ? `?${params}` : '';
 }
 
 /**
@@ -20,20 +62,22 @@ interface FetchOptions {
  *  - The successful response data of type T
  *  - A StrapiError object if the request fails
  */
+
 export const fetchApi = async <T>({
   endpoint,
   method,
   body,
   token,
-}: FetchOptions): Promise<T | StrapiError> => {
+  queryParams,
+}: FetchOptions): Promise<T> => {
   const headers = {
     accept: 'text/plain',
     'Content-Type': 'application/json',
     ...(token && { Authorization: `Bearer ${token}` }),
   };
-
+  const queryString = toQueryString(queryParams);
   const response = await fetch(
-    `${process.env.NEXT_PUBLIC_API_URL}${endpoint}`,
+    `${process.env.NEXT_PUBLIC_API_URL}${endpoint}${queryString}`,
     {
       method,
       headers,
