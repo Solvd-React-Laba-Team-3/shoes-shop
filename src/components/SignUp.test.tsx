@@ -9,10 +9,11 @@ describe('SignUp', () => {
       screen.getByRole('heading', { name: /create an account/i })
     ).toBeInTheDocument();
 
-    expect(screen.getByLabelText('Name')).toBeInTheDocument();
-    expect(screen.getByLabelText('Email')).toBeInTheDocument();
-    expect(screen.getByLabelText('Password')).toBeInTheDocument();
-    expect(screen.getByLabelText('Confirm password')).toBeInTheDocument();
+    expect(screen.getByPlaceholderText('Hayman Andrews')).toBeInTheDocument();
+    expect(screen.getByPlaceholderText('example@mail.com')).toBeInTheDocument();
+    expect(
+      screen.getAllByPlaceholderText('at least 8 characters')
+    ).toHaveLength(2);
 
     expect(
       screen.getByRole('button', { name: /sign up/i })
