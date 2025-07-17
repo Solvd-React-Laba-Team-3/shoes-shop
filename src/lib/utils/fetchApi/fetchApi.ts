@@ -1,11 +1,5 @@
-type QueryParam = Record<
-  string,
-  | string
-  | number
-  | boolean
-  | Record<string, unknown>
-  | Array<string | number | boolean>
->;
+import { QueryParam } from '@/types/api/QueryParam';
+
 interface FetchOptions {
   endpoint: string;
   method: 'GET' | 'POST' | 'PUT' | 'DELETE';
