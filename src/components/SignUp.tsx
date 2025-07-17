@@ -12,7 +12,7 @@ export const SignUp = () => {
       <Typography
         variant="caption"
         component="p"
-        sx={{ margin: '16px 0 48px 0;' }}
+        sx={{ margin: '16px 0 48px 0;', color: '#5C5C5C' }}
       >
         Create an account to get an easy access to your dream shopping
       </Typography>
@@ -48,17 +48,22 @@ export const SignUp = () => {
           Sign up
         </Button>
       </Box>
-
-      <Stack direction="row" spacing={1} alignItems="center">
-        <Typography variant="caption" component="p" sx={{ fontWeight: '500' }}>
-          Already have an account?
-        </Typography>
-        <Link href="/signin" size="thin">
-          Log in
-        </Link>
-      </Stack>
+      <Box display="flex" justifyContent="flex-end">
+        <Box width="calc(100% - 100px)">
+          <Stack direction="row" spacing={1} alignItems="center">
+            <Typography
+              variant="caption"
+              component="p"
+              sx={{ fontWeight: '500', color: ' #494949' }}
+            >
+              Already have an account?
+            </Typography>
+            <Link href="/signin" size="thin">
+              Log in
+            </Link>
+          </Stack>
+        </Box>
+      </Box>
     </>
   );
 };
-
-
