@@ -16,12 +16,12 @@ interface BaseAccordionProps extends AccordionProps {
 export const Accordion: FC<BaseAccordionProps> = ({
   label,
   children,
-  ...rest
+  ...props
 }) => {
   return (
     <MUIAccordion
       disableGutters
-      {...rest}
+      {...props}
       sx={{
         boxShadow: 'none',
         '&:before': { display: 'none' },
