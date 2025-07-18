@@ -11,11 +11,10 @@ export const getCategoriesOptions = (
 ) =>
   queryOptions({
     queryKey: [GET_CATEGORIES_QUERY_KEY, queryParams],
-    queryFn: async () => {
+    queryFn: async () =>
       await fetchApi<StrapiPaginatedData<Category>>({
         endpoint: '/categories',
         method: 'GET',
-        queryParams: queryParams,
-      });
-    },
+        queryParams,
+      }),
   });
