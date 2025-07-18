@@ -33,9 +33,9 @@ const SwiperContainer = styled(IconButton)(() => ({
   },
 }));
 
-const ReviewWrapper = styled(Box)<{ backgroundImage: string }>(
-  ({ backgroundImage }) => ({
-    backgroundImage: `url(${backgroundImage})`,
+const ReviewWrapper = styled(Box)<{ backgroundimage: string }>(
+  ({ backgroundimage }) => ({
+    backgroundImage: `url(${backgroundimage})`,
     backgroundSize: 'cover',
     backgroundPosition: 'center',
     backgroundRepeat: 'no-repeat',
@@ -66,7 +66,7 @@ export const ReviewPanel = ({
   onPrev,
   onNext,
 }: ReviewPanelProps) => (
-  <ReviewWrapper backgroundImage={backgroundImage}>
+  <ReviewWrapper backgroundimage={backgroundImage}>
     <StyledPaper>
       <Box sx={{ display: 'flex', direction: 'row' }}>
         <Typography variant="h4" component="p">
