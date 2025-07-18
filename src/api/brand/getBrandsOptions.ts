@@ -15,7 +15,7 @@ export const getBrandsOptions = (
       await fetchApi<StrapiPaginatedData<Brand>>({
         endpoint: '/brands',
         method: 'GET',
-        queryParams: queryParams,
+        queryParams,
       });
     },
   });
