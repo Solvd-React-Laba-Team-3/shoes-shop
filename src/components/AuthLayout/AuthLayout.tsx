@@ -7,8 +7,10 @@ export default function AuthLayout({ children }: { children: ReactNode }) {
       sx={{
         display: 'grid',
         gridTemplateColumns: '1fr 1fr',
-        height: '100vh',
-        alignItems: 'center'
+        height: '100vh', 
+        overflow: 'hidden',
+        boxSizing: 'border-box',
+        position: 'relative',
       }}
     >
       {children}

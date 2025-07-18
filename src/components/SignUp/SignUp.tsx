@@ -22,7 +22,27 @@ const FeedbackPaper = styled(Paper)(({ theme }) => ({
   padding: theme.spacing(4),
   display: 'grid',
   justifyItems: 'start',
-  width: '600px',
+  width: '756px',
+}));
+
+const ReviewPanel = styled(Box)(() => ({
+  backgroundImage: 'url(/register.jpg)',
+  backgroundSize: 'cover',
+  backgroundPosition: 'center',
+  backgroundRepeat: 'no-repeat',
+  height: '100%',
+  width: '100%',
+  display: 'flex',
+  justifyContent: 'center',
+  alignItems: 'center',
+}));
+
+const SwiperContainer = styled(IconButton)(() => ({
+  backdropFilter: 'blur(24px)',
+  border: '2px solid #FFFFFFA3',
+  '&:hover': {
+    backgroundColor: 'transparent',
+  },
 }));
 
 export const SignUp = () => {
@@ -36,12 +56,17 @@ export const SignUp = () => {
   return (
     <>
       <AuthLayout>
-        <Box sx={{ margin: '0 auto' }}>
+        <Box sx={{ margin: '20% auto' }}>
           <Image
-            src="/register-logo.png"
+            src="/logo-register.png"
             alt="register logo"
-            width={500}
-            height={400}
+            width={40}
+            height={30}
+            style={{
+              position: 'absolute',
+              top: '50px',
+              left: '40px',
+            }}
           />
           <Typography variant="h2">Create an account</Typography>
           <Typography
@@ -113,23 +138,10 @@ export const SignUp = () => {
           </Box>
         </Box>
 
-        <Box
-          sx={{
-            backgroundImage: 'url(/register.jpg)',
-            backgroundSize: 'cover',
-            backgroundPosition: 'center',
-            backgroundRepeat: 'no-repeat',
-            height: '100%',
-            width: '100%',
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'flex-end',
-            paddingBottom: '450px',
-          }}
-        >
+        <ReviewPanel>
           <FeedbackPaper>
             <Box sx={{ display: 'flex', direction: 'row' }}>
-              <Typography variant="h4" component="p" textAlign="center">
+              <Typography variant="h4" component="p">
                 &quot; Lorem Ipsum is a really great company because the team is
                 passionate about the projects they produce, the people they work
                 with, the quality of the work they do.&quot;
@@ -143,33 +155,19 @@ export const SignUp = () => {
                   gap: '15px',
                 }}
               >
-                <IconButton
-                  onClick={handlePrev}
-                  sx={{
-                    '&:hover': { backgroundColor: 'white' },
-                    backdropFilter: 'blur(24px)',
-                    border: '2px solid #FFFFFFA3',
-                  }}
-                >
+                <SwiperContainer onClick={handlePrev}>
                   <ArrowBackIosIcon
                     fontSize="small"
                     sx={{ color: '#0D0D0D' }}
                   />
-                </IconButton>
+                </SwiperContainer>
 
-                <IconButton
-                  onClick={handleNext}
-                  sx={{
-                    '&:hover': { backgroundColor: 'white' },
-                    backdropFilter: 'blur(24px)',
-                    border: '2px solid #FFFFFFA3',
-                  }}
-                >
+                <SwiperContainer onClick={handleNext}>
                   <ArrowForwardIosIcon
                     fontSize="small"
                     sx={{ color: '#0D0D0D' }}
                   />
-                </IconButton>
+                </SwiperContainer>
               </Stack>
             </Box>
 
@@ -194,7 +192,7 @@ export const SignUp = () => {
               Ukraine, Chernivtsi
             </Typography>
           </FeedbackPaper>
-        </Box>
+        </ReviewPanel>
       </AuthLayout>
     </>
   );
