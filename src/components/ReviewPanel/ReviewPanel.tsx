@@ -1,11 +1,5 @@
-import {
-  Box,
-  Paper,
-  Stack,
-  Typography,
-  Rating,
-  IconButton,
-} from '@mui/material';
+import { Box, Paper, Stack, Typography, Rating } from '@mui/material';
+import { IconButton } from '../ui';
 import { styled } from '@mui/material/styles';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
@@ -23,32 +17,12 @@ const StyledPaper = styled(Paper)(({ theme }) => ({
   display: 'grid',
   justifyItems: 'start',
   width: '756px',
+  position: 'absolute',
+  right: '102px',
+  top: '528px',
 }));
-
-const SwiperContainer = styled(IconButton)(() => ({
-  backdropFilter: 'blur(24px)',
-  border: '2px solid #FFFFFFA3',
-  '&:hover': {
-    backgroundColor: 'transparent',
-  },
-}));
-
-const ReviewWrapper = styled(Box)<{ backgroundimage: string }>(
-  ({ backgroundimage }) => ({
-    backgroundImage: `url(${backgroundimage})`,
-    backgroundSize: 'cover',
-    backgroundPosition: 'center',
-    backgroundRepeat: 'no-repeat',
-    height: '100%',
-    width: '100%',
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-  })
-);
 
 type ReviewPanelProps = {
-  backgroundImage: string;
   quote: string;
   name: string;
   location: string;
@@ -58,7 +32,6 @@ type ReviewPanelProps = {
 };
 
 export const ReviewPanel = ({
-  backgroundImage,
   quote,
   name,
   location,
@@ -66,39 +39,38 @@ export const ReviewPanel = ({
   onPrev,
   onNext,
 }: ReviewPanelProps) => (
-  <ReviewWrapper backgroundimage={backgroundImage}>
-    <StyledPaper>
-      <Box sx={{ display: 'flex', direction: 'row' }}>
-        <Typography variant="h4" component="p">
-          “ {quote} ”
-        </Typography>
-        <Stack
-          sx={{
-            display: 'flex',
-            flexDirection: 'row',
-            alignItems: 'baseline',
-            gap: '15px',
-          }}
-        >
-          <SwiperContainer onClick={onPrev}>
-            <ArrowBackIosIcon fontSize="small" sx={{ color: '#0D0D0D' }} />
-          </SwiperContainer>
-          <SwiperContainer onClick={onNext}>
-            <ArrowForwardIosIcon fontSize="small" sx={{ color: '#0D0D0D' }} />
-          </SwiperContainer>
-        </Stack>
-      </Box>
-
-      <Stack spacing={1} alignItems="center" sx={{ margin: '16px 0 4px' }}>
-        <Stack direction="row" spacing={1} alignItems="center">
-          <Typography variant="h4">{name}</Typography>
-          <Rating value={rating} readOnly size="large" />
-        </Stack>
-      </Stack>
-
-      <Typography variant="caption" sx={{ fontSize: '18px' }}>
-        {location}
+  <StyledPaper>
+    <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+      <Typography variant="h4" component="p" sx={{ flex: 1 }}>
+        “ {quote} ”
       </Typography>
-    </StyledPaper>
-  </ReviewWrapper>
+      <Stack
+        sx={{
+          flexShrink: 0,
+          display: 'flex',
+          flexDirection: 'row',
+          alignItems: 'center',
+          gap: '15px',
+        }}
+      >
+        <IconButton onClick={onPrev}>
+          <ArrowBackIosIcon fontSize="small" sx={{ color: '#0D0D0D' }} />
+        </IconButton>
+        <IconButton onClick={onNext}>
+          <ArrowForwardIosIcon fontSize="small" sx={{ color: '#0D0D0D' }} />
+        </IconButton>
+      </Stack>
+    </Box>
+
+    <Stack spacing={1} alignItems="center" sx={{ margin: '16px 0 4px' }}>
+      <Stack direction="row" spacing={1} alignItems="center">
+        <Typography variant="h4">{name}</Typography>
+        <Rating value={rating} readOnly size="large" />
+      </Stack>
+    </Stack>
+
+    <Typography variant="caption" sx={{ fontSize: '18px' }}>
+      {location}
+    </Typography>
+  </StyledPaper>
 );
