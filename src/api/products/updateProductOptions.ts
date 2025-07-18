@@ -1,4 +1,6 @@
-import { StrapiError } from '@/types/StrapiError';
+import { fetchApi } from '@/lib/utils';
+import { mutationOptions } from '@tanstack/react-query';
+import { StrapiError } from '@/types/api/StrapiError';
 import {
   CreateProductRequest,
   CreateProductResponse,
@@ -6,31 +8,25 @@ import {
 
 export type UpdateProductResponse = CreateProductResponse;
 
-export const updateProduct = async (
-  id: number,
-  updatedProduct: CreateProductRequest
-): Promise<UpdateProductResponse> => {
-  const res = await fetch(
-    `https://shoes-shop-strapi.herokuapp.com/api/products/${id}`,
-    {
+export const updateProductOptions = mutationOptions({
+  mutationKey: ['product', 'update'],
+  mutationFn: async ({
+    id,
+    data,
+  }: {
+    id: number;
+    data: CreateProductRequest;
+  }) => {
+    const res = await fetchApi<UpdateProductResponse>({
+      endpoint: `/products/${id}`,
       method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(updatedProduct),
+      body: data,
+    });
+
+    if ('error' in res) {
+      throw res as StrapiError<keyof CreateProductRequest['data']>;
     }
-  );
 
-  if (!res.ok) {
-    const error: StrapiError<keyof CreateProductRequest['data']> =
-      await res.json();
-    throw error;
-  }
-
-  return res.json();
-};
-
-export const updateProductOptions = {
-  mutationFn: ({ id, data }: { id: number; data: CreateProductRequest }) =>
-    updateProduct(id, data),
-};
+    return res;
+  },
+});

@@ -1,27 +1,24 @@
-import { StrapiError } from '@/types/StrapiError';
-import { StrapiSingleData } from '@/types/StrapiSingleData';
+import { fetchApi } from '@/lib/utils';
+import { mutationOptions } from '@tanstack/react-query';
+import { StrapiError } from '@/types/api/StrapiError';
+import { StrapiSingleData } from '@/types/api/StrapiSingleData';
 import { ProductAttributes } from './createProductOptions';
 
 export type DeleteProductResponse = StrapiSingleData<ProductAttributes>;
 
-export const deleteProduct = async (
-  id: number
-): Promise<DeleteProductResponse> => {
-  const res = await fetch(
-    `https://shoes-shop-strapi.herokuapp.com/api/products/${id}`,
-    {
+export const deleteProductOptions = mutationOptions({
+  mutationKey: ['product', 'delete'],
+  mutationFn: async ({ id, token }: { id: number; token: string }) => {
+    const res = await fetchApi<DeleteProductResponse>({
+      endpoint: `/products/${id}`,
       method: 'DELETE',
+      token,
+    });
+
+    if ('error' in res) {
+      throw res as StrapiError;
     }
-  );
 
-  if (!res.ok) {
-    const error: StrapiError = await res.json();
-    throw error;
-  }
-
-  return res.json();
-};
-
-export const deleteProductOptions = {
-  mutationFn: (id: number) => deleteProduct(id),
-};
+    return res;
+  },
+});
