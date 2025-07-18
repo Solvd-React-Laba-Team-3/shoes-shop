@@ -1,26 +1,7 @@
 import { StrapiError } from '@/types/api/StrapiError';
-import { StrapiSingleData } from '@/types/api/StrapiSingleData';
-import { StrapiResponse } from '@/types/api/StrapiResponse';
 import { mutationOptions } from '@tanstack/react-query';
 import { fetchApi } from '@/lib/utils/fetchApi/fetchApi';
-
-export type ProductAttributes = {
-  name: string;
-  description: string;
-  price: number;
-  teamName: string;
-  images: {
-    data: StrapiResponse<{
-      url: string;
-      altText?: string;
-    }>;
-  };
-  brand: {
-    data: StrapiResponse<{
-      name: string;
-    }>;
-  };
-};
+import { ProductSingleResponse } from '@/types/api/ProductSingleResponse';
 
 export type CreateProductRequest = {
   data: {
@@ -38,7 +19,7 @@ export type CreateProductRequest = {
   };
 };
 
-export type CreateProductResponse = StrapiSingleData<ProductAttributes>;
+export type CreateProductResponse = ProductSingleResponse;
 
 export const createProductOptions = mutationOptions({
   mutationKey: ['product', 'create'],

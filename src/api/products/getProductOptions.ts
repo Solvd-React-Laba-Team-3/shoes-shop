@@ -1,38 +1,16 @@
-import qs from 'qs';
 import { fetchApi } from '@/lib/utils';
 import { queryOptions } from '@tanstack/react-query';
-import { StrapiPaginatedData } from '@/types/api/StrapiPaginatedData';
 import { StrapiError } from '@/types/api/StrapiError';
-import { ProductAttributes } from './createProductOptions';
-import { StrapiQueryParams } from '@/types/api/strapiQueryParams';
+import { ProductSingleResponse } from '@/types/api/ProductSingleResponse';
 
-export type GetProductsResponse = StrapiPaginatedData<ProductAttributes>;
+export type GetProductResponse = ProductSingleResponse;
 
-export type ProductFields =
-  | 'name'
-  | 'price'
-  | 'description'
-  | 'teamName'
-  | 'gender'
-  | 'brand'
-  | 'categories'
-  | 'color'
-  | 'sizes'
-  | 'userID'
-  | 'images';
-
-export type GetProductsQueryParams = StrapiQueryParams<ProductFields> & {
-  locale?: string;
-};
-
-export const getProductsOptions = (params: GetProductsQueryParams) =>
+export const getProductOptions = (id: number) =>
   queryOptions({
-    queryKey: ['products', params],
+    queryKey: ['product', id],
     queryFn: async () => {
-      const queryString = qs.stringify(params, { encodeValuesOnly: true });
-
-      const res = await fetchApi<GetProductsResponse>({
-        endpoint: `/products?${queryString}`,
+      const res = await fetchApi<GetProductResponse>({
+        endpoint: `/products/${id}`,
         method: 'GET',
       });
 
