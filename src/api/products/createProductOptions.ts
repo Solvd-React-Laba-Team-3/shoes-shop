@@ -1,6 +1,8 @@
-import { StrapiSingleData } from '@/types/StrapiSingleData';
-import { StrapiResponse } from '@/types/StrapiResponse';
-import { StrapiError } from '@/types/StrapiError';
+import { StrapiError } from '@/types/api/StrapiError';
+import { StrapiSingleData } from '@/types/api/StrapiSingleData';
+import { StrapiResponse } from '@/types/api/StrapiResponse';
+import { mutationOptions } from '@tanstack/react-query';
+import { fetchApi } from '@/lib/utils/fetchApi/fetchApi';
 
 export type ProductAttributes = {
   name: string;
@@ -38,29 +40,26 @@ export type CreateProductRequest = {
 
 export type CreateProductResponse = StrapiSingleData<ProductAttributes>;
 
-export const createProduct = async (
-  newProduct: CreateProductRequest
-): Promise<CreateProductResponse> => {
-  const res = await fetch(
-    'https://shoes-shop-strapi.herokuapp.com/api/products',
-    {
+export const createProductOptions = mutationOptions({
+  mutationKey: ['product', 'create'],
+  mutationFn: async ({
+    body,
+    token,
+  }: {
+    body: CreateProductRequest;
+    token: string;
+  }) => {
+    const res = await fetchApi<CreateProductResponse>({
+      endpoint: '/products',
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(newProduct),
+      body,
+      token,
+    });
+
+    if ('error' in res) {
+      throw res as StrapiError<keyof CreateProductRequest['data']>;
     }
-  );
 
-  if (!res.ok) {
-    const error: StrapiError<keyof CreateProductRequest['data']> =
-      await res.json();
-    throw error;
-  }
-
-  return res.json();
-};
-
-export const createProductOptions = {
-  mutationfn: createProduct,
-};
+    return res;
+  },
+});

@@ -1,7 +1,7 @@
-import { StrapiPaginatedData } from '@/types/StrapiPaginatedData';
-import { StrapiError } from '@/types/StrapiError';
+import { StrapiPaginatedData } from '@/types/api/StrapiPaginatedData';
+import { StrapiError } from '@/types/api/StrapiError';
 import { ProductAttributes } from './createProductOptions';
-import { StrapiQueryParams } from '@/types/strapiQueryParams';
+import { StrapiQueryParams } from '@/types/api/strapiQueryParams';
 import qs from 'qs';
 
 export type GetProductsResponse = StrapiPaginatedData<ProductAttributes>;

@@ -1,26 +1,45 @@
-import { StrapiError } from '@/types/StrapiError';
+import qs from 'qs';
+import { fetchApi } from '@/lib/utils';
+import { queryOptions } from '@tanstack/react-query';
+import { StrapiPaginatedData } from '@/types/api/StrapiPaginatedData';
+import { StrapiError } from '@/types/api/StrapiError';
 import { ProductAttributes } from './createProductOptions';
-import { StrapiSingleData } from '@/types/StrapiSingleData';
+import { StrapiQueryParams } from '@/types/api/strapiQueryParams';
 
-export type GetProductResponse = StrapiSingleData<ProductAttributes>;
+export type GetProductsResponse = StrapiPaginatedData<ProductAttributes>;
 
-export const getProduct = async (id: number): Promise<GetProductResponse> => {
-  const res = await fetch(
-    `https://shoes-shop-strapi.herokuapp.com/api/products/${id}`,
-    {
-      method: 'GET',
-    }
-  );
+export type ProductFields =
+  | 'name'
+  | 'price'
+  | 'description'
+  | 'teamName'
+  | 'gender'
+  | 'brand'
+  | 'categories'
+  | 'color'
+  | 'sizes'
+  | 'userID'
+  | 'images';
 
-  if (!res.ok) {
-    const error: StrapiError = await res.json();
-    throw error;
-  }
-
-  return res.json();
+export type GetProductsQueryParams = StrapiQueryParams<ProductFields> & {
+  locale?: string;
 };
 
-export const getProductOptions = (id: number) => ({
-  queryKey: ['product', id],
-  queryFn: () => getProduct(id),
-});
+export const getProductsOptions = (params: GetProductsQueryParams) =>
+  queryOptions({
+    queryKey: ['products', params],
+    queryFn: async () => {
+      const queryString = qs.stringify(params, { encodeValuesOnly: true });
+
+      const res = await fetchApi<GetProductsResponse>({
+        endpoint: `/products?${queryString}`,
+        method: 'GET',
+      });
+
+      if ('error' in res) {
+        throw res as StrapiError;
+      }
+
+      return res;
+    },
+  });
