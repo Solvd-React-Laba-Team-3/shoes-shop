@@ -1,6 +1,6 @@
-import AuthLayout from '../AuthLayout/AuthLayout';
+import AuthLayout from '@/app/auth/layout';
 import { AuthFormContainer } from '../AuthFormContainer/AuthFormContainer';
-import { ReviewPanel } from '../ReviewPanel/ReviewPanel';
+import { ReviewWithBackground } from '../ReviewPanel/ReviewWithBackground';
 import { Button, LabeledTextfield, Link } from '../ui';
 import { Box, Stack, Typography } from '@mui/material';
 import Image from 'next/image';
@@ -25,11 +25,7 @@ export const SignUp = () => {
         description="Create an account to get easy access to your dream shopping"
         footer={
           <Stack direction="row" spacing={1} alignItems="center">
-            <Typography
-              variant="subtitle2"
-              component="p"
-              sx={{ color: 'text.secondary' }}
-            >
+            <Typography variant="subtitle2" component="p" color="textSecondary">
               Already have an account?
             </Typography>
             <Link href="/signin" size="thin">
@@ -78,7 +74,7 @@ export const SignUp = () => {
         </Box>
       </AuthFormContainer>
 
-      <ReviewPanel
+      <ReviewWithBackground
         backgroundImage="/register.jpg"
         quote="Lorem Ipsum is a really great company because the team is passionate about the projects they produce, the people they work with, the quality of the work they do."
         name="John Stone"
