@@ -9,24 +9,25 @@ describe('SignUp', () => {
       screen.getByRole('heading', { name: /create an account/i })
     ).toBeInTheDocument();
 
-    expect(screen.getByPlaceholderText('Hayman Andrews')).toBeInTheDocument();
-    expect(screen.getByPlaceholderText('example@mail.com')).toBeInTheDocument();
-    expect(
-      screen.getAllByPlaceholderText('at least 8 characters')
-    ).toHaveLength(2);
+    // Input fields
+    expect(screen.getByLabelText(/name/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/email/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/^Password/i)).toBeInTheDocument(); // "Password"
+    expect(screen.getByLabelText(/Confirm password/i)).toBeInTheDocument();
 
+    // Button
     expect(
       screen.getByRole('button', { name: /sign up/i })
     ).toBeInTheDocument();
 
+    // Footer
     expect(screen.getByText(/already have an account/i)).toBeInTheDocument();
     expect(screen.getByRole('link', { name: /log in/i })).toBeInTheDocument();
   });
 
   test('value of the input is updated correctly', () => {
     render(<SignUp />);
-    const inputs = screen.getAllByRole('textbox');
-    const nameInput = inputs[0];
+    const nameInput = screen.getByLabelText(/name/i);
 
     fireEvent.change(nameInput, { target: { value: 'Olha Kucheruk' } });
     expect(nameInput).toHaveValue('Olha Kucheruk');
