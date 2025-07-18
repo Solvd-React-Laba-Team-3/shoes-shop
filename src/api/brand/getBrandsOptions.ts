@@ -12,11 +12,10 @@ export const getBrandsOptions = (
   queryOptions({
     queryKey: [GET_BRANDS_QUERY_KEY, queryParams],
     queryFn: async () => {
-      const response = await fetchApi<StrapiPaginatedData<Brand>>({
+      return await fetchApi<StrapiPaginatedData<Brand>>({
         endpoint: '/brands',
         method: 'GET',
-        body: queryParams,
+        queryParams: queryParams,
       });
-      return response;
     },
   });
