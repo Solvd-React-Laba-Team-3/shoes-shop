@@ -1,10 +1,9 @@
 import { fetchApi } from '@/lib/utils';
 import { mutationOptions } from '@tanstack/react-query';
 import { StrapiError } from '@/types/api/StrapiError';
-import { StrapiSingleData } from '@/types/api/StrapiSingleData';
-import { ProductAttributes } from './createProductOptions';
+import { ProductSingleResponse } from '@/types/api/ProductSingleResponse';
 
-export type DeleteProductResponse = StrapiSingleData<ProductAttributes>;
+export type DeleteProductResponse = ProductSingleResponse;
 
 export const deleteProductOptions = mutationOptions({
   mutationKey: ['product', 'delete'],
