@@ -7,7 +7,7 @@ const uploadFile = async (file: File): Promise<StrapiFile[]> => {
   formData.append('files', file);
 
   return await fetchApi<StrapiFile[]>({
-    endpoint: `${process.env.NEXT_PUBLIC_API_URL}/upload`,
+    endpoint: `/upload`,
     method: 'POST',
     body: formData,
   });
@@ -17,11 +17,9 @@ export const useUploadFile = () => {
   return useMutation<StrapiFile[], Error, File>({
     mutationFn: uploadFile,
     onError: (error) => {
-      // Handle error appropriately
       console.error('File upload failed:', error.message);
     },
     onSuccess: (data) => {
-      // Handle success appropriately
       console.log('File uploaded successfully:', data);
     },
   });
