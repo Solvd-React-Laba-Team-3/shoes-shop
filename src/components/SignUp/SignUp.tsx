@@ -5,6 +5,9 @@ import AuthLayout from '../AuthLayout/AuthLayout';
 import { styled } from '@mui/material/styles';
 import Rating from '@mui/material/Rating';
 import Image from 'next/image';
+import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
+import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
+import IconButton from '@mui/material/IconButton';
 
 const FeedbackPaper = styled(Paper)(({ theme }) => ({
   color: theme.palette.text.secondary,
@@ -17,22 +20,25 @@ const FeedbackPaper = styled(Paper)(({ theme }) => ({
   WebkitBackdropFilter: 'blur(12px)',
   borderRadius: '32px',
   padding: theme.spacing(4),
-  display: 'flex',
-  flexDirection: 'column',
-  justifyContent: 'center',
-  textAlign: 'center',
-  position: 'sticky',
-  left: '1062px',
-  top: '340px',
+  display: 'grid',
+  justifyItems: 'start',
+  width: '600px',
 }));
 
 export const SignUp = () => {
+  const handlePrev = () => {
+    console.log('Previous feedback');
+  };
+
+  const handleNext = () => {
+    console.log('Next feedback');
+  };
   return (
     <>
       <AuthLayout>
         <Box sx={{ margin: '0 auto' }}>
           <Image
-            src="/register-logo.png" 
+            src="/register-logo.png"
             alt="register logo"
             width={500}
             height={400}
@@ -98,9 +104,7 @@ export const SignUp = () => {
                 >
                   Already have an account?
                 </Typography>
-                {/* <Link href="/signin" size="thin">
-              Log in
-            </Link> */}
+
                 <Link href="/signin" size="thin">
                   <Typography variant="subtitle2">Log in</Typography>
                 </Link>
@@ -117,14 +121,57 @@ export const SignUp = () => {
             backgroundRepeat: 'no-repeat',
             height: '100%',
             width: '100%',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'flex-end',
+            paddingBottom: '450px',
           }}
         >
           <FeedbackPaper>
-            <Typography variant="h4" component="p" textAlign="center">
-              &quot; Lorem Ipsum is a really great company because the team is
-              passionate about the projects they produce, the people they work
-              with, the quality of the work they do.&quot;
-            </Typography>
+            <Box sx={{ display: 'flex', direction: 'row' }}>
+              <Typography variant="h4" component="p" textAlign="center">
+                &quot; Lorem Ipsum is a really great company because the team is
+                passionate about the projects they produce, the people they work
+                with, the quality of the work they do.&quot;
+              </Typography>
+
+              <Stack
+                sx={{
+                  display: 'flex',
+                  flexDirection: 'row',
+                  alignItems: 'baseline',
+                  gap: '15px',
+                }}
+              >
+                <IconButton
+                  onClick={handlePrev}
+                  sx={{
+                    '&:hover': { backgroundColor: 'white' },
+                    backdropFilter: 'blur(24px)',
+                    border: '2px solid #FFFFFFA3',
+                  }}
+                >
+                  <ArrowBackIosIcon
+                    fontSize="small"
+                    sx={{ color: '#0D0D0D' }}
+                  />
+                </IconButton>
+
+                <IconButton
+                  onClick={handleNext}
+                  sx={{
+                    '&:hover': { backgroundColor: 'white' },
+                    backdropFilter: 'blur(24px)',
+                    border: '2px solid #FFFFFFA3',
+                  }}
+                >
+                  <ArrowForwardIosIcon
+                    fontSize="small"
+                    sx={{ color: '#0D0D0D' }}
+                  />
+                </IconButton>
+              </Stack>
+            </Box>
 
             <Stack
               spacing={1}
