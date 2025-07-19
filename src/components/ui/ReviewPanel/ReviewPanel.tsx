@@ -1,8 +1,9 @@
-import { Box, Paper, Stack, Typography, Rating } from '@mui/material';
-import { IconButton } from '../ui';
-import { styled } from '@mui/material/styles';
+'use client';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
+import { Box, Paper, Rating, Stack, Typography } from '@mui/material';
+import { styled } from '@mui/material/styles';
+import { IconButton } from '../IconButton/IconButton';
 
 const StyledPaper = styled(Paper)(({ theme }) => ({
   color: theme.palette.text.secondary,

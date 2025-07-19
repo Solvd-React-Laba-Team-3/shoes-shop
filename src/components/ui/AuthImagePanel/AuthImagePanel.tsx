@@ -1,3 +1,4 @@
+'use client';
 import { Box } from '@mui/material';
 import Image from 'next/image';
 
@@ -14,7 +15,7 @@ export const AuthImagePanel = () => {
         alt="login"
         fill
         style={{
-          objectFit: 'cover', 
+          objectFit: 'cover',
         }}
       ></Image>
     </Box>

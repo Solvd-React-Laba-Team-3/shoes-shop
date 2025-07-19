@@ -1,5 +1,5 @@
+'use client';
 import { Box, Typography } from '@mui/material';
-
 import { ReactNode } from 'react';
 
 type AuthFormContainerProps = {
