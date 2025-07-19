@@ -4,9 +4,9 @@ import { StrapiPaginatedData } from '@/types/api/StrapiPaginatedData';
 import { StrapiError } from '@/types/api/StrapiError';
 import { StrapiQueryParams } from '@/types/api/StrapiQueryParams';
 import { ProductAttributes } from '@/types/api/ProductAttributes';
-import { CreateProductRequest } from './createProductOptions';
+import { ProductBody } from '@/types/api/ProductBody';
 
-export type ProductsQueries = keyof CreateProductRequest['data'];
+export type ProductsQueries = keyof ProductBody['data'];
 
 export type ProductsQueryParams = StrapiQueryParams<ProductsQueries> & {
   locale?: string;
@@ -16,7 +16,7 @@ export type GetProductsResponse = StrapiPaginatedData<ProductAttributes>;
 
 export const getProductsOptions = (params: ProductsQueryParams) =>
   queryOptions({
-    queryKey: ['products', JSON.stringify(params)],
+    queryKey: ['products', params],
     queryFn: async () => {
       const res = await fetchApi<GetProductsResponse>({
         endpoint: `/products`,
