@@ -17,6 +17,6 @@ export const useRegister = () =>
         body,
       }),
     onError: (error) => {
-      console.error('Register failed:', error.message);
+      console.error('Failed to register:', error.message);
     },
   });
