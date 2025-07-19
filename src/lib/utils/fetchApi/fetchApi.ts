@@ -64,18 +64,25 @@ export const fetchApi = async <T>({
   token,
   queryParams,
 }: FetchOptions): Promise<T> => {
+  const isFormData = body instanceof FormData;
+
   const headers = {
     accept: 'text/plain',
-    'Content-Type': 'application/json',
+    ...(!isFormData && { 'Content-Type': 'application/json' }),
     ...(token && { Authorization: `Bearer ${token}` }),
   };
+
   const queryString = toQueryString(queryParams);
   const response = await fetch(
     `${process.env.NEXT_PUBLIC_API_URL}${endpoint}${queryString}`,
     {
       method,
       headers,
-      body: body ? JSON.stringify(body) : undefined,
+      body: isFormData
+        ? (body as FormData)
+        : body
+          ? JSON.stringify(body)
+          : undefined,
     }
   );
 
