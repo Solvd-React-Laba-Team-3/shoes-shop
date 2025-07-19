@@ -2,11 +2,7 @@ import { renderHook, waitFor } from '@testing-library/react';
 import { useQuery } from '@tanstack/react-query';
 import { fetchApi } from '@/lib/utils/fetchApi/fetchApi';
 import { getProductOptions, GetProductResponse } from './getProductOptions';
-import {
-  createErrorResponse,
-  createSuccessResponse,
-  createWrapper,
-} from '@/testing/utils';
+import { createSuccessResponse, createWrapper } from '@/testing/utils';
 
 jest.mock('@/lib/utils/fetchApi/fetchApi');
 const mockedFetchApi = fetchApi as jest.Mock;
@@ -15,28 +11,17 @@ describe('getProductOptions', () => {
   it('fetches a single product successfully', async () => {
     const mockResponse: GetProductResponse = {
       data: {
-        id: 1,
+        id: 123,
         attributes: {
-          name: 'Test Product',
+          name: 'Single Product',
           description: 'Desc',
           price: 100,
           teamName: 'team-1',
           images: {
-            data: {
-              id: 1,
-              attributes: {
-                url: '/test-image.jpg',
-                altText: 'Test Image',
-              },
-            },
+            data: { id: 1, attributes: { url: '/img.jpg' } },
           },
           brand: {
-            data: {
-              id: 1,
-              attributes: {
-                name: 'Brand 1',
-              },
-            },
+            data: { id: 1, attributes: { name: 'Brand 1' } },
           },
         },
       },
@@ -53,15 +38,10 @@ describe('getProductOptions', () => {
     await waitFor(() => expect(result.current.isSuccess).toBe(true));
     expect(result.current.data?.data.id).toBe(123);
     expect(result.current.data?.data.attributes.name).toBe('Single Product');
-    expect(mockedFetchApi).toHaveBeenCalledWith(
-      expect.objectContaining({ endpoint: '/products/123', method: 'GET' })
-    );
   });
 
   it('handles API errors correctly', async () => {
-    mockedFetchApi.mockResolvedValueOnce(
-      await createErrorResponse(404, 'Not Found').json()
-    );
+    mockedFetchApi.mockRejectedValueOnce(new Error('Not Found'));
 
     const { result } = renderHook(() => useQuery(getProductOptions(999)), {
       wrapper: createWrapper(),

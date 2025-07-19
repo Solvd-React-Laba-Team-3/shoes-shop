@@ -1,16 +1,19 @@
-import { renderHook, act } from '@testing-library/react';
+import { renderHook, act, waitFor } from '@testing-library/react';
 import { fetchApi } from '@/lib/utils/fetchApi/fetchApi';
-import {
-  createErrorResponse,
-  createSuccessResponse,
-  createWrapper,
-} from '@/testing/utils';
+import { createSuccessResponse, createWrapper } from '@/testing/utils';
 import { CreateProductResponse, useCreateProduct } from './useCreateProduct';
 
 jest.mock('@/lib/utils/fetchApi/fetchApi');
 const mockedFetchApi = fetchApi as jest.Mock;
 
 describe('useCreateProduct', () => {
+  let wrapper: ReturnType<typeof createWrapper>;
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+    wrapper = createWrapper(); // fresh QueryClient for each test
+  });
+
   it('creates a product successfully', async () => {
     const mockResponse: CreateProductResponse = {
       data: {
@@ -46,7 +49,7 @@ describe('useCreateProduct', () => {
     );
 
     const { result } = renderHook(() => useCreateProduct(), {
-      wrapper: createWrapper(),
+      wrapper,
     });
 
     await act(async () => {
@@ -68,7 +71,10 @@ describe('useCreateProduct', () => {
       });
     });
 
-    expect(result.current.isSuccess).toBe(true);
+    await waitFor(() => {
+      expect(result.current.isSuccess).toBe(true);
+    });
+
     expect(result.current.data?.data.id).toBe(1);
     expect(mockedFetchApi).toHaveBeenCalledWith(
       expect.objectContaining({ endpoint: '/products', method: 'POST' })
@@ -76,12 +82,10 @@ describe('useCreateProduct', () => {
   });
 
   it('handles API errors correctly', async () => {
-    mockedFetchApi.mockResolvedValueOnce(
-      await createErrorResponse(400, 'Validation failed').json()
-    );
+    mockedFetchApi.mockRejectedValueOnce(new Error('Validation failed'));
 
     const { result } = renderHook(() => useCreateProduct(), {
-      wrapper: createWrapper(),
+      wrapper,
     });
 
     await act(async () => {
@@ -103,7 +107,10 @@ describe('useCreateProduct', () => {
       });
     });
 
-    expect(result.current.isError).toBe(true);
+    await waitFor(() => {
+      expect(result.current.isError).toBe(true);
+    });
+
     expect(result.current.error?.message).toContain('Validation failed');
   });
 });
