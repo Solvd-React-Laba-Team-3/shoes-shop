@@ -1,11 +1,12 @@
+'use client';
 import AuthLayout from '@/app/auth/layout';
-import { AuthFormContainer } from '@/components/AuthFormContainer/AuthFormContainer';
-import { ReviewWithBackground } from '@/components/ReviewPanel/ReviewWithBackground';
+import { AuthFormContainer } from '@/components/ui/AuthFormContainer/AuthFormContainer';
+import { ReviewPanel } from '@/components/ui/ReviewPanel/ReviewPanel';
 import { Button, LabeledTextfield, Link } from '@/components/ui';
 import { Box, Stack, Typography } from '@mui/material';
 import Image from 'next/image';
 
-export const SignUp = () => {
+const SignUp = () => {
   const handlePrev = () => console.log('Previous feedback');
   const handleNext = () => console.log('Next feedback');
 
@@ -71,15 +72,42 @@ export const SignUp = () => {
         </Box>
       </AuthFormContainer>
 
-      <ReviewWithBackground
-        backgroundImage="/register.jpg"
-        quote="Lorem Ipsum is a really great company because the team is passionate about the projects they produce, the people they work with, the quality of the work they do."
-        name="John Stone"
-        location="Ukraine, Chernivtsi"
-        rating={5}
-        onPrev={handlePrev}
-        onNext={handleNext}
-      />
+      <Box
+        sx={{
+          position: 'relative',
+          height: '100%',
+          width: '100%',
+        }}
+      >
+        <Image
+          src="/register.jpg"
+          alt="background"
+          fill
+          sizes="50vw"
+          style={{ objectFit: 'cover' }}
+          priority
+        />
+        <Box
+          sx={{
+            position: 'absolute',
+            inset: 0,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
+        >
+          <ReviewPanel
+            quote="Lorem Ipsum is a really great company because the team is passionate about the projects they produce, the people they work with, the quality of the work they do."
+            name="John Stone"
+            location="Ukraine, Chernivtsi"
+            rating={5}
+            onPrev={handlePrev}
+            onNext={handleNext}
+          />
+        </Box>
+      </Box>
     </AuthLayout>
   );
 };
+
+export default SignUp;
