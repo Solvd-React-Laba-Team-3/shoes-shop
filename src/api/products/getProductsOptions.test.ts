@@ -1,15 +1,17 @@
 import { renderHook, waitFor } from '@testing-library/react';
 import { useQuery } from '@tanstack/react-query';
 import { fetchApi } from '@/lib/utils/fetchApi/fetchApi';
-import { getProductsOptions, GetProductsResponse } from './getProductsOptions';
+import { getProductsOptions } from './getProductsOptions';
 import { createSuccessResponse, createWrapper } from '@/testing/utils';
+import { StrapiPaginatedData } from '@/types/api/StrapiPaginatedData';
+import { ProductAttributes } from '@/types/api/ProductAttributes';
 
 jest.mock('@/lib/utils/fetchApi/fetchApi');
 const mockedFetchApi = fetchApi as jest.Mock;
 
 describe('getProductsOptions', () => {
   it('fetches products successfully', async () => {
-    const mockResponse: GetProductsResponse = {
+    const mockResponse: StrapiPaginatedData<ProductAttributes> = {
       data: [
         {
           id: 1,

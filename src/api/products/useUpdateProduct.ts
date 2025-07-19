@@ -1,18 +1,16 @@
 import { useMutation } from '@tanstack/react-query';
 import { fetchApi } from '@/lib/utils/fetchApi/fetchApi';
 import { ProductSingleResponse } from '@/types/api/ProductSingleResponse';
-import { ProductBody } from '@/types/api/ProductBody';
+import { CreateProductRequest } from './useCreateProduct';
 
 export type UpdateProductRequest = {
-  body: ProductBody;
+  body: Partial<CreateProductRequest['body']>;
   token: string;
   id: number;
 };
 
-export type UpdateProductResponse = ProductSingleResponse;
-
 const updateProduct = async ({ body, token, id }: UpdateProductRequest) => {
-  return await fetchApi<UpdateProductResponse>({
+  return await fetchApi<ProductSingleResponse>({
     endpoint: `/products/${id}`,
     method: 'PUT',
     body,
@@ -21,7 +19,7 @@ const updateProduct = async ({ body, token, id }: UpdateProductRequest) => {
 };
 
 export const useUpdateProduct = () =>
-  useMutation<UpdateProductResponse, Error, UpdateProductRequest>({
+  useMutation<ProductSingleResponse, Error, UpdateProductRequest>({
     mutationFn: updateProduct,
     onError: (error) => {
       console.error('Product update failed:', error.message);

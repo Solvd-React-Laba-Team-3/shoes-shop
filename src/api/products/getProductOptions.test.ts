@@ -1,15 +1,16 @@
 import { renderHook, waitFor } from '@testing-library/react';
 import { useQuery } from '@tanstack/react-query';
 import { fetchApi } from '@/lib/utils/fetchApi/fetchApi';
-import { getProductOptions, GetProductResponse } from './getProductOptions';
+import { getProductOptions } from './getProductOptions';
 import { createSuccessResponse, createWrapper } from '@/testing/utils';
+import { ProductSingleResponse } from '@/types/api/ProductSingleResponse';
 
 jest.mock('@/lib/utils/fetchApi/fetchApi');
 const mockedFetchApi = fetchApi as jest.Mock;
 
 describe('getProductOptions', () => {
   it('fetches a single product successfully', async () => {
-    const mockResponse: GetProductResponse = {
+    const mockResponse: ProductSingleResponse = {
       data: {
         id: 123,
         attributes: {

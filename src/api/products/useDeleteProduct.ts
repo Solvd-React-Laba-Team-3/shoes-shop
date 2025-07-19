@@ -6,10 +6,8 @@ export type DeleteProductRequest = {
   id: number;
 };
 
-export type DeleteProductResponse = { data?: number };
-
 const deleteProduct = async ({ token, id }: DeleteProductRequest) => {
-  return await fetchApi<DeleteProductResponse>({
+  return await fetchApi<void>({
     endpoint: `/products/${id}`,
     method: 'DELETE',
     token,
@@ -17,7 +15,7 @@ const deleteProduct = async ({ token, id }: DeleteProductRequest) => {
 };
 
 export const useDeleteProduct = () =>
-  useMutation<DeleteProductResponse, Error, DeleteProductRequest>({
+  useMutation<void, Error, DeleteProductRequest>({
     mutationFn: deleteProduct,
     onError: (error) => {
       console.error('Product delete failed:', error.message);

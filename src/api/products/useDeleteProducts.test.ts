@@ -1,6 +1,6 @@
 import { renderHook, act, waitFor } from '@testing-library/react';
 import { fetchApi } from '@/lib/utils/fetchApi/fetchApi';
-import { DeleteProductResponse, useDeleteProduct } from './useDeleteProduct';
+import { useDeleteProduct } from './useDeleteProduct';
 import { createSuccessResponse, createWrapper } from '@/testing/utils';
 
 jest.mock('@/lib/utils/fetchApi/fetchApi');
@@ -15,7 +15,7 @@ describe('useDeleteProduct', () => {
   });
 
   it('deletes a product successfully', async () => {
-    const mockResponse: DeleteProductResponse = {};
+    const mockResponse = undefined;
 
     mockedFetchApi.mockResolvedValueOnce(
       await createSuccessResponse(mockResponse).json()
