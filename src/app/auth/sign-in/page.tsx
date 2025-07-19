@@ -1,11 +1,11 @@
-import AuthLayout from '@/app/auth/layout';
 import { AuthFormContainer } from '@/components/AuthFormContainer/AuthFormContainer';
-import { Button, LabeledTextfield, Link } from '@/components/ui';
+import { AuthImagePanel } from '@/components/ReviewPanel/AuthImagePanel';
+import { Button, Checkbox, LabeledTextfield, Link } from '@/components/ui';
 import { Box, Stack, Typography } from '@mui/material';
 import Image from 'next/image';
+import AuthLayout from '../layout';
 
 export const SignIn = () => {
-
   return (
     <AuthLayout>
       <Box sx={{ position: 'absolute', top: '50px', left: '40px' }}>
@@ -50,14 +50,38 @@ export const SignIn = () => {
             placeholder="at least 8 characters"
           />
 
-          <Button type="submit" size="large" sx={{ margin: '90px 0 16px 0' }}>
-            Sign up
+          <Stack
+            sx={{
+              display: 'flex',
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+            }}
+          >
+            <Box>
+              <Checkbox defaultChecked />
+              <Typography
+                variant="caption"
+                sx={{
+                  fontWeight: (theme) => theme.typography.fontWeightMedium,
+                  color: '#494949',
+                }}
+              >
+                Remember me
+              </Typography>
+            </Box>
+
+            <Link size="thin">
+              <Typography variant="caption">Forgot password?</Typography>
+            </Link>
+          </Stack>
+
+          <Button type="submit" size="large" sx={{ margin: '56px 0 24px' }}>
+            Sign in
           </Button>
         </Box>
       </AuthFormContainer>
 
-      
-     
+      <AuthImagePanel />
     </AuthLayout>
   );
 };
