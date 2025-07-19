@@ -13,7 +13,7 @@ export const SignUp = () => {
     <AuthLayout>
       <Box sx={{ position: 'absolute', top: '50px', left: '40px' }}>
         <Image
-          src="/logo-register.png"
+          src="/logo.png"
           alt="register logo"
           width={40}
           height={30}
