@@ -12,12 +12,7 @@ export const SignUp = () => {
   return (
     <AuthLayout>
       <Box sx={{ position: 'absolute', top: '50px', left: '40px' }}>
-        <Image
-          src="/logo.png"
-          alt="register logo"
-          width={40}
-          height={30}
-        />
+        <Image src="/logo.png" alt="register logo" width={40} height={30} />
       </Box>
 
       <AuthFormContainer
@@ -61,12 +56,14 @@ export const SignUp = () => {
             label="Password"
             required
             type="password"
+            placeholder="at least 8 characters"
           />
           <LabeledTextfield
             id="confirmPassword"
             label="Confirm password"
             required
             type="password"
+            placeholder="at least 8 characters"
           />
           <Button type="submit" size="large" sx={{ margin: '90px 0 16px 0' }}>
             Sign up
