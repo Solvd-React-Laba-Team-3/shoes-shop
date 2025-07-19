@@ -1,5 +1,5 @@
 import { fetchApi } from '@/lib/utils';
-import { AuthResponse } from '@/types/api/authResponse';
+import { AuthResponse } from '@/types/api/AuthResponse';
 import { mutationOptions } from '@tanstack/react-query';
 
 interface RegisterRequestBody {
