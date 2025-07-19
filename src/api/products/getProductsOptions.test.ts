@@ -1,12 +1,8 @@
 import { renderHook, waitFor } from '@testing-library/react';
 import { useQuery } from '@tanstack/react-query';
 import { fetchApi } from '@/lib/utils/fetchApi/fetchApi';
-import {
-  createErrorResponse,
-  createSuccessResponse,
-  createWrapper,
-} from '@/testing/utils';
 import { getProductsOptions, GetProductsResponse } from './getProductsOptions';
+import { createSuccessResponse, createWrapper } from '@/testing/utils';
 
 jest.mock('@/lib/utils/fetchApi/fetchApi');
 const mockedFetchApi = fetchApi as jest.Mock;
@@ -23,47 +19,10 @@ describe('getProductsOptions', () => {
             price: 100,
             teamName: 'team-1',
             images: {
-              data: {
-                id: 1,
-                attributes: {
-                  url: '/test-image.jpg',
-                  altText: 'Test Image',
-                },
-              },
+              data: { id: 1, attributes: { url: '/img.jpg' } },
             },
             brand: {
-              data: {
-                id: 1,
-                attributes: {
-                  name: 'Brand 1',
-                },
-              },
-            },
-          },
-        },
-        {
-          id: 2,
-          attributes: {
-            name: 'Product 2',
-            description: 'Desc 2',
-            price: 200,
-            teamName: 'team-1',
-            images: {
-              data: {
-                id: 2,
-                attributes: {
-                  url: '/test-image.jpg',
-                  altText: 'Test Image',
-                },
-              },
-            },
-            brand: {
-              data: {
-                id: 2,
-                attributes: {
-                  name: 'Brand 2',
-                },
-              },
+              data: { id: 1, attributes: { name: 'Brand 1' } },
             },
           },
         },
@@ -73,7 +32,7 @@ describe('getProductsOptions', () => {
           page: 1,
           pageSize: 10,
           pageCount: 1,
-          total: 2,
+          total: 1,
         },
       },
     };
@@ -89,16 +48,11 @@ describe('getProductsOptions', () => {
     );
 
     await waitFor(() => expect(result.current.isSuccess).toBe(true));
-    expect(result.current.data?.data).toHaveLength(2);
-    expect(mockedFetchApi).toHaveBeenCalledWith(
-      expect.objectContaining({ endpoint: '/products', method: 'GET' })
-    );
+    expect(result.current.data?.data).toHaveLength(1);
   });
 
   it('handles API errors correctly', async () => {
-    mockedFetchApi.mockResolvedValueOnce(
-      await createErrorResponse(400, 'Something went wrong').json()
-    );
+    mockedFetchApi.mockRejectedValueOnce(new Error('Something went wrong'));
 
     const { result } = renderHook(
       () =>

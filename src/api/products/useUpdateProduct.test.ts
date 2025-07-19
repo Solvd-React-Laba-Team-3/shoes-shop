@@ -1,24 +1,27 @@
-import { renderHook, act } from '@testing-library/react';
+import { renderHook, act, waitFor } from '@testing-library/react';
 import { fetchApi } from '@/lib/utils/fetchApi/fetchApi';
 import { UpdateProductResponse, useUpdateProduct } from './useUpdateProduct';
-import {
-  createErrorResponse,
-  createSuccessResponse,
-  createWrapper,
-} from '@/testing/utils';
+import { createSuccessResponse, createWrapper } from '@/testing/utils';
 
 jest.mock('@/lib/utils/fetchApi/fetchApi');
 const mockedFetchApi = fetchApi as jest.Mock;
 
 describe('useUpdateProduct', () => {
+  let wrapper: ReturnType<typeof createWrapper>;
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+    wrapper = createWrapper(); // fresh QueryClient per test
+  });
+
   it('updates a product successfully', async () => {
     const mockResponse: UpdateProductResponse = {
       data: {
         id: 1,
         attributes: {
-          name: 'Test Product',
-          description: 'Desc',
-          price: 100,
+          name: 'Updated Product',
+          description: 'Updated Desc',
+          price: 150,
           teamName: 'team-1',
           images: {
             data: {
@@ -46,7 +49,7 @@ describe('useUpdateProduct', () => {
     );
 
     const { result } = renderHook(() => useUpdateProduct(), {
-      wrapper: createWrapper(),
+      wrapper,
     });
 
     await act(async () => {
@@ -57,7 +60,7 @@ describe('useUpdateProduct', () => {
           data: {
             name: 'Updated Product',
             images: [],
-            description: 'Updated',
+            description: 'Updated Desc',
             brand: 1,
             categories: [1],
             color: 1,
@@ -69,7 +72,10 @@ describe('useUpdateProduct', () => {
       });
     });
 
-    expect(result.current.isSuccess).toBe(true);
+    await waitFor(() => {
+      expect(result.current.isSuccess).toBe(true);
+    });
+
     expect(result.current.data?.data.attributes.name).toBe('Updated Product');
     expect(mockedFetchApi).toHaveBeenCalledWith(
       expect.objectContaining({ endpoint: '/products/1', method: 'PUT' })
@@ -77,12 +83,10 @@ describe('useUpdateProduct', () => {
   });
 
   it('handles API errors correctly', async () => {
-    mockedFetchApi.mockResolvedValueOnce(
-      await createErrorResponse(403, 'Forbidden').json()
-    );
+    mockedFetchApi.mockRejectedValueOnce(new Error('Forbidden'));
 
     const { result } = renderHook(() => useUpdateProduct(), {
-      wrapper: createWrapper(),
+      wrapper,
     });
 
     await act(async () => {
@@ -105,7 +109,10 @@ describe('useUpdateProduct', () => {
       });
     });
 
-    expect(result.current.isError).toBe(true);
+    await waitFor(() => {
+      expect(result.current.isError).toBe(true);
+    });
+
     expect(result.current.error?.message).toContain('Forbidden');
   });
 });

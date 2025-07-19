@@ -1,6 +1,5 @@
 import { useMutation } from '@tanstack/react-query';
 import { fetchApi } from '@/lib/utils/fetchApi/fetchApi';
-import { StrapiError } from '@/types/api/StrapiError';
 
 export type DeleteProductRequest = {
   token: string;
@@ -10,18 +9,11 @@ export type DeleteProductRequest = {
 export type DeleteProductResponse = { data?: number };
 
 const deleteProduct = async ({ token, id }: DeleteProductRequest) => {
-  const res = await fetchApi<DeleteProductResponse>({
+  return await fetchApi<DeleteProductResponse>({
     endpoint: `/products/${id}`,
     method: 'DELETE',
     token,
   });
-
-  if ('error' in res) {
-    const error = res as StrapiError;
-    throw new Error(error.error.message ?? 'Unknown error');
-  }
-
-  return res;
 };
 
 export const useDeleteProduct = () =>
