@@ -17,6 +17,6 @@ export const useResetPassword = () =>
         body,
       }),
     onError: (error) => {
-      console.error('Reset password failed:', error.message);
+      console.error('Failed to reset password:', error.message);
     },
   });

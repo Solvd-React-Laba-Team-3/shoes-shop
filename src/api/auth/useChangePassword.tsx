@@ -17,6 +17,6 @@ export const useChangePassword = () =>
         body,
       }),
     onError: (error) => {
-      console.error('Change password failed:', error.message);
+      console.error('Failed to change password:', error.message);
     },
   });
