@@ -1,5 +1,5 @@
 import { render, screen, fireEvent } from '@testing-library/react';
-import { SignUp } from './page';
+import SignUp from './page';
 
 describe('SignUp', () => {
   test('renders all expected form fields and text', () => {
