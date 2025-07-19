@@ -1,5 +1,6 @@
-import { AuthFormContainer } from '@/components/AuthFormContainer/AuthFormContainer';
-import { AuthImagePanel } from '@/components/ReviewPanel/AuthImagePanel';
+'use client'
+import { AuthFormContainer } from '@/components/ui/AuthFormContainer/AuthFormContainer';
+import { AuthImagePanel } from '@/components/ui/AuthImagePanel/AuthImagePanel';
 import { Button, Checkbox, LabeledTextfield, Link } from '@/components/ui';
 import { Box, Stack, Typography } from '@mui/material';
 import Image from 'next/image';
