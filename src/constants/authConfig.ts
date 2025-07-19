@@ -1,6 +1,6 @@
 import { login } from '@/api/auth/login';
 import { AuthOptions } from 'next-auth';
-import { User as IUser } from '@/types/user';
+import { User as IUser } from '@/types/User';
 import CredentialsProvider from 'next-auth/providers/credentials';
 
 declare module 'next-auth' {

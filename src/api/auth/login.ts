@@ -1,5 +1,5 @@
 import { fetchApi } from '@/lib/utils';
-import { AuthResponse } from '@/types/api/authResponse';
+import { AuthResponse } from '@/types/api/AuthResponse';
 
 interface LoginRequestBody {
   identifier: string;
