@@ -1,5 +1,5 @@
 import { renderHook, act, waitFor } from '@testing-library/react';
-import { fetchApi } from '@/lib/utils/fetchApi/fetchApi';
+import { fetchApi } from '@/lib/utils';
 import { useUpdateProduct } from './useUpdateProduct';
 import { createSuccessResponse, createWrapper } from '@/testing/utils';
 import { ProductSingleResponse } from '@/types/api/ProductSingleResponse';
@@ -25,21 +25,92 @@ describe('useUpdateProduct', () => {
           price: 150,
           teamName: 'team-1',
           images: {
-            data: {
-              id: 1,
-              attributes: {
-                url: '/test-image.jpg',
-                altText: 'Test Image',
+            data: [
+              {
+                id: 10,
+                attributes: {
+                  id: 10,
+                  url: '/uploads/image.jpg',
+                  alternativeText: 'Sample Image',
+                  caption: null,
+                  width: 100,
+                  height: 100,
+                  formats: {},
+                  hash: 'hash',
+                  ext: '.jpg',
+                  mime: 'image/jpeg',
+                  size: 123,
+                  previewUrl: null,
+                  provider: 'local',
+                  provider_metadata: {
+                    public_id: 'some_id',
+                    resource_type: 'image',
+                  },
+                  name: 'image.jpg',
+                  createdAt: '2023-01-01',
+                  updatedAt: '2023-01-02',
+                },
               },
-            },
+            ],
           },
           brand: {
             data: {
               id: 1,
               attributes: {
                 name: 'Brand 1',
+                createdAt: '2023-01-01',
+                updatedAt: '2023-01-02',
+                publishedAt: '2023-01-03',
               },
             },
+          },
+          categories: {
+            data: [
+              {
+                id: 1,
+                attributes: {
+                  name: 'Category 1',
+                  createdAt: '2023-01-01',
+                  updatedAt: '2023-01-02',
+                  publishedAt: '2023-01-03',
+                },
+              },
+            ],
+          },
+          color: {
+            data: {
+              id: 1,
+              attributes: {
+                name: 'Red',
+                createdAt: '2023-01-01',
+                updatedAt: '2023-01-02',
+                publishedAt: '2023-01-03',
+              },
+            },
+          },
+          gender: {
+            data: {
+              id: 1,
+              attributes: {
+                name: 'Unisex',
+                createdAt: '2023-01-01',
+                updatedAt: '2023-01-02',
+                publishedAt: '2023-01-03',
+              },
+            },
+          },
+          sizes: {
+            data: [
+              {
+                id: 1,
+                attributes: {
+                  value: 42,
+                  createdAt: '2023-01-01',
+                  updatedAt: '2023-01-02',
+                  publishedAt: '2023-01-03',
+                },
+              },
+            ],
           },
         },
       },
@@ -77,7 +148,7 @@ describe('useUpdateProduct', () => {
       expect(result.current.isSuccess).toBe(true);
     });
 
-    expect(result.current.data?.data.attributes.name).toBe('Updated Product');
+    expect(result.current.data?.name).toBe('Updated Product');
     expect(mockedFetchApi).toHaveBeenCalledWith(
       expect.objectContaining({ endpoint: '/products/1', method: 'PUT' })
     );

@@ -1,5 +1,5 @@
 import { renderHook, act, waitFor } from '@testing-library/react';
-import { fetchApi } from '@/lib/utils/fetchApi/fetchApi';
+import { fetchApi } from '@/lib/utils';
 import { useDeleteProduct } from './useDeleteProduct';
 import { createSuccessResponse, createWrapper } from '@/testing/utils';
 

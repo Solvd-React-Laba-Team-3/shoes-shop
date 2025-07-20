@@ -1,4 +1,4 @@
-import { fetchApi } from '@/lib/utils';
+import { fetchApi, mapProductResponse } from '@/lib/utils';
 import { queryOptions } from '@tanstack/react-query';
 import { StrapiPaginatedData } from '@/types/api/StrapiPaginatedData';
 import { StrapiQueryParams } from '@/types/api/StrapiQueryParams';
@@ -15,10 +15,15 @@ export const getProductsOptions = (params: ProductsQueryParams) =>
   queryOptions({
     queryKey: ['products', params],
     queryFn: async () => {
-      return await fetchApi<StrapiPaginatedData<ProductAttributes>>({
+      const res = await fetchApi<StrapiPaginatedData<ProductAttributes>>({
         endpoint: `/products`,
         method: 'GET',
         queryParams: params,
       });
+
+      return {
+        products: res.data.map((p) => mapProductResponse(p.id, p.attributes)),
+        meta: res.meta,
+      };
     },
   });
