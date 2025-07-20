@@ -1,18 +1,12 @@
-'use client'
+'use client';
 import { AuthFormContainer } from '@/components/ui/AuthFormContainer/AuthFormContainer';
 import { AuthImagePanel } from '@/components/ui/AuthImagePanel/AuthImagePanel';
 import { Button, Checkbox, LabeledTextfield, Link } from '@/components/ui';
 import { Box, Stack, Typography } from '@mui/material';
-import Image from 'next/image';
-import AuthLayout from '../layout';
 
-export const SignIn = () => {
+const SignIn = () => {
   return (
-    <AuthLayout>
-      <Box sx={{ position: 'absolute', top: '50px', left: '40px' }}>
-        <Image src="/logo.png" alt="register logo" width={40} height={30} />
-      </Box>
-
+    <>
       <AuthFormContainer
         title="Welcome back"
         description="Welcome back! Please enter your details to log into your account."
@@ -21,7 +15,7 @@ export const SignIn = () => {
             <Typography variant="subtitle2" component="p" color="textSecondary">
               Don’t have an account?
             </Typography>
-            <Link href="/signin" size="thin">
+            <Link href="/auth/sign-up" size="thin">
               <Typography variant="subtitle2">Sign up</Typography>
             </Link>
           </Stack>
@@ -83,6 +77,8 @@ export const SignIn = () => {
       </AuthFormContainer>
 
       <AuthImagePanel />
-    </AuthLayout>
+    </>
   );
 };
+
+export default SignIn;
