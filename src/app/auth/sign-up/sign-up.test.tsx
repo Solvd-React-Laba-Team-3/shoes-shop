@@ -11,7 +11,7 @@ describe('SignUp', () => {
 
     expect(screen.getByLabelText(/name/i)).toBeInTheDocument();
     expect(screen.getByLabelText(/email/i)).toBeInTheDocument();
-    expect(screen.getByLabelText(/^Password/i)).toBeInTheDocument(); // "Password"
+    expect(screen.getByLabelText(/^Password/i)).toBeInTheDocument();
     expect(screen.getByLabelText(/Confirm password/i)).toBeInTheDocument();
 
     expect(
