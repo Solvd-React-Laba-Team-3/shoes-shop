@@ -3,14 +3,15 @@ import { useQuery } from '@tanstack/react-query';
 import { fetchApi } from '@/lib/utils';
 import { getProductOptions } from './getProductOptions';
 import { createSuccessResponse, createWrapper } from '@/testing/utils';
-import { ProductSingleResponse } from '@/types/api/ProductSingleResponse';
+import { StrapiSingleData } from '@/types/api/StrapiSingleData';
+import { ProductAttributes } from '@/types/api/ProductAttributes';
 
 jest.mock('@/lib/utils/fetchApi/fetchApi');
 const mockedFetchApi = fetchApi as jest.Mock;
 
 describe('getProductOptions', () => {
   it('fetches a single product successfully', async () => {
-    const mockResponse: ProductSingleResponse = {
+    const mockResponse: StrapiSingleData<ProductAttributes> = {
       data: {
         id: 123,
         attributes: {
