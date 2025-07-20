@@ -1,7 +1,8 @@
 import { useMutation } from '@tanstack/react-query';
 import { fetchApi, mapProductResponse } from '@/lib/utils';
-import { ProductSingleResponse } from '@/types/api/ProductSingleResponse';
 import { Product } from '@/types/Product';
+import { ProductAttributes } from '@/types/api/ProductAttributes';
+import { StrapiSingleData } from '@/types/api/StrapiSingleData';
 
 export type CreateProductRequest = {
   body: {
@@ -26,7 +27,7 @@ const createProduct = async ({
   body,
   token,
 }: CreateProductRequest): Promise<Product> => {
-  const res = await fetchApi<ProductSingleResponse>({
+  const res = await fetchApi<StrapiSingleData<ProductAttributes>>({
     endpoint: '/products',
     method: 'POST',
     body,

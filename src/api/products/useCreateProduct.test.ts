@@ -2,7 +2,8 @@ import { renderHook, act, waitFor } from '@testing-library/react';
 import { fetchApi } from '@/lib/utils';
 import { createSuccessResponse, createWrapper } from '@/testing/utils';
 import { useCreateProduct } from './useCreateProduct';
-import { ProductSingleResponse } from '@/types/api/ProductSingleResponse';
+import { ProductAttributes } from '@/types/api/ProductAttributes';
+import { StrapiSingleData } from '@/types/api/StrapiSingleData';
 
 jest.mock('@/lib/utils/fetchApi/fetchApi');
 const mockedFetchApi = fetchApi as jest.Mock;
@@ -16,7 +17,7 @@ describe('useCreateProduct', () => {
   });
 
   it('creates a product successfully', async () => {
-    const mockResponse: ProductSingleResponse = {
+    const mockResponse: StrapiSingleData<ProductAttributes> = {
       data: {
         id: 123,
         attributes: {
