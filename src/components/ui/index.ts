@@ -10,4 +10,3 @@ export { Select } from './Select/Select';
 export { ToggleButton } from './ToggleButton/ToggleButton';
 export { AuthFormContainer } from './AuthFormContainer/AuthFormContainer';
 export { ReviewPanel } from './ReviewPanel/ReviewPanel';
-export { AuthImagePanel } from './AuthImagePanel/AuthImagePanel';

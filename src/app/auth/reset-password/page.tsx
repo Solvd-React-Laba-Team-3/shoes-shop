@@ -1,6 +1,6 @@
 'use client';
 import { AuthFormContainer } from '@/components/ui/AuthFormContainer/AuthFormContainer';
-import { AuthImagePanel } from '@/components/ui/AuthImagePanel/AuthImagePanel';
+import Image from 'next/image';
 import { Button, LabeledTextfield, Link } from '@/components/ui';
 import { Box, Stack, Typography } from '@mui/material';
 
@@ -51,7 +51,21 @@ const ResetPassword = () => {
         </Box>
       </AuthFormContainer>
 
-      <AuthImagePanel />
+      <Box
+        sx={{
+          height: '100vh',
+          position: 'relative',
+        }}
+      >
+        <Image
+          src="/recovery.jpg"
+          alt="login"
+          fill
+          style={{
+            objectFit: 'cover',
+          }}
+        ></Image>
+      </Box>
     </>
   );
 };
