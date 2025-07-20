@@ -19,8 +19,8 @@ const SignUp = () => {
             <Typography variant="subtitle2" component="p" color="textSecondary">
               Already have an account?
             </Typography>
-            <Link href="/auth/sign-in" size="thin">
-              <Typography variant="subtitle2">Log in</Typography>
+            <Link href="/auth/sign-in" size="small">
+              Log in
             </Link>
           </Stack>
         }

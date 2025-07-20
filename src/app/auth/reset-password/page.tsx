@@ -44,8 +44,8 @@ const ResetPassword = () => {
             <Typography variant="subtitle2" component="p" color="textSecondary">
               Back to
             </Typography>
-            <Link href="/auth/sign-in" size="thin">
-              <Typography variant="subtitle2">log in</Typography>
+            <Link href="/auth/sign-in" size="small">
+              log in
             </Link>
           </Stack>
         </Box>

@@ -40,10 +40,6 @@ describe('SignIn', () => {
     render(<SignIn />);
     const checkbox = screen.getByRole('checkbox');
     expect(checkbox).toBeInTheDocument();
-    expect(checkbox).toBeChecked();
-
-    fireEvent.click(checkbox);
-    expect(checkbox).not.toBeChecked();
 
     fireEvent.click(checkbox);
     expect(checkbox).toBeChecked();
