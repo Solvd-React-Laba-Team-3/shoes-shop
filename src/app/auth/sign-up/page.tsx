@@ -1,5 +1,4 @@
 'use client';
-import AuthLayout from '@/app/auth/layout';
 import { AuthFormContainer } from '@/components/ui/AuthFormContainer/AuthFormContainer';
 import { ReviewPanel } from '@/components/ui/ReviewPanel/ReviewPanel';
 import { Button, LabeledTextfield, Link } from '@/components/ui';
@@ -11,11 +10,7 @@ const SignUp = () => {
   const handleNext = () => console.log('Next feedback');
 
   return (
-    <AuthLayout>
-      <Box sx={{ position: 'absolute', top: '50px', left: '40px' }}>
-        <Image src="/logo.png" alt="register logo" width={40} height={30} />
-      </Box>
-
+    <>
       <AuthFormContainer
         title="Create an account"
         description="Create an account to get easy access to your dream shopping"
@@ -24,7 +19,7 @@ const SignUp = () => {
             <Typography variant="subtitle2" component="p" color="textSecondary">
               Already have an account?
             </Typography>
-            <Link href="/signin" size="thin">
+            <Link href="/auth/sign-in" size="thin">
               <Typography variant="subtitle2">Log in</Typography>
             </Link>
           </Stack>
@@ -106,7 +101,7 @@ const SignUp = () => {
           />
         </Box>
       </Box>
-    </AuthLayout>
+    </>
   );
 };
 
