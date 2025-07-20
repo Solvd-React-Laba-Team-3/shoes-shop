@@ -1,5 +1,5 @@
 import { useMutation } from '@tanstack/react-query';
-import { fetchApi } from '@/lib/utils/fetchApi/fetchApi';
+import { fetchApi } from '@/lib/utils';
 
 export type DeleteProductRequest = {
   token: string;

@@ -1,6 +1,7 @@
 import { useMutation } from '@tanstack/react-query';
-import { fetchApi } from '@/lib/utils/fetchApi/fetchApi';
+import { fetchApi, mapProductResponse } from '@/lib/utils';
 import { ProductSingleResponse } from '@/types/api/ProductSingleResponse';
+import { Product } from '@/types/Product';
 
 export type CreateProductRequest = {
   body: {
@@ -21,17 +22,21 @@ export type CreateProductRequest = {
   token: string;
 };
 
-const createProduct = async ({ body, token }: CreateProductRequest) => {
-  return await fetchApi<ProductSingleResponse>({
+const createProduct = async ({
+  body,
+  token,
+}: CreateProductRequest): Promise<Product> => {
+  const res = await fetchApi<ProductSingleResponse>({
     endpoint: '/products',
     method: 'POST',
     body,
     token,
   });
+  return mapProductResponse(res.data.id, res.data.attributes);
 };
 
 export const useCreateProduct = () =>
-  useMutation<ProductSingleResponse, Error, CreateProductRequest>({
+  useMutation<Product, Error, CreateProductRequest>({
     mutationFn: createProduct,
     onError: (error) => {
       console.error('Product creation failed:', error.message);
