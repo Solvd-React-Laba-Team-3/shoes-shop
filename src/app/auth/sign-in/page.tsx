@@ -65,7 +65,7 @@ const SignIn = () => {
               </Typography>
             </Box>
 
-            <Link size="thin">
+            <Link size="thin" href="/auth/forgot-password">
               <Typography variant="caption">Forgot password?</Typography>
             </Link>
           </Stack>
