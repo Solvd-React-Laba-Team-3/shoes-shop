@@ -10,16 +10,6 @@ const ResetPassword = () => {
       <AuthFormContainer
         title="Reset password"
         description="Please create new password here"
-        footer={
-          <Stack direction="row" spacing={1} alignItems="center">
-            <Typography variant="subtitle2" component="p" color="textSecondary">
-              Back to
-            </Typography>
-            <Link href="/auth/sign-up" size="thin">
-              <Typography variant="subtitle2">log in</Typography>
-            </Link>
-          </Stack>
-        }
       >
         <Box
           component="form"
@@ -30,6 +20,7 @@ const ResetPassword = () => {
           gap={2}
           width="100%"
           maxWidth={400}
+          alignItems="center"
         >
           <LabeledTextfield
             id="password"
@@ -45,10 +36,18 @@ const ResetPassword = () => {
             type="password"
             placeholder="at least 8 characters"
           />
-
-          <Button type="submit" size="large" sx={{ margin: '56px 0 24px' }}>
+          <Button type="submit" size="large" sx={{ margin: '37px 0 20px' }}>
             Reset password
           </Button>
+
+          <Stack direction="row" spacing={1} alignItems="center">
+            <Typography variant="subtitle2" component="p" color="textSecondary">
+              Back to
+            </Typography>
+            <Link href="/auth/sign-in" size="thin">
+              <Typography variant="subtitle2">log in</Typography>
+            </Link>
+          </Stack>
         </Box>
       </AuthFormContainer>
 
