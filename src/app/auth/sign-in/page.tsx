@@ -15,8 +15,8 @@ const SignIn = () => {
             <Typography variant="subtitle2" component="p" color="textSecondary">
               Don’t have an account?
             </Typography>
-            <Link href="/auth/sign-up" size="thin">
-              <Typography variant="subtitle2">Sign up</Typography>
+            <Link href="/auth/sign-up" size="small">
+              Sign up
             </Link>
           </Stack>
         }
@@ -53,7 +53,7 @@ const SignIn = () => {
             }}
           >
             <Box>
-              <Checkbox defaultChecked />
+              <Checkbox />
               <Typography
                 variant="caption"
                 sx={{
@@ -66,7 +66,7 @@ const SignIn = () => {
             </Box>
 
             <Link size="thin" href="/auth/forgot-password">
-              <Typography variant="caption">Forgot password?</Typography>
+              Forgot password?
             </Link>
           </Stack>
 
