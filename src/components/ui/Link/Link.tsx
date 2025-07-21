@@ -1,14 +1,14 @@
 'use client';
 
-import MUILink from '@mui/material/Link';
-import { LinkProps as MUILinkProps } from '@mui/material/Link';
+import Typography, { TypographyProps } from '@mui/material/Typography';
 import { styled } from '@mui/material/styles';
 import NextLink from 'next/link';
 import { FC } from 'react';
 
-interface LinkProps extends MUILinkProps {
+interface LinkProps extends TypographyProps {
   size?: 'regular' | 'small' | 'thin';
   active?: boolean;
+  href?: string;
 }
 
 const sizeStyles = {
@@ -26,7 +26,7 @@ const sizeStyles = {
   },
 };
 
-export const StyledLink = styled(MUILink)<Omit<LinkProps, 'href'>>(
+export const StyledTypography = styled(Typography)<Omit<LinkProps, 'href'>>(
   ({ theme, active, size = 'regular' }) => ({
     color:
       active || size !== 'regular'
@@ -44,8 +44,8 @@ export const StyledLink = styled(MUILink)<Omit<LinkProps, 'href'>>(
 
 export const Link: FC<LinkProps> = ({ href = '/', ...props }) => {
   return (
-    <NextLink style={{ textDecoration: 'none' }} href={href}>
-      <StyledLink {...props} />
+    <NextLink style={{ textDecoration: 'none', lineHeight: 0 }} href={href}>
+      <StyledTypography as="span" {...props} />
     </NextLink>
   );
 };
