@@ -1,16 +1,17 @@
 import { fetchApi } from '@/lib/utils';
 import { queryOptions } from '@tanstack/react-query';
-import { ProductSingleResponse } from '@/types/api/ProductSingleResponse';
-import { mapProductResponse } from '@/lib/utils';
+import { formatProductAttributes } from '@/lib/utils';
+import { ProductAttributes } from '@/types/api/ProductAttributes';
+import { StrapiSingleData } from '@/types/api/StrapiSingleData';
 
 export const getProductOptions = (id: number) =>
   queryOptions({
     queryKey: ['product', id],
     queryFn: async () => {
-      const res = await fetchApi<ProductSingleResponse>({
+      const res = await fetchApi<StrapiSingleData<ProductAttributes>>({
         endpoint: `/products/${id}`,
         method: 'GET',
       });
-      return mapProductResponse(res.data.id, res.data.attributes);
+      return formatProductAttributes(res.data.id, res.data.attributes);
     },
   });
