@@ -1,5 +1,6 @@
 'use client';
 
+import { Header } from '@/components/common/Header';
 import { Button } from '@/components/ui';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
@@ -15,6 +16,7 @@ export default function Home() {
 
   return (
     <>
+      <Header />
       <Typography>Shoes Shop - Team 3</Typography>
       <Box sx={{ display: 'flex', gap: 2 }}>
         <Button onClick={() => signIn('credentials')}>Sign In</Button>

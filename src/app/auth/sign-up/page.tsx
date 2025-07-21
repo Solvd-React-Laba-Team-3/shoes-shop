@@ -1,0 +1,112 @@
+'use client';
+import {
+  AuthFormContainer,
+  Button,
+  LabeledTextfield,
+  Link,
+  ReviewPanel,
+} from '@/components/ui';
+import { Box, Stack, Typography } from '@mui/material';
+import Image from 'next/image';
+
+const SignUp = () => {
+  const handlePrev = () => console.log('Previous feedback');
+  const handleNext = () => console.log('Next feedback');
+
+  return (
+    <>
+      <AuthFormContainer
+        title="Create an account"
+        description="Create an account to get easy access to your dream shopping"
+        footer={
+          <Stack direction="row" spacing={1} alignItems="center">
+            <Typography variant="subtitle2" component="p" color="textSecondary">
+              Already have an account?
+            </Typography>
+            <Link href="/auth/sign-in" size="small">
+              Log in
+            </Link>
+          </Stack>
+        }
+      >
+        <Box
+          component="form"
+          noValidate
+          autoComplete="off"
+          display="flex"
+          flexDirection="column"
+          gap={2}
+          width="100%"
+          maxWidth={400}
+        >
+          <LabeledTextfield
+            id="name"
+            label="Name"
+            required
+            placeholder="Hayman Andrews"
+          />
+          <LabeledTextfield
+            id="email"
+            label="Email"
+            required
+            placeholder="example@mail.com"
+          />
+          <LabeledTextfield
+            id="password"
+            label="Password"
+            required
+            type="password"
+            placeholder="at least 8 characters"
+          />
+          <LabeledTextfield
+            id="confirmPassword"
+            label="Confirm password"
+            required
+            type="password"
+            placeholder="at least 8 characters"
+          />
+          <Button type="submit" size="large" sx={{ margin: '90px 0 16px 0' }}>
+            Sign up
+          </Button>
+        </Box>
+      </AuthFormContainer>
+
+      <Box
+        sx={{
+          position: 'relative',
+          height: '100%',
+          width: '100%',
+        }}
+      >
+        <Image
+          src="/register.jpg"
+          alt="background"
+          fill
+          sizes="50vw"
+          style={{ objectFit: 'cover' }}
+          priority
+        />
+        <Box
+          sx={{
+            position: 'absolute',
+            inset: 0,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
+        >
+          <ReviewPanel
+            quote="Lorem Ipsum is a really great company because the team is passionate about the projects they produce, the people they work with, the quality of the work they do."
+            name="John Stone"
+            location="Ukraine, Chernivtsi"
+            rating={5}
+            onPrev={handlePrev}
+            onNext={handleNext}
+          />
+        </Box>
+      </Box>
+    </>
+  );
+};
+
+export default SignUp;
