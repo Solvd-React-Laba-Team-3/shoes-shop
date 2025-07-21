@@ -1,8 +1,12 @@
 'use client';
-import { AuthFormContainer } from '@/components/ui/AuthFormContainer/AuthFormContainer';
-import Image from 'next/image';
-import { Button, LabeledTextfield, Link } from '@/components/ui';
+import {
+  AuthFormContainer,
+  Button,
+  LabeledTextfield,
+  Link,
+} from '@/components/ui';
 import { Box, Stack, Typography } from '@mui/material';
+import Image from 'next/image';
 
 const ResetPassword = () => {
   return (
@@ -64,7 +68,7 @@ const ResetPassword = () => {
           style={{
             objectFit: 'cover',
           }}
-        ></Image>
+        />
       </Box>
     </>
   );

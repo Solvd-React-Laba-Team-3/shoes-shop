@@ -1,7 +1,11 @@
 'use client';
-import { AuthFormContainer } from '@/components/ui/AuthFormContainer/AuthFormContainer';
-import { ReviewPanel } from '@/components/ui/ReviewPanel/ReviewPanel';
-import { Button, LabeledTextfield, Link } from '@/components/ui';
+import {
+  AuthFormContainer,
+  Button,
+  LabeledTextfield,
+  Link,
+  ReviewPanel,
+} from '@/components/ui';
 import { Box, Stack, Typography } from '@mui/material';
 import Image from 'next/image';
 

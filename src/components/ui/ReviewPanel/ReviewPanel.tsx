@@ -20,7 +20,7 @@ const StyledPaper = styled(Paper)(({ theme }) => ({
   width: '756px',
   position: 'absolute',
   right: '102px',
-  top: '528px',
+  bottom: '255px',
 }));
 
 type ReviewPanelProps = {

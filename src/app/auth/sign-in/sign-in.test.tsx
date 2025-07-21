@@ -1,6 +1,6 @@
-import { render, screen, fireEvent } from '@testing-library/react';
-import SignIn from './page';
 import '@testing-library/jest-dom';
+import { fireEvent, render, screen } from '@testing-library/react';
+import SignIn from './page';
 
 jest.mock('@/components/ui', () => {
   const originalModule = jest.requireActual('@/components/ui');

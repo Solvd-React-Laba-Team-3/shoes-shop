@@ -1,8 +1,13 @@
 'use client';
-import { AuthFormContainer } from '@/components/ui/AuthFormContainer/AuthFormContainer';
-import Image from 'next/image';
-import { Button, Checkbox, LabeledTextfield, Link } from '@/components/ui';
+import {
+  AuthFormContainer,
+  Button,
+  Checkbox,
+  LabeledTextfield,
+  Link,
+} from '@/components/ui';
 import { Box, Stack, Typography } from '@mui/material';
+import Image from 'next/image';
 
 const SignIn = () => {
   return (
@@ -52,7 +57,7 @@ const SignIn = () => {
               justifyContent: 'space-between',
             }}
           >
-            <Box>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
               <Checkbox />
               <Typography
                 variant="caption"
@@ -89,7 +94,7 @@ const SignIn = () => {
           style={{
             objectFit: 'cover',
           }}
-        ></Image>
+        />
       </Box>
     </>
   );
