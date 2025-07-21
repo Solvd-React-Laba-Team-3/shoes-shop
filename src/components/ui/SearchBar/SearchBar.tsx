@@ -11,6 +11,9 @@ interface SearchBarProps {
   value: string;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   onKeyDown?: (e: React.KeyboardEvent<HTMLInputElement>) => void;
+  onFocus?: (e: React.FocusEvent<HTMLInputElement>) => void;
+  onBlur?: (e: React.FocusEvent<HTMLInputElement>) => void;
+  inputRef?: React.Ref<HTMLInputElement>;
   placeholder?: string;
   expandOnFocus?: boolean;
   size?: 'small' | 'medium';
@@ -20,6 +23,9 @@ export const SearchBar: FC<SearchBarProps> = ({
   value,
   onChange,
   onKeyDown,
+  onFocus,
+  onBlur,
+  inputRef,
   placeholder = 'Search',
   expandOnFocus = false,
   size = 'small',
@@ -37,6 +43,9 @@ export const SearchBar: FC<SearchBarProps> = ({
         value={value}
         onChange={onChange}
         onKeyDown={onKeyDown}
+        onFocus={onFocus}
+        onBlur={onBlur}
+        inputRef={inputRef}
       />
     </SearchContainer>
   );
