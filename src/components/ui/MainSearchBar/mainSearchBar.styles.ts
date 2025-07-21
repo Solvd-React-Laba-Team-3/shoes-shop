@@ -43,7 +43,7 @@ export const Overlay = styled('div')(() => ({
   left: 0,
   width: '100vw',
   height: '100vh',
-  backgroundColor: 'rgba(243, 243, 243, 0.8)',
+  backgroundColor: 'rgba(243, 243, 243, 0.7)',
   zIndex: 900,
   transition: 'opacity 5s ease',
 }));

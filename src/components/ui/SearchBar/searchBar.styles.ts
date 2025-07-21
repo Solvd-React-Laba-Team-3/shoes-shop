@@ -75,7 +75,6 @@ export const StyledInputBase = styled(InputBase, {
         duration: theme.transitions.duration.short,
       }),
       width: '100%',
-      fontSize: 15,
     },
 
     ...(size === 'small' && {
