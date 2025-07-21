@@ -24,18 +24,18 @@ export const SearchContainer = styled(Box, {
     display: 'flex',
     alignItems: 'center',
     border: `1px solid ${theme.palette.grey[900]}`,
-    transition: 'all 0.25s ease',
+    transition: 'all 0.5s ease',
     transform: 'scale(1)',
 
     '& svg': {
       width: size === 'small' ? 18 : 21,
       height: size === 'small' ? 18 : 21,
-      transition: 'all 0.25s ease',
+      transition: 'all 0.5s',
     },
 
     ...(expandOnFocus && {
       '&:focus-within': {
-        width: '100%',
+        width: 1071,
         maxWidth: 1071,
         height: 79,
         paddingLeft: theme.spacing(1),

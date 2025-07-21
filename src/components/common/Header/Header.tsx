@@ -8,6 +8,7 @@ import ShoppingBasketIcon from '@mui/icons-material/ShoppingBasket';
 import Image from 'next/image';
 import { styled } from '@mui/material/styles';
 import { Link } from '@/components/ui';
+import { MainSearchBar } from '@/components/ui/MainSearchBar/MainSearchBar';
 
 const StyledContainer = styled(Box)(({ theme }) => ({
   display: 'flex',
@@ -30,7 +31,7 @@ export const Header = () => {
         <Typography variant="subtitle2">Products</Typography>
       </Box>
       <Box sx={{ display: 'flex', alignItems: 'center', gap: '40px' }}>
-        {/* <Search /> */}
+        <MainSearchBar />
         <Box sx={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
           <Link href="/cart">
             <ShoppingBasketIcon />
