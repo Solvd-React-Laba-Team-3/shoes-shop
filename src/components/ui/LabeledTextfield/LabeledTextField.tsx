@@ -1,11 +1,10 @@
 'use client';
-import { FC } from 'react';
 import Box from '@mui/material/Box';
 import FormControl from '@mui/material/FormControl';
-import InputLabel from '@mui/material/InputLabel';
 import Input, { InputProps } from '@mui/material/Input';
-import { styled } from '@mui/material/styles';
-import { Theme } from '@mui/material/styles';
+import InputLabel from '@mui/material/InputLabel';
+import { styled, Theme } from '@mui/material/styles';
+import { FC } from 'react';
 
 interface LabeledTextfieldProps extends InputProps {
   label: string;
