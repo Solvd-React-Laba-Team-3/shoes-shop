@@ -1,6 +1,6 @@
+import '@testing-library/jest-dom';
 import { render, screen } from '@testing-library/react';
 import ResetPassword from './page';
-import '@testing-library/jest-dom';
 
 describe('ResetPassword', () => {
   beforeEach(() => render(<ResetPassword />));

@@ -1,7 +1,7 @@
+import { Link } from '@/components/ui';
 import { Box } from '@mui/material';
 import Image from 'next/image';
 import { ReactNode } from 'react';
-import { Link } from '@/components/ui';
 
 export default function AuthLayout({ children }: { children: ReactNode }) {
   return (

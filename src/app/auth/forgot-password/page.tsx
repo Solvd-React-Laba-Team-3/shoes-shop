@@ -1,8 +1,12 @@
 'use client';
-import { AuthFormContainer } from '@/components/ui/AuthFormContainer/AuthFormContainer';
-import Image from 'next/image';
-import { Button, LabeledTextfield, Link } from '@/components/ui';
+import {
+  AuthFormContainer,
+  Button,
+  LabeledTextfield,
+  Link,
+} from '@/components/ui';
 import { Box, Stack, Typography } from '@mui/material';
+import Image from 'next/image';
 
 const ForgotPassword = () => {
   return (
@@ -24,7 +28,7 @@ const ForgotPassword = () => {
         >
           <LabeledTextfield
             id="Email"
-            label="email"
+            label="Email"
             type="email"
             placeholder="Enter your email"
           />
@@ -57,7 +61,7 @@ const ForgotPassword = () => {
           style={{
             objectFit: 'cover',
           }}
-        ></Image>
+        />
       </Box>
     </>
   );
