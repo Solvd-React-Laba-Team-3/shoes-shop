@@ -8,11 +8,59 @@ import {
 } from '@/components/ui';
 import { Box, Stack, Typography } from '@mui/material';
 import Image from 'next/image';
+import { useEffect } from 'react';
+import { useForm } from 'react-hook-form';
+import * as z from 'zod';
+import { zodResolver } from '@hookform/resolvers/zod';
+
+const signUpSchema = z
+  .object({
+    name: z.string().min(1, 'Name is required'),
+    email: z.string().email('Invalid email address'),
+    password: z.string().min(6, 'Password must be at least 6 characters'),
+    confirmPassword: z.string().min(6, 'Please confirm your password'),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: 'Passwords do not match',
+    path: ['confirmPassword'],
+  });
+
+type SignUpFormData = {
+  name: string;
+  email: string;
+  password: string;
+  confirmPassword: string;
+};
 
 const SignUp = () => {
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<SignUpFormData>({
+    resolver: zodResolver(signUpSchema),
+    defaultValues: {
+      name: '',
+      email: '',
+      password: '',
+      confirmPassword: '',
+    },
+  });
+
+  const onSubmit = (data: SignUpFormData) => {
+    console.log(data, errors);
+
+    signUpSchema.parse(data);
+
+    // use errors from zod to diplay them
+  };
+
   const handlePrev = () => console.log('Previous feedback');
   const handleNext = () => console.log('Next feedback');
 
+  useEffect(() => {
+    console.log(errors);
+  });
   return (
     <>
       <AuthFormContainer
@@ -38,25 +86,39 @@ const SignUp = () => {
           gap={2}
           width="100%"
           maxWidth={400}
+          onSubmit={handleSubmit(onSubmit)}
         >
           <LabeledTextfield
             id="name"
             label="Name"
             required
             placeholder="Hayman Andrews"
+            {...register('name')}
           />
           <LabeledTextfield
             id="email"
             label="Email"
             required
             placeholder="example@mail.com"
+            {...register('email', { required: true })}
+            error={!!errors.email}
           />
+          {errors.email && (
+            <Typography
+              variant="caption"
+              color="error"
+              sx={{ marginLeft: '14px' }}
+            >
+              {errors.email.message}
+            </Typography>
+          )}
           <LabeledTextfield
             id="password"
             label="Password"
             required
             type="password"
             placeholder="at least 8 characters"
+            {...register('password')}
           />
           <LabeledTextfield
             id="confirmPassword"
@@ -64,7 +126,18 @@ const SignUp = () => {
             required
             type="password"
             placeholder="at least 8 characters"
+            {...register('confirmPassword', { required: true })}
+            error={!!errors.confirmPassword}
           />
+          {errors.confirmPassword && (
+            <Typography
+              variant="caption"
+              color="error"
+              sx={{ marginLeft: '14px' }}
+            >
+              {errors.confirmPassword.message}
+            </Typography>
+          )}
           <Button type="submit" size="large" sx={{ margin: '90px 0 16px 0' }}>
             Sign up
           </Button>
