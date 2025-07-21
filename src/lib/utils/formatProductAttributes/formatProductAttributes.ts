@@ -8,7 +8,7 @@ import { ProductAttributes } from '@/types/api/ProductAttributes';
  * directly usable product object for the application.
  *
  * @example
- * const product = mapProductResponse(strapiProduct.id, strapiProduct.attributes);
+ * const product = formatProductAttributes(strapiProduct.id, strapiProduct.attributes);
  * console.log(product.name); // "Nike Shoes"
  * console.log(product.images[0].url); // "/uploads/image.jpg"
  *
@@ -16,7 +16,7 @@ import { ProductAttributes } from '@/types/api/ProductAttributes';
  * @param attributes - The product attributes object returned by Strapi.
  * @returns A clean, strongly typed `Product` object suitable for UI and business logic.
  */
-export function mapProductResponse(
+export function formatProductAttributes(
   id: number,
   attributes: ProductAttributes
 ): Product {
@@ -28,22 +28,21 @@ export function mapProductResponse(
     teamName: attributes.teamName,
     images: attributes.images.data.map((img) => ({
       ...img.attributes,
-      id: img.id,
-    })) as Product['images'],
+    })),
     brand: {
       ...attributes.brand.data.attributes,
-    } as Product['brand'],
+    },
     categories: attributes.categories.data.map((cat) => ({
       ...cat.attributes,
-    })) as Product['categories'],
+    })),
     color: {
       ...attributes.color.data.attributes,
-    } as Product['color'],
+    },
     gender: {
       ...attributes.gender.data.attributes,
-    } as Product['gender'],
+    },
     sizes: attributes.sizes.data.map((size) => ({
       ...size.attributes,
-    })) as Product['sizes'],
+    })),
   };
 }

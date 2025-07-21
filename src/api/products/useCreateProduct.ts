@@ -1,5 +1,5 @@
 import { useMutation } from '@tanstack/react-query';
-import { fetchApi, mapProductResponse } from '@/lib/utils';
+import { fetchApi, formatProductAttributes } from '@/lib/utils';
 import { Product } from '@/types/Product';
 import { ProductAttributes } from '@/types/api/ProductAttributes';
 import { StrapiSingleData } from '@/types/api/StrapiSingleData';
@@ -33,7 +33,7 @@ const createProduct = async ({
     body,
     token,
   });
-  return mapProductResponse(res.data.id, res.data.attributes);
+  return formatProductAttributes(res.data.id, res.data.attributes);
 };
 
 export const useCreateProduct = () =>

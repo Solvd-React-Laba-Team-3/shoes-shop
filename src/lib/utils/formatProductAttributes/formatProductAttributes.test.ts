@@ -1,7 +1,7 @@
-import { mapProductResponse } from './mapProductResponse';
+import { formatProductAttributes } from './formatProductAttributes';
 import { ProductAttributes } from '@/types/api/ProductAttributes';
 
-describe('mapProductResponse', () => {
+describe('formatProductAttributes', () => {
   it('should correctly map ProductAttributes to a clean Product', () => {
     const mockAttributes: ProductAttributes = {
       name: 'Test Product',
@@ -98,7 +98,7 @@ describe('mapProductResponse', () => {
       },
     };
 
-    const result = mapProductResponse(1, mockAttributes);
+    const result = formatProductAttributes(1, mockAttributes);
 
     expect(result).toEqual({
       id: 1,

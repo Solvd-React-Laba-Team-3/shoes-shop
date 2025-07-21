@@ -1,4 +1,4 @@
-import { fetchApi, mapProductResponse } from '@/lib/utils';
+import { fetchApi, formatProductAttributes } from '@/lib/utils';
 import { queryOptions } from '@tanstack/react-query';
 import { StrapiPaginatedData } from '@/types/api/StrapiPaginatedData';
 import { StrapiQueryParams } from '@/types/api/StrapiQueryParams';
@@ -22,7 +22,9 @@ export const getProductsOptions = (params: ProductsQueryParams) =>
       });
 
       return {
-        products: res.data.map((p) => mapProductResponse(p.id, p.attributes)),
+        products: res.data.map((p) =>
+          formatProductAttributes(p.id, p.attributes)
+        ),
         meta: res.meta,
       };
     },
