@@ -1,3 +1,4 @@
+'use client';
 import { FC } from 'react';
 import SearchIcon from '@mui/icons-material/Search';
 import {
