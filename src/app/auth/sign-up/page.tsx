@@ -6,7 +6,7 @@ import {
   Link,
   ReviewPanel,
 } from '@/components/ui';
-import { Box, Stack, Typography } from '@mui/material';
+import { Box, Stack, Typography, FormLabel } from '@mui/material';
 import Image from 'next/image';
 import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
@@ -25,12 +25,14 @@ const signUpSchema = z
     path: ['confirmPassword'],
   });
 
-type SignUpFormData = {
-  name: string;
-  email: string;
-  password: string;
-  confirmPassword: string;
-};
+// type SignUpFormData = {
+//   name: string;
+//   email: string;
+//   password: string;
+//   confirmPassword: string;
+// };
+
+type SignUpFormData = z.infer<typeof signUpSchema>;
 
 const SignUp = () => {
   const {
@@ -59,8 +61,8 @@ const SignUp = () => {
   const handleNext = () => console.log('Next feedback');
 
   useEffect(() => {
-    console.log(errors);
-  });
+    console.log('Validation errors', errors);
+  }, [errors]);
   return (
     <>
       <AuthFormContainer
@@ -94,7 +96,18 @@ const SignUp = () => {
             required
             placeholder="Hayman Andrews"
             {...register('name')}
+            error={!!errors.name}
           />
+          {errors.name && (
+            <FormLabel
+              component="legend"
+              color="error"
+              sx={{ fontSize: '0.75rem', color: 'error.main' }}
+            >
+              {errors.name.message}
+            </FormLabel>
+          )}
+
           <LabeledTextfield
             id="email"
             label="Email"
@@ -104,13 +117,13 @@ const SignUp = () => {
             error={!!errors.email}
           />
           {errors.email && (
-            <Typography
-              variant="caption"
+            <FormLabel
+              component="legend"
               color="error"
-              sx={{ marginLeft: '14px' }}
+              sx={{ fontSize: '0.75rem', color: 'error.main' }}
             >
               {errors.email.message}
-            </Typography>
+            </FormLabel>
           )}
           <LabeledTextfield
             id="password"
@@ -119,7 +132,18 @@ const SignUp = () => {
             type="password"
             placeholder="at least 8 characters"
             {...register('password')}
+            error={!!errors.password}
           />
+          {errors.password && (
+            <FormLabel
+              component="legend"
+              color="error"
+              sx={{ fontSize: '0.75rem', color: 'error.main' }}
+            >
+              {errors.password.message}
+            </FormLabel>
+          )}
+
           <LabeledTextfield
             id="confirmPassword"
             label="Confirm password"
@@ -130,13 +154,13 @@ const SignUp = () => {
             error={!!errors.confirmPassword}
           />
           {errors.confirmPassword && (
-            <Typography
-              variant="caption"
+            <FormLabel
+              component="legend"
               color="error"
-              sx={{ marginLeft: '14px' }}
+              sx={{ fontSize: '0.75rem', color: 'error.main' }}
             >
               {errors.confirmPassword.message}
-            </Typography>
+            </FormLabel>
           )}
           <Button type="submit" size="large" sx={{ margin: '90px 0 16px 0' }}>
             Sign up
