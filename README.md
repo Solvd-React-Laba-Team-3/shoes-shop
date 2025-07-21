@@ -75,10 +75,24 @@ The local development server will be available at:
 
 ## 🔗 Useful Links
 
+- **📋 Code Style Conventions:**
+  [CODE_STYLE.md](.CODE_STYLE.md)
+
 - **📜 API Documentation (Swagger):**
   [Swagger Link](https://shoes-shop-strapi.herokuapp.com/documentation#)
 
 - **🎨 Figma Design:**
   [Figma Design Link](https://www.figma.com/design/ny4CJBOFrocjV27M3ev76q/%F0%9F%93%93-Shoes-shop---for-dev-s-learning)
 
+- **📌 Team Miro Board:**
+  [Miro Board Link](https://miro.com/welcomeonboard/NCtLZkRYdTlBSlIxYllwd1l6VGFRUkZIV3BWZVVodWZLUHBGa01zRm1uTjZmRTN6UHN5elNWMkFQb3JqbjN4aEFBTGFWRzNjYm9ua3VWYWlPSEtqYjZjYjR0cjhSQUZZRko5d250S2hVZ3VEMWtheW55MkxqN2s1enB6ZFliLzNyVmtkMG5hNDA3dVlncnBvRVB2ZXBnPT0hdjE=?share_link_id=106311290403)
+
 ---
+
+## 🤝 Our Developers Team
+
+- **[Dmytro Oborskyi](https://github.com/EcchiGrill)**
+- **[Jefferson Lima](https://github.com/jefftb540)**
+- **[Evgenij Ilyin](https://github.com/Evgenij-Ilyin)**
+- **[Olha Kucheruk](https://github.com/Olha36)**
+- **[Diego Jabie](https://github.com/DiegoJabie142)**
