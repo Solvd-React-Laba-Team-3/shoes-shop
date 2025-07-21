@@ -8,10 +8,10 @@ import {
 } from '@/components/ui';
 import { Box, Stack, Typography, FormLabel } from '@mui/material';
 import Image from 'next/image';
-import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import * as z from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useRegister } from '@/api/auth/useRegister';
 
 const signUpSchema = z
   .object({
@@ -49,20 +49,26 @@ const SignUp = () => {
     },
   });
 
+  const { mutate: registerUser, error } = useRegister();
+
   const onSubmit = (data: SignUpFormData) => {
     console.log(data, errors);
 
-    signUpSchema.parse(data);
-
-    // use errors from zod to diplay them
+    // signUpSchema.parse(data);
+    const { name, email, password } = data;
+    registerUser(
+      { username: name, email, password },
+      {
+        onSuccess: (response) => {
+          console.log('✅ Registration successful:', response);
+        },
+      }
+    );
   };
 
   const handlePrev = () => console.log('Previous feedback');
   const handleNext = () => console.log('Next feedback');
 
-  useEffect(() => {
-    console.log('Validation errors', errors);
-  }, [errors]);
   return (
     <>
       <AuthFormContainer
@@ -160,6 +166,16 @@ const SignUp = () => {
               sx={{ fontSize: '0.75rem', color: 'error.main' }}
             >
               {errors.confirmPassword.message}
+            </FormLabel>
+          )}
+
+          {error && (
+            <FormLabel
+              component="legend"
+              color="error"
+              sx={{ fontSize: '0.75rem', color: 'error.main' }}
+            >
+              {error.message}
             </FormLabel>
           )}
           <Button type="submit" size="large" sx={{ margin: '90px 0 16px 0' }}>
