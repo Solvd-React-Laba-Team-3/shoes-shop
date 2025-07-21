@@ -10,6 +10,7 @@ import {
 interface SearchBarProps {
   value: string;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  onKeyDown?: (e: React.KeyboardEvent<HTMLInputElement>) => void;
   placeholder?: string;
   expandOnFocus?: boolean;
   size?: 'small' | 'medium';
@@ -18,6 +19,7 @@ interface SearchBarProps {
 export const SearchBar: FC<SearchBarProps> = ({
   value,
   onChange,
+  onKeyDown,
   placeholder = 'Search',
   expandOnFocus = false,
   size = 'small',
@@ -34,6 +36,7 @@ export const SearchBar: FC<SearchBarProps> = ({
         inputProps={{ 'aria-label': 'search' }}
         value={value}
         onChange={onChange}
+        onKeyDown={onKeyDown}
       />
     </SearchContainer>
   );
