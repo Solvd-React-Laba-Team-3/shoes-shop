@@ -25,17 +25,13 @@ jest.mock('next/navigation', () => ({
   }),
 }));
 
-// Mock the fetchPopularTerms function
 jest.mock('@/actions/getPopularTerms', () => ({
   fetchPopularTerms: jest.fn(),
 }));
 
-// Mock the useDebounce hook to avoid waiting in tests
 jest.mock('@/lib/hooks/useDebounce', () => ({
-  useDebounce: (value: string) => value, // Return value immediately without debounce
+  useDebounce: (value: string) => value,
 }));
-
-// We're not mocking the SearchBar component anymore - we'll rely on the data-testid in the component
 
 describe('MainSearchBar', () => {
   beforeEach(() => {
@@ -51,14 +47,6 @@ describe('MainSearchBar', () => {
 
   it('should render input with initial search value from query params', () => {
     render(<MainSearchBar />);
-
-    // Use queryByTestId first to debug what's available
-    const allTestIds = screen
-      .queryAllByTestId(/.*/)
-      .map((el) => el.getAttribute('data-testid'));
-    console.log('Available test IDs:', allTestIds);
-
-    // Try to find by role instead
     const input = screen.getByPlaceholderText('Search');
     expect(input).toHaveValue('initial');
   });
@@ -102,6 +90,10 @@ describe('MainSearchBar', () => {
       fireEvent.change(input, { target: { value: 'hello' } });
     });
 
+    await act(async () => {
+      await Promise.resolve();
+    });
+
     expect(fetchPopularTerms).toHaveBeenCalledWith('hello');
   });
 
@@ -115,7 +107,6 @@ describe('MainSearchBar', () => {
     unmount();
     jest.runAllTimers();
 
-    // This test is mainly to ensure no errors are thrown during cleanup
     expect(true).toBeTruthy();
   });
 
@@ -136,8 +127,6 @@ describe('MainSearchBar', () => {
     expect(screen.queryByTestId('overlay')).not.toBeInTheDocument();
   });
 
-  // New tests
-
   it('should display popular terms when API returns results', async () => {
     (fetchPopularTerms as jest.Mock).mockResolvedValue([
       'term1',
@@ -153,7 +142,6 @@ describe('MainSearchBar', () => {
       fireEvent.change(input, { target: { value: 'test' } });
     });
 
-    // Wait for the async operation to complete
     await waitFor(() => {
       expect(screen.getByTestId('popular-terms-container')).toBeInTheDocument();
     });
@@ -246,23 +234,21 @@ describe('MainSearchBar', () => {
     render(<MainSearchBar />);
     const input = screen.getByPlaceholderText('Search');
 
-    // Focus, then blur, then focus again quickly
     await act(async () => {
       fireEvent.focus(input);
     });
 
     await act(async () => {
       fireEvent.blur(input);
-      // Don't advance timers yet
     });
 
-    // Focus again before the timeout completes
     await act(async () => {
       fireEvent.focus(input);
     });
 
-    // Advance timers - the overlay should still be visible because the timeout was cleared
-    jest.advanceTimersByTime(200);
+    await act(async () => {
+      jest.advanceTimersByTime(200);
+    });
 
     expect(screen.getByTestId('overlay')).toBeInTheDocument();
   });
@@ -282,5 +268,32 @@ describe('MainSearchBar', () => {
     });
 
     expect(screen.queryByTestId('overlay')).not.toBeInTheDocument();
+  });
+
+  it('should handle different keyboard keys correctly', async () => {
+    render(<MainSearchBar />);
+    const input = screen.getByPlaceholderText('Search');
+
+    await act(async () => {
+      fireEvent.focus(input);
+      fireEvent.change(input, { target: { value: 'test' } });
+      fireEvent.keyDown(input, { key: 'ArrowDown', code: 'ArrowDown' });
+    });
+
+    expect(mockPush).not.toHaveBeenCalled();
+
+    expect(screen.getByTestId('overlay')).toBeInTheDocument();
+  });
+
+  it('should handle empty search submission', async () => {
+    render(<MainSearchBar />);
+    const input = screen.getByPlaceholderText('Search');
+
+    await act(async () => {
+      fireEvent.change(input, { target: { value: '   ' } });
+      fireEvent.keyDown(input, { key: 'Enter', code: 'Enter' });
+    });
+
+    expect(mockPush).toHaveBeenCalledWith('?search=');
   });
 });
