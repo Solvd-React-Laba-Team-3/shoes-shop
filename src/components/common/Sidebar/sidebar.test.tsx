@@ -19,8 +19,7 @@ jest.mock('next/navigation', () => ({
 describe('Sidebar', () => {
   const mockSession = {
     user: {
-      firstName: 'John',
-      lastName: 'Doe',
+      username: 'John Doe',
     },
   };
 
