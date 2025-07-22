@@ -6,29 +6,18 @@ import {
   StyledInputBase,
   SearchIconWrapper,
 } from './searchBar.styles';
+import { InputBaseProps } from '@mui/material/InputBase';
 
-interface SearchBarProps {
-  value: string;
-  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  onKeyDown?: (e: React.KeyboardEvent<HTMLInputElement>) => void;
-  onFocus?: (e: React.FocusEvent<HTMLInputElement>) => void;
-  onBlur?: (e: React.FocusEvent<HTMLInputElement>) => void;
-  inputRef?: React.Ref<HTMLInputElement>;
-  placeholder?: string;
+export interface SearchBarProps extends InputBaseProps {
   expandOnFocus?: boolean;
   size?: 'small' | 'medium';
 }
 
 export const SearchBar: FC<SearchBarProps> = ({
-  value,
-  onChange,
-  onKeyDown,
-  onFocus,
-  onBlur,
-  inputRef,
-  placeholder = 'Search',
   expandOnFocus = false,
   size = 'small',
+  placeholder = 'Search',
+  ...props
 }) => {
   return (
     <SearchContainer expandOnFocus={expandOnFocus} size={size}>
@@ -38,14 +27,9 @@ export const SearchBar: FC<SearchBarProps> = ({
       <StyledInputBase
         expandOnFocus={expandOnFocus}
         size={size}
-        placeholder={placeholder}
         inputProps={{ 'aria-label': 'search' }}
-        value={value}
-        onChange={onChange}
-        onKeyDown={onKeyDown}
-        onFocus={onFocus}
-        onBlur={onBlur}
-        inputRef={inputRef}
+        placeholder={placeholder}
+        {...props}
       />
     </SearchContainer>
   );

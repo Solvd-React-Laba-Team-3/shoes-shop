@@ -1,13 +1,9 @@
 import { styled } from '@mui/material/styles';
 import InputBase from '@mui/material/InputBase';
-import Box from '@mui/material/Box';
+import Box, { BoxProps } from '@mui/material/Box';
+import { SearchBarProps } from './SearchBar';
 
-interface SearchContainerProps {
-  expandOnFocus?: boolean;
-  size?: 'small' | 'medium';
-}
-
-interface StyledInputBaseProps {
+interface SearchContainerProps extends BoxProps {
   expandOnFocus?: boolean;
   size?: 'small' | 'medium';
 }
@@ -62,33 +58,29 @@ export const SearchIconWrapper = styled(Box)(({ theme }) => ({
 
 export const StyledInputBase = styled(InputBase, {
   shouldForwardProp: (prop) => prop !== 'expandOnFocus' && prop !== 'size',
-})<StyledInputBaseProps>(
-  ({ theme, expandOnFocus = false, size = 'small' }) => ({
-    fontSize: 15,
-    fontWeight: 500,
-    color: theme.palette.grey[700],
-    flex: 1,
+})<SearchBarProps>(({ theme, expandOnFocus = false, size = 'small' }) => ({
+  ...theme.typography.subtitle2,
+  color: theme.palette.grey[700],
+  flex: 1,
 
+  '& .MuiInputBase-input': {
+    padding: theme.spacing(1, 1, 1, 0),
+    transition: theme.transitions.create(['width', 'font-size'], {
+      duration: theme.transitions.duration.short,
+    }),
+    width: '100%',
+  },
+
+  ...(size === 'small' && {
     '& .MuiInputBase-input': {
-      padding: theme.spacing(1, 1, 1, 0),
-      transition: theme.transitions.create(['width', 'font-size'], {
-        duration: theme.transitions.duration.short,
-      }),
-      width: '100%',
+      position: 'relative',
+      left: -5,
     },
+  }),
 
-    ...(size === 'small' && {
-      '& .MuiInputBase-input': {
-        position: 'relative',
-        left: -5,
-      },
-    }),
-
-    ...(expandOnFocus && {
-      '&.Mui-focused .MuiInputBase-input': {
-        fontSize: 25,
-        fontWeight: 400,
-      },
-    }),
-  })
-);
+  ...(expandOnFocus && {
+    '&.Mui-focused .MuiInputBase-input': {
+      ...theme.typography.h4,
+    },
+  }),
+}));
