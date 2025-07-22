@@ -44,7 +44,7 @@ const SignIn = () => {
     });
 
     if (res?.ok) {
-      router.push('/auth/reset-password');
+      router.push('/');
     } else {
       alert('Login failed: ' + res?.error);
     }
