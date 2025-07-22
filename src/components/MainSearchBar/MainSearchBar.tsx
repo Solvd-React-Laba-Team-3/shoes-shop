@@ -88,7 +88,7 @@ export const MainSearchBar = () => {
 
   return (
     <>
-      {isFocused && <Overlay onClick={handleClose} />} {}
+      {isFocused && <Overlay data-testid="overlay" onClick={handleClose} />} {}
       {isFocused && (
         <>
           <IconButtonLeft>
@@ -98,7 +98,7 @@ export const MainSearchBar = () => {
           </IconButtonLeft>
 
           <IconButtonRight>
-            <IconButton onClick={handleClose}>
+            <IconButton onClick={handleClose} aria-label="Close search overlay">
               <CloseIcon
                 color="secondary"
                 sx={{ width: 32, height: 32, fontWeight: 400 }}
@@ -130,6 +130,7 @@ export const MainSearchBar = () => {
               {popularTerms.map((term, index) => (
                 <PopularTermItem
                   key={index}
+                  onMouseDown={(e) => e.preventDefault()}
                   onClick={() => {
                     setInputValue(term);
                     handleSearch(term);
