@@ -26,22 +26,22 @@ const sizeStyles = {
   },
 };
 
-export const StyledTypography = styled(Typography)<Omit<LinkProps, 'href'>>(
-  ({ theme, active, size = 'regular' }) => ({
-    color:
-      active || size !== 'regular'
-        ? theme.palette.primary.main
-        : theme.palette.text.primary,
-    textDecoration: 'none',
-    transition: 'all 0.2s ease-in-out',
-    fontFamily: 'Work Sans',
+export const StyledTypography = styled(Typography, {
+  shouldForwardProp: (prop) => prop !== 'active' && prop !== 'size',
+})<Omit<LinkProps, 'href'>>(({ theme, active, size = 'regular' }) => ({
+  color:
+    active || size !== 'regular'
+      ? theme.palette.primary.main
+      : theme.palette.text.primary,
+  textDecoration: 'none',
+  transition: 'all 0.2s ease-in-out',
+  fontFamily: 'Work Sans',
 
-    '&:hover': {
-      textDecoration: 'underline',
-    },
-    ...sizeStyles[size],
-  })
-);
+  '&:hover': {
+    textDecoration: 'underline',
+  },
+  ...sizeStyles[size],
+}));
 
 export const Link: FC<LinkProps> = ({ href = '/', ...props }) => {
   return (
