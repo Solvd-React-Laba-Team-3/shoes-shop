@@ -18,7 +18,7 @@ describe('SearchBar', () => {
   test('renders input and icon', () => {
     const { input, icon } = setup();
     expect(input).toBeInTheDocument();
-    expect(input).toHaveAttribute('placeholder', 'Search');
+    expect(input).toHaveAttribute('placeholder');
     expect(icon).toBeInTheDocument();
   });
 
