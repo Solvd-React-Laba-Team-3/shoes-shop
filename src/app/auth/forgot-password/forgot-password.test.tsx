@@ -1,7 +1,21 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 import ForgotPassword from './page';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
-const renderComponent = () => render(<ForgotPassword />);
+const createTestQueryClient = () =>
+  new QueryClient({
+    defaultOptions: {
+      queries: { retry: false },
+    },
+  });
+
+const TestWrapper = ({ children }: { children: React.ReactNode }) => (
+  <QueryClientProvider client={createTestQueryClient()}>
+    {children}
+  </QueryClientProvider>
+);
+const renderComponent = () =>
+  render(<ForgotPassword />, { wrapper: TestWrapper });
 
 describe('ForgotPassword page', () => {
   beforeEach(() => {
