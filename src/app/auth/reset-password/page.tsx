@@ -1,34 +1,40 @@
 'use client';
+
 import {
   AuthFormContainer,
   Button,
   LabeledTextfield,
   Link,
 } from '@/components/ui';
-import { Box, FormLabel, Stack, Typography } from '@mui/material';
-import Image from 'next/image';
+import { Box, Stack, Typography } from '@mui/material';
+import { useForm } from 'react-hook-form';
 import * as z from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useForm } from 'react-hook-form';
-import { useEffect } from 'react';
 import { useResetPassword } from '@/api/auth/useResetPassword';
 import { useSearchParams, useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
+import DoneOutlineIcon from '@mui/icons-material/DoneOutline';
+import Image from 'next/image';
 
 const resetPasswordSchema = z
   .object({
-    password: z.string().min(6, 'Password must be at least 6 characters long'),
-    confirmPassword: z
-      .string()
-      .min(6, 'Confirm password must be at least 6 characters long'),
+    password: z.string().min(6, 'Password must be at least 6 characters'),
+    confirmPassword: z.string(),
   })
   .refine((data) => data.password === data.confirmPassword, {
-    message: "Passwords don't match",
+    message: 'Passwords do not match',
     path: ['confirmPassword'],
   });
 
 type ResetPasswordFormData = z.infer<typeof resetPasswordSchema>;
 
-const ResetPassword = () => {
+export default function ResetPassword() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const code = searchParams.get('code') ?? '';
+
+  const [submitted, setSubmitted] = useState(false);
+
   const {
     register,
     handleSubmit,
@@ -41,44 +47,40 @@ const ResetPassword = () => {
     },
   });
 
-  const searchParams = useSearchParams();
-  const code = searchParams.get('code') ?? '';
-
-  const router = useRouter();
-
-  const { mutate, status, isSuccess, isError } = useResetPassword();
-
-  useEffect(() => {
-    if (isSuccess) {
-      setTimeout(() => {
-        router.push('/auth/sign-in');
-      }, 3000);
-    }
-  }, [isSuccess, router]);
+  const { mutate, isPending, isSuccess } = useResetPassword();
 
   const onSubmit = (data: ResetPasswordFormData) => {
-    if (!code) {
-      alert('Reset code is missing. Please check the link in your email.');
-      return;
-    }
-
-    mutate({
-      password: data.password,
-      passwordConfirmation: data.confirmPassword,
-      code,
-    });
+    mutate(
+      {
+        password: data.password,
+        passwordConfirmation: data.confirmPassword,
+        code,
+      },
+      {
+        onSuccess: () => setSubmitted(true),
+      }
+    );
   };
+
+  useEffect(() => {
+    if (submitted && isSuccess) {
+      const timer = setTimeout(() => {
+        router.push('/auth/sign-in');
+      }, 1000);
+      return () => clearTimeout(timer);
+    }
+  }, [submitted, isSuccess, router]);
 
   return (
     <>
       <AuthFormContainer
         title="Reset password"
-        description="Please create a new password below"
+        description="Please create new password here"
       >
-        {isSuccess ? (
-          <Typography color="success.main" align="center" mt={2}>
-            ✅ Confirmation link has been sent to your email. Redirecting to
-            login...
+        {submitted && isSuccess ? (
+          <Typography variant="body1" color="textDisabled">
+            <DoneOutlineIcon />
+            Password successfully reset! Redirecting to login...
           </Typography>
         ) : (
           <Box
@@ -95,44 +97,37 @@ const ResetPassword = () => {
           >
             <LabeledTextfield
               id="password"
-              label="Password"
+              placeholder="at least 8 characters"
               required
               type="password"
-              placeholder="at least 6 characters"
+              label={errors.password?.message ?? 'Password'}
+              error={!!errors.password}
               {...register('password')}
             />
-            {errors.password && (
-              <FormLabel sx={{ fontSize: '0.75rem', color: 'error.main' }}>
-                {errors.password.message}
-              </FormLabel>
-            )}
-
             <LabeledTextfield
-              id="confirmPassword"
-              label="Confirm password"
+              id="Confirm password"
               required
               type="password"
-              placeholder="repeat your password"
+              placeholder="at least 8 characters"
+              label={errors.confirmPassword?.message ?? 'Confirm password'}
+              error={!!errors.confirmPassword}
               {...register('confirmPassword')}
             />
-            {errors.confirmPassword && (
-              <FormLabel sx={{ fontSize: '0.75rem', color: 'error.main' }}>
-                {errors.confirmPassword.message}
-              </FormLabel>
-            )}
-
-            <Button type="submit" size="large" disabled={status === 'pending'}>
-              {status === 'pending' ? 'Processing...' : 'Reset password'}
+            <Button
+              type="submit"
+              size="large"
+              sx={{ margin: '37px 0 20px' }}
+              disabled={isPending}
+            >
+              {isPending ? 'Submitting...' : 'Reset Password'}
             </Button>
 
-            {isError && (
-              <Typography color="error.main" fontSize="0.875rem">
-                ❌ Failed to reset password. Please try again.
-              </Typography>
-            )}
-
             <Stack direction="row" spacing={1} alignItems="center">
-              <Typography variant="subtitle2" color="textSecondary">
+              <Typography
+                variant="subtitle2"
+                component="p"
+                color="textSecondary"
+              >
                 Back to
               </Typography>
               <Link href="/auth/sign-in" size="small">
@@ -143,16 +138,21 @@ const ResetPassword = () => {
         )}
       </AuthFormContainer>
 
-      <Box sx={{ height: '100vh', position: 'relative' }}>
+      <Box
+        sx={{
+          height: '100vh',
+          position: 'relative',
+        }}
+      >
         <Image
           src="/recovery.jpg"
           alt="login"
           fill
-          style={{ objectFit: 'cover' }}
+          style={{
+            objectFit: 'cover',
+          }}
         />
       </Box>
     </>
   );
-};
-
-export default ResetPassword;
+}
