@@ -15,9 +15,11 @@ export const StyledButton = styled(MUIButton)<MUIButtonProps>(
 
     ...(size === 'small' && {
       width: '150px',
+      height: '40px',
     }),
     ...(size === 'medium' && {
       width: '250px',
+      height: '60px',
     }),
     ...(size === 'large' && {
       width: '400px',

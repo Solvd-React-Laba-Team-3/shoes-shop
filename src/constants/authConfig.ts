@@ -2,6 +2,7 @@ import { login } from '@/api/auth/login';
 import { AuthOptions } from 'next-auth';
 import { User as IUser } from '@/types/User';
 import CredentialsProvider from 'next-auth/providers/credentials';
+import { getUserProfile } from '@/api/profile/getUserProfile';
 
 declare module 'next-auth' {
   interface Session {
@@ -21,6 +22,9 @@ declare module 'next-auth/jwt' {
 }
 
 export const authOptions: AuthOptions = {
+  pages: {
+    newUser: '/auth/sign-up',
+  },
   providers: [
     CredentialsProvider({
       name: 'Credentials',
@@ -37,11 +41,13 @@ export const authOptions: AuthOptions = {
           password: credentials.password,
         });
 
+        const user = await getUserProfile(response.jwt);
+
         if ('error' in response) return null;
 
         return {
-          ...response.user,
-          id: response.user.id.toString(),
+          ...user,
+          id: user.id.toString(),
           accessToken: response.jwt,
         };
       },

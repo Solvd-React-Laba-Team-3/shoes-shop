@@ -1,17 +1,20 @@
 'use client';
 
+import { Button } from '@/components/ui';
 import { BONUS_POINTS } from '@/constants/bonusPoints';
 import Avatar from '@mui/material/Avatar';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import { useSession } from 'next-auth/react';
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 
 export default function MyProducts() {
   const { data: session } = useSession();
+  const router = useRouter();
 
   return (
-    <Box sx={{ padding: '38px 53px' }}>
+    <Box sx={{ display: 'flex', flexDirection: 'column', gap: '108px' }}>
       <Box sx={{ position: 'relative' }}>
         <Image
           src="/profile-banner.png"
@@ -31,7 +34,7 @@ export default function MyProducts() {
           }}
         >
           <Avatar
-            src="/avatar-placeholder.png"
+            src={session?.user?.avatar?.url}
             alt="Avatar"
             sx={{
               border: (theme) => `4px solid ${theme.palette.common.white}`,
@@ -44,6 +47,48 @@ export default function MyProducts() {
             <Typography variant="caption">
               {BONUS_POINTS} bonus points
             </Typography>
+          </Box>
+        </Box>
+      </Box>
+      <Box sx={{ display: 'flex', flexDirection: 'column', gap: '36px' }}>
+        <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+          <Typography variant="h2">My Products</Typography>
+          <Button size="small" onClick={() => router.push('/products/create')}>
+            Add Product
+          </Button>
+        </Box>
+        <Box sx={{ display: 'flex', flexDirection: 'column', gap: '36px' }}>
+          <Box
+            sx={{ display: 'grid', gridTemplateColumns: 'repeat(4, 320px)' }}
+          >
+            {session?.user?.products.map((product) => (
+              // TODO: Replace with ProductCard when finished
+              <Box
+                key={product.id}
+                sx={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: '10px',
+                  backgroundColor: (theme) => theme.palette.grey[100],
+                  padding: '20px',
+                  borderRadius: '10px',
+                }}
+              >
+                <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+                  <Typography variant="h5">{product.name}</Typography>
+                  <Typography variant="h5">
+                    {product.price.toLocaleString('en-US', {
+                      style: 'currency',
+                      currency: 'USD',
+                      maximumFractionDigits: 0,
+                    })}
+                  </Typography>
+                </Box>
+                <Typography variant="subtitle1">
+                  {product.description}
+                </Typography>
+              </Box>
+            ))}
           </Box>
         </Box>
       </Box>
