@@ -10,19 +10,14 @@ import Avatar from '@mui/material/Avatar';
 import Typography from '@mui/material/Typography';
 import { signOut, useSession } from 'next-auth/react';
 import { Button, Link } from '@/components/ui';
-import { usePathname, useRouter } from 'next/navigation';
+import { usePathname } from 'next/navigation';
 import { HEADER_HEIGHT } from '@/constants/headerHeight';
 import Drawer, { DrawerProps } from '@mui/material/Drawer';
+import { FC } from 'react';
 
-export const Sidebar = ({ open = true, ...props }: DrawerProps) => {
+export const Sidebar: FC<DrawerProps> = ({ open = true, ...props }) => {
   const pathname = usePathname();
   const { data: session } = useSession();
-  const router = useRouter();
-
-  const handleLogout = () => {
-    signOut();
-    router.push('/');
-  };
 
   const navLinks = [
     {
@@ -76,9 +71,8 @@ export const Sidebar = ({ open = true, ...props }: DrawerProps) => {
           borderBottom: (theme) => `1px solid ${theme.palette.divider}`,
         }}
       >
-        {/* TODO: Extend user entity and add avatar here */}
         <Avatar
-          src="/avatar-placeholder.png"
+          src={session?.user?.avatar?.url}
           alt="Avatar"
           sx={{ width: '64px', height: '64px' }}
         />
@@ -107,7 +101,7 @@ export const Sidebar = ({ open = true, ...props }: DrawerProps) => {
           <Link
             key={link.href}
             href={link.href}
-            active={pathname === link.href}
+            active={pathname.includes(link.href)}
             variant="subtitle2"
             sx={{
               display: 'flex',
@@ -129,8 +123,10 @@ export const Sidebar = ({ open = true, ...props }: DrawerProps) => {
               backgroundColor: 'transparent',
               textDecoration: 'underline',
             },
+            height: '25px',
           }}
-          onClick={handleLogout}
+          size="small"
+          onClick={() => signOut({ redirect: true, callbackUrl: '/' })}
           color="secondary"
         >
           <Typography

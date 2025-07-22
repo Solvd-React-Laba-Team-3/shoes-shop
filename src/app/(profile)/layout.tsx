@@ -1,12 +1,19 @@
 import { Header } from '@/components/common/Header';
 import { Sidebar } from '@/components/common/Sidebar';
+import { authOptions } from '@/constants/authConfig';
 import Box from '@mui/material/Box';
+import { getServerSession } from 'next-auth';
+import { signIn } from 'next-auth/react';
 
-export default function ProfileLayout({
+export default async function ProfileLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const session = await getServerSession(authOptions);
+
+  if (!session) signIn('credentials');
+
   return (
     <>
       <Header />
@@ -15,7 +22,7 @@ export default function ProfileLayout({
         component="main"
       >
         <Sidebar />
-        {children}
+        <Box sx={{ padding: '38px 53px' }}>{children}</Box>
       </Box>
     </>
   );

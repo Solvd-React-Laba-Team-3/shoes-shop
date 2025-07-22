@@ -1,3 +1,6 @@
+import { File } from './api/File';
+import { Product } from './Product';
+
 export interface User {
   id: number;
   username: string;
@@ -11,4 +14,6 @@ export interface User {
   firstName: string | null;
   lastName: string | null;
   customerId: number | null;
+  products: Product[];
+  avatar: File;
 }
