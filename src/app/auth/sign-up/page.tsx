@@ -25,13 +25,6 @@ const signUpSchema = z
     path: ['confirmPassword'],
   });
 
-// type SignUpFormData = {
-//   name: string;
-//   email: string;
-//   password: string;
-//   confirmPassword: string;
-// };
-
 type SignUpFormData = z.infer<typeof signUpSchema>;
 
 const SignUp = () => {
@@ -52,9 +45,6 @@ const SignUp = () => {
   const { mutate: registerUser, error } = useRegister();
 
   const onSubmit = (data: SignUpFormData) => {
-    console.log(data, errors);
-
-    // signUpSchema.parse(data);
     const { name, email, password } = data;
     registerUser(
       { username: name, email, password },
