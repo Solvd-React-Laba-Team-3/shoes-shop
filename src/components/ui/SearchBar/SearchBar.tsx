@@ -16,7 +16,7 @@ export interface SearchBarProps extends InputBaseProps {
 export const SearchBar: FC<SearchBarProps> = ({
   expandOnFocus = false,
   size = 'small',
-  placeholder,
+  placeholder = 'Search',
   ...props
 }) => {
   return (
