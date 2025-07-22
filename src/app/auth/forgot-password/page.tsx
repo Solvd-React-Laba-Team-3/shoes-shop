@@ -11,8 +11,9 @@ import * as z from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { useForgotPassword } from '@/api/auth/useForgotPassword';
-import { useRouter } from 'next/navigation';
-import { useEffect } from 'react';
+import { useState } from 'react';
+import CloseIcon from '@mui/icons-material/Close';
+import EmailOutlinedIcon from '@mui/icons-material/EmailOutlined';
 
 const forgotPasswordSchema = z.object({
   email: z.string().email('Invalid email address'),
@@ -32,21 +33,14 @@ const ForgotPassword = () => {
     },
   });
 
-  const router = useRouter();
   const { mutate, isSuccess, isError } = useForgotPassword();
-
-  useEffect(() => {
-    if (isSuccess) {
-      router.push('/auth/reset-password');
-    }
-    if (isError) {
-      alert('Failed to send reset instructions. Please try again.');
-    }
-  }, [isSuccess, isError, router]);
+  const [submitted, setSubmitted] = useState(false);
 
   const onSubmit = (data: ForgotPasswordFormData) => {
     mutate(data);
+    setSubmitted(true);
   };
+
   return (
     <>
       <AuthFormContainer
@@ -73,11 +67,7 @@ const ForgotPassword = () => {
             {...register('email')}
           />
           {errors.email && (
-            <FormLabel
-              component="legend"
-              color="error"
-              sx={{ fontSize: '0.75rem', color: 'error.main' }}
-            >
+            <FormLabel sx={{ fontSize: '0.75rem', color: 'error.main' }}>
               {errors.email.message}
             </FormLabel>
           )}
@@ -85,13 +75,31 @@ const ForgotPassword = () => {
           <Button
             type="submit"
             size="large"
-            sx={{ margin: '37px 0 20px' }}
+            sx={{ margin: '20px 0' }}
             disabled={isSuccess}
           >
             Reset password
           </Button>
 
-          {isError && <FormLabel sx={{ color: 'error.main' }}></FormLabel>}
+          {submitted && isSuccess && (
+            <Typography
+              variant="body1"
+              color="textDisabled"
+              fontSize="1rem"
+              align="center"
+              display="flex"
+            >
+              <EmailOutlinedIcon />A confirmation link has been sent to your
+              email. Please check your inbox.
+            </Typography>
+          )}
+
+          {isError && (
+            <Typography color="error.main" fontSize="0.875rem" align="center">
+              <CloseIcon />
+              Failed to send reset instructions. Please try again.
+            </Typography>
+          )}
 
           <Stack direction="row" spacing={1} alignItems="center">
             <Typography variant="subtitle2" component="p" color="textSecondary">
@@ -104,19 +112,12 @@ const ForgotPassword = () => {
         </Box>
       </AuthFormContainer>
 
-      <Box
-        sx={{
-          height: '100vh',
-          position: 'relative',
-        }}
-      >
+      <Box sx={{ height: '100vh', position: 'relative' }}>
         <Image
           src="/recovery.jpg"
           alt="login"
           fill
-          style={{
-            objectFit: 'cover',
-          }}
+          style={{ objectFit: 'cover' }}
         />
       </Box>
     </>
