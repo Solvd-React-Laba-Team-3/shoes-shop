@@ -1,5 +1,7 @@
 'use client';
 
+import type React from 'react';
+
 import { useState, useEffect, useRef } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { SearchBar } from '../ui';
@@ -24,11 +26,9 @@ export const MainSearchBar = () => {
   const searchParams = useSearchParams();
   const inputRef = useRef<HTMLInputElement>(null);
   const blurTimeoutRef = useRef<NodeJS.Timeout | null>(null);
-
   const [inputValue, setInputValue] = useState('');
   const [isFocused, setIsFocused] = useState(false);
   const [popularTerms, setPopularTerms] = useState<string[]>([]);
-
   const debouncedInput = useDebounce(inputValue, 600);
 
   useEffect(() => {
@@ -42,17 +42,26 @@ export const MainSearchBar = () => {
         setPopularTerms([]);
         return;
       }
-
       try {
         const terms = await fetchPopularTerms(debouncedInput);
         setPopularTerms(terms);
       } catch (err) {
         console.error('[AUTOCOMPLETE_ERROR]', err);
+        setPopularTerms([]); // Add this to ensure state is updated even on error
       }
     };
 
     getTerms();
   }, [debouncedInput]);
+
+  // Clean up timeout on unmount
+  useEffect(() => {
+    return () => {
+      if (blurTimeoutRef.current) {
+        clearTimeout(blurTimeoutRef.current);
+      }
+    };
+  }, []);
 
   const handleSearch = (value: string) => {
     const params = new URLSearchParams(searchParams.toString());
@@ -86,9 +95,15 @@ export const MainSearchBar = () => {
     }, 150);
   };
 
+  const handleTermClick = (term: string) => {
+    setInputValue(term);
+    handleSearch(term);
+    handleClose();
+  };
+
   return (
     <>
-      {isFocused && <Overlay data-testid="overlay" onClick={handleClose} />} {}
+      {isFocused && <Overlay data-testid="overlay" onClick={handleClose} />}
       {isFocused && (
         <>
           <IconButtonLeft>
@@ -96,9 +111,12 @@ export const MainSearchBar = () => {
               <Image src="/logo.png" alt="logo" width={40} height={30} />
             </Link>
           </IconButtonLeft>
-
           <IconButtonRight>
-            <IconButton onClick={handleClose} aria-label="Close search overlay">
+            <IconButton
+              onClick={handleClose}
+              aria-label="Close search overlay"
+              data-testid="close-button"
+            >
               <CloseIcon
                 color="secondary"
                 sx={{ width: 32, height: 32, fontWeight: 400 }}
@@ -107,7 +125,10 @@ export const MainSearchBar = () => {
           </IconButtonRight>
         </>
       )}
-      <MainSearchBarContainer isFocused={isFocused}>
+      <MainSearchBarContainer
+        isFocused={isFocused}
+        data-testid="search-container"
+      >
         <SearchBar
           value={inputValue}
           onChange={(e) => setInputValue(e.target.value)}
@@ -118,24 +139,20 @@ export const MainSearchBar = () => {
           onFocus={handleFocus}
           onBlur={handleBlur}
           inputRef={inputRef}
+          data-testid="search-input"
         />
-
         {popularTerms.length > 0 && isFocused && (
-          <PopularTermsContainer>
+          <PopularTermsContainer data-testid="popular-terms-container">
             <Typography variant="h6" fontWeight={500}>
               Popular Search Terms
             </Typography>
-
             <List disablePadding>
               {popularTerms.map((term, index) => (
                 <PopularTermItem
                   key={index}
                   onMouseDown={(e) => e.preventDefault()}
-                  onClick={() => {
-                    setInputValue(term);
-                    handleSearch(term);
-                    handleClose();
-                  }}
+                  onClick={() => handleTermClick(term)}
+                  data-testid={`popular-term-${index}`}
                 >
                   <Typography variant="body1" fontWeight={500}>
                     {term}
