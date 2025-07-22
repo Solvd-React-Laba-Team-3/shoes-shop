@@ -12,8 +12,9 @@ import { signOut, useSession } from 'next-auth/react';
 import { Button, Link } from '@/components/ui';
 import { usePathname, useRouter } from 'next/navigation';
 import { HEADER_HEIGHT } from '@/constants/headerHeight';
+import Drawer, { DrawerProps } from '@mui/material/Drawer';
 
-export const Sidebar = () => {
+export const Sidebar = ({ open = true, ...props }: DrawerProps) => {
   const pathname = usePathname();
   const { data: session } = useSession();
   const router = useRouter();
@@ -52,14 +53,19 @@ export const Sidebar = () => {
   ];
 
   return (
-    <Box
+    <Drawer
+      variant="persistent"
+      open={open}
       sx={{
         width: '320px',
-        height: `calc(100vh - ${HEADER_HEIGHT}px)`,
-        position: 'sticky',
-        top: 0,
-        backgroundColor: (theme) => theme.palette.common.white,
+
+        '& .MuiPaper-root': {
+          height: `calc(100vh - ${HEADER_HEIGHT}px)`,
+          position: 'sticky',
+          top: 0,
+        },
       }}
+      {...props}
     >
       <Box
         sx={{
@@ -84,7 +90,7 @@ export const Sidebar = () => {
             Welcome
           </Typography>
           <Typography variant="subtitle2" sx={{ whiteSpace: 'nowrap' }}>
-            {`${session?.user?.firstName} ${session?.user?.lastName}`}
+            {session?.user?.username}
           </Typography>
         </Box>
       </Box>
@@ -140,6 +146,6 @@ export const Sidebar = () => {
           </Typography>
         </Button>
       </Box>
-    </Box>
+    </Drawer>
   );
 };
