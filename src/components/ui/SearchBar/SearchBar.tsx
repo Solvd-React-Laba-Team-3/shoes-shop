@@ -11,13 +11,12 @@ import { InputBaseProps } from '@mui/material/InputBase';
 export interface SearchBarProps extends InputBaseProps {
   expandOnFocus?: boolean;
   size?: 'small' | 'medium';
-  placeholder?: string;
 }
 
 export const SearchBar: FC<SearchBarProps> = ({
   expandOnFocus = false,
   size = 'small',
-  placeholder = 'Search',
+  placeholder,
   ...props
 }) => {
   return (
