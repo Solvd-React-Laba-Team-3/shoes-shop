@@ -66,7 +66,7 @@ export default function ResetPassword() {
     if (submitted && isSuccess) {
       const timer = setTimeout(() => {
         router.push('/auth/sign-in');
-      }, 1000);
+      }, 2000);
       return () => clearTimeout(timer);
     }
   }, [submitted, isSuccess, router]);

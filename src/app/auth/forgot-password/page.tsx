@@ -25,9 +25,10 @@ const ForgotPassword = () => {
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isValid },
   } = useForm<ForgotPasswordFormData>({
     resolver: zodResolver(forgotPasswordSchema),
+    mode: 'onChange',
     defaultValues: {
       email: '',
     },
@@ -76,7 +77,7 @@ const ForgotPassword = () => {
             type="submit"
             size="large"
             sx={{ margin: '20px 0' }}
-            disabled={isSuccess}
+            disabled={!isValid || isSuccess}
           >
             Reset password
           </Button>
