@@ -4,9 +4,17 @@ import '@testing-library/jest-dom';
 import { ThemeProvider } from '@emotion/react';
 import { theme } from '@/providers/ThemeProvider';
 
+const mockSignIn = jest.fn();
 const mockUseSession = jest.fn();
+const mockRouter = jest.fn();
+
 jest.mock('next-auth/react', () => ({
   useSession: () => mockUseSession(),
+  signIn: (...args: unknown[]) => mockSignIn(...args),
+}));
+
+jest.mock('next/navigation', () => ({
+  useRouter: () => ({ push: mockRouter }),
 }));
 
 jest.mock('next/image', () => ({
@@ -50,8 +58,12 @@ describe('Header', () => {
 
       expect(screen.getByAltText('logo')).toBeInTheDocument();
       expect(screen.getByText('Products')).toBeInTheDocument();
-      expect(screen.getByTestId('ShoppingBasketIcon')).toBeInTheDocument();
-      expect(document.querySelector('.MuiAvatar-root')).toBeInTheDocument();
+      expect(
+        screen.getByTestId('ShoppingBasketOutlinedIcon')
+      ).toBeInTheDocument();
+      expect(
+        screen.getByRole('button', { name: 'Sign in' })
+      ).toBeInTheDocument();
     });
 
     it('renders logo link with correct href', () => {
@@ -61,36 +73,51 @@ describe('Header', () => {
       expect(logoLink).toHaveAttribute('href', '/');
     });
 
-    it('renders avatar as div when not logged in', () => {
+    it('does not render avatar when not logged in', () => {
       renderHeaderWithTheme();
 
       const avatar = document.querySelector('.MuiAvatar-root');
-      expect(avatar).toBeInTheDocument();
-      expect(avatar?.tagName).toBe('DIV');
+      expect(avatar).not.toBeInTheDocument();
     });
   });
 
   describe('when user is logged in', () => {
+    const mockAvatarUrl = 'https://example.com/avatar.jpg';
+
     beforeEach(() => {
       mockUseSession.mockReturnValue({
-        data: { user: { name: 'John Doe', email: 'john@example.com' } },
+        data: {
+          user: {
+            avatar: {
+              url: mockAvatarUrl,
+            },
+          },
+        },
       });
     });
 
-    it('renders avatar with image when logged in', () => {
+    it('renders avatar with correct image when logged in', () => {
       renderHeaderWithTheme();
 
-      const avatarImg = document.querySelector('.MuiAvatar-root img');
-      expect(avatarImg).toBeInTheDocument();
-      expect(avatarImg).toHaveAttribute('src', '/avatar-placeholder.png');
+      const avatar = screen
+        .getByRole('link', { name: '' })
+        .querySelector('.MuiAvatar-img');
+      expect(avatar).toBeInTheDocument();
+      expect(avatar).toHaveAttribute('src', mockAvatarUrl);
     });
 
-    it('still renders all other elements correctly when logged in', () => {
+    it('does not render sign in button when logged in', () => {
       renderHeaderWithTheme();
 
-      expect(screen.getByAltText('logo')).toBeInTheDocument();
-      expect(screen.getByText('Products')).toBeInTheDocument();
-      expect(screen.getByTestId('ShoppingBasketIcon')).toBeInTheDocument();
+      const signInButton = screen.queryByRole('button', { name: 'Sign in' });
+      expect(signInButton).not.toBeInTheDocument();
+    });
+
+    it('renders avatar link with correct href', () => {
+      renderHeaderWithTheme();
+
+      const avatarLink = screen.getByRole('link', { name: '' });
+      expect(avatarLink).toHaveAttribute('href', '/products');
     });
   });
 });
