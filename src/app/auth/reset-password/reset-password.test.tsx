@@ -3,7 +3,6 @@ import { render, screen } from '@testing-library/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import ResetPassword from './page';
 
-// Create a new QueryClient instance for each test run
 const createTestQueryClient = () =>
   new QueryClient({
     defaultOptions: {
