@@ -29,7 +29,7 @@ export const MainSearchBar = () => {
   const [isFocused, setIsFocused] = useState(false);
   const [popularTerms, setPopularTerms] = useState<string[]>([]);
 
-  const debouncedInput = useDebounce(inputValue, 300);
+  const debouncedInput = useDebounce(inputValue, 600);
 
   useEffect(() => {
     const search = searchParams.get('search') || '';
