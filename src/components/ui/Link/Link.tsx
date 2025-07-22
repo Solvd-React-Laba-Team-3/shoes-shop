@@ -34,6 +34,7 @@ export const StyledTypography = styled(Typography)<Omit<LinkProps, 'href'>>(
         : theme.palette.text.primary,
     textDecoration: 'none',
     transition: 'all 0.2s ease-in-out',
+    fontFamily: 'Work Sans',
 
     '&:hover': {
       textDecoration: 'underline',
