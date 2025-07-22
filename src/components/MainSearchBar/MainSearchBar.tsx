@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { SearchBar } from '../SearchBar/SearchBar';
+import { SearchBar } from '../ui';
 import {
   MainSearchBarContainer,
   IconButtonLeft,

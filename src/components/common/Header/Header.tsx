@@ -8,7 +8,7 @@ import ShoppingBasketIcon from '@mui/icons-material/ShoppingBasket';
 import Image from 'next/image';
 import { styled } from '@mui/material/styles';
 import { Link } from '@/components/ui';
-import { MainSearchBar } from '@/components/ui/MainSearchBar/MainSearchBar';
+import { MainSearchBar } from '@/components/MainSearchBar/MainSearchBar';
 
 const StyledContainer = styled(Box)(({ theme }) => ({
   display: 'flex',
