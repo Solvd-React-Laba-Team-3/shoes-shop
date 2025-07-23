@@ -8,6 +8,26 @@ import Typography from '@mui/material/Typography';
 import { useSession } from 'next-auth/react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
+import BusinessCenterIcon from '@mui/icons-material/BusinessCenter';
+import { styled } from '@mui/material/styles';
+
+const StyledBusinessCenterIcon = styled(BusinessCenterIcon)(({ theme }) => ({
+  color: theme.palette.grey[600],
+  backgroundColor: theme.palette.grey[200],
+  padding: '20px',
+  borderRadius: '50%',
+  width: '72px',
+  height: '72px',
+}));
+
+const StyledNoProductsWrapper = styled(Box)(() => ({
+  display: 'flex',
+  justifyContent: 'center',
+  flexDirection: 'column',
+  alignItems: 'center',
+  gap: '30px',
+  height: 'calc(100vh - 800px)',
+}));
 
 export default function MyProducts() {
   const { data: session } = useSession();
@@ -58,38 +78,68 @@ export default function MyProducts() {
           </Button>
         </Box>
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: '36px' }}>
-          <Box
-            sx={{ display: 'grid', gridTemplateColumns: 'repeat(4, 320px)' }}
-          >
-            {session?.user?.products.map((product) => (
-              // TODO: Replace with ProductCard when finished
+          {session?.user?.products.length ? (
+            <Box
+              sx={{ display: 'grid', gridTemplateColumns: 'repeat(4, 320px)' }}
+            >
+              {session?.user?.products.map((product) => (
+                // TODO: Replace with ProductCard when finished
+                <Box
+                  key={product.id}
+                  sx={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: '10px',
+                    backgroundColor: (theme) => theme.palette.grey[100],
+                    padding: '20px',
+                    borderRadius: '10px',
+                  }}
+                >
+                  <Box
+                    sx={{ display: 'flex', justifyContent: 'space-between' }}
+                  >
+                    <Typography variant="h5">{product.name}</Typography>
+                    <Typography variant="h5">
+                      {product.price.toLocaleString('en-US', {
+                        style: 'currency',
+                        currency: 'USD',
+                        maximumFractionDigits: 0,
+                      })}
+                    </Typography>
+                  </Box>
+                  <Typography variant="subtitle1">
+                    {product.description}
+                  </Typography>
+                </Box>
+              ))}
+            </Box>
+          ) : (
+            <StyledNoProductsWrapper>
               <Box
-                key={product.id}
                 sx={{
                   display: 'flex',
                   flexDirection: 'column',
                   gap: '10px',
-                  backgroundColor: (theme) => theme.palette.grey[100],
-                  padding: '20px',
-                  borderRadius: '10px',
+                  alignItems: 'center',
                 }}
               >
-                <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-                  <Typography variant="h5">{product.name}</Typography>
-                  <Typography variant="h5">
-                    {product.price.toLocaleString('en-US', {
-                      style: 'currency',
-                      currency: 'USD',
-                      maximumFractionDigits: 0,
-                    })}
-                  </Typography>
-                </Box>
-                <Typography variant="subtitle1">
-                  {product.description}
+                <StyledBusinessCenterIcon />
+                <Typography variant="h6">
+                  You don’t have any products yet
+                </Typography>
+                <Typography variant="caption">
+                  Post can contain video, images and text.
                 </Typography>
               </Box>
-            ))}
-          </Box>
+
+              <Button
+                size="small"
+                onClick={() => router.push('/products/create')}
+              >
+                Add Product
+              </Button>
+            </StyledNoProductsWrapper>
+          )}
         </Box>
       </Box>
     </Box>
