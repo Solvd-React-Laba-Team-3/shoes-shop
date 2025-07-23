@@ -6,10 +6,56 @@ import {
   Link,
   ReviewPanel,
 } from '@/components/ui';
-import { Box, Stack, Typography } from '@mui/material';
+import { Box, Stack, Typography, FormLabel } from '@mui/material';
 import Image from 'next/image';
+import { useForm } from 'react-hook-form';
+import * as z from 'zod';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useRegister } from '@/api/auth/useRegister';
+
+const signUpSchema = z
+  .object({
+    name: z.string().min(1, 'Name is required'),
+    email: z.string().email('Invalid email address'),
+    password: z.string().min(6, 'Password must be at least 6 characters'),
+    confirmPassword: z.string().min(6, 'Please confirm your password'),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: 'Passwords do not match',
+    path: ['confirmPassword'],
+  });
+
+type SignUpFormData = z.infer<typeof signUpSchema>;
 
 const SignUp = () => {
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<SignUpFormData>({
+    resolver: zodResolver(signUpSchema),
+    defaultValues: {
+      name: '',
+      email: '',
+      password: '',
+      confirmPassword: '',
+    },
+  });
+
+  const { mutate: registerUser, error } = useRegister();
+
+  const onSubmit = (data: SignUpFormData) => {
+    const { name, email, password } = data;
+    registerUser(
+      { username: name, email, password },
+      {
+        onSuccess: (response) => {
+          console.log('✅ Registration successful:', response);
+        },
+      }
+    );
+  };
+
   const handlePrev = () => console.log('Previous feedback');
   const handleNext = () => console.log('Next feedback');
 
@@ -38,33 +84,90 @@ const SignUp = () => {
           gap={2}
           width="100%"
           maxWidth={400}
+          onSubmit={handleSubmit(onSubmit)}
         >
           <LabeledTextfield
             id="name"
             label="Name"
             required
             placeholder="Hayman Andrews"
+            {...register('name')}
+            error={!!errors.name}
           />
+          {errors.name && (
+            <FormLabel
+              component="legend"
+              color="error"
+              sx={{ fontSize: '0.75rem', color: 'error.main' }}
+            >
+              {errors.name.message}
+            </FormLabel>
+          )}
+
           <LabeledTextfield
             id="email"
             label="Email"
             required
             placeholder="example@mail.com"
+            {...register('email', { required: true })}
+            error={!!errors.email}
           />
+          {errors.email && (
+            <FormLabel
+              component="legend"
+              color="error"
+              sx={{ fontSize: '0.75rem', color: 'error.main' }}
+            >
+              {errors.email.message}
+            </FormLabel>
+          )}
           <LabeledTextfield
             id="password"
             label="Password"
             required
             type="password"
             placeholder="at least 8 characters"
+            {...register('password')}
+            error={!!errors.password}
           />
+          {errors.password && (
+            <FormLabel
+              component="legend"
+              color="error"
+              sx={{ fontSize: '0.75rem', color: 'error.main' }}
+            >
+              {errors.password.message}
+            </FormLabel>
+          )}
+
           <LabeledTextfield
             id="confirmPassword"
             label="Confirm password"
             required
             type="password"
             placeholder="at least 8 characters"
+            {...register('confirmPassword', { required: true })}
+            error={!!errors.confirmPassword}
           />
+          {errors.confirmPassword && (
+            <FormLabel
+              component="legend"
+              color="error"
+              sx={{ fontSize: '0.75rem', color: 'error.main' }}
+            >
+              {errors.confirmPassword.message}
+            </FormLabel>
+          )}
+
+          {error && (
+            <FormLabel
+              component="legend"
+              color="error"
+              sx={{ fontSize: '0.75rem', color: 'error.main' }}
+            >
+              {error.message}
+            </FormLabel>
+          )}
           <Button type="submit" size="large" sx={{ margin: '90px 0 16px 0' }}>
             Sign up
           </Button>
