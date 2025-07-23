@@ -3,7 +3,6 @@ import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import MyProducts from './page';
 
-// Mock next-auth
 jest.mock('next-auth/react');
 jest.mock('next/navigation', () => ({
   useRouter: jest.fn(),
