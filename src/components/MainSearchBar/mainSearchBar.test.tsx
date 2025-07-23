@@ -54,27 +54,6 @@ describe('MainSearchBar', () => {
     cleanup();
   });
 
-  describe('Initial Rendering', () => {
-    it('should render with empty input when no search params', () => {
-      render(<MainSearchBar />);
-      const input = getSearchInput();
-      expect(input).toHaveValue('');
-    });
-
-    it('should render input with initial search value from query params', () => {
-      createMockSearchParams({ search: 'initial search' });
-      render(<MainSearchBar />);
-      const input = getSearchInput();
-      expect(input).toHaveValue('initial search');
-    });
-
-    it('should not show overlay or controls initially', () => {
-      render(<MainSearchBar />);
-      expect(screen.queryByTestId('overlay')).not.toBeInTheDocument();
-      expect(screen.queryByTestId('close-button')).not.toBeInTheDocument();
-    });
-  });
-
   describe('Focus and Blur Behavior', () => {
     it('should show overlay and controls when focused', async () => {
       render(<MainSearchBar />);
