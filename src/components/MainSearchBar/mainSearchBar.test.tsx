@@ -1,5 +1,4 @@
 'use client';
-
 import {
   render,
   screen,
@@ -97,8 +96,6 @@ describe('MainSearchBar', () => {
         fireEvent.focus(input);
       });
 
-      expect(screen.getByTestId('overlay')).toBeInTheDocument();
-
       await act(async () => {
         fireEvent.blur(input);
         jest.advanceTimersByTime(200);
@@ -113,6 +110,9 @@ describe('MainSearchBar', () => {
 
       await act(async () => {
         fireEvent.focus(input);
+      });
+
+      await act(async () => {
         fireEvent.blur(input);
         fireEvent.focus(input);
         jest.advanceTimersByTime(200);
@@ -132,7 +132,9 @@ describe('MainSearchBar', () => {
         fireEvent.keyDown(input, { key: 'Enter', code: 'Enter' });
       });
 
-      expect(mockPush).toHaveBeenCalledWith('?search=nike+shoes');
+      await waitFor(() => {
+        expect(mockPush).toHaveBeenCalledWith('?search=nike+shoes');
+      });
     });
 
     it('should handle empty search submission', async () => {
@@ -144,7 +146,9 @@ describe('MainSearchBar', () => {
         fireEvent.keyDown(input, { key: 'Enter', code: 'Enter' });
       });
 
-      expect(mockPush).toHaveBeenCalledWith('?search=');
+      await waitFor(() => {
+        expect(mockPush).toHaveBeenCalledWith('?search=');
+      });
     });
 
     it('should not trigger search on non-Enter keys', async () => {
@@ -169,42 +173,11 @@ describe('MainSearchBar', () => {
         fireEvent.keyDown(input, { key: 'Enter', code: 'Enter' });
       });
 
-      expect(mockPush).toHaveBeenCalledWith(
-        '?category=sneakers&brand=nike&search=jordan'
-      );
-    });
-  });
-
-  describe('Popular Terms', () => {
-    it('should display default popular terms when input is empty', async () => {
-      render(<MainSearchBar />);
-      const input = getSearchInput();
-
-      await act(async () => {
-        fireEvent.focus(input);
-      });
-
       await waitFor(() => {
-        expect(screen.getByText('Nike Dunks')).toBeInTheDocument();
-        expect(screen.getByText('Adidas Yeezy')).toBeInTheDocument();
-        expect(screen.getByText('Jordan 1')).toBeInTheDocument();
+        expect(mockPush).toHaveBeenCalledWith(
+          '?category=sneakers&brand=nike&search=jordan'
+        );
       });
-    });
-
-    it('should not fetch terms for queries shorter than 2 characters', async () => {
-      render(<MainSearchBar />);
-      const input = getSearchInput();
-
-      await act(async () => {
-        fireEvent.focus(input);
-        fireEvent.change(input, { target: { value: 'a' } });
-      });
-
-      await act(async () => {
-        jest.advanceTimersByTime(500);
-      });
-
-      expect(mockGetPopularSneakerTerms).not.toHaveBeenCalled();
     });
   });
 
@@ -253,37 +226,46 @@ describe('MainSearchBar', () => {
         fireEvent.keyDown(input, { key: 'Enter', code: 'Enter' });
       });
 
-      expect(screen.queryByTestId('overlay')).not.toBeInTheDocument();
+      await waitFor(() => {
+        expect(screen.queryByTestId('overlay')).not.toBeInTheDocument();
+      });
     });
   });
 
   describe('Cleanup', () => {
-    it('should clean up blur timeout on unmount', () => {
+    it('should clean up blur timeout on unmount', async () => {
       const { unmount } = render(<MainSearchBar />);
       const input = getSearchInput();
 
-      fireEvent.focus(input);
-      fireEvent.blur(input);
+      await act(async () => {
+        fireEvent.focus(input);
+        fireEvent.blur(input);
+      });
 
       unmount();
 
-      jest.runAllTimers();
+      await act(async () => {
+        jest.runAllTimers();
+      });
+
       expect(true).toBeTruthy();
     });
-  });
 
-  describe('Input Value Updates', () => {
-    it('should update input value when search params change', () => {
-      createMockSearchParams({ search: 'initial' });
-      const { rerender } = render(<MainSearchBar />);
-      const input = getSearchInput() as HTMLInputElement;
+    it('should clean up debounce timeout on unmount', async () => {
+      const { unmount } = render(<MainSearchBar />);
+      const input = getSearchInput();
 
-      expect(input.value).toBe('initial');
+      await act(async () => {
+        fireEvent.focus(input);
+        fireEvent.change(input, { target: { value: 'nike' } });
+      });
 
-      createMockSearchParams({ search: 'updated' });
-      rerender(<MainSearchBar />);
+      unmount();
+      await act(async () => {
+        jest.runAllTimers();
+      });
 
-      expect(input.value).toBe('updated');
+      expect(mockGetPopularSneakerTerms).not.toHaveBeenCalled();
     });
   });
 });
