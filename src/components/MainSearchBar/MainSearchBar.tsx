@@ -68,21 +68,11 @@ export const MainSearchBar = () => {
       const now = Date.now();
 
       if (cached && now - cached.timestamp < CACHE_EXPIRATION_MS) {
-        if (process.env.NODE_ENV === 'development') {
-          console.log(
-            `[CACHE] Serving from cache for query: "${normalizedQuery}"`
-          );
-        }
         setPopularTerms(capitalizeList(cached.data));
         return;
       }
 
       try {
-        if (process.env.NODE_ENV === 'development') {
-          console.log(
-            `[API CALL] Fetching from API for query: "${normalizedQuery}"`
-          );
-        }
         const terms = await fetchPopularTerms(normalizedQuery);
         setPopularTerms(capitalizeList(terms.length > 0 ? terms : []));
         searchSuggestionsCache.set(normalizedQuery, {
