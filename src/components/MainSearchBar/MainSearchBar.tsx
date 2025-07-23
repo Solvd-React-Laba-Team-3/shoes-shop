@@ -35,6 +35,7 @@ export const MainSearchBar = () => {
   const [popularTerms, setPopularTerms] = useState<string[]>([]);
   const debouncedInput = useDebounce(inputValue, 2000);
   const [isLoading, setIsLoading] = useState(false);
+  const [hasFetchedInitialTerms, setHasFetchedInitialTerms] = useState(false);
 
   useEffect(() => {
     const getTerms = async () => {
@@ -63,9 +64,15 @@ export const MainSearchBar = () => {
       }
     };
 
+    if (debouncedInput.trim() === '' && hasFetchedInitialTerms) return;
+
+    if (debouncedInput.trim() === '' && !hasFetchedInitialTerms) {
+      setHasFetchedInitialTerms(true);
+    }
+
     setIsLoading(true);
     getTerms();
-  }, [debouncedInput]);
+  }, [debouncedInput, hasFetchedInitialTerms]);
 
   const handleSearch = (value: string) => {
     const params = new URLSearchParams(searchParams.toString());
