@@ -53,6 +53,7 @@ export const PopularTermItem = styled(ListItem)(({ theme }) => ({
   paddingTop: theme.spacing(1),
   paddingLeft: 0,
   paddingRight: 0,
+  textTransform: 'capitalize',
 }));
 
 export const Overlay = styled('div')(() => ({
