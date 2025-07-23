@@ -11,7 +11,7 @@ const StyledIconButton = styled(IconButton)(({ theme }) => ({
   top: '10px',
   right: '10px',
   zIndex: 2,
-  backgroundColor: 'transparenet',
+  backgroundColor: 'transparent',
   color: theme.palette.secondary.main,
   transition: 'color 0.2s ease-in, background-color 0.2s ease-in',
   '&:hover': {
