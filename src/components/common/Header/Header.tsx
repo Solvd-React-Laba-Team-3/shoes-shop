@@ -8,7 +8,8 @@ import ShoppingBasketIcon from '@mui/icons-material/ShoppingBasket';
 import Image from 'next/image';
 import { styled } from '@mui/material/styles';
 import { Link } from '@/components/ui';
-import { MainSearchBar } from '@/components';
+import { HEADER_HEIGHT } from '@/constants/headerHeight';
+import { MainSearchBar } from '@/components/MainSearchBar/MainSearchBar';
 
 const StyledContainer = styled(Box)(({ theme }) => ({
   display: 'flex',
@@ -16,7 +17,7 @@ const StyledContainer = styled(Box)(({ theme }) => ({
   justifyContent: 'space-between',
   borderBottom: `1px solid ${theme.palette.divider}`,
   padding: '45px 40px',
-  height: '100px',
+  height: HEADER_HEIGHT,
 }));
 
 export const Header = () => {
