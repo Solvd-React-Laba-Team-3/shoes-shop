@@ -1,4 +1,4 @@
-import { geminiModel } from './gemini';
+import { geminiModel } from '../../constants/geminiConfig';
 
 export async function getPopularSneakerTerms(query: string): Promise<string[]> {
   if (!query || query.trim().length === 0) return [];

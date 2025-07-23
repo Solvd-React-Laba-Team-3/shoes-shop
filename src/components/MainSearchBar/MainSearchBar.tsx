@@ -18,18 +18,37 @@ import CloseIcon from '@mui/icons-material/Close';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useDebounce } from '@/lib/hooks/useDebounce';
-import { fetchPopularTerms } from '@/actions/getPopularTerms';
 import { List, Typography } from '@mui/material';
+import { getPopularSneakerTerms } from '@/api/gemini/getPopularSneakerTerms';
+
+const CACHE_EXPIRATION_MS = 5 * 60 * 1000;
+const searchSuggestionsCache = new Map<
+  string,
+  { timestamp: number; data: string[] }
+>();
+
+const defaultPopularTerms = ['Nike Dunks', 'Adidas Yeezy', 'Jordan 1'];
+function capitalize(str: string): string {
+  return str.charAt(0).toUpperCase() + str.slice(1);
+}
+
+function capitalizeList(list: string[]): string[] {
+  return list.map(capitalize);
+}
 
 export const MainSearchBar = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const inputRef = useRef<HTMLInputElement>(null);
   const blurTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const [inputValue, setInputValue] = useState('');
   const [isFocused, setIsFocused] = useState(false);
   const [popularTerms, setPopularTerms] = useState<string[]>([]);
-  const debouncedInput = useDebounce(inputValue, 600);
+  const debouncedInput = useDebounce(inputValue, 200);
+
+  async function fetchPopularTerms(query: string): Promise<string[]> {
+    if (!query.trim()) return [];
+    return await getPopularSneakerTerms(query);
+  }
 
   useEffect(() => {
     const search = searchParams.get('search') || '';
@@ -38,23 +57,47 @@ export const MainSearchBar = () => {
 
   useEffect(() => {
     const getTerms = async () => {
-      if (!debouncedInput.trim()) {
-        setPopularTerms([]);
+      const normalizedQuery = debouncedInput.trim().toLowerCase();
+
+      if (!normalizedQuery || normalizedQuery.length < 2) {
+        setPopularTerms(defaultPopularTerms);
         return;
       }
+
+      const cached = searchSuggestionsCache.get(normalizedQuery);
+      const now = Date.now();
+
+      if (cached && now - cached.timestamp < CACHE_EXPIRATION_MS) {
+        if (process.env.NODE_ENV === 'development') {
+          console.log(
+            `[CACHE] Serving from cache for query: "${normalizedQuery}"`
+          );
+        }
+        setPopularTerms(capitalizeList(cached.data));
+        return;
+      }
+
       try {
-        const terms = await fetchPopularTerms(debouncedInput);
-        setPopularTerms(terms);
+        if (process.env.NODE_ENV === 'development') {
+          console.log(
+            `[API CALL] Fetching from API for query: "${normalizedQuery}"`
+          );
+        }
+        const terms = await fetchPopularTerms(normalizedQuery);
+        setPopularTerms(capitalizeList(terms.length > 0 ? terms : []));
+        searchSuggestionsCache.set(normalizedQuery, {
+          data: terms,
+          timestamp: now,
+        });
       } catch (err) {
         console.error('[AUTOCOMPLETE_ERROR]', err);
-        setPopularTerms([]); // Add this to ensure state is updated even on error
+        setPopularTerms([]);
       }
     };
 
     getTerms();
   }, [debouncedInput]);
 
-  // Clean up timeout on unmount
   useEffect(() => {
     return () => {
       if (blurTimeoutRef.current) {
@@ -78,7 +121,6 @@ export const MainSearchBar = () => {
 
   const handleClose = () => {
     setIsFocused(false);
-    inputRef.current?.blur();
   };
 
   const handleFocus = () => {
@@ -138,7 +180,6 @@ export const MainSearchBar = () => {
           onKeyDown={handleKeyDown}
           onFocus={handleFocus}
           onBlur={handleBlur}
-          inputRef={inputRef}
           data-testid="search-input"
         />
         {popularTerms.length > 0 && isFocused && (
