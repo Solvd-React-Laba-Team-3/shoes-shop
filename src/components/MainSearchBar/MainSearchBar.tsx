@@ -64,8 +64,6 @@ export const MainSearchBar = () => {
       }
     };
 
-    if (debouncedInput.trim() === '' && hasFetchedInitialTerms) return;
-
     if (debouncedInput.trim() === '' && !hasFetchedInitialTerms) {
       setHasFetchedInitialTerms(true);
     }
