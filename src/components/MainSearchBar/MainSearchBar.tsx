@@ -136,7 +136,9 @@ export const MainSearchBar = () => {
       >
         <SearchBar
           value={inputValue}
-          onChange={(e) => setInputValue(e.target.value)}
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+            setInputValue(e.target.value);
+          }}
           placeholder="Search"
           expandOnFocus
           size="medium"
