@@ -101,8 +101,6 @@ describe('SignIn', () => {
   });
 
   it('notifies about failed login', async () => {
-    const alertMock = jest.spyOn(window, 'alert').mockImplementation(() => {});
-
     (signIn as jest.Mock).mockResolvedValue({
       ok: false,
       error: 'Invalid credentials',
@@ -122,6 +120,8 @@ describe('SignIn', () => {
 
     await screen.findByRole('button', { name: /sign in/i });
 
-    expect(alertMock).toHaveBeenCalledWith('Login failed: Invalid credentials');
+    expect(
+      screen.getByText(/Invalid login or passsword. Please try again./i)
+    ).toBeInTheDocument();
   });
 });

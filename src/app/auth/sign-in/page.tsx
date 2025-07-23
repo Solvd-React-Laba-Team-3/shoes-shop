@@ -25,6 +25,7 @@ const SignIn = () => {
   const {
     register,
     handleSubmit,
+    setError,
     formState: { errors },
   } = useForm<SignInFormData>({
     resolver: zodResolver(signInSchema),
@@ -46,7 +47,10 @@ const SignIn = () => {
     if (res?.ok) {
       router.push('/');
     } else {
-      alert('Login failed: ' + res?.error);
+      setError('password', {
+        type: 'manual',
+        message: 'Invalid login or passsword. Please try again.',
+      });
     }
   };
   return (
@@ -111,6 +115,7 @@ const SignIn = () => {
               {errors.password.message}
             </FormLabel>
           )}
+
           <Stack
             sx={{
               display: 'flex',
