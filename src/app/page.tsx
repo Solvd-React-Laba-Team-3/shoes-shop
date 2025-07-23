@@ -1,5 +1,6 @@
 'use client';
 
+import EditPage from '@/components/common/EditPage/EditPage';
 import { Header } from '@/components/common/Header';
 import { Button } from '@/components/ui';
 import Box from '@mui/material/Box';
@@ -22,6 +23,7 @@ export default function Home() {
         <Button onClick={() => signIn('credentials')}>Sign In</Button>
         <Button onClick={() => signOut()}>Sign Out</Button>
       </Box>
+      <EditPage />
     </>
   );
 }
