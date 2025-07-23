@@ -9,7 +9,7 @@ import Image from 'next/image';
 import { styled } from '@mui/material/styles';
 import { Link } from '@/components/ui';
 import { HEADER_HEIGHT } from '@/constants/headerHeight';
-import { MainSearchBar } from '@/components/MainSearchBar/MainSearchBar';
+import { MainSearchBar } from '@/components/MainSearchBar';
 
 const StyledContainer = styled(Box)(({ theme }) => ({
   display: 'flex',

@@ -1,8 +1,6 @@
 'use client';
-
 import type React from 'react';
-
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { SearchBar } from '../ui';
 import {
@@ -20,81 +18,55 @@ import Image from 'next/image';
 import { useDebounce } from '@/lib/hooks/useDebounce';
 import { List, Typography } from '@mui/material';
 import { getPopularSneakerTerms } from '@/api/gemini/getPopularSneakerTerms';
+import LinearProgress from '@mui/material/LinearProgress';
+import { CACHE_EXPIRATION_MS } from '@/constants/queriesStaleTime';
 
-const CACHE_EXPIRATION_MS = 5 * 60 * 1000;
 const searchSuggestionsCache = new Map<
   string,
   { timestamp: number; data: string[] }
 >();
 
-const defaultPopularTerms = ['Nike Dunks', 'Adidas Yeezy', 'Jordan 1'];
-function capitalize(str: string): string {
-  return str.charAt(0).toUpperCase() + str.slice(1);
-}
-
-function capitalizeList(list: string[]): string[] {
-  return list.map(capitalize);
-}
-
 export const MainSearchBar = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const blurTimeoutRef = useRef<NodeJS.Timeout | null>(null);
-  const [inputValue, setInputValue] = useState('');
+  const [inputValue, setInputValue] = useState(
+    searchParams.get('search') || ''
+  );
   const [isFocused, setIsFocused] = useState(false);
   const [popularTerms, setPopularTerms] = useState<string[]>([]);
-  const debouncedInput = useDebounce(inputValue, 200);
-
-  async function fetchPopularTerms(query: string): Promise<string[]> {
-    if (!query.trim()) return [];
-    return await getPopularSneakerTerms(query);
-  }
-
-  useEffect(() => {
-    const search = searchParams.get('search') || '';
-    setInputValue(search);
-  }, [searchParams]);
+  const debouncedInput = useDebounce(inputValue, 2000);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     const getTerms = async () => {
       const normalizedQuery = debouncedInput.trim().toLowerCase();
 
-      if (!normalizedQuery || normalizedQuery.length < 2) {
-        setPopularTerms(defaultPopularTerms);
-        return;
-      }
-
       const cached = searchSuggestionsCache.get(normalizedQuery);
       const now = Date.now();
 
       if (cached && now - cached.timestamp < CACHE_EXPIRATION_MS) {
-        setPopularTerms(capitalizeList(cached.data));
+        setPopularTerms(cached.data);
+        setIsLoading(false);
         return;
       }
 
+      setIsLoading(true);
       try {
-        const terms = await fetchPopularTerms(normalizedQuery);
-        setPopularTerms(capitalizeList(terms.length > 0 ? terms : []));
+        const terms = await getPopularSneakerTerms(normalizedQuery);
+        setPopularTerms(terms.length > 0 ? terms : []);
         searchSuggestionsCache.set(normalizedQuery, {
           data: terms,
           timestamp: now,
         });
-      } catch (err) {
-        console.error('[AUTOCOMPLETE_ERROR]', err);
+      } catch {
         setPopularTerms([]);
+      } finally {
+        setIsLoading(false);
       }
     };
 
     getTerms();
   }, [debouncedInput]);
-
-  useEffect(() => {
-    return () => {
-      if (blurTimeoutRef.current) {
-        clearTimeout(blurTimeoutRef.current);
-      }
-    };
-  }, []);
 
   const handleSearch = (value: string) => {
     const params = new URLSearchParams(searchParams.toString());
@@ -114,23 +86,39 @@ export const MainSearchBar = () => {
   };
 
   const handleFocus = () => {
-    if (blurTimeoutRef.current) {
-      clearTimeout(blurTimeoutRef.current);
-      blurTimeoutRef.current = null;
-    }
     setIsFocused(true);
   };
 
   const handleBlur = () => {
-    blurTimeoutRef.current = setTimeout(() => {
-      setIsFocused(false);
-    }, 150);
+    setIsFocused(false);
   };
 
   const handleTermClick = (term: string) => {
     setInputValue(term);
     handleSearch(term);
+    if (document.activeElement instanceof HTMLElement) {
+      document.activeElement.blur();
+    }
     handleClose();
+  };
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newValue = e.target.value;
+    setInputValue(newValue);
+
+    const normalized = newValue.trim().toLowerCase();
+
+    const cached = searchSuggestionsCache.get(normalized);
+    const now = Date.now();
+
+    if (
+      normalized &&
+      (!cached || now - cached.timestamp >= CACHE_EXPIRATION_MS)
+    ) {
+      setIsLoading(true);
+    } else {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -163,7 +151,7 @@ export const MainSearchBar = () => {
       >
         <SearchBar
           value={inputValue}
-          onChange={(e) => setInputValue(e.target.value)}
+          onChange={handleInputChange}
           placeholder="Search"
           expandOnFocus
           size="medium"
@@ -173,10 +161,25 @@ export const MainSearchBar = () => {
           data-testid="search-input"
         />
         {popularTerms.length > 0 && isFocused && (
-          <PopularTermsContainer data-testid="popular-terms-container">
-            <Typography variant="h6" fontWeight={500}>
-              Popular Search Terms
-            </Typography>
+          <PopularTermsContainer
+            data-testid="popular-terms-container"
+            sx={{ position: 'relative' }}
+          >
+            {isLoading && (
+              <LinearProgress
+                data-testid="loading-bar"
+                sx={{
+                  position: 'absolute',
+                  top: -20,
+                  left: '50%',
+                  transform: 'translateX(-50%)',
+                  width: '100%',
+                  maxWidth: 1040,
+                  zIndex: 1,
+                }}
+              />
+            )}
+            <Typography variant="h6">Popular Search Terms</Typography>
             <List disablePadding>
               {popularTerms.map((term, index) => (
                 <PopularTermItem
