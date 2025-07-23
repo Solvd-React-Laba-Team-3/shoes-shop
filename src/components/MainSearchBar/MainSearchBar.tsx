@@ -18,7 +18,7 @@ import { useDebounce } from '@/lib/hooks/useDebounce';
 import { List, Typography } from '@mui/material';
 import { getPopularSneakerTerms } from '@/api/gemini/getPopularSneakerTerms';
 import LinearProgress from '@mui/material/LinearProgress';
-import { CACHE_EXPIRATION_MS } from '@/constants/queriesStaleTime';
+import { AI_REQUEST_STALE_TIME } from '@/constants/queriesStaleTime';
 
 const searchSuggestionsCache = new Map<
   string,
@@ -39,11 +39,10 @@ export const MainSearchBar = () => {
   useEffect(() => {
     const getTerms = async () => {
       const normalizedQuery = debouncedInput.trim().toLowerCase();
-
-      const cached = searchSuggestionsCache.get(normalizedQuery);
       const now = Date.now();
 
-      if (cached && now - cached.timestamp < CACHE_EXPIRATION_MS) {
+      const cached = searchSuggestionsCache.get(normalizedQuery);
+      if (cached && now - cached.timestamp < AI_REQUEST_STALE_TIME) {
         setPopularTerms(cached.data);
         setIsLoading(false);
         return;
@@ -64,6 +63,7 @@ export const MainSearchBar = () => {
       }
     };
 
+    setIsLoading(true);
     getTerms();
   }, [debouncedInput]);
 
@@ -101,25 +101,6 @@ export const MainSearchBar = () => {
     handleClose();
   };
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newValue = e.target.value;
-    setInputValue(newValue);
-
-    const normalized = newValue.trim().toLowerCase();
-
-    const cached = searchSuggestionsCache.get(normalized);
-    const now = Date.now();
-
-    if (
-      normalized &&
-      (!cached || now - cached.timestamp >= CACHE_EXPIRATION_MS)
-    ) {
-      setIsLoading(true);
-    } else {
-      setIsLoading(false);
-    }
-  };
-
   return (
     <>
       {isFocused && <Overlay data-testid="overlay" onClick={handleClose} />}
@@ -150,7 +131,7 @@ export const MainSearchBar = () => {
       >
         <SearchBar
           value={inputValue}
-          onChange={handleInputChange}
+          onChange={(e) => setInputValue(e.target.value)}
           placeholder="Search"
           expandOnFocus
           size="medium"
