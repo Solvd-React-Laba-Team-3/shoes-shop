@@ -24,6 +24,7 @@ export const FiltersWrapper: React.FC<FiltersWrapperProps> = ({
     onClose={onClose}
     variant="persistent"
     anchor="left"
+    slotProps={{ paper: { sx: { border: 'none' } } }}
   >
     <Box
       sx={{ paddingLeft: '40px', overflowX: 'hidden', paddingBottom: '200px' }}

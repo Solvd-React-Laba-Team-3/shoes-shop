@@ -14,7 +14,7 @@ import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
 import Link from 'next/link';
 import Image from 'next/image';
-import { useDebounce } from '@/lib/hooks/useDebounce';
+import { useDebounce } from '@/lib/hooks/';
 import { List, Typography } from '@mui/material';
 import { getPopularSneakerTerms } from '@/api/gemini/getPopularSneakerTerms';
 import LinearProgress from '@mui/material/LinearProgress';
@@ -39,7 +39,7 @@ export const MainSearchBar = () => {
 
   useEffect(() => {
     const getTerms = async () => {
-      const normalizedQuery = debouncedInput.trim().toLowerCase();
+      const normalizedQuery = (debouncedInput as string).trim().toLowerCase();
       const now = Date.now();
 
       const cached = searchSuggestionsCache.get(normalizedQuery);
@@ -64,7 +64,7 @@ export const MainSearchBar = () => {
       }
     };
 
-    if (debouncedInput.trim() === '' && !hasFetchedInitialTerms) {
+    if ((debouncedInput as string).trim() === '' && !hasFetchedInitialTerms) {
       setHasFetchedInitialTerms(true);
     }
 

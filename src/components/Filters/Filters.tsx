@@ -16,7 +16,7 @@ import { getSizesOptions } from '@/api/size/getSizesOptions';
 import { getColorsOptions } from '@/api/color/getColorsOptions';
 import { getBrandsOptions } from '@/api/brand/getBrandsOptions';
 import { useEffect, useState } from 'react';
-import { parseQueryString, toQueryString } from '@/lib/utils/';
+import { toQueryString } from '@/lib/utils/';
 
 export const Filters: React.FC = () => {
   const searchParams = useSearchsParams();
@@ -27,12 +27,13 @@ export const Filters: React.FC = () => {
   const [selectedBrands, setSelectedBrands] = useState<number[]>([]);
   const [selectedPrices, setSelectedPrices] = useState<number[]>([0, 10000]);
   const debouncedPrices = useDebounce(selectedPrices, 300);
+
   useEffect(() => {
     const filters = {
-      size: selectedSizes.length ? { $in: selectedSizes } : '',
-      color: selectedColors.length ? { $in: selectedColors } : '',
-      gender: selectedGenders.length ? { $in: selectedGenders } : '',
-      brand: selectedBrands.length ? { $in: selectedBrands } : '',
+      sizes: selectedSizes.length ? { id: { $in: selectedSizes } } : '',
+      color: selectedColors.length ? { id: { $in: selectedColors } } : '',
+      gender: selectedGenders.length ? { id: { $in: selectedGenders } } : '',
+      brand: selectedBrands.length ? { id: { $in: selectedBrands } } : '',
       price: debouncedPrices.length
         ? { $gte: debouncedPrices[0], $lte: debouncedPrices[1] }
         : '',
@@ -47,13 +48,6 @@ export const Filters: React.FC = () => {
     selectedBrands,
     debouncedPrices,
   ]);
-
-  console.log(
-    'Search Params:',
-    parseQueryString(
-      decodeURIComponent(searchParams.searchParams.get('filters') || '')
-    )
-  );
 
   const toggleSelection = (
     setData: React.Dispatch<React.SetStateAction<number[]>>,

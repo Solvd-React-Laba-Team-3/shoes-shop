@@ -13,7 +13,6 @@
  * parseQueryStringToObject('?filter[user][id]=1&tags=react,nextjs')
  * // => { filter: { user: { id: '1' } }, tags: ['react', 'nextjs'] }
  */
-
 export function parseQueryString(queryString: string): Record<string, any> {
   const params = new URLSearchParams(
     queryString.startsWith('?') ? queryString.slice(1) : queryString
@@ -25,14 +24,20 @@ export function parseQueryString(queryString: string): Record<string, any> {
     let current = result;
 
     keys.forEach((k, i) => {
-      if (i === keys.length - 1) {
-        if (value.includes(',')) {
-          current[k] = value.split(',');
+      const isLast = i === keys.length - 1;
+
+      if (isLast) {
+        if (Array.isArray(current[k])) {
+          current[k].push(value);
+        } else if (k in current) {
+          current[k] = [current[k], value];
         } else {
           current[k] = value;
         }
       } else {
-        if (!current[k]) current[k] = {};
+        if (!current[k] || typeof current[k] !== 'object') {
+          current[k] = {};
+        }
         current = current[k];
       }
     });
