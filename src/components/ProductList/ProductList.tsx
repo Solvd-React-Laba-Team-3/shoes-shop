@@ -15,7 +15,7 @@ export function ProductList({ products }: ProductListProps) {
     >
       {products.map((product) => (
         <Grid key={product.id} size={{ xs: 6, sm: 4, md: 3 }}>
-          <ProductCard {...product} hasWishlistButton />
+          <ProductCard {...product} cardType="actionMenu" />
         </Grid>
       ))}
     </Grid>

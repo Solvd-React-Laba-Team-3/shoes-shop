@@ -109,18 +109,21 @@ describe('ProductCard', () => {
     expect(screen.getByText("Women's Shoes")).toBeInTheDocument();
   });
 
-  it('renders ProductActionMenu when hasActionMenu is true', () => {
-    render(<ProductCard {...mockProduct} hasActionMenu />);
-    expect(screen.getByTestId('product-action-menu')).toBeInTheDocument();
-  });
-
-  it('does not render ProductActionMenu when hasActionMenu is false', () => {
-    render(<ProductCard {...mockProduct} />);
+  it('does not render any action buttons by default (catalog)', () => {
+    render(<ProductCard {...mockProduct} cardType="catalog" />);
     expect(screen.queryByTestId('product-action-menu')).not.toBeInTheDocument();
+    expect(screen.queryByTestId('wishlist-button')).not.toBeInTheDocument();
   });
 
-  it('renders ProductWishlistButton when hasWishlistButton is true', () => {
-    render(<ProductCard {...mockProduct} hasWishlistButton />);
+  it('renders ProductActionMenu when cardType is "actionMenu"', () => {
+    render(<ProductCard {...mockProduct} cardType="actionMenu" />);
+    expect(screen.getByTestId('product-action-menu')).toBeInTheDocument();
+    expect(screen.queryByTestId('wishlist-button')).not.toBeInTheDocument();
+  });
+
+  it('renders ProductWishlistButton when cardType is "wishlist"', () => {
+    render(<ProductCard {...mockProduct} cardType="wishlist" />);
+    expect(screen.queryByTestId('product-action-menu')).not.toBeInTheDocument();
     expect(screen.getByTestId('wishlist-button')).toBeInTheDocument();
   });
 

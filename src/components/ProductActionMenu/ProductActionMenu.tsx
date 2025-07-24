@@ -1,12 +1,16 @@
 'use client';
 
-import { useState, MouseEvent } from 'react';
+import { useState, MouseEvent, FC } from 'react';
 import { Menu, MenuItem, ListItemText } from '@mui/material';
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import Link from 'next/link';
 import { IconButton } from '@/components/ui';
 
-export function ProductActionMenu() {
+type ProductActionMenu = {
+  productId: number;
+};
+
+export const ProductActionMenu: FC<ProductActionMenu> = ({ productId }) => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
 
@@ -46,7 +50,11 @@ export function ProductActionMenu() {
           },
         }}
       >
-        <MenuItem onClick={handleClose} component={Link} href={`/view`}>
+        <MenuItem
+          onClick={handleClose}
+          component={Link}
+          href={`/products/${productId}`}
+        >
           <ListItemText primary="View" />
         </MenuItem>
 
@@ -64,4 +72,4 @@ export function ProductActionMenu() {
       </Menu>
     </>
   );
-}
+};

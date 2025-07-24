@@ -15,7 +15,6 @@ import { FC } from 'react';
 import Link from 'next/link';
 import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
 import Image from 'next/image';
-import { palette } from '@/styles/palette';
 import { ProductActionMenu } from '../ProductActionMenu';
 import { ProductWishlistButton } from '../ProductWishlistButton';
 
@@ -23,8 +22,7 @@ type ProductCardProps = Pick<
   Product,
   'id' | 'name' | 'gender' | 'price' | 'images'
 > & {
-  hasActionMenu?: boolean;
-  hasWishlistButton?: boolean;
+  cardType?: 'catalog' | 'actionMenu' | 'wishlist';
 };
 
 const StyledCard = styled(Card)({
@@ -48,7 +46,7 @@ const StyledCardContent = styled(CardContent)({
   padding: '12px 0 0 0',
 });
 
-const HoverCartBox = styled(Box)({
+const HoverCartBox = styled(Box)(({ theme }) => ({
   position: 'absolute',
   top: '50%',
   left: '50%',
@@ -59,11 +57,11 @@ const HoverCartBox = styled(Box)({
   width: '80px',
   height: '80px',
   borderRadius: '100%',
-  color: palette.text.secondary,
+  color: theme.palette.text.secondary,
   '.MuiCardActionArea-root:hover &': {
     opacity: 1,
   },
-});
+}));
 
 const ActionButtonContainer = styled(Box)(({ theme }) => ({
   position: 'absolute',
@@ -86,14 +84,13 @@ const getGenderText = (genderName: string): string => {
 
 export const ProductCard: FC<ProductCardProps> = ({
   id,
-  hasActionMenu,
-  hasWishlistButton,
   images,
   name,
   gender,
   price,
+  cardType = 'catalog',
 }) => {
-  const productImage = images ? images[0].url : '/landscape-placeholder.png';
+  const productImage = images ? images[0].url : '/product-placeholder.png';
   const productImageAlt =
     images && images[0].alternativeText
       ? images[0].alternativeText
@@ -102,8 +99,8 @@ export const ProductCard: FC<ProductCardProps> = ({
   return (
     <StyledCard>
       <ActionButtonContainer>
-        {hasActionMenu && <ProductActionMenu />}
-        {hasWishlistButton && <ProductWishlistButton />}
+        {cardType === 'actionMenu' && <ProductActionMenu productId={id} />}
+        {cardType === 'wishlist' && <ProductWishlistButton />}
       </ActionButtonContainer>
       <Link href={`/products/${id}`} style={{ textDecoration: 'none' }}>
         <StyledCardActionArea disableRipple>
