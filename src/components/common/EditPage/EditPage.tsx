@@ -200,6 +200,8 @@ export default function EditPage() {
           Submit
         </Button>
       </form>
+
+      {/* images container */}
     </Box>
   );
 }
