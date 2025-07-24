@@ -42,10 +42,10 @@ describe('ForgotPassword page', () => {
     render(<ForgotPassword />, { wrapper: TestWrapper });
 
     expect(
-      screen.getByRole('heading', { name: /forgot password\?/i })
+      screen.getByRole('heading', { name: /Forgot password\?/i })
     ).toBeInTheDocument();
     expect(
-      screen.getByText(/we'll send you reset instructions/i)
+      screen.getByText(/Don’t worry, we’ll send you reset instructions./i)
     ).toBeInTheDocument();
   });
 
@@ -61,7 +61,7 @@ describe('ForgotPassword page', () => {
   it('renders reset password button', () => {
     render(<ForgotPassword />, { wrapper: TestWrapper });
 
-    const button = screen.getByRole('button', { name: /reset password/i });
+    const button = screen.getByRole('button', { name: /Forgot password/i });
     expect(button).toBeInTheDocument();
     expect(button).toHaveAttribute('type', 'submit');
   });
@@ -81,7 +81,7 @@ describe('ForgotPassword page', () => {
     const input = screen.getByLabelText(/email/i);
     fireEvent.change(input, { target: { value: 'invalid-email' } });
 
-    fireEvent.submit(screen.getByRole('button', { name: /reset password/i }));
+    fireEvent.submit(screen.getByRole('button', { name: /Forgot password/i }));
 
     expect(
       await screen.findByText(/invalid email address/i)
@@ -95,12 +95,14 @@ describe('ForgotPassword page', () => {
     const input = screen.getByLabelText(/email/i);
     fireEvent.change(input, { target: { value: 'valid@example.com' } });
 
-    fireEvent.submit(screen.getByRole('button', { name: /reset password/i }));
+    fireEvent.submit(screen.getByRole('button', { name: /Forgot password/i }));
 
     await waitFor(() => {
       expect(mockMutate).toHaveBeenCalledWith(
         { email: 'valid@example.com' },
-        expect.any(Object)
+        {
+          onSuccess: expect.any(Function),
+        }
       );
     });
   });

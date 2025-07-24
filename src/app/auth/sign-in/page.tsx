@@ -15,6 +15,7 @@ import {
   SESSION_MAX_AGE,
 } from '@/constants/sessionMaxAge';
 import { LoaderButton } from '@/components/LoaderButton';
+import WarningAmberIcon from '@mui/icons-material/WarningAmber';
 
 export default function SignIn() {
   const router = useRouter();
@@ -99,7 +100,16 @@ export default function SignIn() {
             {...register('email')}
           />
           {errors.email && (
-            <FormLabel sx={{ fontSize: '13px' }} error>
+            <FormLabel
+              sx={{
+                fontSize: '13px',
+                display: 'flex',
+                alignItems: 'center',
+                gap: 1,
+              }}
+              error
+            >
+              <WarningAmberIcon fontSize="small" />
               {errors.email.message}
             </FormLabel>
           )}
@@ -113,13 +123,29 @@ export default function SignIn() {
             {...register('password')}
           />
           {errors.password && (
-            <FormLabel sx={{ fontSize: '13px' }} error>
-              {errors.password.message}
+            <FormLabel
+              sx={{
+                fontSize: '13px',
+                display: 'flex',
+                alignItems: 'center',
+                gap: 1,
+              }}
+              error
+            >
+              <WarningAmberIcon fontSize="small" /> {errors.password.message}
             </FormLabel>
           )}
           {error && (
-            <FormLabel sx={{ fontSize: '13px' }} error>
-              {error}
+            <FormLabel
+              sx={{
+                fontSize: '13px',
+                display: 'flex',
+                alignItems: 'center',
+                gap: 1,
+              }}
+              error
+            >
+              <WarningAmberIcon fontSize="small" /> {error}
             </FormLabel>
           )}
 
@@ -160,7 +186,7 @@ export default function SignIn() {
           position: 'relative',
         }}
       >
-        <Image src="/login.jpg" alt="sign in" fill objectFit="cover" />
+        <Image src="/login.jpg" alt="sign in" fill sizes="50vw" />
       </Box>
     </>
   );

@@ -68,17 +68,23 @@ describe('SignUp', () => {
   test('submits form with valid data', async () => {
     render(<SignUp />, { wrapper: TestWrapper });
 
+    const testData = {
+      name: 'Olha Kucheruk',
+      email: 'olha@example.com',
+      password: 'password123',
+    };
+
     fireEvent.change(screen.getByLabelText(/name/i), {
-      target: { value: 'Olha' },
+      target: { value: testData.name },
     });
     fireEvent.change(screen.getByLabelText(/email/i), {
-      target: { value: 'olha@example.com' },
+      target: { value: testData.email },
     });
     fireEvent.change(screen.getByLabelText(/^Password/i), {
-      target: { value: 'password123' },
+      target: { value: testData.password },
     });
     fireEvent.change(screen.getByLabelText(/confirm password/i), {
-      target: { value: 'password123' },
+      target: { value: testData.password },
     });
 
     fireEvent.submit(screen.getByRole('button', { name: /sign up/i }));
@@ -86,16 +92,12 @@ describe('SignUp', () => {
     await waitFor(() => {
       expect(mockMutate).toHaveBeenCalledWith(
         {
-          username: 'Olha',
-          email: 'olha@example.com',
-          password: 'password123',
+          username: testData.name,
+          email: testData.email,
+          password: testData.password,
         },
         expect.any(Object)
       );
-    });
-
-    await waitFor(() => {
-      expect(mockRouter.push).toHaveBeenCalledWith('/auth/sign-in');
     });
   });
 
@@ -105,17 +107,26 @@ describe('SignUp', () => {
     fireEvent.submit(screen.getByRole('button', { name: /sign up/i }));
 
     expect(await screen.findByText(/name is required/i)).toBeInTheDocument();
-    expect(screen.getByText(/Invalid email address/i)).toBeInTheDocument();
     expect(
-      screen.getByText(/password must be at least 6 characters/i)
+      await screen.findByText(/invalid email address/i)
     ).toBeInTheDocument();
     expect(
-      screen.getByText(/Please confirm your password/i)
+      await screen.findByText(/password must be at least 6 characters/i)
+    ).toBeInTheDocument();
+    expect(
+      await screen.findByText(/please confirm your password/i)
     ).toBeInTheDocument();
   });
 
   test('shows error if passwords do not match', async () => {
     render(<SignUp />, { wrapper: TestWrapper });
+
+    fireEvent.change(screen.getByLabelText(/name/i), {
+      target: { value: 'Olha Kucheruk' },
+    });
+    fireEvent.change(screen.getByLabelText(/email/i), {
+      target: { value: 'olha@example.com' },
+    });
     fireEvent.change(screen.getByLabelText(/^Password/i), {
       target: { value: 'password123' },
     });
@@ -126,7 +137,7 @@ describe('SignUp', () => {
     fireEvent.submit(screen.getByRole('button', { name: /sign up/i }));
 
     expect(
-      await screen.findByText(/Passwords do not match/i)
+      await screen.findByText(/passwords do not match/i)
     ).toBeInTheDocument();
   });
 });

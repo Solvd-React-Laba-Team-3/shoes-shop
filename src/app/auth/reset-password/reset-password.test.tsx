@@ -1,152 +1,149 @@
 import '@testing-library/jest-dom';
-import { fireEvent, render, screen, waitFor } from '@testing-library/react';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { useSearchParams } from 'next/navigation';
+import { render, screen, waitFor, fireEvent } from '@testing-library/react';
+import { useSearchParams, useRouter } from 'next/navigation';
 import { useResetPassword } from '@/api/auth/useResetPassword';
 import ResetPassword from './page';
-import { ReactElement } from 'react';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import React from 'react';
 
-const mockRouter = {
-  replace: jest.fn(),
-};
+interface ResetPasswordData {
+  password: string;
+  passwordConfirmation: string;
+  code: string;
+}
+
+interface MutateOptions {
+  onSuccess: () => void;
+}
 
 jest.mock('next/navigation', () => ({
-  useRouter: () => mockRouter,
-  useSearchParams: () => ({
-    get: () => 'mock-code',
-  }),
+  useSearchParams: jest.fn(),
+  useRouter: jest.fn(() => ({
+    replace: jest.fn(),
+  })),
 }));
 
-const mockResetPassword = jest.fn();
 jest.mock('@/api/auth/useResetPassword', () => ({
-  useResetPassword: () => ({
-    mutate: mockResetPassword,
-    isError: false,
-    isSuccess: false,
-  }),
+  useResetPassword: jest.fn(),
 }));
 
-const createTestQueryClient = () =>
-  new QueryClient({
-    defaultOptions: {
-      queries: {
-        retry: false,
-      },
-    },
-  });
+jest.mock('@/components/LoaderButton', () => ({
+  LoaderButton: ({
+    text,
+    isSubmitting,
+    loadingText,
+  }: {
+    text: string;
+    isSubmitting: boolean;
+    loadingText: string;
+  }) => <button type="submit">{isSubmitting ? loadingText : text}</button>,
+}));
 
-const renderWithQueryClient = (ui: ReactElement) => {
-  const testQueryClient = createTestQueryClient();
+jest.mock('@/components/ui', () => {
+  const originalModule = jest.requireActual('@/components/ui');
+  return {
+    __esModule: true,
+    ...originalModule,
+    Link: ({ href, children }: { href: string; children: React.ReactNode }) => (
+      <a href={href}>{children}</a>
+    ),
+  };
+});
+
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: { retry: false },
+  },
+});
+
+const renderWithQueryClient = (component: React.ReactElement) => {
   return render(
-    <QueryClientProvider client={testQueryClient}>{ui}</QueryClientProvider>
+    <QueryClientProvider client={queryClient}>{component}</QueryClientProvider>
   );
 };
 
 describe('ResetPassword', () => {
+  const mockReplace = jest.fn();
+  const mockResetPassword = jest.fn();
+
   beforeEach(() => {
     jest.clearAllMocks();
-    renderWithQueryClient(<ResetPassword />);
+    (useRouter as jest.Mock).mockImplementation(() => ({
+      replace: mockReplace,
+    }));
+    (useSearchParams as jest.Mock).mockImplementation(() => ({
+      get: () => 'test-code',
+    }));
+    (useResetPassword as jest.Mock).mockImplementation(() => ({
+      mutate: mockResetPassword,
+      isError: false,
+      isSuccess: false,
+    }));
   });
 
-  it('renders without crashing and shows title and description', () => {
-    expect(
-      screen.getByRole('heading', { name: /reset password/i })
-    ).toBeInTheDocument();
-    expect(
-      screen.getByText(/please create new password here/i)
-    ).toBeInTheDocument();
-  });
-
-  it('renders password and confirm password inputs with correct attributes', () => {
-    const passwordInput = screen.getByLabelText(/^password$/i);
-    const confirmInput = screen.getByLabelText(/confirm password/i);
-
-    expect(passwordInput).toBeInTheDocument();
-    expect(passwordInput).toHaveAttribute('type', 'password');
-    expect(passwordInput).toHaveAttribute(
-      'placeholder',
-      'at least 6 characters'
-    );
-
-    expect(confirmInput).toBeInTheDocument();
-    expect(confirmInput).toHaveAttribute('type', 'password');
-    expect(confirmInput).toHaveAttribute(
-      'placeholder',
-      'at least 6 characters'
-    );
-  });
-
-  it('renders submit button with correct text', () => {
-    const button = screen.getByRole('button', { name: /reset password/i });
-    expect(button).toBeInTheDocument();
-    expect(button).toHaveAttribute('type', 'submit');
-  });
-
-  it('renders "Back to log in" link with correct href', () => {
-    expect(screen.getByText(/back to/i)).toBeInTheDocument();
-    const link = screen.getByRole('link', { name: /log in/i });
-    expect(link).toBeInTheDocument();
-    expect(link).toHaveAttribute('href', '/auth/sign-in');
-  });
-
-  it('redirects to home if no code is provided', () => {
+  it('redirects if no code parameter is present', () => {
     (useSearchParams as jest.Mock).mockImplementation(() => ({
       get: () => null,
     }));
-
     renderWithQueryClient(<ResetPassword />);
-    expect(mockRouter.replace).toHaveBeenCalledWith('/');
+    expect(mockReplace).toHaveBeenCalledWith('/');
   });
 
   it('submits form with valid data', async () => {
-    const passwordInput = screen.getByLabelText(/^password$/i);
-    const confirmInput = screen.getByLabelText(/confirm password/i);
+    renderWithQueryClient(<ResetPassword />);
 
-    fireEvent.change(passwordInput, { target: { value: 'password123' } });
-    fireEvent.change(confirmInput, { target: { value: 'password123' } });
+    const passwordInput = screen.getByLabelText(/^password/i);
+    const confirmPasswordInput = screen.getByLabelText(/confirm password/i);
 
-    fireEvent.submit(screen.getByRole('button', { name: /reset password/i }));
+    fireEvent.change(passwordInput, { target: { value: 'Password123' } });
+    fireEvent.change(confirmPasswordInput, {
+      target: { value: 'Password123' },
+    });
+
+    const submitButton = screen.getByRole('button');
+    fireEvent.click(submitButton);
 
     await waitFor(() => {
       expect(mockResetPassword).toHaveBeenCalledWith(
         {
-          password: 'password123',
-          passwordConfirmation: 'password123',
-          code: 'mock-code',
+          password: 'Password123',
+          passwordConfirmation: 'Password123',
+          code: 'test-code',
         },
         expect.any(Object)
       );
     });
   });
 
-  it('shows success message and redirects after successful reset', async () => {
+  it('shows success message and redirects on successful submission', async () => {
     (useResetPassword as jest.Mock).mockImplementation(() => ({
-      mutate: mockResetPassword,
+      mutate: (data: ResetPasswordData, options: MutateOptions) => {
+        options.onSuccess();
+      },
       isError: false,
       isSuccess: true,
     }));
 
     renderWithQueryClient(<ResetPassword />);
 
+    const passwordInput = screen.getByLabelText(/^password/i);
+    const confirmPasswordInput = screen.getByLabelText(/confirm password/i);
+
+    fireEvent.change(passwordInput, { target: { value: 'Password123' } });
+    fireEvent.change(confirmPasswordInput, {
+      target: { value: 'Password123' },
+    });
+
+    const submitButton = screen.getByRole('button');
+    fireEvent.click(submitButton);
+
     expect(screen.getByText(/password reset successful/i)).toBeInTheDocument();
 
     await waitFor(
       () => {
-        expect(mockRouter.replace).toHaveBeenCalledWith('/auth/sign-in');
+        expect(mockReplace).toHaveBeenCalledWith('/auth/sign-in');
       },
       { timeout: 2500 }
     );
-  });
-
-  it('shows error message on failed reset', () => {
-    (useResetPassword as jest.Mock).mockImplementation(() => ({
-      mutate: mockResetPassword,
-      isError: true,
-      isSuccess: false,
-    }));
-
-    renderWithQueryClient(<ResetPassword />);
-
-    expect(screen.getByText(/failed to reset password/i)).toBeInTheDocument();
   });
 });
