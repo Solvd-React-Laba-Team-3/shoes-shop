@@ -17,6 +17,7 @@ export const ProductList: FC<ProductListProps> = ({
       container
       columnSpacing={{ xs: 2, md: 8 }}
       rowSpacing={{ xs: 2, md: 5 }}
+      sx={{ flexGrow: 1 }}
     >
       {products.map((product) => (
         <Grid key={product.id} size={{ xs: 6, sm: 4, md: 3, lg: 2 }}>

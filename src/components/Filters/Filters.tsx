@@ -9,7 +9,7 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
-import { Accordion, Checkbox } from '@/components/ui';
+import { Accordion, Checkbox, SearchBar } from '@/components/ui';
 import { useSuspenseQueries } from '@tanstack/react-query';
 import { getGendersOptions } from '@/api/gender/getGendersOptions';
 import { getSizesOptions } from '@/api/size/getSizesOptions';
@@ -25,7 +25,7 @@ export const Filters: React.FC = () => {
   const [selectedColors, setSelectedColors] = useState<number[]>([]);
   const [selectedGenders, setSelectedGenders] = useState<number[]>([]);
   const [selectedBrands, setSelectedBrands] = useState<number[]>([]);
-  const [selectedPrices, setSelectedPrices] = useState<number[]>([0, 10000]);
+  const [selectedPrices, setSelectedPrices] = useState<number[]>([1, 10000]);
   const debouncedPrices = useDebounce(selectedPrices, 300);
 
   useEffect(() => {
@@ -91,182 +91,199 @@ export const Filters: React.FC = () => {
 
   return (
     <>
-      <Box sx={{ width: '100%', padding: '40px 0' }}>
-        <Typography variant="caption">Shoes/{search}</Typography>
-        <Typography variant="h4">{search}</Typography>
+      <Box sx={{ width: '100%', padding: '40px' }}>
+        {search && <Typography variant="caption">Shoes/{search}</Typography>}
+        <Typography variant="h4">{search ?? 'Catalog'}</Typography>
       </Box>
-      <Divider />
       <Box display="flex" flexDirection="column" gap="28px">
-        <Accordion label="Gender">
-          <Box display="flex" flexDirection="column" gap="20px">
-            {genders.map((gender) => (
-              <Box
-                sx={{ display: 'flex', gap: '8px', alignItems: 'center' }}
-                key={gender.id}
-              >
-                <Checkbox
-                  id={`gender-${gender.id}`}
-                  onChange={({ target: { checked } }) =>
-                    toggleSelection(setSelectedGenders, checked, gender.id)
-                  }
-                  value={gender.id}
-                />{' '}
-                <StyledFormLabel htmlFor={`gender-${gender.id}`}>
-                  {gender.name}
-                </StyledFormLabel>
-              </Box>
-            ))}
-          </Box>
-        </Accordion>
         <Divider />
-        <Accordion label="Brand">
-          <Box display="flex" flexDirection="column" gap="20px">
-            <input
-              type="search"
-              value={searchBrands}
-              onChange={(e) => setSearchBrands(e.target.value)}
-              placeholder="Search brand"
-            />
-            {brands.map((brand) => (
-              <Box
-                sx={{ display: 'flex', gap: '8px', alignItems: 'center' }}
-                key={brand.id}
-              >
-                <Checkbox
-                  id={`brand-${brand.id}`}
-                  onChange={({ target: { checked } }) =>
-                    toggleSelection(setSelectedBrands, checked, brand.id)
-                  }
-                  value={brand.id}
-                />{' '}
-                <StyledFormLabel htmlFor={`brand-${brand.id}`}>
-                  {brand.name}
-                </StyledFormLabel>
-              </Box>
-            ))}
-          </Box>
-        </Accordion>
-        <Divider />
-        <Accordion label="Price">
-          <Box
-            display="flex"
-            flexDirection="column"
-            paddingRight="20px"
-            alignItems="center"
-          >
-            <Slider
-              value={selectedPrices}
-              scale={(value) => value * 100}
-              valueLabelDisplay="auto"
-              onChange={(_, value) => setSelectedPrices(value)}
-              sx={{ width: '90%' }}
-            />
-            <Box
-              sx={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-                mt: 2,
-                gap: '6px',
-                width: '100%',
-              }}
-            >
-              <TextField
-                sx={{ width: 50 }}
-                type="text"
-                slotProps={{
-                  input: {
-                    sx: {
-                      borderRadius: '6px',
-                      fontSize: 12,
-                      '& .css-py5hz4-MuiInputBase-input-MuiOutlinedInput-input':
-                        {
-                          padding: '4px',
-                          textAlign: 'center',
-                        },
-                    },
-                  },
-                }}
-                size="small"
-                value={selectedPrices[0]}
-                onChange={(e) =>
-                  setSelectedPrices([Number(e.target.value), selectedPrices[1]])
-                }
-              />
-              <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-                to
-              </Typography>
-              <TextField
-                sx={{
-                  width: 50,
-                }}
-                type="text"
-                value={selectedPrices[1]}
-                size="small"
-                slotProps={{
-                  input: {
-                    sx: {
-                      borderRadius: '6px',
-                      fontSize: 12,
-                      '& .css-py5hz4-MuiInputBase-input-MuiOutlinedInput-input':
-                        {
-                          padding: '4px',
-                          textAlign: 'center',
-                        },
-                    },
-                  },
-                }}
-                onChange={(e) =>
-                  setSelectedPrices([selectedPrices[0], Number(e.target.value)])
-                }
-              />
+        <Box paddingLeft="40px">
+          <Accordion label="Gender">
+            <Box display="flex" flexDirection="column" gap="20px">
+              {genders.map((gender) => (
+                <Box
+                  sx={{ display: 'flex', gap: '8px', alignItems: 'center' }}
+                  key={gender.id}
+                >
+                  <Checkbox
+                    id={`gender-${gender.id}`}
+                    onChange={({ target: { checked } }) =>
+                      toggleSelection(setSelectedGenders, checked, gender.id)
+                    }
+                    value={gender.id}
+                  />{' '}
+                  <StyledFormLabel htmlFor={`gender-${gender.id}`}>
+                    {gender.name}
+                  </StyledFormLabel>
+                </Box>
+              ))}
             </Box>
-          </Box>
-        </Accordion>
+          </Accordion>
+        </Box>
         <Divider />
-        <Accordion label="Color">
-          <Box display="flex" flexDirection="column" gap="20px">
-            {colors.map((color) => (
-              <Box
-                sx={{ display: 'flex', gap: '8px', alignItems: 'center' }}
-                key={color.id}
-              >
-                <Checkbox
-                  id={`color-${color.id}`}
-                  onChange={({ target: { checked } }) =>
-                    toggleSelection(setSelectedColors, checked, color.id)
-                  }
-                  value={color.id}
-                />{' '}
-                <StyledFormLabel htmlFor={`color-${color.id}`}>
-                  {color.name}
-                </StyledFormLabel>
-              </Box>
-            ))}
-          </Box>
-        </Accordion>
+        <Box paddingLeft="40px">
+          <Accordion label="Brand">
+            <Box display="flex" flexDirection="column" gap="20px">
+              <SearchBar
+                type="search"
+                value={searchBrands}
+                onChange={(e) => setSearchBrands(e.target.value)}
+                placeholder="Search brand"
+              />
+              {brands.map((brand) => (
+                <Box
+                  sx={{ display: 'flex', gap: '8px', alignItems: 'center' }}
+                  key={brand.id}
+                >
+                  <Checkbox
+                    id={`brand-${brand.id}`}
+                    onChange={({ target: { checked } }) =>
+                      toggleSelection(setSelectedBrands, checked, brand.id)
+                    }
+                    value={brand.id}
+                  />{' '}
+                  <StyledFormLabel htmlFor={`brand-${brand.id}`}>
+                    {brand.name}
+                  </StyledFormLabel>
+                </Box>
+              ))}
+            </Box>
+          </Accordion>
+        </Box>
         <Divider />
-        <Accordion label="Size">
-          <Box display="flex" flexDirection="column" gap="20px">
-            {sizes.map((size) => (
+        <Box paddingLeft="40px">
+          <Accordion label="Price">
+            <Box
+              display="flex"
+              flexDirection="column"
+              paddingRight="20px"
+              alignItems="center"
+            >
+              <Slider
+                value={selectedPrices}
+                max={10000}
+                min={1}
+                valueLabelDisplay="auto"
+                onChange={(_, value) => setSelectedPrices(value)}
+                sx={{ width: '90%' }}
+              />
               <Box
-                sx={{ display: 'flex', gap: '8px', alignItems: 'center' }}
-                key={size.id}
+                sx={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  mt: 2,
+                  gap: '6px',
+                  width: '100%',
+                }}
               >
-                <Checkbox
-                  id={`size-${size.id}`}
-                  onChange={({ target: { checked } }) =>
-                    toggleSelection(setSelectedSizes, checked, size.id)
+                <TextField
+                  sx={{ width: 50 }}
+                  type="text"
+                  slotProps={{
+                    input: {
+                      sx: {
+                        borderRadius: '6px',
+                        fontSize: 12,
+                        '& .css-py5hz4-MuiInputBase-input-MuiOutlinedInput-input':
+                          {
+                            padding: '4px',
+                            textAlign: 'center',
+                          },
+                      },
+                    },
+                  }}
+                  size="small"
+                  value={selectedPrices[0]}
+                  onChange={(e) =>
+                    setSelectedPrices([
+                      Number(e.target.value),
+                      selectedPrices[1],
+                    ])
                   }
-                  value={size.id}
-                />{' '}
-                <StyledFormLabel htmlFor={`size-${size.id}`}>
-                  {size.value}
-                </StyledFormLabel>
+                />
+                <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+                  to
+                </Typography>
+                <TextField
+                  sx={{
+                    width: 50,
+                  }}
+                  type="text"
+                  value={selectedPrices[1]}
+                  size="small"
+                  slotProps={{
+                    input: {
+                      sx: {
+                        borderRadius: '6px',
+                        fontSize: 12,
+                        '& .css-py5hz4-MuiInputBase-input-MuiOutlinedInput-input':
+                          {
+                            padding: '4px',
+                            textAlign: 'center',
+                          },
+                      },
+                    },
+                  }}
+                  onChange={(e) =>
+                    setSelectedPrices([
+                      selectedPrices[0],
+                      Number(e.target.value),
+                    ])
+                  }
+                />
               </Box>
-            ))}
-          </Box>
-        </Accordion>
+            </Box>
+          </Accordion>
+        </Box>
+        <Divider />
+        <Box paddingLeft="40px">
+          <Accordion label="Color">
+            <Box display="flex" flexDirection="column" gap="20px">
+              {colors.map((color) => (
+                <Box
+                  sx={{ display: 'flex', gap: '8px', alignItems: 'center' }}
+                  key={color.id}
+                >
+                  <Checkbox
+                    id={`color-${color.id}`}
+                    onChange={({ target: { checked } }) =>
+                      toggleSelection(setSelectedColors, checked, color.id)
+                    }
+                    value={color.id}
+                  />{' '}
+                  <StyledFormLabel htmlFor={`color-${color.id}`}>
+                    {color.name}
+                  </StyledFormLabel>
+                </Box>
+              ))}
+            </Box>
+          </Accordion>
+        </Box>
+        <Divider />
+        <Box paddingLeft="40px">
+          <Accordion label="Size">
+            <Box display="flex" flexDirection="column" gap="20px">
+              {sizes.map((size) => (
+                <Box
+                  sx={{ display: 'flex', gap: '8px', alignItems: 'center' }}
+                  key={size.id}
+                >
+                  <Checkbox
+                    id={`size-${size.id}`}
+                    onChange={({ target: { checked } }) =>
+                      toggleSelection(setSelectedSizes, checked, size.id)
+                    }
+                    value={size.id}
+                  />{' '}
+                  <StyledFormLabel htmlFor={`size-${size.id}`}>
+                    {size.value}
+                  </StyledFormLabel>
+                </Box>
+              ))}
+            </Box>
+          </Accordion>
+        </Box>
       </Box>
     </>
   );
