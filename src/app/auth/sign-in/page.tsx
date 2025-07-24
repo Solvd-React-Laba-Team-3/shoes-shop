@@ -1,72 +1,81 @@
 'use client';
-import {
-  AuthFormContainer,
-  Button,
-  Checkbox,
-  LabeledTextfield,
-  Link,
-} from '@/components/ui';
-import { Box, FormLabel, Stack, Typography } from '@mui/material';
+
+import { Button, Checkbox, LabeledTextfield, Link } from '@/components/ui';
+import { Box, CircularProgress, FormLabel, Typography } from '@mui/material';
 import Image from 'next/image';
 import { useForm } from 'react-hook-form';
-import * as z from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { signIn } from 'next-auth/react';
+import { signInSchema, SignInSchema } from './sign-in.schema';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-
-const signInSchema = z.object({
-  email: z.string().email('Invalid email address'),
-  password: z.string().min(6, 'Password must be at least 6 characters'),
-});
-
-type SignInFormData = z.infer<typeof signInSchema>;
+import { AuthFormContainer } from '@/components/AuthFormContainer';
+import {
+  REMEMBER_ME_SESSION_MAX_AGE,
+  SESSION_MAX_AGE,
+} from '@/constants/sessionMaxAge';
 
 const SignIn = () => {
+  const router = useRouter();
+  const [error, setError] = useState<string | null>(null);
+  const [isRememberMe, setIsRememberMe] = useState(false);
   const {
     register,
     handleSubmit,
-    setError,
-    formState: { errors },
-  } = useForm<SignInFormData>({
+    formState: { errors, isSubmitting },
+    watch,
+  } = useForm<SignInSchema>({
     resolver: zodResolver(signInSchema),
     defaultValues: {
       email: '',
       password: '',
     },
   });
-  const router = useRouter();
 
-  const onSubmit = async (data: SignInFormData) => {
-    console.log('submitted data:', data);
-    const res = await signIn('credentials', {
-      redirect: false,
-      identifier: data.email,
-      password: data.password,
-    });
+  const onSubmit = async (data: SignInSchema) => {
+    try {
+      setError(null);
 
-    if (res?.ok) {
-      router.push('/');
-    } else {
-      setError('password', {
-        type: 'manual',
-        message: 'Invalid login or passsword. Please try again.',
+      const result = await signIn('credentials', {
+        redirect: false,
+        identifier: data.email,
+        password: data.password,
+        maxAge: isRememberMe ? REMEMBER_ME_SESSION_MAX_AGE : SESSION_MAX_AGE,
       });
+
+      if (result?.error) {
+        setError(result.error);
+        return;
+      }
+
+      router.push('/products');
+    } catch {
+      setError('An unexpected error occurred. Please try again.');
     }
   };
+
+  useEffect(() => {
+    const subscription = watch(() => {
+      if (error) setError(null);
+    });
+
+    return () => subscription.unsubscribe();
+  }, [watch, error]);
+
   return (
     <>
       <AuthFormContainer
         title="Welcome back"
         description="Welcome back! Please enter your details to log into your account."
         footer={
-          <Stack direction="row" spacing={1} alignItems="center">
-            <Typography variant="subtitle2" component="p" color="textSecondary">
-              Don’t have an account?
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+            <Typography variant="subtitle2" color="textSecondary">
+              {"Don't have an account?"}
             </Typography>
             <Link href="/auth/sign-up" size="small">
               Sign up
             </Link>
-          </Stack>
+          </Box>
         }
       >
         <Box
@@ -85,15 +94,11 @@ const SignIn = () => {
             label="Email"
             required
             placeholder="example@mail.com"
-            error={!!errors.email}
+            error={!!errors.email || !!error}
             {...register('email')}
           />
           {errors.email && (
-            <FormLabel
-              component="legend"
-              color="error"
-              sx={{ fontSize: '0.75rem', color: 'error.main' }}
-            >
+            <FormLabel sx={{ fontSize: '13px' }} error>
               {errors.email.message}
             </FormLabel>
           )}
@@ -102,36 +107,35 @@ const SignIn = () => {
             label="Password"
             required
             type="password"
-            placeholder="at least 8 characters"
-            error={!!errors.password}
+            placeholder="at least 6 characters"
+            error={!!errors.password || !!error}
             {...register('password')}
           />
           {errors.password && (
-            <FormLabel
-              component="legend"
-              color="error"
-              sx={{ fontSize: '0.75rem', color: 'error.main' }}
-            >
+            <FormLabel sx={{ fontSize: '13px' }} error>
               {errors.password.message}
             </FormLabel>
           )}
+          {error && (
+            <FormLabel sx={{ fontSize: '13px' }} error>
+              {error}
+            </FormLabel>
+          )}
 
-          <Stack
+          <Box
             sx={{
               display: 'flex',
-              flexDirection: 'row',
+              alignItems: 'center',
               justifyContent: 'space-between',
             }}
           >
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-              <Checkbox />
-              <Typography
-                variant="caption"
-                sx={{
-                  fontWeight: (theme) => theme.typography.fontWeightMedium,
-                  color: '#494949',
-                }}
-              >
+              <Checkbox
+                size="large"
+                checked={isRememberMe}
+                onChange={() => setIsRememberMe(!isRememberMe)}
+              />
+              <Typography variant="subtitle2" color="secondary">
                 Remember me
               </Typography>
             </Box>
@@ -139,10 +143,22 @@ const SignIn = () => {
             <Link size="thin" href="/auth/forgot-password">
               Forgot password?
             </Link>
-          </Stack>
+          </Box>
 
-          <Button type="submit" size="large" sx={{ margin: '56px 0 24px' }}>
-            Sign in
+          <Button
+            type="submit"
+            size="large"
+            sx={{
+              mt: '56px',
+              '& .MuiCircularProgress-root': {
+                color: (theme) => theme.palette.common.white,
+                marginLeft: '10px',
+              },
+            }}
+            disabled={isSubmitting}
+          >
+            {isSubmitting ? 'Signing in...' : 'Sign in'}
+            {isSubmitting && <CircularProgress size={12} />}
           </Button>
         </Box>
       </AuthFormContainer>
@@ -153,14 +169,7 @@ const SignIn = () => {
           position: 'relative',
         }}
       >
-        <Image
-          src="/login.jpg"
-          alt="login"
-          fill
-          style={{
-            objectFit: 'cover',
-          }}
-        />
+        <Image src="/login.jpg" alt="login" fill objectFit="cover" />
       </Box>
     </>
   );

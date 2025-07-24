@@ -3,6 +3,8 @@ import { AuthOptions } from 'next-auth';
 import { User as IUser } from '@/types/User';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import { getUserProfile } from '@/api/profile/getUserProfile';
+import { StrapiError } from '@/types/api/StrapiError';
+import { SESSION_MAX_AGE } from './sessionMaxAge';
 
 declare module 'next-auth' {
   interface Session {
@@ -23,6 +25,7 @@ declare module 'next-auth/jwt' {
 
 export const authOptions: AuthOptions = {
   pages: {
+    signIn: '/auth/sign-in',
     newUser: '/auth/sign-up',
   },
   providers: [
@@ -43,7 +46,9 @@ export const authOptions: AuthOptions = {
 
         const user = await getUserProfile(response.jwt);
 
-        if ('error' in response) return null;
+        if ('error' in response) {
+          throw new Error((response as StrapiError).error.message);
+        }
 
         return {
           ...user,
@@ -80,5 +85,6 @@ export const authOptions: AuthOptions = {
 
   session: {
     strategy: 'jwt',
+    maxAge: SESSION_MAX_AGE,
   },
 };

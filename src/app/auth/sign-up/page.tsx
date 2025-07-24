@@ -1,17 +1,12 @@
 'use client';
-import {
-  AuthFormContainer,
-  Button,
-  LabeledTextfield,
-  Link,
-  ReviewPanel,
-} from '@/components/ui';
+import { Button, LabeledTextfield, Link, ReviewPanel } from '@/components/ui';
 import { Box, Stack, Typography, FormLabel } from '@mui/material';
 import Image from 'next/image';
 import { useForm } from 'react-hook-form';
 import * as z from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useRegister } from '@/api/auth/useRegister';
+import { AuthFormContainer } from '@/components/AuthFormContainer';
 
 const signUpSchema = z
   .object({

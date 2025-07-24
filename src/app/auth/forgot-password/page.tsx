@@ -1,22 +1,18 @@
 'use client';
-import {
-  AuthFormContainer,
-  Button,
-  LabeledTextfield,
-  Link,
-} from '@/components/ui';
+import { Button, LabeledTextfield, Link } from '@/components/ui';
 import { Box, FormLabel, Stack, Typography } from '@mui/material';
 import Image from 'next/image';
 import * as z from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { useForgotPassword } from '@/api/auth/useForgotPassword';
+import { AuthFormContainer } from '@/components/AuthFormContainer';
 import { useState } from 'react';
 import CloseIcon from '@mui/icons-material/Close';
 import EmailOutlinedIcon from '@mui/icons-material/EmailOutlined';
 
 const forgotPasswordSchema = z.object({
-  email: z.string().email('Invalid email address'),
+  email: z.email('Invalid email address'),
 });
 
 type ForgotPasswordFormData = z.infer<typeof forgotPasswordSchema>;

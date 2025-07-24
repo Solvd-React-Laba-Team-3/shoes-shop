@@ -1,6 +1,6 @@
 'use client';
 
-import { signIn, useSession } from 'next-auth/react';
+import { useSession } from 'next-auth/react';
 import Avatar from '@mui/material/Avatar';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
@@ -38,7 +38,7 @@ export const Header = () => {
           <Button
             variant="outlined"
             size="small"
-            onClick={() => signIn('credentials')}
+            onClick={() => router.push('/auth/sign-in')}
           >
             Sign in
           </Button>
@@ -50,13 +50,13 @@ export const Header = () => {
             color="secondary"
             sx={{ padding: 0 }}
           >
-            <ShoppingBasketOutlinedIcon />
+            <ShoppingBasketOutlinedIcon fontSize="medium" />
           </IconButton>
           {session && (
             <Link href={session ? '/products' : '/auth/sign-in'}>
               <Avatar
                 src={session.user?.avatar?.url}
-                sx={{ width: '24px', height: '24px' }}
+                sx={{ width: '28px', height: '28px' }}
               />
             </Link>
           )}

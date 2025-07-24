@@ -10,6 +10,7 @@ import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import BusinessCenterIcon from '@mui/icons-material/BusinessCenter';
 import { styled } from '@mui/material/styles';
+import { ProductCard } from '@/components/ProductCard';
 
 const StyledBusinessCenterIcon = styled(BusinessCenterIcon)(({ theme }) => ({
   color: theme.palette.grey[600],
@@ -83,34 +84,7 @@ export default function MyProducts() {
               sx={{ display: 'grid', gridTemplateColumns: 'repeat(4, 320px)' }}
             >
               {session?.user?.products.map((product) => (
-                // TODO: Replace with ProductCard when finished
-                <Box
-                  key={product.id}
-                  sx={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    gap: '10px',
-                    backgroundColor: (theme) => theme.palette.grey[100],
-                    padding: '20px',
-                    borderRadius: '10px',
-                  }}
-                >
-                  <Box
-                    sx={{ display: 'flex', justifyContent: 'space-between' }}
-                  >
-                    <Typography variant="h5">{product.name}</Typography>
-                    <Typography variant="h5">
-                      {product.price.toLocaleString('en-US', {
-                        style: 'currency',
-                        currency: 'USD',
-                        maximumFractionDigits: 0,
-                      })}
-                    </Typography>
-                  </Box>
-                  <Typography variant="subtitle1">
-                    {product.description}
-                  </Typography>
-                </Box>
+                <ProductCard key={product.id} hasActionMenu {...product} />
               ))}
             </Box>
           ) : (
