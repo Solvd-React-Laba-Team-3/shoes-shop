@@ -86,5 +86,15 @@ export const fetchApi = async <T>({
     }
   );
 
-  return response.json();
+  const data = await response.json();
+
+  if (!response.ok) {
+    if (data.error) {
+      throw new Error(data.error.message);
+    }
+
+    throw new Error(data.message);
+  }
+
+  return data;
 };

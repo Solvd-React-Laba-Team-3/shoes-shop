@@ -135,14 +135,7 @@ describe('fetchApi', () => {
         endpoint: '/test',
         method: 'GET',
       })
-    ).resolves.toEqual({
-      error: {
-        status: errorStatus,
-        name: errorMessage,
-        message: errorMessage,
-        details: {},
-      },
-    });
+    ).rejects.toThrow(errorMessage);
   });
 
   it('should append simple query parameters to the URL', async () => {
