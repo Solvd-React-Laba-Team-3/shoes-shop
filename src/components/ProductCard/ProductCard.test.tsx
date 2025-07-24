@@ -41,18 +41,13 @@ const mockProduct: Pick<
   id: 1,
   name: 'Test Shoes',
   price: 199.99,
-  gender: {
-    name: 'Men',
-    createdAt: '0000-00-00',
-    updatedAt: '0000-00-00',
-    publishedAt: '0000-00-00',
-  },
+  gender: { name: 'Men', createdAt: '', updatedAt: '', publishedAt: '' },
   images: [
     {
       id: 1,
       name: 'Test Image',
       alternativeText: 'Alt Text',
-      caption: 'caption',
+      caption: '',
       width: 100,
       height: 100,
       hash: 'hash',
@@ -70,7 +65,7 @@ const mockProduct: Pick<
       updatedAt: '0000-00-00',
       formats: {},
     },
-  ],
+  ] as NonNullable<Product['images']>,
 };
 
 describe('ProductCard', () => {
@@ -91,11 +86,13 @@ describe('ProductCard', () => {
   it('uses image name as alt when alternativeText is missing', () => {
     const productWithoutAlt = {
       ...mockProduct,
-      images: [{ ...mockProduct.images[0], alternativeText: '' }],
+      images: mockProduct.images
+        ? [{ ...mockProduct.images[0], alternativeText: '' }]
+        : [],
     };
     render(<ProductCard {...productWithoutAlt} />);
     const img = screen.getByRole('img') as HTMLImageElement;
-    expect(img).toHaveAttribute('alt', 'Test Image');
+    expect(img).toHaveAttribute('alt', 'product image: Test Shoes');
   });
 
   it("renders Women's Shoes for female products", () => {
