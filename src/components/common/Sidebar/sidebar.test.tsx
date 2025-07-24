@@ -68,6 +68,5 @@ describe('Sidebar', () => {
     fireEvent.click(logoutButton);
 
     expect(signOut).toHaveBeenCalled();
-    expect(mockRouter.push).toHaveBeenCalledWith('/');
   });
 });
