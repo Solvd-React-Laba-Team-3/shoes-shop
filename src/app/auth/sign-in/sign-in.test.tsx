@@ -1,6 +1,7 @@
 import '@testing-library/jest-dom';
 import { fireEvent, render, screen } from '@testing-library/react';
 import SignIn from './page';
+import { signIn } from 'next-auth/react';
 
 jest.mock('@/components/ui', () => {
   const originalModule = jest.requireActual('@/components/ui');
@@ -12,6 +13,24 @@ jest.mock('@/components/ui', () => {
     ),
   };
 });
+
+jest.mock('next-auth/react', () => ({
+  signIn: jest.fn(),
+}));
+
+jest.mock('next/navigation', () => ({
+  useRouter: () => ({
+    push: jest.fn(),
+  }),
+}));
+
+const mockPush = jest.fn();
+
+jest.mock('next/navigation', () => ({
+  useRouter: () => ({
+    push: mockPush,
+  }),
+}));
 
 describe('SignIn', () => {
   it('renders without crashing', () => {
@@ -52,5 +71,57 @@ describe('SignIn', () => {
     });
     expect(forgotPasswordLink).toBeInTheDocument();
     expect(forgotPasswordLink).toHaveAttribute('href', '/auth/forgot-password');
+  });
+
+  it('submits form and navigates to a user profile on sucessful login', async () => {
+    (signIn as jest.Mock).mockResolvedValue({ ok: true });
+
+    render(<SignIn />);
+
+    fireEvent.input(screen.getByLabelText(/email/i), {
+      target: { value: 'test@example.com' },
+    });
+
+    fireEvent.input(screen.getByLabelText(/password/i), {
+      target: { value: '123456' },
+    });
+
+    fireEvent.click(screen.getByRole('button', { name: /sign in/i }));
+
+    await screen.findByRole('button', { name: /sign in/i });
+
+    expect(signIn).toHaveBeenCalledWith(
+      'credentials',
+      expect.objectContaining({
+        identifier: 'test@example.com',
+        password: '123456',
+      })
+    );
+    expect(mockPush).toHaveBeenCalledWith('/');
+  });
+
+  it('notifies about failed login', async () => {
+    (signIn as jest.Mock).mockResolvedValue({
+      ok: false,
+      error: 'Invalid credentials',
+    });
+
+    render(<SignIn />);
+
+    fireEvent.input(screen.getByLabelText(/email/i), {
+      target: { value: 'fail@example.com' },
+    });
+
+    fireEvent.input(screen.getByLabelText(/password/i), {
+      target: { value: 'wrong1password' },
+    });
+
+    fireEvent.click(screen.getByRole('button', { name: /sign in/i }));
+
+    await screen.findByRole('button', { name: /sign in/i });
+
+    expect(
+      screen.getByText(/Invalid login or passsword. Please try again./i)
+    ).toBeInTheDocument();
   });
 });
