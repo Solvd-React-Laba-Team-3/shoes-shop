@@ -17,7 +17,7 @@ const StyledIconButton = styled(IconButton)(({ theme }) => ({
   },
 }));
 
-export default function ProductWishlistButton({
+export function ProductWishlistButton({
   handleClick,
 }: {
   handleClick?: () => void;

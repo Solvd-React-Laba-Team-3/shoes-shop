@@ -16,11 +16,11 @@ const StyledIconButton = styled(IconButton)(({ theme }) => ({
   transition: 'color 0.2s ease-in, background-color 0.2s ease-in',
   '&:hover': {
     color: theme.palette.primary.main,
-    backgroundColor: 'rgba(255,255,255, 0.5)',
+    backgroundColor: theme.palette.grey,
   },
 }));
 
-export default function ProductActionMenu() {
+export function ProductActionMenu() {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
 

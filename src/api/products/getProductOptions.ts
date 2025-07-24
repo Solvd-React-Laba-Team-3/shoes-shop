@@ -12,14 +12,7 @@ export const getProductOptions = (id: number) =>
         endpoint: `/products/${id}`,
         method: 'GET',
         queryParams: {
-          populate: [
-            'images',
-            'brand',
-            'categories',
-            'color',
-            'gender',
-            'sizes',
-          ],
+          populate: '*',
         },
       });
       return formatProductAttributes(res.data.id, res.data.attributes);
