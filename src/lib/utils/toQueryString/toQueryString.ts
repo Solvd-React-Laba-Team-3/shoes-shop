@@ -8,7 +8,7 @@ import { QueryParam } from '@/types/api/QueryParam';
  */
 export function toQueryString(
   queryParams?: QueryParam,
-  prefix?: string
+  rootKey?: string
 ): string {
   if (!queryParams || Object.keys(queryParams).length === 0) {
     return '';
@@ -20,21 +20,22 @@ export function toQueryString(
 
       if (Array.isArray(value)) {
         if (value.length === 0) return [];
-        return [
-          `${encodeURIComponent(paramKey)}=${encodeURIComponent(value.map(String).join(','))}`,
-        ];
+        return value.map(
+          (v) =>
+            `${encodeURIComponent(paramKey)}=${encodeURIComponent(String(v))}`
+        );
       } else if (typeof value === 'object' && value !== null) {
         return buildParams(value as QueryParam, paramKey);
       } else if (value !== undefined && value !== null && value !== '') {
-        return [
-          `${encodeURIComponent(paramKey)}=${encodeURIComponent(String(value))}`,
-        ];
+        return `${encodeURIComponent(paramKey)}=${encodeURIComponent(String(value))}`;
       } else {
         return [];
       }
     });
   }
 
-  const params = buildParams(queryParams, prefix ?? '').join('&');
+  const root = rootKey ? { [rootKey]: queryParams } : queryParams;
+
+  const params = buildParams(root).join('&');
   return params ? `?${params}` : '';
 }
