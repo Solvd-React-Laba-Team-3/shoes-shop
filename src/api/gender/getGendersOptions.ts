@@ -1,4 +1,5 @@
 import { fetchApi } from '@/lib/utils';
+import { flattenStrapiData } from '@/lib/utils/flattenStrapiData/flattenStrapiData';
 import { StrapiPaginatedData } from '@/types/api/StrapiPaginatedData';
 import { StrapiQueryParams } from '@/types/api/StrapiQueryParams';
 import { Gender } from '@/types/Gender';
@@ -12,9 +13,11 @@ export const getGendersOptions = (
   queryOptions({
     queryKey: [GET_GENDERS_QUERY_KEY, queryParams],
     queryFn: async () =>
-      await fetchApi<StrapiPaginatedData<Gender>>({
-        endpoint: '/genders',
-        method: 'GET',
-        queryParams,
-      }),
+      flattenStrapiData(
+        await fetchApi<StrapiPaginatedData<Gender>>({
+          endpoint: '/genders',
+          method: 'GET',
+          queryParams,
+        })
+      ),
   });

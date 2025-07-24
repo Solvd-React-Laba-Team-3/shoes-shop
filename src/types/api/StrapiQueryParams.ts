@@ -1,19 +1,8 @@
-import { QueryParam } from './QueryParam';
-
 export type SortOption<Fields extends string> =
   | `${Fields}:${'asc' | 'desc'}`
   | Array<`${Fields}:${'asc' | 'desc'}`>;
 
-type FilterValue =
-  | string
-  | number
-  | boolean
-  | string[]
-  | { [operator: string]: FilterValue };
-
-type Filters<Fields extends string> = {
-  [K in Fields]?: FilterValue | Filters<Fields>;
-};
+type FieldValue = string | number | boolean | string[];
 
 type Populate<Fields extends string> =
   | '*'
@@ -21,12 +10,23 @@ type Populate<Fields extends string> =
   | Fields[]
   | { [K in Fields]?: true | Populate<Fields> };
 
-export type StrapiQueryParams<Fields extends string> = QueryParam & {
+export type StrapiQueryParams<Fields extends string> = {
   pagination?: {
     page?: number;
     pageSize?: number;
   };
   sort?: SortOption<Fields>;
-  populate?: Populate<Fields>;
-  filters?: Filters<Fields>;
+  populate?:
+    | '*'
+    | Fields
+    | Fields[]
+    | { [K in Fields]?: true | Populate<Fields> };
+  filters?: Partial<
+    Record<
+      Fields,
+      | FieldValue
+      | FieldValue[]
+      | Record<string, FieldValue | FieldValue[] | undefined>
+    >
+  >;
 };
