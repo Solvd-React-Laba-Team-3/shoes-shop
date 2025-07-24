@@ -1,7 +1,7 @@
 'use client';
 
-import { Button, Checkbox, LabeledTextfield, Link } from '@/components/ui';
-import { Box, CircularProgress, FormLabel, Typography } from '@mui/material';
+import { Checkbox, LabeledTextfield, Link } from '@/components/ui';
+import { Box, FormLabel, Typography } from '@mui/material';
 import Image from 'next/image';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -9,13 +9,14 @@ import { signIn } from 'next-auth/react';
 import { signInSchema, SignInSchema } from './sign-in.schema';
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { AuthFormContainer } from '@/components/AuthFormContainer';
+import { AuthContainer } from '@/components/AuthContainer';
 import {
   REMEMBER_ME_SESSION_MAX_AGE,
   SESSION_MAX_AGE,
 } from '@/constants/sessionMaxAge';
+import { LoaderButton } from '@/components/LoaderButton';
 
-const SignIn = () => {
+export default function SignIn() {
   const router = useRouter();
   const [error, setError] = useState<string | null>(null);
   const [isRememberMe, setIsRememberMe] = useState(false);
@@ -48,7 +49,7 @@ const SignIn = () => {
         return;
       }
 
-      router.push('/products');
+      router.replace('/products');
     } catch {
       setError('An unexpected error occurred. Please try again.');
     }
@@ -64,7 +65,7 @@ const SignIn = () => {
 
   return (
     <>
-      <AuthFormContainer
+      <AuthContainer
         title="Welcome back"
         description="Welcome back! Please enter your details to log into your account."
         footer={
@@ -145,23 +146,13 @@ const SignIn = () => {
             </Link>
           </Box>
 
-          <Button
-            type="submit"
-            size="large"
-            sx={{
-              mt: '56px',
-              '& .MuiCircularProgress-root': {
-                color: (theme) => theme.palette.common.white,
-                marginLeft: '10px',
-              },
-            }}
-            disabled={isSubmitting}
-          >
-            {isSubmitting ? 'Signing in...' : 'Sign in'}
-            {isSubmitting && <CircularProgress size={12} />}
-          </Button>
+          <LoaderButton
+            isSubmitting={isSubmitting}
+            text="Sign in"
+            loadingText="Signing in..."
+          />
         </Box>
-      </AuthFormContainer>
+      </AuthContainer>
 
       <Box
         sx={{
@@ -169,10 +160,8 @@ const SignIn = () => {
           position: 'relative',
         }}
       >
-        <Image src="/login.jpg" alt="login" fill objectFit="cover" />
+        <Image src="/login.jpg" alt="sign in" fill objectFit="cover" />
       </Box>
     </>
   );
-};
-
-export default SignIn;
+}

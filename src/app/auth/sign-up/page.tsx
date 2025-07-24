@@ -1,33 +1,24 @@
 'use client';
-import { Button, LabeledTextfield, Link, ReviewPanel } from '@/components/ui';
-import { Box, Stack, Typography, FormLabel } from '@mui/material';
+
+import { LabeledTextfield, Link, ReviewPanel } from '@/components/ui';
+import { Box, Typography, FormLabel } from '@mui/material';
 import Image from 'next/image';
 import { useForm } from 'react-hook-form';
-import * as z from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useRegister } from '@/api/auth/useRegister';
-import { AuthFormContainer } from '@/components/AuthFormContainer';
+import { AuthContainer } from '@/components/AuthContainer';
+import { SignUpSchema, signUpSchema } from './sign-up.schema';
+import { useRouter } from 'next/navigation';
+import { LoaderButton } from '@/components/LoaderButton';
 
-const signUpSchema = z
-  .object({
-    name: z.string().min(1, 'Name is required'),
-    email: z.string().email('Invalid email address'),
-    password: z.string().min(6, 'Password must be at least 6 characters'),
-    confirmPassword: z.string().min(6, 'Please confirm your password'),
-  })
-  .refine((data) => data.password === data.confirmPassword, {
-    message: 'Passwords do not match',
-    path: ['confirmPassword'],
-  });
+export default function SignUp() {
+  const router = useRouter();
 
-type SignUpFormData = z.infer<typeof signUpSchema>;
-
-const SignUp = () => {
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<SignUpFormData>({
+  } = useForm<SignUpSchema>({
     resolver: zodResolver(signUpSchema),
     defaultValues: {
       name: '',
@@ -37,37 +28,35 @@ const SignUp = () => {
     },
   });
 
-  const { mutate: registerUser, error } = useRegister();
+  const { mutate: registerUser, error, isPending } = useRegister();
 
-  const onSubmit = (data: SignUpFormData) => {
+  const onSubmit = (data: SignUpSchema) => {
     const { name, email, password } = data;
+
     registerUser(
       { username: name, email, password },
       {
-        onSuccess: (response) => {
-          console.log('✅ Registration successful:', response);
+        onSuccess: () => {
+          router.push('/auth/sign-in');
         },
       }
     );
   };
 
-  const handlePrev = () => console.log('Previous feedback');
-  const handleNext = () => console.log('Next feedback');
-
   return (
     <>
-      <AuthFormContainer
+      <AuthContainer
         title="Create an account"
         description="Create an account to get easy access to your dream shopping"
         footer={
-          <Stack direction="row" spacing={1} alignItems="center">
-            <Typography variant="subtitle2" component="p" color="textSecondary">
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+            <Typography variant="subtitle2" color="textSecondary">
               Already have an account?
             </Typography>
             <Link href="/auth/sign-in" size="small">
-              Log in
+              Sign in
             </Link>
-          </Stack>
+          </Box>
         }
       >
         <Box
@@ -90,11 +79,7 @@ const SignUp = () => {
             error={!!errors.name}
           />
           {errors.name && (
-            <FormLabel
-              component="legend"
-              color="error"
-              sx={{ fontSize: '0.75rem', color: 'error.main' }}
-            >
+            <FormLabel sx={{ fontSize: '13px' }} error>
               {errors.name.message}
             </FormLabel>
           )}
@@ -104,15 +89,11 @@ const SignUp = () => {
             label="Email"
             required
             placeholder="example@mail.com"
-            {...register('email', { required: true })}
+            {...register('email')}
             error={!!errors.email}
           />
           {errors.email && (
-            <FormLabel
-              component="legend"
-              color="error"
-              sx={{ fontSize: '0.75rem', color: 'error.main' }}
-            >
+            <FormLabel sx={{ fontSize: '13px' }} error>
               {errors.email.message}
             </FormLabel>
           )}
@@ -121,16 +102,12 @@ const SignUp = () => {
             label="Password"
             required
             type="password"
-            placeholder="at least 8 characters"
+            placeholder="at least 6 characters"
             {...register('password')}
             error={!!errors.password}
           />
           {errors.password && (
-            <FormLabel
-              component="legend"
-              color="error"
-              sx={{ fontSize: '0.75rem', color: 'error.main' }}
-            >
+            <FormLabel sx={{ fontSize: '13px' }} error>
               {errors.password.message}
             </FormLabel>
           )}
@@ -140,34 +117,28 @@ const SignUp = () => {
             label="Confirm password"
             required
             type="password"
-            placeholder="at least 8 characters"
-            {...register('confirmPassword', { required: true })}
+            placeholder="at least 6 characters"
+            {...register('confirmPassword')}
             error={!!errors.confirmPassword}
           />
           {errors.confirmPassword && (
-            <FormLabel
-              component="legend"
-              color="error"
-              sx={{ fontSize: '0.75rem', color: 'error.main' }}
-            >
+            <FormLabel sx={{ fontSize: '13px' }} error>
               {errors.confirmPassword.message}
             </FormLabel>
           )}
 
           {error && (
-            <FormLabel
-              component="legend"
-              color="error"
-              sx={{ fontSize: '0.75rem', color: 'error.main' }}
-            >
+            <FormLabel sx={{ fontSize: '13px' }} error>
               {error.message}
             </FormLabel>
           )}
-          <Button type="submit" size="large" sx={{ margin: '90px 0 16px 0' }}>
-            Sign up
-          </Button>
+          <LoaderButton
+            isSubmitting={isPending}
+            text="Sign up"
+            loadingText="Submitting..."
+          />
         </Box>
-      </AuthFormContainer>
+      </AuthContainer>
 
       <Box
         sx={{
@@ -178,33 +149,18 @@ const SignUp = () => {
       >
         <Image
           src="/register.jpg"
-          alt="background"
+          alt="sign up"
           fill
           sizes="50vw"
-          style={{ objectFit: 'cover' }}
-          priority
+          objectFit="cover"
         />
-        <Box
-          sx={{
-            position: 'absolute',
-            inset: 0,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-          }}
-        >
-          <ReviewPanel
-            quote="Lorem Ipsum is a really great company because the team is passionate about the projects they produce, the people they work with, the quality of the work they do."
-            name="John Stone"
-            location="Ukraine, Chernivtsi"
-            rating={5}
-            onPrev={handlePrev}
-            onNext={handleNext}
-          />
-        </Box>
+        <ReviewPanel
+          quote="Lorem Ipsum is a really great company because the team is passionate about the projects they produce, the people they work with, the quality of the work they do."
+          name="John Stone"
+          location="Ukraine, Chernivtsi"
+          rating={5}
+        />
       </Box>
     </>
   );
-};
-
-export default SignUp;
+}

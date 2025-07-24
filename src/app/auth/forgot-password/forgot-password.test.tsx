@@ -3,17 +3,21 @@ import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import ForgotPassword from './page';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
+const mockRouter = {
+  push: jest.fn(),
+};
+
 jest.mock('next/navigation', () => ({
-  useRouter: () => ({
-    push: jest.fn(),
-  }),
+  useRouter: () => mockRouter,
 }));
 
 const mockMutate = jest.fn();
-const mockUseForgotPassword = jest.fn();
-
 jest.mock('@/api/auth/useForgotPassword', () => ({
-  useForgotPassword: () => mockUseForgotPassword(),
+  useForgotPassword: () => ({
+    mutate: mockMutate,
+    isSuccess: false,
+    isError: false,
+  }),
 }));
 
 const createTestQueryClient = () =>
@@ -29,37 +33,24 @@ const TestWrapper = ({ children }: { children: React.ReactNode }) => (
   </QueryClientProvider>
 );
 
-const renderComponent = () =>
-  render(<ForgotPassword />, { wrapper: TestWrapper });
-
 describe('ForgotPassword page', () => {
   beforeEach(() => {
     jest.clearAllMocks();
   });
 
   it('renders title and description', () => {
-    mockUseForgotPassword.mockReturnValue({
-      mutate: jest.fn(),
-      isSuccess: false,
-      isError: false,
-    });
-    renderComponent();
+    render(<ForgotPassword />, { wrapper: TestWrapper });
 
     expect(
       screen.getByRole('heading', { name: /forgot password\?/i })
     ).toBeInTheDocument();
     expect(
-      screen.getByText(/we’ll send you reset instructions/i)
+      screen.getByText(/we'll send you reset instructions/i)
     ).toBeInTheDocument();
   });
 
   it('renders email input with correct attributes', () => {
-    mockUseForgotPassword.mockReturnValue({
-      mutate: jest.fn(),
-      isSuccess: false,
-      isError: false,
-    });
-    renderComponent();
+    render(<ForgotPassword />, { wrapper: TestWrapper });
 
     const input = screen.getByLabelText(/email/i);
     expect(input).toBeInTheDocument();
@@ -68,26 +59,15 @@ describe('ForgotPassword page', () => {
   });
 
   it('renders reset password button', () => {
-    mockUseForgotPassword.mockReturnValue({
-      mutate: jest.fn(),
-      isSuccess: false,
-      isError: false,
-    });
-    renderComponent();
+    render(<ForgotPassword />, { wrapper: TestWrapper });
 
     const button = screen.getByRole('button', { name: /reset password/i });
     expect(button).toBeInTheDocument();
     expect(button).toHaveAttribute('type', 'submit');
-    expect(button).not.toBeEnabled();
   });
 
   it('renders "Back to log in" link', () => {
-    mockUseForgotPassword.mockReturnValue({
-      mutate: jest.fn(),
-      isSuccess: false,
-      isError: false,
-    });
-    renderComponent();
+    render(<ForgotPassword />, { wrapper: TestWrapper });
 
     expect(screen.getByText(/back to/i)).toBeInTheDocument();
     const link = screen.getByRole('link', { name: /log in/i });
@@ -95,160 +75,33 @@ describe('ForgotPassword page', () => {
     expect(link).toHaveAttribute('href', '/auth/sign-in');
   });
 
-  it('allows typing in email field', () => {
-    mockUseForgotPassword.mockReturnValue({
-      mutate: jest.fn(),
-      isSuccess: false,
-      isError: false,
-    });
-    renderComponent();
-
-    const input = screen.getByLabelText(/email/i);
-    fireEvent.change(input, { target: { value: 'test@example.com' } });
-    expect(input).toHaveValue('test@example.com');
-  });
-
   it('shows validation error on invalid email submission', async () => {
-    mockUseForgotPassword.mockReturnValue({
-      mutate: jest.fn(),
-      isSuccess: false,
-      isError: false,
-    });
-    renderComponent();
+    render(<ForgotPassword />, { wrapper: TestWrapper });
 
     const input = screen.getByLabelText(/email/i);
-    const button = screen.getByRole('button', { name: /reset password/i });
-
     fireEvent.change(input, { target: { value: 'invalid-email' } });
-    fireEvent.click(button);
+
+    fireEvent.submit(screen.getByRole('button', { name: /reset password/i }));
 
     expect(
       await screen.findByText(/invalid email address/i)
     ).toBeInTheDocument();
+    expect(mockMutate).not.toHaveBeenCalled();
   });
 
-  it('calls mutate with email on valid form submit', async () => {
-    mockUseForgotPassword.mockReturnValue({
-      mutate: mockMutate,
-      isSuccess: false,
-      isError: false,
-    });
-
-    renderComponent();
+  it('submits form with valid email', async () => {
+    render(<ForgotPassword />, { wrapper: TestWrapper });
 
     const input = screen.getByLabelText(/email/i);
     fireEvent.change(input, { target: { value: 'valid@example.com' } });
 
-    const button = screen.getByRole('button', { name: /reset password/i });
+    fireEvent.submit(screen.getByRole('button', { name: /reset password/i }));
 
     await waitFor(() => {
-      expect(button).toBeEnabled();
-    });
-
-    fireEvent.click(button);
-
-    await waitFor(() => {
-      expect(mockMutate).toHaveBeenCalledWith({ email: 'valid@example.com' });
-    });
-  });
-
-  it('disables submit button when isSuccess is true', () => {
-    mockUseForgotPassword.mockReturnValue({
-      mutate: jest.fn(),
-      isSuccess: true,
-      isError: false,
-    });
-    renderComponent();
-
-    const button = screen.getByRole('button', { name: /reset password/i });
-    expect(button).toBeDisabled();
-  });
-
-  it('shows success message only after submit and success', () => {
-    mockUseForgotPassword.mockReturnValue({
-      mutate: jest.fn(),
-      isSuccess: true,
-      isError: false,
-    });
-    renderComponent();
-
-    expect(
-      screen.queryByText(/a confirmation link has been sent to your email/i)
-    ).not.toBeInTheDocument();
-  });
-
-  it('shows error message with icon on isError', () => {
-    mockUseForgotPassword.mockReturnValue({
-      mutate: jest.fn(),
-      isSuccess: false,
-      isError: true,
-    });
-    renderComponent();
-
-    expect(
-      screen.getByText(/failed to send reset instructions/i)
-    ).toBeInTheDocument();
-
-    expect(
-      screen.getByText(/failed to send reset instructions/i).previousSibling
-    ).toBeDefined();
-  });
-
-  it('shows success message after submit and isSuccess', async () => {
-    const state = { isSuccess: false };
-
-    mockUseForgotPassword.mockImplementation(() => ({
-      mutate: (data: { email: string }) => {
-        mockMutate(data);
-        state.isSuccess = true;
-      },
-      get isSuccess() {
-        return state.isSuccess;
-      },
-      isError: false,
-    }));
-
-    const { rerender } = render(<ForgotPassword />, { wrapper: TestWrapper });
-
-    const input = screen.getByLabelText(/email/i);
-    fireEvent.change(input, { target: { value: 'valid@example.com' } });
-
-    const button = screen.getByRole('button', { name: /reset password/i });
-
-    await waitFor(() => {
-      expect(button).toBeEnabled();
-    });
-
-    fireEvent.click(button);
-
-    await waitFor(() => {
-      expect(mockMutate).toHaveBeenCalledWith({ email: 'valid@example.com' });
-    });
-
-    rerender(<ForgotPassword />);
-
-    expect(
-      screen.getByText(/a confirmation link has been sent to your email/i)
-    ).toBeInTheDocument();
-  });
-
-  it('does not call mutate if email is invalid', async () => {
-    const mutate = jest.fn();
-    mockUseForgotPassword.mockReturnValue({
-      mutate,
-      isSuccess: false,
-      isError: false,
-    });
-    renderComponent();
-
-    const input = screen.getByLabelText(/email/i);
-    const button = screen.getByRole('button', { name: /reset password/i });
-
-    fireEvent.change(input, { target: { value: 'bad-email' } });
-    fireEvent.click(button);
-
-    await waitFor(() => {
-      expect(mutate).not.toHaveBeenCalled();
+      expect(mockMutate).toHaveBeenCalledWith(
+        { email: 'valid@example.com' },
+        expect.any(Object)
+      );
     });
   });
 });

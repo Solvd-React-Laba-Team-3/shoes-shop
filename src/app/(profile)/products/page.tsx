@@ -1,7 +1,6 @@
 'use client';
 
 import { Button } from '@/components/ui';
-import { BONUS_POINTS } from '@/constants/bonusPoints';
 import Avatar from '@mui/material/Avatar';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
@@ -66,7 +65,9 @@ export default function MyProducts() {
           <Box>
             <Typography variant="h6">{session?.user?.username}</Typography>
             <Typography variant="caption">
-              {BONUS_POINTS} bonus points
+              {`Joined in ${new Date(
+                session?.user?.createdAt || ''
+              ).toLocaleDateString()}`}
             </Typography>
           </Box>
         </Box>

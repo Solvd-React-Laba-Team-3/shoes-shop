@@ -3,7 +3,7 @@ import { Sidebar } from '@/components/common/Sidebar';
 import { authOptions } from '@/constants/authConfig';
 import Box from '@mui/material/Box';
 import { getServerSession } from 'next-auth';
-import { signIn } from 'next-auth/react';
+import { redirect } from 'next/navigation';
 
 export default async function ProfileLayout({
   children,
@@ -11,8 +11,7 @@ export default async function ProfileLayout({
   children: React.ReactNode;
 }) {
   const session = await getServerSession(authOptions);
-
-  if (!session) signIn('credentials');
+  if (!session) redirect('/auth/sign-in');
 
   return (
     <>
