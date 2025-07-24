@@ -22,7 +22,7 @@ export const getProductsOptions = (params: ProductsQueryParams) =>
           ...params,
           pagination: {
             page: pageParam,
-            pageSize: params.pagination?.pageSize ?? 10,
+            pageSize: params.pagination?.pageSize ?? 25,
           },
         },
       });
