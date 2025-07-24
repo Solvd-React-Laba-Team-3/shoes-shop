@@ -1,4 +1,4 @@
-import { LabeledTextfield, Select } from '@/components/ui';
+import { LabeledTextfield, Select, ToggleButton } from '@/components/ui';
 import {
   Box,
   FormControl,
@@ -8,11 +8,14 @@ import {
   Typography,
 } from '@mui/material';
 import { useForm, Controller } from 'react-hook-form';
+import TextareaAutosize from '@mui/material/TextareaAutosize';
 
 type FormData = {
   productName: string;
   price: string;
   gender: string;
+  description: string;
+  color: string;
 };
 
 export default function EditPage() {
@@ -21,6 +24,8 @@ export default function EditPage() {
       productName: '',
       price: '',
       gender: 'Male',
+      description: '',
+      color: '',
     },
   });
 
@@ -31,22 +36,50 @@ export default function EditPage() {
   return (
     <Box>
       <Typography variant="h2">Edit product</Typography>
-      <Typography variant="caption">
+      <Typography
+        variant="caption"
+        sx={{ display: 'block', margin: '35px 0', maxWidth: '890px' }}
+      >
         Lorem ipsum, or lipsum as it is sometimes known, is dummy text used in
-        laying out print, graphic or web designs...
+        laying out print, graphic or web designs. The passage is attributed to
+        an unknown typesetter in the 15th century who is thought to have
+        scrambled parts of Cicero&apos;s De Finibus Bonorum et Malorum for use
+        in a type specimen book. It usually begins with
       </Typography>
 
       <form onSubmit={handleSubmit(onSubmit)}>
         <Stack spacing={2}>
-          {/* Replace this with your RHF-compatible text field if needed */}
           <LabeledTextfield
             label="Product name"
             placeholder="Nike Air Max 90"
           />
           <LabeledTextfield label="Price" placeholder="$160" />
 
+          <Controller
+            name="color"
+            control={control}
+            render={({ field }) => (
+              <FormControl variant="outlined">
+                <InputLabel
+                  id="color-label"
+                  shrink
+                  sx={{ mb: '8px', ml: '-13px' }}
+                >
+                  Color
+                </InputLabel>
+                <Select
+                  {...field}
+                  labelId="color-label"
+                  label="Color"
+                  sx={{ mt: '18px', width: '436px', padding: '8px 0' }}
+                >
+                  <MenuItem value="Black">Black</MenuItem>
+                </Select>
+              </FormControl>
+            )}
+          />
+
           <Box display="flex" gap={2}>
-            {/* First Gender Select */}
             <Controller
               name="gender"
               control={control}
@@ -55,8 +88,15 @@ export default function EditPage() {
                   variant="outlined"
                   sx={{ maxWidth: '210px', width: '100%' }}
                 >
-                  <InputLabel id="gender-label-1">Gender</InputLabel>
-                  <Select {...field} labelId="gender-label-1" label="Gender">
+                  <InputLabel id="gender-label-1" sx={{ ml: '-13px' }}>
+                    Gender
+                  </InputLabel>
+                  <Select
+                    {...field}
+                    labelId="gender-label-1"
+                    label="Gender"
+                    sx={{ mt: '20px' }}
+                  >
                     <MenuItem value="Male">Male</MenuItem>
                     <MenuItem value="Female">Female</MenuItem>
                   </Select>
@@ -64,7 +104,6 @@ export default function EditPage() {
               )}
             />
 
-            {/* Second Gender Select — uses same field (duplicate) */}
             <Controller
               name="gender"
               control={control}
@@ -73,17 +112,73 @@ export default function EditPage() {
                   variant="outlined"
                   sx={{ maxWidth: '210px', width: '100%' }}
                 >
-                  <InputLabel id="gender-label-2">Gender</InputLabel>
-                  <Select {...field} labelId="gender-label-2" label="Gender">
-                    <MenuItem value="Male">Male</MenuItem>
+                  <InputLabel id="gender-label-2" sx={{ ml: '-13px' }}>
+                    Brand
+                  </InputLabel>
+                  <Select
+                    {...field}
+                    labelId="gender-label-2"
+                    label="Brand"
+                    sx={{ mt: '20px' }}
+                  >
+                    <MenuItem value="Male">Nike</MenuItem>
                     <MenuItem value="Female">Female</MenuItem>
                   </Select>
                 </FormControl>
               )}
             />
           </Box>
+
+          <Controller
+            name="description"
+            control={control}
+            defaultValue=""
+            render={({ field }) => (
+              <FormControl sx={{ width: 436 }}>
+                <InputLabel shrink sx={{ ml: '-13px' }}>
+                  Description
+                </InputLabel>
+                <TextareaAutosize
+                  {...field}
+                  aria-label="Description"
+                  minRows={3}
+                  placeholder="Lorem ipsum, or lipsum as it is sometimes known, is dummy text used in laying out print, graphic or web designs. The passage is attributed to an unknown typesetter in the 15th century who is thought to have scrambled parts of Cicero's De Finibus Bonorum et Malorum for use in a type specimen book. It usually begins with"
+                  style={{
+                    marginTop: '24px',
+                    padding: '15px',
+                  }}
+                />
+              </FormControl>
+            )}
+          />
+
+          <Box display="flex" flexDirection="column" gap={0.5}>
+            <Typography component="h6" variant="caption" sx={{ mb: 0 }}>
+              Add size
+            </Typography>
+
+            <Box display="inline-flex" gap={0.39}>
+              <ToggleButton value="EU-36" size="small">
+                EU-36
+              </ToggleButton>
+              <ToggleButton value="EU-37" size="small">
+                EU-37
+              </ToggleButton>
+              <ToggleButton value="EU-38" size="small">
+                EU-38
+              </ToggleButton>
+              <ToggleButton value="EU-39" size="small">
+                EU-39
+              </ToggleButton>
+              <ToggleButton value="EU-40" size="small">
+                EU-40
+              </ToggleButton>
+            </Box>
+          </Box>
         </Stack>
       </form>
+
+      {/* images container */}
     </Box>
   );
 }
