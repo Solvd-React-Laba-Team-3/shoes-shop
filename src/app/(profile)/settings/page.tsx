@@ -151,6 +151,7 @@ export default function Settings() {
             style={{ display: 'none' }}
             onChange={handleFileChange}
             accept="image/*"
+            data-testid="file-input"
           />
           <Button
             variant="contained"
