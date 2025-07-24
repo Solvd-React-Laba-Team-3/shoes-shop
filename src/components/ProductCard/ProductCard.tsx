@@ -65,6 +65,21 @@ const HoverCartBox = styled(Box)({
   },
 });
 
+const ActionButtonContainer = styled(Box)(({ theme }) => ({
+  position: 'absolute',
+  top: '10px',
+  right: '10px',
+  zIndex: 2,
+  '& .MuiIconButton-root': {
+    backgroundColor: 'transparent',
+    transition: 'color 0.2s ease-in, background-color 0.2s ease-in',
+  },
+  '& .MuiIconButton-root:hover': {
+    color: theme.palette.primary.main,
+    backgroundColor: 'rgba(255,255,255,0.5)',
+  },
+}));
+
 const getGenderText = (genderName: string): string => {
   return genderName === 'Men' ? "Men's Shoes" : "Women's Shoes";
 };
@@ -78,16 +93,26 @@ export const ProductCard: FC<ProductCardProps> = ({
   gender,
   price,
 }) => {
+  const productImage = images ? images[0].url : '/landscape-placeholder.png';
+  const productImageAlt =
+    images && images[0].alternativeText
+      ? images[0].alternativeText
+      : `product image: ${name}`;
+
   return (
     <StyledCard>
-      {hasActionMenu && <ProductActionMenu />}
-      {hasWishlistButton && <ProductWishlistButton />}
+      <ActionButtonContainer>
+        {hasActionMenu && <ProductActionMenu />}
+        {hasWishlistButton && <ProductWishlistButton />}
+      </ActionButtonContainer>
       <Link href={`/products/${id}`} style={{ textDecoration: 'none' }}>
         <StyledCardActionArea disableRipple>
           <Box sx={{ position: 'relative' }}>
             <Image
-              src={images[0].url}
-              alt={images[0].alternativeText || images[0].name}
+              width={300}
+              height={300}
+              src={productImage}
+              alt={productImageAlt}
               style={{ width: '100%', height: 'auto', aspectRatio: '320/380' }}
             />
 

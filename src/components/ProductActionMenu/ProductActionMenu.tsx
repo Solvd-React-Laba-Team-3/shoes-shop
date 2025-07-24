@@ -1,24 +1,10 @@
 'use client';
 
 import { useState, MouseEvent } from 'react';
-import { Box, Menu, MenuItem, ListItemText, styled } from '@mui/material';
+import { Menu, MenuItem, ListItemText } from '@mui/material';
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import Link from 'next/link';
 import { IconButton } from '@/components/ui';
-
-const StyledIconButton = styled(IconButton)(({ theme }) => ({
-  position: 'absolute',
-  top: '10px',
-  right: '10px',
-  zIndex: 2,
-  backgroundColor: 'transparent',
-  color: theme.palette.secondary.main,
-  transition: 'color 0.2s ease-in, background-color 0.2s ease-in',
-  '&:hover': {
-    color: theme.palette.primary.main,
-    backgroundColor: theme.palette.grey,
-  },
-}));
 
 export function ProductActionMenu() {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
@@ -33,10 +19,10 @@ export function ProductActionMenu() {
   };
 
   return (
-    <Box>
-      <StyledIconButton color="secondary" onClick={handleClick}>
+    <>
+      <IconButton color="secondary" onClick={handleClick}>
         <MoreHorizIcon />
-      </StyledIconButton>
+      </IconButton>
 
       <Menu
         anchorEl={anchorEl}
@@ -76,6 +62,6 @@ export function ProductActionMenu() {
           <ListItemText primary="Delete" />
         </MenuItem>
       </Menu>
-    </Box>
+    </>
   );
 }
