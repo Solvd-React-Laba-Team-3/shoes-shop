@@ -1,18 +1,18 @@
 'use client';
+
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import { Box, Paper, Rating, Stack, Typography } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import { IconButton } from '../IconButton/IconButton';
+import { FC } from 'react';
 
 const StyledPaper = styled(Paper)(({ theme }) => ({
-  color: theme.palette.text.secondary,
-  boxSizing: 'border-box',
   background: `
     radial-gradient(55.99% 112.1% at 69.71% 44.01%, rgba(253, 253, 253, 0.074) 0%, rgba(0, 0, 0, 0) 100%),
     radial-gradient(64.9% 185.04% at 19.81% 27.89%, rgba(255, 255, 255, 0.42) 0%, rgba(255, 255, 255, 0.06) 100%)
   `,
-  backdropFilter: 'blur(12px)',
+  backdropFilter: 'blur(20px)',
   borderRadius: '32px',
   padding: theme.spacing(4),
   display: 'grid',
@@ -32,14 +32,14 @@ type ReviewPanelProps = {
   onNext?: () => void;
 };
 
-export const ReviewPanel = ({
+export const ReviewPanel: FC<ReviewPanelProps> = ({
   quote,
   name,
   location,
   rating,
   onPrev,
   onNext,
-}: ReviewPanelProps) => (
+}) => (
   <StyledPaper>
     <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
       <Typography variant="h4" component="p" sx={{ flex: 1 }}>
@@ -55,10 +55,10 @@ export const ReviewPanel = ({
         }}
       >
         <IconButton onClick={onPrev}>
-          <ArrowBackIosIcon fontSize="small" sx={{ color: '#0D0D0D' }} />
+          <ArrowBackIosIcon fontSize="small" color="secondary" />
         </IconButton>
         <IconButton onClick={onNext}>
-          <ArrowForwardIosIcon fontSize="small" sx={{ color: '#0D0D0D' }} />
+          <ArrowForwardIosIcon fontSize="small" color="secondary" />
         </IconButton>
       </Stack>
     </Box>

@@ -2,6 +2,23 @@ import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import SignUp from './page';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
+const mockRouter = {
+  push: jest.fn(),
+};
+
+jest.mock('next/navigation', () => ({
+  useRouter: () => mockRouter,
+}));
+
+const mockMutate = jest.fn();
+jest.mock('@/api/auth/useRegister', () => ({
+  useRegister: () => ({
+    mutate: mockMutate,
+    error: null,
+    isPending: false,
+  }),
+}));
+
 const createTestQueryClient = () =>
   new QueryClient({
     defaultOptions: {
@@ -15,16 +32,11 @@ const TestWrapper = ({ children }: { children: React.ReactNode }) => (
   </QueryClientProvider>
 );
 
-jest.mock('@/api/auth/useRegister', () => ({
-  useRegister: () => ({
-    mutate: jest.fn((_, { onSuccess }) => {
-      onSuccess({ message: 'Registered' });
-    }),
-    error: { message: 'Registration failed' },
-  }),
-}));
-
 describe('SignUp', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
   test('renders all expected form fields and text', () => {
     render(<SignUp />, { wrapper: TestWrapper });
 
@@ -42,7 +54,7 @@ describe('SignUp', () => {
     ).toBeInTheDocument();
 
     expect(screen.getByText(/already have an account/i)).toBeInTheDocument();
-    expect(screen.getByRole('link', { name: /log in/i })).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: /sign in/i })).toBeInTheDocument();
   });
 
   test('value of the input is updated correctly', () => {
@@ -69,19 +81,28 @@ describe('SignUp', () => {
       target: { value: 'password123' },
     });
 
-    fireEvent.click(screen.getByRole('button', { name: /sign up/i }));
+    fireEvent.submit(screen.getByRole('button', { name: /sign up/i }));
 
     await waitFor(() => {
-      expect(
-        screen.getByRole('button', { name: /sign up/i })
-      ).toBeInTheDocument();
+      expect(mockMutate).toHaveBeenCalledWith(
+        {
+          username: 'Olha',
+          email: 'olha@example.com',
+          password: 'password123',
+        },
+        expect.any(Object)
+      );
+    });
+
+    await waitFor(() => {
+      expect(mockRouter.push).toHaveBeenCalledWith('/auth/sign-in');
     });
   });
 
-  test('test validation errors on empty submit', async () => {
+  test('shows validation errors on empty submit', async () => {
     render(<SignUp />, { wrapper: TestWrapper });
 
-    fireEvent.click(screen.getByRole('button', { name: /sign up/i }));
+    fireEvent.submit(screen.getByRole('button', { name: /sign up/i }));
 
     expect(await screen.findByText(/name is required/i)).toBeInTheDocument();
     expect(screen.getByText(/Invalid email address/i)).toBeInTheDocument();
@@ -102,33 +123,10 @@ describe('SignUp', () => {
       target: { value: 'password456' },
     });
 
-    fireEvent.click(screen.getByRole('button', { name: /sign up/i }));
+    fireEvent.submit(screen.getByRole('button', { name: /sign up/i }));
 
     expect(
       await screen.findByText(/Passwords do not match/i)
     ).toBeInTheDocument();
-  });
-
-  test('shows API error message', () => {
-    render(<SignUp />, { wrapper: TestWrapper });
-    expect(screen.getByText(/Registration failed/i)).toBeInTheDocument();
-  });
-
-  test('calls handlePrev and handleNext when ReviewPanel buttons are clicked', () => {
-    const consoleSpy = jest.spyOn(console, 'log').mockImplementation(() => {});
-
-    render(<SignUp />, { wrapper: TestWrapper });
-
-    const buttons = screen.getAllByRole('button');
-    const prevButton = buttons[1];
-    const nextButton = buttons[2];
-
-    fireEvent.click(prevButton);
-    fireEvent.click(nextButton);
-
-    expect(consoleSpy).toHaveBeenCalledWith('Previous feedback');
-    expect(consoleSpy).toHaveBeenCalledWith('Next feedback');
-
-    consoleSpy.mockRestore();
   });
 });

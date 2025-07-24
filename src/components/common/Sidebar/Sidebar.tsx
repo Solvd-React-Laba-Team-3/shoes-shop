@@ -53,6 +53,7 @@ export const Sidebar: FC<DrawerProps> = ({ open = true, ...props }) => {
       open={open}
       sx={{
         width: '320px',
+        zIndex: 100,
 
         '& .MuiPaper-root': {
           height: `calc(100vh - ${HEADER_HEIGHT}px)`,

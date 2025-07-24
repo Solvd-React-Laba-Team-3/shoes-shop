@@ -1,1 +1,0 @@
-export { AuthFormContainer } from './AuthFormContainer';

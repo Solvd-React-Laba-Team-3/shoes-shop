@@ -1,27 +1,28 @@
 'use client';
+
 import { Box, Typography } from '@mui/material';
 import { ReactNode } from 'react';
 
-type AuthFormContainerProps = {
+type AuthContainerProp = {
   title: string;
   description?: string;
   children: ReactNode;
   footer?: ReactNode;
 };
 
-export const AuthFormContainer = ({
+export const AuthContainer = ({
   title,
   description,
   children,
   footer,
-}: AuthFormContainerProps) => (
+}: AuthContainerProp) => (
   <Box
     sx={{
       margin: '20% auto',
       position: 'relative',
       display: 'flex',
       flexDirection: 'column',
-      alignItems: 'center',
+      alignItems: 'flex-start',
       gap: '48px',
     }}
   >

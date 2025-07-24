@@ -20,7 +20,7 @@ export default async function AuthLayout({
     <>
       <Box sx={{ position: 'absolute', top: '50px', left: '40px' }}>
         <Link href="/">
-          <Image src="/logo.png" alt="register logo" width={40} height={30} />
+          <Image src="/logo.png" alt="logo" width={40} height={30} />
         </Link>
       </Box>
       <Box
