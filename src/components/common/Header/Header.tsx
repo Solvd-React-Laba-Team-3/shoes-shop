@@ -9,6 +9,7 @@ import Image from 'next/image';
 import { styled } from '@mui/material/styles';
 import { Link } from '@/components/ui';
 import { HEADER_HEIGHT } from '@/constants/headerHeight';
+import { MainSearchBar } from '@/components/MainSearchBar';
 
 const StyledContainer = styled(Box)(({ theme }) => ({
   display: 'flex',
@@ -31,7 +32,7 @@ export const Header = () => {
         <Typography variant="subtitle2">Products</Typography>
       </Box>
       <Box sx={{ display: 'flex', alignItems: 'center', gap: '40px' }}>
-        {/* <Search /> */}
+        <MainSearchBar />
         <Box sx={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
           <Link href="/cart">
             <ShoppingBasketIcon />

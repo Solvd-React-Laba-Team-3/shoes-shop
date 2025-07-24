@@ -1,9 +1,28 @@
 import '@testing-library/jest-dom';
 import { render, screen } from '@testing-library/react';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import ResetPassword from './page';
 
+const createTestQueryClient = () =>
+  new QueryClient({
+    defaultOptions: {
+      queries: {
+        retry: false,
+      },
+    },
+  });
+
+const renderWithQueryClient = (ui: React.ReactElement) => {
+  const testQueryClient = createTestQueryClient();
+  return render(
+    <QueryClientProvider client={testQueryClient}>{ui}</QueryClientProvider>
+  );
+};
+
 describe('ResetPassword', () => {
-  beforeEach(() => render(<ResetPassword />));
+  beforeEach(() => {
+    renderWithQueryClient(<ResetPassword />);
+  });
 
   it('renders without crashing and shows title and description', () => {
     expect(
