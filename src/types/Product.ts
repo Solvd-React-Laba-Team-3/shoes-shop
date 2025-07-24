@@ -11,7 +11,7 @@ export type Product = {
   description: string;
   price: number;
   teamName?: string;
-  images: File[];
+  images: File[] | null;
   brand: Brand;
   categories: Category[];
   color: Color;

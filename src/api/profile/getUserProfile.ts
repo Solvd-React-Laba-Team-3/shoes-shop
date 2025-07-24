@@ -7,6 +7,11 @@ export const getUserProfile = async (token: string) =>
     method: 'GET',
     token,
     queryParams: {
-      populate: '*',
+      populate: {
+        products: {
+          populate: '*',
+        },
+        avatar: '*',
+      },
     },
   });

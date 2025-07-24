@@ -1,32 +1,19 @@
 'use client';
 
-import {
-  AuthFormContainer,
-  Button,
-  LabeledTextfield,
-  Link,
-} from '@/components/ui';
+import { Button, LabeledTextfield, Link } from '@/components/ui';
 import { Box, Stack, Typography } from '@mui/material';
 import { useForm } from 'react-hook-form';
-import * as z from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useResetPassword } from '@/api/auth/useResetPassword';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import DoneOutlineIcon from '@mui/icons-material/DoneOutline';
 import Image from 'next/image';
-
-const resetPasswordSchema = z
-  .object({
-    password: z.string().min(6, 'Password must be at least 6 characters'),
-    confirmPassword: z.string(),
-  })
-  .refine((data) => data.password === data.confirmPassword, {
-    message: 'Passwords do not match',
-    path: ['confirmPassword'],
-  });
-
-type ResetPasswordFormData = z.infer<typeof resetPasswordSchema>;
+import { AuthFormContainer } from '@/components/AuthFormContainer';
+import {
+  ResetPasswordFormData,
+  resetPasswordSchema,
+} from './reset-password.schema';
 
 export default function ResetPassword() {
   const router = useRouter();

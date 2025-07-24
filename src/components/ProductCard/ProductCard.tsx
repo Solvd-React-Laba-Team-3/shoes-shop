@@ -86,8 +86,8 @@ export const ProductCard: FC<ProductCardProps> = ({
         <StyledCardActionArea disableRipple>
           <Box sx={{ position: 'relative' }}>
             <Image
-              src={images[0].url}
-              alt={images[0].alternativeText || images[0].name}
+              src={images?.[0]?.url || ''}
+              alt={images?.[0]?.alternativeText || images?.[0]?.name || ''}
               style={{ width: '100%', height: 'auto', aspectRatio: '320/380' }}
             />
 
