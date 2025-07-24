@@ -6,7 +6,7 @@ import { getSizesOptions } from '@/api/size/getSizesOptions';
 
 import { Header } from '@/components/common/Header';
 import { FiltersWrapper } from '@/components/FiltersWrapper/FiltersWrapper';
-// import { ProductsContainer } from '@/components/ProductsContainer/ProductsContainer';
+import { ProductsContainer } from '@/components/ProductsContainer/ProductsContainer';
 import { getQueryClient } from '@/lib/utils';
 import { Hydrate } from '@/providers/Hydrate';
 import Box from '@mui/material/Box';
@@ -26,7 +26,7 @@ export default function Home() {
       <Hydrate state={dehydrate(queryClient)}>
         <Box sx={{ display: 'flex' }}>
           <FiltersWrapper />
-          {/* <ProductsContainer /> */}
+          <ProductsContainer />
         </Box>
       </Hydrate>
     </>
