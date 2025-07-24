@@ -6,20 +6,23 @@ import {
   Card,
   CardActionArea,
   CardContent,
-  CardMedia,
   styled,
   Grid,
   Typography,
   Stack,
-  CardMediaProps,
 } from '@mui/material';
 import { FC } from 'react';
 import Link from 'next/link';
 import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
-import ProductActionMenu from '@/components/common/ProductActionMenu/ProductActionMenu';
-import ProductWishlistButton from '@/components/common/ProductWishlistButton/ProductWishlistButton';
+import Image from 'next/image';
+import { palette } from '@/styles/palette';
+import { ProductActionMenu } from '../ProductActionMenu';
+import { ProductWishlistButton } from '../ProductWishlistButton';
 
-type ProductCardProps = Product & {
+type ProductCardProps = Pick<
+  Product,
+  'id' | 'name' | 'gender' | 'price' | 'images'
+> & {
   hasActionMenu?: boolean;
   hasWishlistButton?: boolean;
 };
@@ -45,12 +48,6 @@ const StyledCardContent = styled(CardContent)({
   padding: '12px 0 0 0',
 });
 
-const StyledCardMedia = styled(CardMedia)<CardMediaProps>({
-  width: '100%',
-  height: 'auto',
-  aspectRatio: '320 / 380',
-});
-
 const HoverCartBox = styled(Box)({
   position: 'absolute',
   top: '50%',
@@ -62,7 +59,7 @@ const HoverCartBox = styled(Box)({
   width: '80px',
   height: '80px',
   borderRadius: '100%',
-  color: '#494949',
+  color: palette.text.secondary,
   '.MuiCardActionArea-root:hover &': {
     opacity: 1,
   },
@@ -88,10 +85,10 @@ export const ProductCard: FC<ProductCardProps> = ({
       <Link href={`/products/${id}`} style={{ textDecoration: 'none' }}>
         <StyledCardActionArea disableRipple>
           <Box sx={{ position: 'relative' }}>
-            <StyledCardMedia
-              component={'img'}
-              image={images[0].url}
-              {...{ alt: images[0].alternativeText || images[0].name }}
+            <Image
+              src={images[0].url}
+              alt={images[0].alternativeText || images[0].name}
+              style={{ width: '100%', height: 'auto', aspectRatio: '320/380' }}
             />
 
             <HoverCartBox>

@@ -15,7 +15,6 @@ export const getProductsOptions = (params: ProductsQueryParams) =>
   infiniteQueryOptions({
     queryKey: ['products', params],
     queryFn: async ({ pageParam = 1 }) => {
-      console.log('Fetching products with params:', params);
       const res = await fetchApi<StrapiPaginatedData<ProductAttributes>>({
         endpoint: `/products`,
         method: 'GET',
@@ -27,7 +26,6 @@ export const getProductsOptions = (params: ProductsQueryParams) =>
           },
         },
       });
-      console.log('Fetched response:', res);
       return {
         products: res.data.map((p) =>
           formatProductAttributes(p.id, p.attributes)
