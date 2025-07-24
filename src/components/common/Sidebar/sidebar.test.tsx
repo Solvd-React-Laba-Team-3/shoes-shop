@@ -3,6 +3,7 @@ import '@testing-library/jest-dom';
 import { Sidebar } from './Sidebar';
 import { useSession, signOut } from 'next-auth/react';
 import { usePathname, useRouter } from 'next/navigation';
+import { mockSession, mockRouter } from '@/testing/mocks/sidebarMocks';
 
 // Mock next-auth
 jest.mock('next-auth/react', () => ({
@@ -17,16 +18,6 @@ jest.mock('next/navigation', () => ({
 }));
 
 describe('Sidebar', () => {
-  const mockSession = {
-    user: {
-      username: 'John Doe',
-    },
-  };
-
-  const mockRouter = {
-    push: jest.fn(),
-  };
-
   beforeEach(() => {
     (useSession as jest.Mock).mockReturnValue({ data: mockSession });
     (usePathname as jest.Mock).mockReturnValue('/products');

@@ -1,6 +1,16 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import SignUp from './page';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { useRegister } from '@/api/auth/useRegister';
+import * as authMocks from '@/testing/mocks/authMocks';
+
+jest.mock('@/api/auth/useRegister');
+
+beforeEach(() => {
+  (useRegister as jest.Mock).mockImplementation(
+    authMocks.mockUseRegister().useRegister
+  );
+});
 
 const createTestQueryClient = () =>
   new QueryClient({
@@ -14,15 +24,6 @@ const TestWrapper = ({ children }: { children: React.ReactNode }) => (
     {children}
   </QueryClientProvider>
 );
-
-jest.mock('@/api/auth/useRegister', () => ({
-  useRegister: () => ({
-    mutate: jest.fn((_, { onSuccess }) => {
-      onSuccess({ message: 'Registered' });
-    }),
-    error: { message: 'Registration failed' },
-  }),
-}));
 
 describe('SignUp', () => {
   test('renders all expected form fields and text', () => {

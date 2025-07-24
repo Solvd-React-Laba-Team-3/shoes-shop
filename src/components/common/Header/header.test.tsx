@@ -3,12 +3,14 @@ import { Header } from './Header';
 import '@testing-library/jest-dom';
 import { ThemeProvider } from '@emotion/react';
 import { theme } from '@/providers/ThemeProvider';
+import { mockUseSession, loggedInSession } from '@/testing/mocks/headerMocks';
 
-const mockUseSession = jest.fn();
+// Mock next-auth
 jest.mock('next-auth/react', () => ({
   useSession: () => mockUseSession(),
 }));
 
+// Mock next/image
 jest.mock('next/image', () => ({
   __esModule: true,
   default: ({
@@ -72,9 +74,7 @@ describe('Header', () => {
 
   describe('when user is logged in', () => {
     beforeEach(() => {
-      mockUseSession.mockReturnValue({
-        data: { user: { name: 'John Doe', email: 'john@example.com' } },
-      });
+      mockUseSession.mockReturnValue(loggedInSession);
     });
 
     it('renders avatar with image when logged in', () => {

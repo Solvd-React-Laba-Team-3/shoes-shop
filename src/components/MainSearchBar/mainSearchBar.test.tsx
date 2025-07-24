@@ -8,17 +8,13 @@ import {
   cleanup,
 } from '@testing-library/react';
 import { MainSearchBar } from './MainSearchBar';
+import {
+  mockPush,
+  mockSearchParams,
+  createMockSearchParams,
+} from '@/testing/mocks/mainSearchBarMocks';
 import { getPopularSneakerTerms } from '@/api/gemini/getPopularSneakerTerms';
-
-const mockPush = jest.fn();
-const mockSearchParams = new Map<string, string>();
-
-const createMockSearchParams = (params: Record<string, string> = {}) => {
-  mockSearchParams.clear();
-  Object.entries(params).forEach(([key, value]) => {
-    mockSearchParams.set(key, value);
-  });
-};
+const mockGetPopularSneakerTerms = getPopularSneakerTerms as jest.Mock;
 
 jest.mock('next/navigation', () => ({
   useRouter: () => ({
@@ -36,8 +32,6 @@ jest.mock('next/navigation', () => ({
 jest.mock('@/api/gemini/getPopularSneakerTerms', () => ({
   getPopularSneakerTerms: jest.fn(),
 }));
-
-const mockGetPopularSneakerTerms = getPopularSneakerTerms as jest.Mock;
 
 const getSearchInput = () => screen.getByLabelText('search');
 
