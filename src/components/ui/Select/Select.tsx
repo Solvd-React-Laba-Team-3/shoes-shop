@@ -28,7 +28,7 @@ export const Select: FC<SelectProps> = (props) => {
           sx={{
             '&.MuiOutlinedInput-root': {
               '& .MuiOutlinedInput-notchedOutline': {
-                borderColor: (theme) => theme.palette.grey[400],
+                borderColor: (theme) => theme.palette.grey[700],
               },
             },
           }}
