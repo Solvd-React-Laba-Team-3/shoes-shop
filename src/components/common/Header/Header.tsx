@@ -10,6 +10,7 @@ import { styled } from '@mui/material/styles';
 import { Button, IconButton, Link } from '@/components/ui';
 import { HEADER_HEIGHT } from '@/constants/headerHeight';
 import { useRouter } from 'next/navigation';
+import { MainSearchBar } from '@/components/MainSearchBar';
 
 const StyledContainer = styled(Box)(({ theme }) => ({
   display: 'flex',
@@ -42,7 +43,7 @@ export const Header = () => {
             Sign in
           </Button>
         )}
-        {/* <Search /> */}
+        <MainSearchBar />
         <Box sx={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
           <IconButton
             onClick={() => router.push('/cart')}
