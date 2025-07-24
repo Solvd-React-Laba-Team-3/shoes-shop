@@ -10,7 +10,7 @@ import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import BusinessCenterIcon from '@mui/icons-material/BusinessCenter';
 import { styled } from '@mui/material/styles';
-import { ProductCard } from '@/components/ProductCard';
+import { ProductList } from '@/components/ProductList';
 
 const StyledBusinessCenterIcon = styled(BusinessCenterIcon)(({ theme }) => ({
   color: theme.palette.grey[600],
@@ -80,13 +80,7 @@ export default function MyProducts() {
         </Box>
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: '36px' }}>
           {session?.user?.products.length ? (
-            <Box
-              sx={{ display: 'grid', gridTemplateColumns: 'repeat(4, 320px)' }}
-            >
-              {session?.user?.products.map((product) => (
-                <ProductCard key={product.id} hasActionMenu {...product} />
-              ))}
-            </Box>
+            <ProductList products={session?.user?.products} />
           ) : (
             <StyledNoProductsWrapper>
               <Box
