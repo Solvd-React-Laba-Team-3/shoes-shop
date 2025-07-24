@@ -3,7 +3,7 @@ import { Header } from './Header';
 import '@testing-library/jest-dom';
 import { ThemeProvider } from '@emotion/react';
 import { theme } from '@/providers/ThemeProvider';
-import { mockUseSession, loggedInSession } from '@/testing/mocks/headerMocks';
+import { mockUseSession, loggedInSession } from '@/testing/mocks/';
 
 // Mock next-auth
 jest.mock('next-auth/react', () => ({

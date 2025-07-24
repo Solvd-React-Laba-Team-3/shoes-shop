@@ -1,7 +1,7 @@
 import '@testing-library/jest-dom';
 import { fireEvent, render, screen } from '@testing-library/react';
 import SignIn from './page';
-import { signIn } from 'next-auth/react';
+import { mockSignIn, mockPush } from '@/testing/mocks/';
 
 jest.mock('@/components/ui', () => {
   const originalModule = jest.requireActual('@/components/ui');
@@ -13,24 +13,6 @@ jest.mock('@/components/ui', () => {
     ),
   };
 });
-
-jest.mock('next-auth/react', () => ({
-  signIn: jest.fn(),
-}));
-
-jest.mock('next/navigation', () => ({
-  useRouter: () => ({
-    push: jest.fn(),
-  }),
-}));
-
-const mockPush = jest.fn();
-
-jest.mock('next/navigation', () => ({
-  useRouter: () => ({
-    push: mockPush,
-  }),
-}));
 
 describe('SignIn', () => {
   it('renders without crashing', () => {
@@ -74,7 +56,7 @@ describe('SignIn', () => {
   });
 
   it('submits form and navigates to a user profile on sucessful login', async () => {
-    (signIn as jest.Mock).mockResolvedValue({ ok: true });
+    mockSignIn.mockResolvedValue({ ok: true });
 
     render(<SignIn />);
 
@@ -90,7 +72,7 @@ describe('SignIn', () => {
 
     await screen.findByRole('button', { name: /sign in/i });
 
-    expect(signIn).toHaveBeenCalledWith(
+    expect(mockSignIn).toHaveBeenCalledWith(
       'credentials',
       expect.objectContaining({
         identifier: 'test@example.com',
@@ -101,7 +83,7 @@ describe('SignIn', () => {
   });
 
   it('notifies about failed login', async () => {
-    (signIn as jest.Mock).mockResolvedValue({
+    mockSignIn.mockResolvedValue({
       ok: false,
       error: 'Invalid credentials',
     });

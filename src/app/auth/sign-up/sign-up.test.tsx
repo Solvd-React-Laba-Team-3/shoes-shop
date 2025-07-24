@@ -2,14 +2,12 @@ import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import SignUp from './page';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { useRegister } from '@/api/auth/useRegister';
-import * as authMocks from '@/testing/mocks/authMocks';
+import { mockUseRegister } from '@/testing/mocks';
 
 jest.mock('@/api/auth/useRegister');
 
 beforeEach(() => {
-  (useRegister as jest.Mock).mockImplementation(
-    authMocks.mockUseRegister().useRegister
-  );
+  (useRegister as jest.Mock).mockImplementation(mockUseRegister().useRegister);
 });
 
 const createTestQueryClient = () =>

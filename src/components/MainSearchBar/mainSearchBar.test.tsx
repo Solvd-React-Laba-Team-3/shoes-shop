@@ -8,30 +8,23 @@ import {
   cleanup,
 } from '@testing-library/react';
 import { MainSearchBar } from './MainSearchBar';
+import { mockPush } from '@/testing/mocks/navigation';
 import {
-  mockPush,
-  mockSearchParams,
-  createMockSearchParams,
-} from '@/testing/mocks/mainSearchBarMocks';
-import { getPopularSneakerTerms } from '@/api/gemini/getPopularSneakerTerms';
-const mockGetPopularSneakerTerms = getPopularSneakerTerms as jest.Mock;
+  setupSearchParams,
+  resetSearchParams,
+} from '@/testing/mocks/searchParams';
+import { mockGetPopularSneakerTerms } from '@/testing/mocks/gemini';
 
-jest.mock('next/navigation', () => ({
-  useRouter: () => ({
-    push: mockPush,
-  }),
-  useSearchParams: () => ({
-    get: (param: string) => mockSearchParams.get(param) || null,
-    toString: () =>
-      Array.from(mockSearchParams.entries())
-        .map(([key, value]) => `${key}=${value}`)
-        .join('&'),
-  }),
-}));
-
-jest.mock('@/api/gemini/getPopularSneakerTerms', () => ({
-  getPopularSneakerTerms: jest.fn(),
-}));
+jest.mock('@/components/ui', () => {
+  const originalModule = jest.requireActual('@/components/ui');
+  return {
+    __esModule: true,
+    ...originalModule,
+    Link: ({ href, children }: { href: string; children: React.ReactNode }) => (
+      <a href={href}>{children}</a>
+    ),
+  };
+});
 
 const getSearchInput = () => screen.getByLabelText('search');
 
@@ -39,8 +32,8 @@ describe('MainSearchBar', () => {
   beforeEach(() => {
     jest.useFakeTimers();
     jest.clearAllMocks();
+    resetSearchParams();
     mockGetPopularSneakerTerms.mockResolvedValue([]);
-    createMockSearchParams();
   });
 
   afterEach(() => {
@@ -137,7 +130,7 @@ describe('MainSearchBar', () => {
     });
 
     it('should preserve existing search params when searching', async () => {
-      createMockSearchParams({ category: 'sneakers', brand: 'nike' });
+      setupSearchParams({ category: 'sneakers', brand: 'nike' });
       render(<MainSearchBar />);
       const input = getSearchInput();
 
@@ -147,9 +140,14 @@ describe('MainSearchBar', () => {
       });
 
       await waitFor(() => {
-        expect(mockPush).toHaveBeenCalledWith(
-          '?category=sneakers&brand=nike&search=jordan'
+        const expectedUrlParams = new URLSearchParams(
+          'category=sneakers&brand=nike&search=jordan'
         );
+        const actualCall = new URLSearchParams(
+          mockPush.mock.calls[0][0].split('?')[1]
+        );
+
+        expect(actualCall.toString()).toEqual(expectedUrlParams.toString());
       });
     });
   });
@@ -234,6 +232,7 @@ describe('MainSearchBar', () => {
       });
 
       unmount();
+
       await act(async () => {
         jest.runAllTimers();
       });

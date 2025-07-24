@@ -3,7 +3,7 @@ import '@testing-library/jest-dom';
 import { Sidebar } from './Sidebar';
 import { useSession, signOut } from 'next-auth/react';
 import { usePathname, useRouter } from 'next/navigation';
-import { mockSession, mockRouter } from '@/testing/mocks/sidebarMocks';
+import { mockSession, mockRouter } from '@/testing/mocks/';
 
 // Mock next-auth
 jest.mock('next-auth/react', () => ({

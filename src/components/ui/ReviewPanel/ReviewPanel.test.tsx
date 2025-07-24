@@ -1,6 +1,6 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 import { ReviewPanel } from './ReviewPanel';
-import { mockReview } from '@/testing/mocks/reviewPanelMocks';
+import { mockReview } from '@/testing/mocks/';
 
 describe('ReviewPanel', () => {
   it('renders quote, name, location and rating correctly', () => {
