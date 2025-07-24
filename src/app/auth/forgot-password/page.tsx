@@ -14,6 +14,7 @@ import {
 import { LoaderButton } from '@/components/LoaderButton';
 import { Link } from '@/components/ui';
 import { useRouter } from 'next/navigation';
+import WarningAmberIcon from '@mui/icons-material/WarningAmber';
 
 export default function ForgotPassword() {
   const router = useRouter();
@@ -83,12 +84,29 @@ export default function ForgotPassword() {
             error={!!errors.email}
           />
           {errors.email && (
-            <FormLabel sx={{ fontSize: '13px' }} error>
-              {errors.email.message}
+            <FormLabel
+              sx={{
+                fontSize: '13px',
+                display: 'flex',
+                alignItems: 'center',
+                gap: 1,
+              }}
+              error
+            >
+              <WarningAmberIcon fontSize="small" /> {errors.email.message}
             </FormLabel>
           )}
           {isError && (
-            <FormLabel sx={{ fontSize: '13px' }} error>
+            <FormLabel
+              sx={{
+                fontSize: '13px',
+                display: 'flex',
+                alignItems: 'center',
+                gap: 1,
+              }}
+              error
+            >
+              <WarningAmberIcon fontSize="small" />
               Failed to send reset instructions. Please try again.
             </FormLabel>
           )}
@@ -109,12 +127,7 @@ export default function ForgotPassword() {
       </AuthContainer>
 
       <Box sx={{ height: '100vh', position: 'relative' }}>
-        <Image
-          src="/recovery.jpg"
-          alt="forgot password"
-          objectFit="cover"
-          fill
-        />
+        <Image src="/recovery.jpg" alt="forgot password" fill sizes="50vw" />
       </Box>
     </>
   );

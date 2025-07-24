@@ -8,6 +8,14 @@ jest.mock('next/navigation', () => ({
   useRouter: jest.fn(),
 }));
 
+const ProductListMock = jest.fn();
+jest.mock('@/components/ProductList', () => ({
+  ProductList: (props: unknown) => {
+    ProductListMock(props);
+    return <div data-testid="product-list" />;
+  },
+}));
+
 jest.mock('next/image', () => ({
   __esModule: true,
   default: ({
@@ -37,6 +45,7 @@ describe('MyProducts', () => {
       avatar: {
         url: 'https://example.com/avatar.jpg',
       },
+      createdAt: '2024-01-01',
       products: [
         {
           id: 1,
@@ -51,6 +60,7 @@ describe('MyProducts', () => {
   beforeEach(() => {
     (useRouter as jest.Mock).mockReturnValue(mockRouter);
     (useSession as jest.Mock).mockReturnValue({ data: mockSession });
+    ProductListMock.mockClear();
   });
 
   afterEach(() => {
@@ -66,14 +76,9 @@ describe('MyProducts', () => {
       'https://example.com/avatar.jpg'
     );
     expect(screen.getByText('My Products')).toBeInTheDocument();
-  });
-
-  it('displays product information correctly', () => {
-    render(<MyProducts />);
-
-    expect(screen.getByText('Test Product')).toBeInTheDocument();
-    expect(screen.getByText('Test Description')).toBeInTheDocument();
-    expect(screen.getByText('$99')).toBeInTheDocument();
+    expect(
+      screen.getByText((content) => content.startsWith('Joined in'))
+    ).toBeInTheDocument();
   });
 
   it('renders profile banner image', () => {
@@ -82,5 +87,36 @@ describe('MyProducts', () => {
     const banner = screen.getByAltText('My Products');
     expect(banner).toBeInTheDocument();
     expect(banner).toHaveAttribute('src', '/profile-banner.png');
+  });
+
+  it('renders ProductList when user has products', () => {
+    render(<MyProducts />);
+
+    expect(screen.getByTestId('product-list')).toBeInTheDocument();
+    expect(ProductListMock).toHaveBeenCalledWith({
+      products: mockSession.user.products,
+      type: 'actionMenu',
+    });
+  });
+
+  it('renders empty state when user has no products', () => {
+    (useSession as jest.Mock).mockReturnValue({
+      data: {
+        ...mockSession,
+        user: {
+          ...mockSession.user,
+          products: [],
+        },
+      },
+    });
+
+    render(<MyProducts />);
+
+    expect(
+      screen.getByText("You don't have any products yet")
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText('Post can contain video, images and text.')
+    ).toBeInTheDocument();
   });
 });

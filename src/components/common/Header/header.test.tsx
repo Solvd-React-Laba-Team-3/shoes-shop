@@ -1,7 +1,7 @@
-import { render, screen } from '@testing-library/react';
+import { render, screen, fireEvent } from '@testing-library/react';
 import { Header } from './Header';
 import '@testing-library/jest-dom';
-import { ThemeProvider } from '@emotion/react';
+import { ThemeProvider } from '@mui/material/styles';
 import { theme } from '@/providers/ThemeProvider';
 
 const mockSignIn = jest.fn();
@@ -35,6 +35,10 @@ jest.mock('next/image', () => ({
   ),
 }));
 
+jest.mock('@/components/MainSearchBar', () => ({
+  MainSearchBar: () => <div data-testid="main-search-bar">Search Bar</div>,
+}));
+
 const renderHeaderWithTheme = () => {
   return render(
     <ThemeProvider theme={theme}>
@@ -58,6 +62,7 @@ describe('Header', () => {
 
       expect(screen.getByAltText('logo')).toBeInTheDocument();
       expect(screen.getByText('Products')).toBeInTheDocument();
+      expect(screen.getByTestId('main-search-bar')).toBeInTheDocument();
       expect(
         screen.getByTestId('ShoppingBasketOutlinedIcon')
       ).toBeInTheDocument();
@@ -78,6 +83,26 @@ describe('Header', () => {
 
       const avatar = document.querySelector('.MuiAvatar-root');
       expect(avatar).not.toBeInTheDocument();
+    });
+
+    it('navigates to sign in page when clicking sign in button', () => {
+      renderHeaderWithTheme();
+
+      const signInButton = screen.getByRole('button', { name: 'Sign in' });
+      fireEvent.click(signInButton);
+
+      expect(mockRouter).toHaveBeenCalledWith('/auth/sign-in');
+    });
+
+    it('navigates to cart page when clicking cart icon', () => {
+      renderHeaderWithTheme();
+
+      const cartButton = screen
+        .getByTestId('ShoppingBasketOutlinedIcon')
+        .closest('button');
+      fireEvent.click(cartButton!);
+
+      expect(mockRouter).toHaveBeenCalledWith('/cart');
     });
   });
 
@@ -113,11 +138,22 @@ describe('Header', () => {
       expect(signInButton).not.toBeInTheDocument();
     });
 
-    it('renders avatar link with correct href', () => {
+    it('renders avatar link with correct href when logged in', () => {
       renderHeaderWithTheme();
 
       const avatarLink = screen.getByRole('link', { name: '' });
       expect(avatarLink).toHaveAttribute('href', '/products');
+    });
+
+    it('navigates to cart page when clicking cart icon', () => {
+      renderHeaderWithTheme();
+
+      const cartButton = screen
+        .getByTestId('ShoppingBasketOutlinedIcon')
+        .closest('button');
+      fireEvent.click(cartButton!);
+
+      expect(mockRouter).toHaveBeenCalledWith('/cart');
     });
   });
 });

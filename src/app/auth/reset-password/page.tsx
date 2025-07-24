@@ -14,6 +14,7 @@ import {
 } from './reset-password.schema';
 import { LoaderButton } from '@/components/LoaderButton';
 import { ReactElement } from 'react';
+import WarningAmberIcon from '@mui/icons-material/WarningAmber';
 
 export default function ResetPassword(): ReactElement | null {
   const router = useRouter();
@@ -85,7 +86,7 @@ export default function ResetPassword(): ReactElement | null {
         >
           <LabeledTextfield
             id="password"
-            placeholder="at least 8 characters"
+            placeholder="at least 6 characters"
             required
             type="password"
             label="Password"
@@ -93,8 +94,16 @@ export default function ResetPassword(): ReactElement | null {
             {...register('password')}
           />
           {errors.password && (
-            <FormLabel sx={{ fontSize: '13px' }} error>
-              {errors.password.message}
+            <FormLabel
+              sx={{
+                fontSize: '13px',
+                display: 'flex',
+                alignItems: 'center',
+                gap: 1,
+              }}
+              error
+            >
+              <WarningAmberIcon fontSize="small" /> {errors.password.message}
             </FormLabel>
           )}
           <LabeledTextfield
@@ -107,12 +116,30 @@ export default function ResetPassword(): ReactElement | null {
             {...register('confirmPassword')}
           />
           {errors.confirmPassword && (
-            <FormLabel sx={{ fontSize: '13px' }} error>
+            <FormLabel
+              sx={{
+                fontSize: '13px',
+                display: 'flex',
+                alignItems: 'center',
+                gap: 1,
+              }}
+              error
+            >
+              <WarningAmberIcon fontSize="small" />
               {errors.confirmPassword.message}
             </FormLabel>
           )}
           {isError && (
-            <FormLabel sx={{ fontSize: '13px' }} error>
+            <FormLabel
+              sx={{
+                fontSize: '13px',
+                display: 'flex',
+                alignItems: 'center',
+                gap: 1,
+              }}
+              error
+            >
+              <WarningAmberIcon fontSize="small" />
               Failed to reset password. Please try again.
             </FormLabel>
           )}
@@ -135,12 +162,7 @@ export default function ResetPassword(): ReactElement | null {
           position: 'relative',
         }}
       >
-        <Image
-          src="/recovery.jpg"
-          alt="reset password"
-          fill
-          objectFit="cover"
-        />
+        <Image src="/recovery.jpg" alt="reset password" fill sizes="50vw" />
       </Box>
     </>
   );

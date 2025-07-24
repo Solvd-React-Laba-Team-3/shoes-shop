@@ -81,7 +81,7 @@ export default function MyProducts() {
         </Box>
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: '36px' }}>
           {session?.user?.products.length ? (
-            <ProductList products={session?.user?.products} />
+            <ProductList products={session?.user?.products} type="actionMenu" />
           ) : (
             <StyledNoProductsWrapper>
               <Box
@@ -94,7 +94,7 @@ export default function MyProducts() {
               >
                 <StyledBusinessCenterIcon />
                 <Typography variant="h6">
-                  You don’t have any products yet
+                  {"You don't have any products yet"}
                 </Typography>
                 <Typography variant="caption">
                   Post can contain video, images and text.

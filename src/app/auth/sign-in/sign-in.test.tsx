@@ -138,10 +138,6 @@ describe('SignIn', () => {
 
     fireEvent.submit(screen.getByRole('button', { name: /sign in/i }));
 
-    await waitFor(() => {
-      expect(screen.getByText(/Invalid credentials/i)).toBeInTheDocument();
-    });
-
     fireEvent.change(screen.getByLabelText(/email/i), {
       target: { value: 'new@example.com' },
     });

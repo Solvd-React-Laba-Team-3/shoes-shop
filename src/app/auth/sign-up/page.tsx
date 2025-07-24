@@ -10,6 +10,7 @@ import { AuthContainer } from '@/components/AuthContainer';
 import { SignUpSchema, signUpSchema } from './sign-up.schema';
 import { useRouter } from 'next/navigation';
 import { LoaderButton } from '@/components/LoaderButton';
+import WarningAmberIcon from '@mui/icons-material/WarningAmber';
 
 export default function SignUp() {
   const router = useRouter();
@@ -79,8 +80,16 @@ export default function SignUp() {
             error={!!errors.name}
           />
           {errors.name && (
-            <FormLabel sx={{ fontSize: '13px' }} error>
-              {errors.name.message}
+            <FormLabel
+              sx={{
+                fontSize: '13px',
+                display: 'flex',
+                alignItems: 'center',
+                gap: 1,
+              }}
+              error
+            >
+              <WarningAmberIcon fontSize="small" /> {errors.name.message}
             </FormLabel>
           )}
 
@@ -93,8 +102,16 @@ export default function SignUp() {
             error={!!errors.email}
           />
           {errors.email && (
-            <FormLabel sx={{ fontSize: '13px' }} error>
-              {errors.email.message}
+            <FormLabel
+              sx={{
+                fontSize: '13px',
+                display: 'flex',
+                alignItems: 'center',
+                gap: 1,
+              }}
+              error
+            >
+              <WarningAmberIcon fontSize="small" /> {errors.email.message}
             </FormLabel>
           )}
           <LabeledTextfield
@@ -107,8 +124,16 @@ export default function SignUp() {
             error={!!errors.password}
           />
           {errors.password && (
-            <FormLabel sx={{ fontSize: '13px' }} error>
-              {errors.password.message}
+            <FormLabel
+              sx={{
+                fontSize: '13px',
+                display: 'flex',
+                alignItems: 'center',
+                gap: 1,
+              }}
+              error
+            >
+              <WarningAmberIcon fontSize="small" /> {errors.password.message}
             </FormLabel>
           )}
 
@@ -122,13 +147,31 @@ export default function SignUp() {
             error={!!errors.confirmPassword}
           />
           {errors.confirmPassword && (
-            <FormLabel sx={{ fontSize: '13px' }} error>
+            <FormLabel
+              sx={{
+                fontSize: '13px',
+                display: 'flex',
+                alignItems: 'center',
+                gap: 1,
+              }}
+              error
+            >
+              <WarningAmberIcon fontSize="small" />{' '}
               {errors.confirmPassword.message}
             </FormLabel>
           )}
 
           {error && (
-            <FormLabel sx={{ fontSize: '13px' }} error>
+            <FormLabel
+              sx={{
+                fontSize: '13px',
+                display: 'flex',
+                alignItems: 'center',
+                gap: 1,
+              }}
+              error
+            >
+              <WarningAmberIcon fontSize="small" />
               {error.message}
             </FormLabel>
           )}
@@ -147,13 +190,7 @@ export default function SignUp() {
           width: '100%',
         }}
       >
-        <Image
-          src="/register.jpg"
-          alt="sign up"
-          fill
-          sizes="50vw"
-          objectFit="cover"
-        />
+        <Image src="/register.jpg" alt="sign up" fill sizes="50vw" />
         <ReviewPanel
           quote="Lorem Ipsum is a really great company because the team is passionate about the projects they produce, the people they work with, the quality of the work they do."
           name="John Stone"
