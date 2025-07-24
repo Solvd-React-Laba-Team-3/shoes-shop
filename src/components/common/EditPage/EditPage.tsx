@@ -17,6 +17,7 @@ type FormData = {
   gender: string;
   description: string;
   color: string;
+  brand: string;
 };
 
 const StyledInputLabel = styled(InputLabel)(() => ({
@@ -33,7 +34,8 @@ export default function EditPage() {
       price: '',
       gender: 'Male',
       description: '',
-      color: '',
+      color: 'Black',
+      brand: 'Nike',
     },
   });
 
@@ -63,7 +65,6 @@ export default function EditPage() {
                   <Select
                     {...field}
                     labelId="color-label"
-                    value="color"
                     sx={{ mt: '18px', width: '436px', padding: '8px 0' }}
                   >
                     <MenuItem value="Black">Black</MenuItem>
@@ -81,21 +82,12 @@ export default function EditPage() {
                     variant="outlined"
                     sx={{ maxWidth: '210px', width: '100%' }}
                   >
-                    <InputLabel
-                      id="gender-label-1"
-                      sx={{
-                        ml: '-13px',
-                        fontSize: '17px',
-                        fontWeight: 500,
-                        color: 'rgb(92, 92, 92)',
-                      }}
-                    >
+                    <StyledInputLabel id="gender-label" shrink>
                       Gender
-                    </InputLabel>
+                    </StyledInputLabel>
                     <Select
                       {...field}
-                      labelId="gender-label-1"
-                      label="Gender"
+                      labelId="gender-label"
                       sx={{ mt: '20px' }}
                     >
                       <MenuItem value="Male">Male</MenuItem>
@@ -106,32 +98,23 @@ export default function EditPage() {
               />
 
               <Controller
-                name="gender"
+                name="brand"
                 control={control}
                 render={({ field }) => (
                   <FormControl
                     variant="outlined"
                     sx={{ maxWidth: '210px', width: '100%' }}
                   >
-                    <InputLabel
-                      id="gender-label-2"
-                      sx={{
-                        ml: '-13px',
-                        fontSize: '17px',
-                        fontWeight: 500,
-                        color: 'rgb(92, 92, 92)',
-                      }}
-                    >
+                    <StyledInputLabel id="brand-label" shrink>
                       Brand
-                    </InputLabel>
+                    </StyledInputLabel>
                     <Select
                       {...field}
-                      labelId="gender-label-2"
-                      label="Brand"
+                      labelId="brand-label"
                       sx={{ mt: '20px' }}
                     >
-                      <MenuItem value="Male">Nike</MenuItem>
-                      <MenuItem value="Female">Female</MenuItem>
+                      <MenuItem value="Nike">Nike</MenuItem>
+                      <MenuItem value="Puma">Puma</MenuItem>
                     </Select>
                   </FormControl>
                 )}
