@@ -5,6 +5,7 @@ import {
   InputLabel,
   MenuItem,
   Stack,
+  styled,
   Typography,
 } from '@mui/material';
 import { useForm, Controller } from 'react-hook-form';
@@ -17,6 +18,13 @@ type FormData = {
   description: string;
   color: string;
 };
+
+const StyledInputLabel = styled(InputLabel)(() => ({
+  marginLeft: '-13px',
+  fontSize: '17px',
+  fontWeight: 500,
+  color: 'rgb(92, 92, 92)',
+}));
 
 export default function EditPage() {
   const { control, handleSubmit } = useForm<FormData>({
@@ -49,20 +57,9 @@ export default function EditPage() {
               control={control}
               render={({ field }) => (
                 <FormControl variant="outlined">
-                  <InputLabel
-                    id="color-label"
-                    shrink
-                    variant="outlined"
-                    sx={{
-                      mb: '8px',
-                      ml: '-13px',
-                      fontSize: '17px',
-                      fontWeight: 500,
-                      color: 'rgb(92, 92, 92)',
-                    }}
-                  >
+                  <StyledInputLabel id="color-label" shrink variant="outlined">
                     Color
-                  </InputLabel>
+                  </StyledInputLabel>
                   <Select
                     {...field}
                     labelId="color-label"
