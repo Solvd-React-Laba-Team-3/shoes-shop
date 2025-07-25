@@ -1,9 +1,4 @@
-import {
-  Button,
-  LabeledTextfield,
-  Select,
-  ToggleButton,
-} from '@/components/ui';
+import { LabeledTextfield, Select, ToggleButton } from '@/components/ui';
 import { zodResolver } from '@hookform/resolvers/zod';
 import {
   Box,
@@ -189,18 +184,7 @@ export default function EditPage() {
             )}
           />
         </Box>
-
-        <Button
-          variant="contained"
-          color="primary"
-          type="submit"
-          sx={{ marginTop: '50px' }}
-        >
-          Submit
-        </Button>
       </form>
-
-      {/* images container */}
     </Box>
   );
 }
