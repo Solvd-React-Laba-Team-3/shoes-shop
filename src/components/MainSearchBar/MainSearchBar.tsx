@@ -1,5 +1,5 @@
 'use client';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { SearchBar } from '../ui';
 import {
@@ -19,11 +19,7 @@ import { List, Typography } from '@mui/material';
 import { getPopularSneakerTerms } from '@/api/gemini/getPopularSneakerTerms';
 import LinearProgress from '@mui/material/LinearProgress';
 import { AI_REQUEST_STALE_TIME } from '@/constants/queriesStaleTime';
-
-const searchSuggestionsCache = new Map<
-  string,
-  { timestamp: number; data: string[] }
->();
+import { useQuery } from '@tanstack/react-query';
 
 export const MainSearchBar = () => {
   const router = useRouter();
@@ -31,46 +27,34 @@ export const MainSearchBar = () => {
   const [inputValue, setInputValue] = useState(
     searchParams.get('search') || ''
   );
+
   const [isFocused, setIsFocused] = useState(false);
   const [popularTerms, setPopularTerms] = useState<string[]>([]);
   const debouncedInput = useDebounce(inputValue, 2000);
-  const [isLoading, setIsLoading] = useState(false);
-  const [hasFetchedInitialTerms, setHasFetchedInitialTerms] = useState(false);
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  const {
+    data: popularResults,
+    isSuccess,
+    isFetching,
+  } = useQuery({
+    queryKey: ['searchPopularTerms', debouncedInput],
+    queryFn: () => getPopularSneakerTerms(debouncedInput),
+    staleTime: AI_REQUEST_STALE_TIME,
+  });
+
+  const [isTyping, setIsTyping] = useState(false);
+  const isLoading = isTyping || isFetching;
 
   useEffect(() => {
-    const getTerms = async () => {
-      const normalizedQuery = debouncedInput.trim().toLowerCase();
-      const now = Date.now();
+    setIsTyping(inputValue !== debouncedInput);
+  }, [inputValue, debouncedInput]);
 
-      const cached = searchSuggestionsCache.get(normalizedQuery);
-      if (cached && now - cached.timestamp < AI_REQUEST_STALE_TIME) {
-        setPopularTerms(cached.data);
-        setIsLoading(false);
-        return;
-      }
-
-      setIsLoading(true);
-      try {
-        const terms = await getPopularSneakerTerms(normalizedQuery);
-        setPopularTerms(terms.length > 0 ? terms : []);
-        searchSuggestionsCache.set(normalizedQuery, {
-          data: terms,
-          timestamp: now,
-        });
-      } catch {
-        setPopularTerms([]);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    if (debouncedInput.trim() === '' && !hasFetchedInitialTerms) {
-      setHasFetchedInitialTerms(true);
+  useEffect(() => {
+    if (isSuccess && popularResults) {
+      setPopularTerms(popularResults);
     }
-
-    setIsLoading(true);
-    getTerms();
-  }, [debouncedInput, hasFetchedInitialTerms]);
+  }, [isSuccess, popularResults]);
 
   const handleSearch = (value: string) => {
     const params = new URLSearchParams(searchParams.toString());
@@ -99,10 +83,8 @@ export const MainSearchBar = () => {
 
   const handleTermClick = (term: string) => {
     setInputValue(term);
+    inputRef.current?.blur();
     handleSearch(term);
-    if (document.activeElement instanceof HTMLElement) {
-      document.activeElement.blur();
-    }
     handleClose();
   };
 
@@ -145,6 +127,7 @@ export const MainSearchBar = () => {
           onKeyDown={handleKeyDown}
           onFocus={handleFocus}
           onBlur={handleBlur}
+          inputRef={inputRef}
           data-testid="search-input"
         />
         {popularTerms.length > 0 && isFocused && (
