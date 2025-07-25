@@ -1,11 +1,11 @@
 // import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 
-import { editSchema } from './EditPage';
+import { productSchema } from './ProductForm';
 // import EditPage from './EditPage';
 
 describe('editPage', () => {
   it('should pass with valid data', () => {
-    const result = editSchema.safeParse({
+    const result = productSchema.safeParse({
       productName: 'Nike Air Max 90',
       price: '120',
       color: 'Black',
@@ -18,8 +18,8 @@ describe('editPage', () => {
     expect(result.success).toBe(true);
   });
 
-  it('should fail when required fields are missing in editSchema', () => {
-    const result = editSchema.safeParse({
+  it('should fail when required fields are missing in productSchema', () => {
+    const result = productSchema.safeParse({
       productName: '',
       price: '',
       color: 'Black',
@@ -42,8 +42,8 @@ describe('editPage', () => {
     }
   });
 
-  it('should allow empty string for optional fields in editSchema', () => {
-    const result = editSchema.safeParse({
+  it('should allow empty string for optional fields in productSchema', () => {
+    const result = productSchema.safeParse({
       productName: 'Nike Air Max 90',
       price: '120',
       color: 'Black',
