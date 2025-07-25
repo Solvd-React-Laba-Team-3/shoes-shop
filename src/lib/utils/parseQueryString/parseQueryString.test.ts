@@ -35,13 +35,15 @@ describe('parseQueryString', () => {
   });
 
   it('parses comma-separated arrays', () => {
-    expect(parseQueryString('?tags=react,nextjs,ts')).toEqual({
+    expect(parseQueryString('?tags=react&tags=nextjs&tags=ts')).toEqual({
       tags: ['react', 'nextjs', 'ts'],
     });
   });
 
   it('handles a mix of nesting and arrays', () => {
-    const result = parseQueryString('?filter[ids]=1,2,3&filter[status]=active');
+    const result = parseQueryString(
+      '?filter[ids]=1&filter[ids]=2&filter[ids]=3&filter[status]=active'
+    );
     expect(result).toEqual({
       filter: {
         ids: ['1', '2', '3'],

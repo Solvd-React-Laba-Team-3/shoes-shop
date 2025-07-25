@@ -33,10 +33,10 @@ describe('toQueryString', () => {
     ).toBe('?filter[status]=active&filter[priority]=high');
   });
 
-  it('joins arrays with commas', () => {
+  it('handles arrays properly', () => {
     expect(
       decodeURIComponent(toQueryString({ tags: ['react', 'nextjs'] }))
-    ).toBe('?tags=react,nextjs');
+    ).toBe('?tags=react&tags=nextjs');
   });
 
   it('skips empty arrays', () => {
@@ -69,7 +69,7 @@ describe('toQueryString', () => {
     };
     const output = decodeURIComponent(toQueryString(input));
     expect(output).toBe(
-      '?page=1&filters[category]=books,tech&filters[price][min]=10&filters[price][max]=100'
+      '?page=1&filters[category]=books&filters[category]=tech&filters[price][min]=10&filters[price][max]=100'
     );
   });
 });
