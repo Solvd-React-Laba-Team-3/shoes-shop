@@ -12,7 +12,6 @@ import { LoaderButton } from '@/components/LoaderButton';
 import { useEffect, useRef, useState } from 'react';
 import { useUpdateProfile } from '@/api/profile/useUpdateProfile';
 import { useUploadFile } from '@/api/uploadFile/useUploadFile';
-import { PHONE_REGEX } from '@/constants/phoneRegex';
 import { useChangePassword } from '@/api/profile/useChangePassword';
 
 export default function Settings() {
@@ -66,59 +65,77 @@ export default function Settings() {
     }
   };
 
+  const handleUpdateProfile = (
+    data: SettingsSchema,
+    token: string,
+    id: number,
+    avatarId?: number | null
+  ) => {
+    updateProfile({
+      body: {
+        username: data.username,
+        email: data.email,
+        phoneNumber: data.phoneNumber,
+        avatar: avatarId,
+      },
+      token,
+      id,
+    });
+  };
+
+  const handleChangePassword = (data: SettingsSchema) => {
+    if (!data.password || !data.currentPassword || !data.confirmPassword)
+      return;
+
+    changePassword(
+      {
+        password: data.password,
+        currentPassword: data.currentPassword,
+        passwordConfirmation: data.confirmPassword,
+      },
+      {
+        onSuccess: () => {
+          signOut({
+            redirect: true,
+            callbackUrl: '/auth/sign-in',
+          });
+        },
+      }
+    );
+  };
+
   const onSubmit = async (data: SettingsSchema) => {
     if (!session?.user) return;
 
     if (file) {
       uploadFile(file, {
         onSuccess: ([{ id: avatarId }]) => {
-          updateProfile({
-            body: {
-              username: data.username,
-              email: data.email,
-              phoneNumber: data.phoneNumber,
-              avatar: avatarId,
-            },
-            token: session?.user?.accessToken,
-            id: session?.user?.id,
-          });
+          handleUpdateProfile(
+            data,
+            session?.user?.accessToken,
+            session?.user?.id,
+            avatarId
+          );
         },
       });
     } else {
-      updateProfile({
-        body: {
-          username: data.username,
-          email: data.email,
-          phoneNumber: data.phoneNumber,
-          avatar: avatarUrl === null ? null : undefined,
-        },
-        token: session?.user?.accessToken,
-        id: session?.user?.id,
-      });
-    }
+      const avatar = avatarUrl ? undefined : null;
 
-    if (data.password && data.currentPassword && data.confirmPassword) {
-      changePassword(
-        {
-          password: data.password,
-          currentPassword: data.currentPassword,
-          passwordConfirmation: data.confirmPassword,
-        },
-        {
-          onSuccess: () => {
-            signOut({
-              redirect: true,
-              callbackUrl: '/auth/sign-in',
-            });
-          },
-        }
+      handleUpdateProfile(
+        data,
+        session?.user?.accessToken,
+        session?.user?.id,
+        avatar
       );
     }
+
+    handleChangePassword(data);
   };
 
   useEffect(() => {
     if (session?.user?.avatar) {
       setAvatarUrl(session.user.avatar.url);
+      setFile(null);
     }
   }, [session?.user?.avatar]);
 
@@ -230,9 +247,7 @@ export default function Settings() {
           <LabeledTextfield
             label="Phone number"
             placeholder="(949) 354-2574"
-            {...register('phoneNumber', {
-              pattern: PHONE_REGEX,
-            })}
+            {...register('phoneNumber')}
             error={!!errors.phoneNumber}
           />
           {errors.phoneNumber && (
