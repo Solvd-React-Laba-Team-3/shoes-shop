@@ -122,7 +122,6 @@ export default function EditPage() {
                 </StyledInputLabel>
                 <Select {...field} labelId="brand-label" sx={{ mt: '20px' }}>
                   <MenuItem value="Nike">Nike</MenuItem>
-                  <MenuItem value="Puma">Puma</MenuItem>
                 </Select>
               </FormControl>
             )}
