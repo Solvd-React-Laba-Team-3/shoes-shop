@@ -6,17 +6,19 @@ interface LoaderButtonProps {
   isSubmitting: boolean;
   text: string;
   loadingText: string;
+  size?: 'small' | 'medium' | 'large';
 }
 
 export const LoaderButton: FC<LoaderButtonProps> = ({
   isSubmitting,
   text,
   loadingText,
+  size = 'large',
 }) => {
   return (
     <Button
       type="submit"
-      size="large"
+      size={size}
       sx={{
         mt: '56px',
         '& .MuiCircularProgress-root': {

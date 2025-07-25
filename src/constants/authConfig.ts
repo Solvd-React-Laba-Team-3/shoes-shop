@@ -55,11 +55,21 @@ export const authOptions: AuthOptions = {
   ],
 
   callbacks: {
-    async jwt({ token, user }) {
+    async jwt({ token, user, trigger }) {
       if (user) {
         token.user = {
           ...user,
           id: Number(user.id),
+        };
+      }
+
+      if (trigger === 'update') {
+        const updatedUser = await getUserProfile(token.user.accessToken);
+
+        token.user = {
+          ...updatedUser,
+          accessToken: token.user.accessToken,
+          id: Number(token.user.id),
         };
       }
 
