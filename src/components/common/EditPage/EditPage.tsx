@@ -135,12 +135,12 @@ export default function EditPage() {
               />
             </Box>
 
-            <Controller
+            {/* <Controller
               name="description"
               control={control}
               defaultValue=""
               render={({ field }) => (
-                <FormControl sx={{ width: 436 }}>
+                <FormControl sx={{ width: 436, mt: 2 }}>
                   <InputLabel
                     shrink
                     sx={{
@@ -164,6 +164,39 @@ export default function EditPage() {
                     }}
                   />
                 </FormControl>
+              )}
+            /> */}
+
+            <Controller
+              name="description"
+              control={control}
+              defaultValue=""
+              render={({ field }) => (
+                <Box sx={{ width: 436 }}>
+                  <Typography
+                    sx={{
+                      ml: '0',
+                      fontSize: '15px',
+                      fontWeight: 500,
+                      color: '#494949',
+                      borderRadius: '8px',
+                    }}
+                  >
+                    Description
+                  </Typography>
+                  <TextareaAutosize
+                    {...field}
+                    aria-label="Description"
+                    minRows={3}
+                    placeholder="Lorem ipsum, or lipsum as it is sometimes known, is dummy text used in laying out print, graphic or web designs. The passage is attributed to an unknown typesetter in the 15th century who is thought to have scrambled parts of Cicero's De Finibus Bonorum et Malorum for use in a type specimen book. It usually begins with"
+                    style={{
+                      marginTop: '8px',
+                      padding: '15px',
+                      fontFamily: 'inherit',
+                      width: '100%',
+                    }}
+                  />
+                </Box>
               )}
             />
 
