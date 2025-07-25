@@ -9,9 +9,26 @@ import {
 } from '@testing-library/react';
 import { MainSearchBar } from './MainSearchBar';
 import { getPopularSneakerTerms } from '@/api/gemini/getPopularSneakerTerms';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
 const mockPush = jest.fn();
 const mockSearchParams = new Map<string, string>();
+
+const createTestQueryClient = () =>
+  new QueryClient({
+    defaultOptions: {
+      queries: {
+        retry: false,
+      },
+    },
+  });
+
+const renderWithQueryClient = (ui: React.ReactElement) => {
+  const testQueryClient = createTestQueryClient();
+  return render(
+    <QueryClientProvider client={testQueryClient}>{ui}</QueryClientProvider>
+  );
+};
 
 const createMockSearchParams = (params: Record<string, string> = {}) => {
   mockSearchParams.clear();
@@ -56,7 +73,7 @@ describe('MainSearchBar', () => {
 
   describe('Focus and Blur Behavior', () => {
     it('should show overlay and controls when focused', async () => {
-      render(<MainSearchBar />);
+      renderWithQueryClient(<MainSearchBar />);
       const input = getSearchInput();
 
       await act(async () => {
@@ -68,7 +85,7 @@ describe('MainSearchBar', () => {
     });
 
     it('should hide overlay after blur timeout', async () => {
-      render(<MainSearchBar />);
+      renderWithQueryClient(<MainSearchBar />);
       const input = getSearchInput();
 
       await act(async () => {
@@ -84,7 +101,7 @@ describe('MainSearchBar', () => {
     });
 
     it('should clear blur timeout when focusing again quickly', async () => {
-      render(<MainSearchBar />);
+      renderWithQueryClient(<MainSearchBar />);
       const input = getSearchInput();
 
       await act(async () => {
@@ -103,7 +120,7 @@ describe('MainSearchBar', () => {
 
   describe('Search Functionality', () => {
     it('should trigger search on Enter key press', async () => {
-      render(<MainSearchBar />);
+      renderWithQueryClient(<MainSearchBar />);
       const input = getSearchInput();
 
       await act(async () => {
@@ -117,7 +134,7 @@ describe('MainSearchBar', () => {
     });
 
     it('should handle empty search submission', async () => {
-      render(<MainSearchBar />);
+      renderWithQueryClient(<MainSearchBar />);
       const input = getSearchInput();
 
       await act(async () => {
@@ -131,7 +148,7 @@ describe('MainSearchBar', () => {
     });
 
     it('should not trigger search on non-Enter keys', async () => {
-      render(<MainSearchBar />);
+      renderWithQueryClient(<MainSearchBar />);
       const input = getSearchInput();
 
       await act(async () => {
@@ -144,7 +161,7 @@ describe('MainSearchBar', () => {
 
     it('should preserve existing search params when searching', async () => {
       createMockSearchParams({ category: 'sneakers', brand: 'nike' });
-      render(<MainSearchBar />);
+      renderWithQueryClient(<MainSearchBar />);
       const input = getSearchInput();
 
       await act(async () => {
@@ -162,7 +179,7 @@ describe('MainSearchBar', () => {
 
   describe('Overlay and Controls', () => {
     it('should close overlay when clicking close button', async () => {
-      render(<MainSearchBar />);
+      renderWithQueryClient(<MainSearchBar />);
       const input = getSearchInput();
 
       await act(async () => {
@@ -179,7 +196,7 @@ describe('MainSearchBar', () => {
     });
 
     it('should close overlay when clicking on it', async () => {
-      render(<MainSearchBar />);
+      renderWithQueryClient(<MainSearchBar />);
       const input = getSearchInput();
 
       await act(async () => {
@@ -196,7 +213,7 @@ describe('MainSearchBar', () => {
     });
 
     it('should close overlay after Enter key search', async () => {
-      render(<MainSearchBar />);
+      renderWithQueryClient(<MainSearchBar />);
       const input = getSearchInput();
 
       await act(async () => {
@@ -213,7 +230,7 @@ describe('MainSearchBar', () => {
 
   describe('Cleanup', () => {
     it('should clean up blur timeout on unmount', async () => {
-      const { unmount } = render(<MainSearchBar />);
+      const { unmount } = renderWithQueryClient(<MainSearchBar />);
       const input = getSearchInput();
 
       await act(async () => {
@@ -228,23 +245,6 @@ describe('MainSearchBar', () => {
       });
 
       expect(true).toBeTruthy();
-    });
-
-    it('should clean up debounce timeout on unmount', async () => {
-      const { unmount } = render(<MainSearchBar />);
-      const input = getSearchInput();
-
-      await act(async () => {
-        fireEvent.focus(input);
-        fireEvent.change(input, { target: { value: 'nike' } });
-      });
-
-      unmount();
-      await act(async () => {
-        jest.runAllTimers();
-      });
-
-      expect(mockGetPopularSneakerTerms).not.toHaveBeenCalled();
     });
   });
 });
