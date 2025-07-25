@@ -18,19 +18,24 @@ import {
   StyledTextArea,
   StyledAiButton,
 } from './EditPageStyles';
+import * as z from 'zod';
+import { zodResolver } from '@hookform/resolvers/zod';
 
-type FormData = {
-  productName: string;
-  price: string;
-  gender: string;
-  description: string;
-  color: string;
-  brand: string;
-  size: string;
-};
+const editSchema = z.object({
+  productName: z.string().min(1, 'Product name is required'),
+  price: z.string().min(1, 'Price is required'),
+  color: z.string().min(1, 'Color is required'),
+  gender: z.string(),
+  brand: z.string().min(1, 'Product name is required'),
+  description: z.string().min(1, 'Description is required'),
+  size: z.string(),
+});
+
+type EditFormData = z.infer<typeof editSchema>;
 
 export default function EditPage() {
-  const { register, control, handleSubmit } = useForm<FormData>({
+  const { register, control, handleSubmit } = useForm<EditFormData>({
+    resolver: zodResolver(editSchema),
     defaultValues: {
       productName: '',
       price: '',
@@ -42,7 +47,7 @@ export default function EditPage() {
     },
   });
 
-  const onSubmit = (data: FormData) => {
+  const onSubmit = (data: EditFormData) => {
     console.log('Form Data:', data);
   };
 
@@ -186,7 +191,12 @@ export default function EditPage() {
           />
         </Box>
 
-        <Button variant="contained" color="primary" type="submit">
+        <Button
+          variant="contained"
+          color="primary"
+          type="submit"
+          sx={{ marginTop: '50px' }}
+        >
           Submit
         </Button>
       </form>
