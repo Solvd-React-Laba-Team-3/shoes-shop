@@ -1,6 +1,6 @@
-import { styled } from '@mui/material/styles';
-import { InputLabel, TextareaAutosize, Typography } from '@mui/material';
 import AutoFixHighOutlinedIcon from '@mui/icons-material/AutoFixHighOutlined';
+import { InputLabel, TextareaAutosize, Typography } from '@mui/material';
+import { styled } from '@mui/material/styles';
 
 export const StyledInputLabel = styled(InputLabel)(({ theme }) => ({
   marginLeft: '-13px',

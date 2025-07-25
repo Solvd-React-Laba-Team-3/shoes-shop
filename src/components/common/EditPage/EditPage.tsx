@@ -4,6 +4,7 @@ import {
   Select,
   ToggleButton,
 } from '@/components/ui';
+import { zodResolver } from '@hookform/resolvers/zod';
 import {
   Box,
   FormControl,
@@ -11,17 +12,16 @@ import {
   ToggleButtonGroup,
   Typography,
 } from '@mui/material';
-import { useForm, Controller } from 'react-hook-form';
-import {
-  StyledInputLabel,
-  StyledDescriptionLabel,
-  StyledTextArea,
-  StyledAiButton,
-} from './EditPageStyles';
+import { Controller, useForm } from 'react-hook-form';
 import * as z from 'zod';
-import { zodResolver } from '@hookform/resolvers/zod';
+import {
+  StyledAiButton,
+  StyledDescriptionLabel,
+  StyledInputLabel,
+  StyledTextArea,
+} from './EditPageStyles';
 
-const editSchema = z.object({
+export const editSchema = z.object({
   productName: z.string().min(1, 'Product name is required'),
   price: z.string().min(1, 'Price is required'),
   color: z.string().min(1, 'Color is required'),
