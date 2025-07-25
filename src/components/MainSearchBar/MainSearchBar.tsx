@@ -1,6 +1,6 @@
 'use client';
 import { useState, useEffect, useRef } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useRouter, usePathname, useSearchParams } from 'next/navigation';
 import { SearchBar } from '../ui';
 import {
   MainSearchBarContainer,
@@ -23,6 +23,7 @@ import { useQuery } from '@tanstack/react-query';
 
 export const MainSearchBar = () => {
   const router = useRouter();
+  const pathname = usePathname();
   const searchParams = useSearchParams();
   const [inputValue, setInputValue] = useState(
     searchParams.get('search') || ''
@@ -59,7 +60,14 @@ export const MainSearchBar = () => {
   const handleSearch = (value: string) => {
     const params = new URLSearchParams(searchParams.toString());
     params.set('search', value);
-    router.push(`?${params.toString()}`);
+
+    const newQuery = `?${params.toString()}`;
+
+    if (pathname !== '/') {
+      router.push(`/${newQuery}`);
+    } else {
+      router.push(newQuery);
+    }
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
