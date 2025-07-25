@@ -7,15 +7,17 @@ import {
 import {
   Box,
   FormControl,
-  InputLabel,
   MenuItem,
-  styled,
   ToggleButtonGroup,
   Typography,
 } from '@mui/material';
 import { useForm, Controller } from 'react-hook-form';
-import TextareaAutosize from '@mui/material/TextareaAutosize';
-import AutoFixHighOutlinedIcon from '@mui/icons-material/AutoFixHighOutlined';
+import {
+  StyledInputLabel,
+  StyledDescriptionLabel,
+  StyledTextArea,
+  StyledAiButton,
+} from './EditPageStyles';
 
 type FormData = {
   productName: string;
@@ -26,13 +28,6 @@ type FormData = {
   brand: string;
   size: string;
 };
-
-const StyledInputLabel = styled(InputLabel)(() => ({
-  marginLeft: '-13px',
-  fontSize: '17px',
-  fontWeight: 500,
-  color: 'rgb(92, 92, 92)',
-}));
 
 export default function EditPage() {
   const { register, control, handleSubmit } = useForm<FormData>({
@@ -135,44 +130,17 @@ export default function EditPage() {
           defaultValue=""
           render={({ field }) => (
             <Box sx={{ width: 436 }}>
-              <Typography
-                sx={{
-                  ml: '0',
-                  fontSize: '15px',
-                  fontWeight: 500,
-                  color: '#494949',
-                  borderRadius: '8px',
-                }}
-              >
-                Description
-              </Typography>
+              <StyledDescriptionLabel>Description</StyledDescriptionLabel>
 
               <Box sx={{ position: 'relative' }}>
-                <TextareaAutosize
+                <StyledTextArea
                   {...field}
                   aria-label="Description"
                   minRows={3}
                   placeholder="Lorem ipsum, or lipsum as it is sometimes known, is dummy text used in laying out print, graphic or web designs. The passage is attributed to an unknown typesetter in the 15th century who is thought to have scrambled parts of Cicero's De Finibus Bonorum et Malorum for use in a type specimen book. It usually begins with"
-                  style={{
-                    marginTop: '8px',
-                    padding: '16px 8px',
-                    fontFamily: 'inherit',
-                    width: '100%',
-                    borderRadius: '8px',
-                    height: 'auto',
-                    fontSize: '15px',
-                  }}
                 />
 
-                <AutoFixHighOutlinedIcon
-                  sx={{
-                    position: 'absolute',
-                    bottom: '12px',
-                    right: '12px',
-                    color: 'gray',
-                    cursor: 'pointer',
-                  }}
-                />
+                <StyledAiButton />
               </Box>
             </Box>
           )}
@@ -187,12 +155,11 @@ export default function EditPage() {
                 <Typography
                   component="h6"
                   variant="caption"
-                  sx={{
+                  sx={(theme) => ({
                     mb: 0,
-                    fontSize: '15px',
                     fontWeight: 500,
-                    color: 'rgb(92, 92, 92)',
-                  }}
+                    color: theme.palette.text.secondary,
+                  })}
                 >
                   Add size
                 </Typography>
