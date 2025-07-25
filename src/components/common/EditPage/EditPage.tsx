@@ -1,4 +1,9 @@
-import { LabeledTextfield, Select, ToggleButton } from '@/components/ui';
+import {
+  Button,
+  LabeledTextfield,
+  Select,
+  ToggleButton,
+} from '@/components/ui';
 import {
   Box,
   FormControl,
@@ -6,6 +11,7 @@ import {
   MenuItem,
   Stack,
   styled,
+  ToggleButtonGroup,
   Typography,
 } from '@mui/material';
 import { useForm, Controller } from 'react-hook-form';
@@ -18,6 +24,7 @@ type FormData = {
   description: string;
   color: string;
   brand: string;
+  size: string;
 };
 
 const StyledInputLabel = styled(InputLabel)(() => ({
@@ -28,7 +35,7 @@ const StyledInputLabel = styled(InputLabel)(() => ({
 }));
 
 export default function EditPage() {
-  const { control, handleSubmit } = useForm<FormData>({
+  const { register, control, handleSubmit } = useForm<FormData>({
     defaultValues: {
       productName: '',
       price: '',
@@ -36,6 +43,7 @@ export default function EditPage() {
       description: '',
       color: 'Black',
       brand: 'Nike',
+      size: '',
     },
   });
 
@@ -51,8 +59,13 @@ export default function EditPage() {
             <LabeledTextfield
               label="Product name"
               placeholder="Nike Air Max 90"
+              {...register('productName')}
             />
-            <LabeledTextfield label="Price" placeholder="$160" />
+            <LabeledTextfield
+              label="Price"
+              placeholder="$160"
+              {...register('price')}
+            />
 
             <Controller
               name="color"
@@ -68,6 +81,7 @@ export default function EditPage() {
                     sx={{ mt: '18px', width: '436px', padding: '8px 0' }}
                   >
                     <MenuItem value="Black">Black</MenuItem>
+                    <MenuItem value="Blue">Blue</MenuItem>
                   </Select>
                 </FormControl>
               )}
@@ -153,38 +167,48 @@ export default function EditPage() {
               )}
             />
 
-            <Box display="flex" flexDirection="column" gap={0.5}>
-              <Typography
-                component="h6"
-                variant="caption"
-                sx={{
-                  mb: 0,
-                  fontSize: '15px',
-                  fontWeight: 500,
-                  color: 'rgb(92, 92, 92)',
-                }}
-              >
-                Add size
-              </Typography>
+            <Controller
+              name="size"
+              control={control}
+              render={({ field }) => (
+                <Box>
+                  <Typography
+                    component="h6"
+                    variant="caption"
+                    sx={{
+                      mb: 0,
+                      fontSize: '15px',
+                      fontWeight: 500,
+                      color: 'rgb(92, 92, 92)',
+                    }}
+                  >
+                    Add size
+                  </Typography>
 
-              <Box display="inline-flex" gap={0.39}>
-                <ToggleButton value="EU-36" size="small">
-                  EU-36
-                </ToggleButton>
-                <ToggleButton value="EU-37" size="small">
-                  EU-37
-                </ToggleButton>
-                <ToggleButton value="EU-38" size="small">
-                  EU-38
-                </ToggleButton>
-                <ToggleButton value="EU-39" size="small">
-                  EU-39
-                </ToggleButton>
-                <ToggleButton value="EU-40" size="small">
-                  EU-40
-                </ToggleButton>
-              </Box>
-            </Box>
+                  <ToggleButtonGroup
+                    {...field}
+                    exclusive
+                    onChange={(_, value) => field.onChange(value)}
+                    size="small"
+                  >
+                    {['EU-36', 'EU-37', 'EU-38', 'EU-39', 'EU-40'].map(
+                      (size, index, arr) => (
+                        <Box
+                          key={size}
+                          sx={{ mr: index < arr.length - 1 ? 0.39 : 0 }}
+                        >
+                          <ToggleButton value={size}>{size}</ToggleButton>
+                        </Box>
+                      )
+                    )}
+                  </ToggleButtonGroup>
+                </Box>
+              )}
+            />
+
+            <Button variant="contained" color="primary" type="submit">
+              Submit
+            </Button>
           </Stack>
         </form>
       </Box>
