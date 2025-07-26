@@ -1,7 +1,7 @@
 'use client';
 
 import { Box } from '@mui/material';
-import { Filters } from '../Filters/Filters';
+import { Filters } from '../Filters/';
 
 interface FiltersWrapperProps {
   open?: boolean;

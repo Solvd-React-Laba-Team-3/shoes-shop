@@ -5,7 +5,7 @@ import { getProductsOptions } from '@/api/products/getProductsOptions';
 import { getSizesOptions } from '@/api/size/getSizesOptions';
 
 import { Header } from '@/components/common/Header';
-import { FiltersWrapper } from '@/components/FiltersWrapper/FiltersWrapper';
+import { FiltersWrapper } from '@/components/FiltersWrapper/';
 import { ProductsContainer } from '@/components/ProductsContainer/ProductsContainer';
 import { getQueryClient } from '@/lib/utils';
 import { Hydrate } from '@/providers/Hydrate';

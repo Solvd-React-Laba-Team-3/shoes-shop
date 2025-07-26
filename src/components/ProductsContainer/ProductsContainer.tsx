@@ -11,7 +11,6 @@ export const ProductsContainer: React.FC = () => {
   const { searchParams } = useSearchsParams();
 
   const filters = parseQueryString(searchParams.get('filters') ?? '');
-  console.log(filters);
   const search = searchParams.get('search');
 
   const queryParams = {

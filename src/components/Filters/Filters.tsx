@@ -182,6 +182,9 @@ export const Filters: React.FC = () => {
                   type="text"
                   slotProps={{
                     input: {
+                      inputProps: {
+                        'data-testid': 'price-range',
+                      },
                       sx: {
                         borderRadius: '6px',
                         fontSize: 12,
@@ -214,6 +217,9 @@ export const Filters: React.FC = () => {
                   size="small"
                   slotProps={{
                     input: {
+                      inputProps: {
+                        'data-testid': 'price-range',
+                      },
                       sx: {
                         borderRadius: '6px',
                         fontSize: 12,
