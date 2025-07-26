@@ -58,6 +58,8 @@ export const MainSearchBar = () => {
   }, [isSuccess, popularResults]);
 
   const handleSearch = (value: string) => {
+    if (searchParams.get('search') === value) return;
+
     const params = new URLSearchParams(searchParams.toString());
     params.set('search', value);
 
