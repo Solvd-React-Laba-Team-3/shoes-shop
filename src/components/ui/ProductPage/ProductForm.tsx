@@ -14,7 +14,8 @@ import {
   StyledDescriptionLabel,
   StyledInputLabel,
   StyledTextArea,
-} from './ProductPageStyles';
+} from './ProductFormStyles';
+import { useEffect, useState } from 'react';
 
 export const productSchema = z.object({
   productName: z.string().min(1, 'Product name is required'),
@@ -40,16 +41,47 @@ export default function ProductForm({
   const { register, control, handleSubmit } = useForm<ProductFormData>({
     resolver: zodResolver(productSchema),
     defaultValues: {
-      productName: '',
-      price: '',
       gender: 'Male',
-      description: '',
       color: 'Black',
       brand: 'Nike',
-      size: '',
       ...defaultValues,
     },
+
+    // defaultValues: {
+    //   productName: '',
+    //   price: '',
+    //   gender: 'Male',
+    //   description: '',
+    //   color: 'Black',
+    //   brand: 'Nike',
+    //   size: '',
+    //   ...defaultValues,
+    // },
   });
+
+  const [brands, setBrands] = useState<string[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchBrands = async () => {
+      try {
+        const res = await fetch('/api/brand');
+        const data = await res.json();
+
+        if (Array.isArray(data)) {
+          setBrands(data);
+        } else {
+          console.error('Invalid brand data format:', data);
+        }
+      } catch (error) {
+        console.error('Error fetching brands:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchBrands();
+  }, []);
 
   return (
     <Box>
@@ -66,6 +98,7 @@ export default function ProductForm({
           <LabeledTextfield
             label="Price"
             placeholder="$160"
+            type="number"
             {...register('price')}
           />
         </Box>
@@ -116,12 +149,30 @@ export default function ProductForm({
               <FormControl
                 variant="outlined"
                 sx={{ maxWidth: '210px', width: '100%' }}
+                disabled={isLoading}
               >
                 <StyledInputLabel id="brand-label" shrink>
                   Brand
                 </StyledInputLabel>
-                <Select {...field} labelId="brand-label" sx={{ mt: '20px' }}>
-                  <MenuItem value="Nike">Nike</MenuItem>
+                <Select
+                  {...field}
+                  labelId="brand-label"
+                  sx={{ mt: '20px' }}
+                  displayEmpty
+                >
+                  <MenuItem value="">
+                    <em>Select brand</em>
+                  </MenuItem>
+
+                  {field.value && !brands.includes(field.value) && (
+                    <MenuItem value={field.value}>{field.value}</MenuItem>
+                  )}
+
+                  {brands.map((brand) => (
+                    <MenuItem key={brand} value={brand}>
+                      {brand}
+                    </MenuItem>
+                  ))}
                 </Select>
               </FormControl>
             )}
