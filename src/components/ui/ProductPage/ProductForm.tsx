@@ -24,7 +24,7 @@ export const productSchema = z.object({
   gender: z.string(),
   brand: z.string().min(1, 'Product name is required'),
   description: z.string().min(1, 'Description is required'),
-  size: z.string(),
+  size: z.array(z.string()).min(1, 'At least one size is required'),
 });
 
 export type ProductFormData = z.infer<typeof productSchema>;
@@ -199,7 +199,7 @@ export default function ProductForm({
         />
 
         <Box sx={{ marginTop: '8px' }}>
-          <Controller
+          {/* <Controller
             name="size"
             control={control}
             render={({ field }) => (
@@ -235,6 +235,58 @@ export default function ProductForm({
                 </ToggleButtonGroup>
               </Box>
             )}
+          /> */}
+          <Controller
+            name="size"
+            control={control}
+            render={({ field }) => {
+              const handleToggle = (value: string) => {
+                const currentValues = field.value || [];
+                const newValues = currentValues.includes(value)
+                  ? currentValues.filter((val) => val !== value)
+                  : [...currentValues, value];
+                field.onChange(newValues);
+              };
+
+              return (
+                <Box>
+                  <Typography
+                    component="h6"
+                    variant="caption"
+                    sx={(theme) => ({
+                      mb: 0,
+                      fontWeight: 500,
+                      color: theme.palette.text.secondary,
+                    })}
+                  >
+                    Add size
+                  </Typography>
+
+                  <ToggleButtonGroup
+                    value={field.value || []}
+                    onChange={(_, value) => field.onChange(value)}
+                    size="small"
+                  >
+                    {['EU-36', 'EU-37', 'EU-38', 'EU-39', 'EU-40'].map(
+                      (size, index, arr) => (
+                        <Box
+                          key={size}
+                          sx={{ mr: index < arr.length - 1 ? 0.39 : 0 }}
+                        >
+                          <ToggleButton
+                            value={size}
+                            selected={field.value?.includes(size)}
+                            onClick={() => handleToggle(size)}
+                          >
+                            {size}
+                          </ToggleButton>
+                        </Box>
+                      )
+                    )}
+                  </ToggleButtonGroup>
+                </Box>
+              );
+            }}
           />
         </Box>
       </form>
