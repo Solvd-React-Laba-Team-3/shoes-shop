@@ -12,7 +12,7 @@ describe('editPage', () => {
       gender: 'Male',
       brand: 'Puma',
       description: 'Nice shoes',
-      size: 'EU-38',
+      size: ['EU-38', 'EU-39'],
     });
 
     expect(result.success).toBe(true);
@@ -50,7 +50,7 @@ describe('editPage', () => {
       gender: '',
       brand: 'Puma',
       description: 'Nice shoes',
-      size: '',
+      size: [],
     });
 
     expect(result.success).toBe(true);
