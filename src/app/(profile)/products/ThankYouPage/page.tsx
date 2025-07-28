@@ -1,8 +1,22 @@
+'use client';
 import { Button } from '@/components/ui';
 import { Box, Typography } from '@mui/material';
 import Image from 'next/image';
+import { useSearchParams, useRouter } from 'next/navigation';
 
-export default function Thanksgiving() {
+export default function ThankYou() {
+  const searchParams = useSearchParams();
+  const router = useRouter();
+  const order = searchParams.get('order');
+
+  const handleViewOrder = () => {
+    router.push('/products');
+  };
+
+  const handleContinueShopping = () => {
+    router.push('/');
+  };
+
   return (
     <Box
       sx={{
@@ -23,7 +37,7 @@ export default function Thanksgiving() {
             for your order
           </Typography>
           <Typography component="span" variant="h2" color="primary.main">
-            #9082372
+            #{order ?? '9082372'}
           </Typography>
         </Box>
 
@@ -37,8 +51,13 @@ export default function Thanksgiving() {
         </Typography>
 
         <Box display="flex" gap={2}>
-          <Button variant="outlined">View Order</Button>
-          <Button variant="contained">Continue Shopping</Button>
+          <Button variant="outlined" onClick={handleViewOrder}>
+            View Order
+          </Button>
+
+          <Button variant="contained" onClick={handleContinueShopping}>
+            Continue Shopping
+          </Button>
         </Box>
       </Box>
 
