@@ -12,6 +12,7 @@ interface LabeledTextfieldProps extends InputProps {
   label: string;
   errorMessage?: string;
   maxWidth?: string;
+  reserveErrorSpace?: boolean;
 }
 
 const StyledInputLabel = styled(InputLabel)(({ theme }: { theme: Theme }) => ({
@@ -44,8 +45,12 @@ export const LabeledTextfield: FC<LabeledTextfieldProps> = ({
   id,
   required,
   maxWidth = '436px',
+  reserveErrorSpace = false,
   ...props
 }) => {
+  const showError = error && errorMessage;
+  const shouldReserveSpace = reserveErrorSpace || showError;
+
   return (
     <FormControl
       fullWidth
@@ -65,7 +70,7 @@ export const LabeledTextfield: FC<LabeledTextfieldProps> = ({
 
       <StyledInput id={id} error={error} disableUnderline {...props} />
 
-      {error && errorMessage && (
+      {shouldReserveSpace && (
         <FormHelperText
           sx={{
             display: 'flex',
@@ -74,10 +79,12 @@ export const LabeledTextfield: FC<LabeledTextfieldProps> = ({
             mt: 0.5,
             fontSize: '12px',
             fontWeight: '400',
+            minHeight: '20px',
+            visibility: showError ? 'visible' : 'hidden',
           }}
         >
           <WarningAmberIcon fontSize="small" />
-          {errorMessage}
+          {errorMessage ?? ' '}
         </FormHelperText>
       )}
     </FormControl>

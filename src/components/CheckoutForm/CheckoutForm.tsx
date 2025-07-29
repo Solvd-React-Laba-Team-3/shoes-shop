@@ -91,7 +91,7 @@ export const CheckoutForm = () => {
             sx={{
               display: 'grid',
               gridTemplateColumns: '1fr 1fr',
-              gap: '32px',
+              gap: '12px',
             }}
           >
             <LabeledTextfield
@@ -100,6 +100,7 @@ export const CheckoutForm = () => {
               error={!!errors.name}
               placeholder="Type your name..."
               errorMessage={errors.name?.message}
+              reserveErrorSpace
             />
             <LabeledTextfield
               label="Surname"
@@ -107,6 +108,7 @@ export const CheckoutForm = () => {
               error={!!errors.surname}
               placeholder="Type your surname..."
               errorMessage={errors.surname?.message}
+              reserveErrorSpace
             />
             <LabeledTextfield
               id="email"
@@ -115,6 +117,7 @@ export const CheckoutForm = () => {
               error={!!errors.email}
               errorMessage={errors.email?.message}
               {...register('email')}
+              reserveErrorSpace
             />
             <LabeledTextfield
               label="Phone number"
@@ -122,10 +125,11 @@ export const CheckoutForm = () => {
               error={!!errors.phone}
               placeholder="(54) 9 114180-1332"
               errorMessage={errors.phone?.message}
+              reserveErrorSpace
             />
           </Box>
 
-          <Divider sx={{ mt: 8, mb: 2 }} />
+          <Divider sx={{ mt: 6, mb: 2 }} />
 
           <Typography variant="h6" sx={{ mt: 9, mb: 3 }}>
             Shipping info
@@ -143,6 +147,7 @@ export const CheckoutForm = () => {
               error={!!errors.country}
               placeholder="USA"
               errorMessage={errors.country?.message}
+              reserveErrorSpace
             />
             <LabeledTextfield
               label="City"
@@ -150,6 +155,7 @@ export const CheckoutForm = () => {
               error={!!errors.city}
               placeholder="New York"
               errorMessage={errors.city?.message}
+              reserveErrorSpace
             />
             <LabeledTextfield
               label="State"
@@ -157,6 +163,7 @@ export const CheckoutForm = () => {
               error={!!errors.state}
               placeholder="New York"
               errorMessage={errors.state?.message}
+              reserveErrorSpace
             />
             <LabeledTextfield
               label="Zip Code"
@@ -164,14 +171,16 @@ export const CheckoutForm = () => {
               error={!!errors.zipCode}
               placeholder="3490583"
               errorMessage={errors.zipCode?.message}
+              reserveErrorSpace
             />
           </Box>
-          <Box sx={{ mt: 3 }}>
+          <Box sx={{ marginTop: '4px' }}>
             <LabeledTextfield
               label="Address"
               {...register('address')}
               error={!!errors.address}
               errorMessage={errors.address?.message}
+              reserveErrorSpace
               placeholder="Street, appartment, block"
               maxWidth="800px"
               sx={{ width: '100%' }}
@@ -234,6 +243,7 @@ export const CheckoutForm = () => {
               error={!!errors.cardNumber}
               placeholder="1234 1234 1234 1234"
               errorMessage={errors.cardNumber?.message}
+              reserveErrorSpace
               maxWidth="800px"
               sx={{ width: '100%' }}
             />
@@ -243,7 +253,6 @@ export const CheckoutForm = () => {
               display: 'grid',
               gridTemplateColumns: 'repeat(3, 1fr)',
               gap: 2,
-              mt: 2,
               width: '100%',
             }}
           >
@@ -252,18 +261,21 @@ export const CheckoutForm = () => {
               {...register('expirationDate')}
               error={!!errors.expirationDate}
               errorMessage={errors.expirationDate?.message}
+              reserveErrorSpace
             />
             <LabeledTextfield
               label="Security code"
               {...register('securityCode')}
               error={!!errors.securityCode}
               errorMessage={errors.securityCode?.message}
+              reserveErrorSpace
             />
             <LabeledTextfield
               label="Country"
               {...register('paymentCountry')}
               error={!!errors.paymentCountry}
               errorMessage={errors.paymentCountry?.message}
+              reserveErrorSpace
             />
           </Box>
 
@@ -292,6 +304,7 @@ export const CheckoutForm = () => {
             Confirm & Pay
           </Button>
         </form>
+        <Divider sx={{ mt: 6, mb: 2 }} />
       </Box>
     </FormProvider>
   );
