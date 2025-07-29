@@ -1,6 +1,6 @@
 import { geminiModel } from '../../constants/geminiConfig';
 
-export async function getPopularSneakerTerms(query: string): Promise<string[]> {
+export async function getPopularSearchTerms(query: string): Promise<string[]> {
   const normalizedQuery = (query ?? '').toString().trim();
   const isEmpty = normalizedQuery.length === 0;
   const currentYear = new Date().getFullYear();
