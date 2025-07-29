@@ -1,3 +1,5 @@
+'use client';
+
 import ProductForm from '@/components/ui/ProductPage/ProductForm';
 import type { ProductFormData } from '@/components/ui/ProductPage/ProductForm';
 
@@ -11,7 +13,7 @@ export default function EditPage() {
       defaultValues={{
         productName: 'Nike Air Max 90',
         price: '$160',
-        gender: 'Male',
+        gender: 'Men',
         color: 'Black',
         brand: 'Nike',
         description:
