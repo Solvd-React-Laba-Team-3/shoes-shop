@@ -8,7 +8,7 @@ import {
   cleanup,
 } from '@testing-library/react';
 import { MainSearchBar } from './MainSearchBar';
-import { getPopularSneakerTerms } from '@/api/gemini/getPopularSearchTerms';
+import { getPopularSearchTerms } from '@/api/gemini/getPopularSearchTerms';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { usePathname } from 'next/navigation';
 
@@ -54,11 +54,11 @@ jest.mock('next/navigation', () => {
   };
 });
 
-jest.mock('@/api/gemini/getPopularSneakerTerms', () => ({
-  getPopularSneakerTerms: jest.fn(),
+jest.mock('@/api/gemini/getPopularSearchTerms', () => ({
+  getPopularSearchTerms: jest.fn(),
 }));
 
-const mockGetPopularSneakerTerms = getPopularSneakerTerms as jest.Mock;
+const mockGetPopularSearchTerms = getPopularSearchTerms as jest.Mock;
 
 const getSearchInput = () => screen.getByLabelText('search');
 
@@ -66,7 +66,7 @@ describe('MainSearchBar', () => {
   beforeEach(() => {
     jest.useFakeTimers();
     jest.clearAllMocks();
-    mockGetPopularSneakerTerms.mockResolvedValue([]);
+    mockGetPopularSearchTerms.mockResolvedValue([]);
     (usePathname as jest.Mock).mockReturnValue('/');
     createMockSearchParams();
   });
