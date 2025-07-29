@@ -1,5 +1,6 @@
 import { render, screen, fireEvent } from '@testing-library/react';
-import ThankYou from './page';
+import Order from './page';
+import { SessionProvider } from 'next-auth/react';
 
 const mockPush = jest.fn();
 const mockGet = jest.fn();
@@ -13,42 +14,56 @@ jest.mock('next/navigation', () => ({
   }),
 }));
 
-describe('ThankYou', () => {
+describe('Order', () => {
   beforeEach(() => {
     mockPush.mockClear();
   });
-  it('renders thr Thank You heading', () => {
-    render(<ThankYou />);
+  it('renders the Thank You heading', () => {
+    render(
+      <SessionProvider session={null}>
+        <Order />
+      </SessionProvider>
+    );
 
     expect(screen.getByText('THANK YOU')).toBeInTheDocument();
   });
 
   it('renders  for your order text', () => {
-    render(<ThankYou />);
+    render(
+      <SessionProvider session={null}>
+        <Order />
+      </SessionProvider>
+    );
 
     expect(screen.getByText('for your order')).toBeInTheDocument();
   });
 
-  //   it('displays the order number from query params', () => {
-  //     render(<ThankYou />);
-
-  //     expect(screen.getByText('#9082372')).toBeInTheDocument();
-  //   });
-
   it('renders order number from search params', () => {
     mockGet.mockReturnValue('12345');
-    render(<ThankYou />);
+    render(
+      <SessionProvider session={null}>
+        <Order />
+      </SessionProvider>
+    );
     expect(screen.getByText('#12345')).toBeInTheDocument();
   });
 
   it('renders default order number when order param is missing', () => {
-    mockGet.mockReturnValue(null); // имитация отсутствия параметра
-    render(<ThankYou />);
+    mockGet.mockReturnValue(null);
+    render(
+      <SessionProvider session={null}>
+        <Order />
+      </SessionProvider>
+    );
     expect(screen.getByText('#9082372')).toBeInTheDocument();
   });
 
   it('displays view order button and continue shopping button', () => {
-    render(<ThankYou />);
+    render(
+      <SessionProvider session={null}>
+        <Order />
+      </SessionProvider>
+    );
 
     expect(
       screen.getByRole('button', { name: 'View Order' })
@@ -60,13 +75,21 @@ describe('ThankYou', () => {
   });
 
   it('renders the thank you image', () => {
-    render(<ThankYou />);
+    render(
+      <SessionProvider session={null}>
+        <Order />
+      </SessionProvider>
+    );
 
     expect(screen.getByAltText('Thank you')).toBeInTheDocument();
   });
 
   it('renders order confirmation text', () => {
-    render(<ThankYou />);
+    render(
+      <SessionProvider session={null}>
+        <Order />
+      </SessionProvider>
+    );
 
     expect(
       screen.getByText(
@@ -76,7 +99,11 @@ describe('ThankYou', () => {
   });
 
   it('navigates to /products when View Order button is clicked', () => {
-    render(<ThankYou />);
+    render(
+      <SessionProvider session={null}>
+        <Order />
+      </SessionProvider>
+    );
     const viewOrderButton = screen.getByRole('button', { name: 'View Order' });
 
     fireEvent.click(viewOrderButton);
@@ -85,7 +112,11 @@ describe('ThankYou', () => {
   });
 
   it('navigates to the home page when Continue shopping button is clicked', () => {
-    render(<ThankYou />);
+    render(
+      <SessionProvider session={null}>
+        <Order />
+      </SessionProvider>
+    );
     const continueOrderButton = screen.getByRole('button', {
       name: 'Continue Shopping',
     });
