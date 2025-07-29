@@ -28,7 +28,16 @@ export const productSchema = z.object({
   gender: z.string(),
   brand: z.string().min(1, 'Product name is required'),
   description: z.string().min(1, 'Description is required'),
-  size: z.array(z.string()).min(1, 'At least one size is required'),
+  size: z
+    .array(
+      z.object({
+        id: z.number(),
+        attributes: z.object({
+          value: z.union([z.string(), z.number()]),
+        }),
+      })
+    )
+    .min(1, 'At least one size is required'),
 });
 
 export type ProductFormData = z.infer<typeof productSchema>;
@@ -202,11 +211,15 @@ export default function ProductForm({
             name="size"
             control={control}
             render={({ field }) => {
-              const handleToggle = (value: string) => {
+              const handleToggle = (selected: { id: number }) => {
                 const currentValues = field.value || [];
-                const newValues = currentValues.includes(value)
-                  ? currentValues.filter((val) => val !== value)
-                  : [...currentValues, value];
+                const exists = currentValues.some(
+                  (item) => item.id === selected.id
+                );
+                const newValues = exists
+                  ? currentValues.filter((item) => item.id !== selected.id)
+                  : [...currentValues, selected];
+
                 field.onChange(newValues);
               };
 
@@ -225,40 +238,29 @@ export default function ProductForm({
                   </Typography>
 
                   <ToggleButtonGroup
-                    value={field.value || []}
-                    onChange={(_, value) => field.onChange(value)}
                     size="small"
+                    sx={{ maxWidth: '436px', flexWrap: 'wrap', gap: '27px' }}
                   >
-                    {/* {['EU-36', 'EU-37', 'EU-38', 'EU-39', 'EU-40'].map(
-                      (size, index, arr) => (
+                    {sizes.data.map((size, index, arr) => {
+                      const isSelected = (field.value || []).some(
+                        (selectedSize) => selectedSize.id === size.id
+                      );
+
+                      return (
                         <Box
-                          key={size}
+                          key={size.id}
                           sx={{ mr: index < arr.length - 1 ? 0.39 : 0 }}
                         >
                           <ToggleButton
                             value={size}
-                            selected={field.value?.includes(size)}
+                            selected={isSelected}
                             onClick={() => handleToggle(size)}
                           >
-                            {size}
+                            {size.attributes.value}
                           </ToggleButton>
                         </Box>
-                      )
-                    )} */}
-                    {sizes.data.map((size, index, arr) => (
-                      <Box
-                        key={size.attributes.value}
-                        sx={{ mr: index < arr.length - 1 ? 0.39 : 0 }}
-                      >
-                        <ToggleButton
-                          value={size}
-                          selected={field.value?.includes(size)}
-                          onClick={() => handleToggle(size)}
-                        >
-                          {size.attributes.value}
-                        </ToggleButton>
-                      </Box>
-                    ))}
+                      );
+                    })}
                   </ToggleButtonGroup>
                 </Box>
               );
