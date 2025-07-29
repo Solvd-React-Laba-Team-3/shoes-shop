@@ -16,10 +16,9 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { useDebounce } from '@/lib/hooks/useDebounce';
 import { List, Typography } from '@mui/material';
-import { getPopularSneakerTerms } from '@/api/gemini/getPopularSneakerTerms';
 import LinearProgress from '@mui/material/LinearProgress';
-import { AI_REQUEST_STALE_TIME } from '@/constants/queriesStaleTime';
 import { useQuery } from '@tanstack/react-query';
+import { searchPopularTermsOptions } from '@/api/gemini/getPopularSearchTermsOptions';
 
 export const MainSearchBar = () => {
   const router = useRouter();
@@ -41,11 +40,7 @@ export const MainSearchBar = () => {
     data: popularResults,
     isSuccess,
     isFetching,
-  } = useQuery({
-    queryKey: ['searchPopularTerms', debouncedInput],
-    queryFn: () => getPopularSneakerTerms(debouncedInput),
-    staleTime: AI_REQUEST_STALE_TIME,
-  });
+  } = useQuery(searchPopularTermsOptions(debouncedInput));
 
   useEffect(() => {
     if (isSuccess && popularResults) {

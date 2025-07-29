@@ -8,7 +8,7 @@ import {
   cleanup,
 } from '@testing-library/react';
 import { MainSearchBar } from './MainSearchBar';
-import { getPopularSneakerTerms } from '@/api/gemini/getPopularSneakerTerms';
+import { getPopularSneakerTerms } from '@/api/gemini/getPopularSearchTerms';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { usePathname } from 'next/navigation';
 
