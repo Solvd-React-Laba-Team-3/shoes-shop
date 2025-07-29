@@ -32,7 +32,6 @@ export const StyledToggleButton = styled(MUIToggleButton)<ToggleButtonProps>(
       border: `1px solid ${theme.palette.secondary.dark}`,
       borderRadius: theme.shape.borderRadius,
       margin: '0',
-      padding: '0',
     },
   })
 );

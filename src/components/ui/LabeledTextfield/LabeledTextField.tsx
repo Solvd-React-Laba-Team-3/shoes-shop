@@ -1,13 +1,17 @@
 'use client';
+import { FormHelperText } from '@mui/material';
 import Box from '@mui/material/Box';
 import FormControl from '@mui/material/FormControl';
 import Input, { InputProps } from '@mui/material/Input';
 import InputLabel from '@mui/material/InputLabel';
 import { styled, Theme } from '@mui/material/styles';
 import { FC } from 'react';
+import WarningAmberIcon from '@mui/icons-material/WarningAmber';
 
 interface LabeledTextfieldProps extends InputProps {
   label: string;
+  errorMessage?: string;
+  maxWidth?: string;
 }
 
 const StyledInputLabel = styled(InputLabel)(({ theme }: { theme: Theme }) => ({
@@ -36,8 +40,10 @@ const StyledInput = styled(Input, {
 export const LabeledTextfield: FC<LabeledTextfieldProps> = ({
   label,
   error,
+  errorMessage,
   id,
   required,
+  maxWidth = '436px',
   ...props
 }) => {
   return (
@@ -47,7 +53,7 @@ export const LabeledTextfield: FC<LabeledTextfieldProps> = ({
       color="secondary"
       sx={{
         '& .MuiInputBase-root': {
-          maxWidth: '436px',
+          maxWidth: maxWidth,
         },
       }}
     >
@@ -58,6 +64,22 @@ export const LabeledTextfield: FC<LabeledTextfieldProps> = ({
       </Box>
 
       <StyledInput id={id} error={error} disableUnderline {...props} />
+
+      {error && errorMessage && (
+        <FormHelperText
+          sx={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: 1,
+            mt: 0.5,
+            fontSize: '12px',
+            fontWeight: '400',
+          }}
+        >
+          <WarningAmberIcon fontSize="small" />
+          {errorMessage}
+        </FormHelperText>
+      )}
     </FormControl>
   );
 };
