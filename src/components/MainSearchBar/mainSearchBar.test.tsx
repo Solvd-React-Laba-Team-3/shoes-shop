@@ -8,7 +8,7 @@ import {
   cleanup,
 } from '@testing-library/react';
 import { MainSearchBar } from './MainSearchBar';
-import { getPopularSearchTerms } from '@/api/gemini/getPopularSearchTerms';
+import { getPopularSearchTerms } from '@/api/gemini/getPopularSearchTermsOptions';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { usePathname } from 'next/navigation';
 
@@ -54,8 +54,13 @@ jest.mock('next/navigation', () => {
   };
 });
 
-jest.mock('@/api/gemini/getPopularSearchTerms', () => ({
+jest.mock('@/api/gemini/getPopularSearchTermsOptions', () => ({
   getPopularSearchTerms: jest.fn(),
+  searchPopularTermsOptions: jest.fn((query: string) => ({
+    queryKey: ['searchPopularTerms', query],
+    queryFn: () => Promise.resolve([]),
+    staleTime: 1000,
+  })),
 }));
 
 const mockGetPopularSearchTerms = getPopularSearchTerms as jest.Mock;
