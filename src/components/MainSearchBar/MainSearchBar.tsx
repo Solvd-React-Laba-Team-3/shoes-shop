@@ -27,20 +27,16 @@ export const MainSearchBar = () => {
   const [inputValue, setInputValue] = useState(
     searchParams.get('search') || ''
   );
-
   const [isFocused, setIsFocused] = useState(false);
   const [popularTerms, setPopularTerms] = useState<string[]>([]);
-  const { debouncedValue: debouncedInput, isDebouncing } = useDebounce(
-    inputValue,
-    2000
-  );
+  const { debouncedValue, isDebouncing } = useDebounce(inputValue, 2000);
   const inputRef = useRef<HTMLInputElement>(null);
 
   const {
     data: popularResults,
     isSuccess,
     isFetching,
-  } = useQuery(searchPopularTermsOptions(debouncedInput));
+  } = useQuery(searchPopularTermsOptions(debouncedValue));
 
   useEffect(() => {
     if (isSuccess && popularResults) {
