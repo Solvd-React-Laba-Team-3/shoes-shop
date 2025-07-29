@@ -66,7 +66,7 @@ export default function Order() {
 
         <Box>
           <Image
-            src="/thank-you.png"
+            src="/order.png"
             width={494}
             height={450}
             alt="Thank you"
