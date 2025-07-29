@@ -2,6 +2,8 @@ import { login } from '@/api/auth/login';
 import { AuthOptions } from 'next-auth';
 import { User as IUser } from '@/types/User';
 import CredentialsProvider from 'next-auth/providers/credentials';
+import { getUserProfile } from '@/api/profile/getUserProfile';
+import { SESSION_MAX_AGE } from './sessionMaxAge';
 
 declare module 'next-auth' {
   interface Session {
@@ -21,6 +23,10 @@ declare module 'next-auth/jwt' {
 }
 
 export const authOptions: AuthOptions = {
+  pages: {
+    signIn: '/auth/sign-in',
+    newUser: '/auth/sign-up',
+  },
   providers: [
     CredentialsProvider({
       name: 'Credentials',
@@ -37,11 +43,11 @@ export const authOptions: AuthOptions = {
           password: credentials.password,
         });
 
-        if ('error' in response) return null;
+        const user = await getUserProfile(response.jwt);
 
         return {
-          ...response.user,
-          id: response.user.id.toString(),
+          ...user,
+          id: user.id.toString(),
           accessToken: response.jwt,
         };
       },
@@ -49,11 +55,21 @@ export const authOptions: AuthOptions = {
   ],
 
   callbacks: {
-    async jwt({ token, user }) {
+    async jwt({ token, user, trigger }) {
       if (user) {
         token.user = {
           ...user,
           id: Number(user.id),
+        };
+      }
+
+      if (trigger === 'update') {
+        const updatedUser = await getUserProfile(token.user.accessToken);
+
+        token.user = {
+          ...updatedUser,
+          accessToken: token.user.accessToken,
+          id: Number(token.user.id),
         };
       }
 
@@ -74,5 +90,6 @@ export const authOptions: AuthOptions = {
 
   session: {
     strategy: 'jwt',
+    maxAge: SESSION_MAX_AGE,
   },
 };

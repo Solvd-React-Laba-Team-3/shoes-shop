@@ -36,6 +36,7 @@ export const StyledTypography = styled(Typography, {
   textDecoration: 'none',
   transition: 'all 0.2s ease-in-out',
   fontFamily: 'Work Sans',
+  lineHeight: 'normal',
 
   '&:hover': {
     textDecoration: 'underline',
@@ -45,7 +46,7 @@ export const StyledTypography = styled(Typography, {
 
 export const Link: FC<LinkProps> = ({ href = '/', ...props }) => {
   return (
-    <NextLink style={{ textDecoration: 'none', lineHeight: 0 }} href={href}>
+    <NextLink style={{ textDecoration: 'none' }} href={href}>
       <StyledTypography as="span" {...props} />
     </NextLink>
   );
