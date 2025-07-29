@@ -27,7 +27,6 @@ describe('Order', () => {
 
     expect(screen.getByText('THANK YOU')).toBeInTheDocument();
   });
-
   it('renders  for your order text', () => {
     render(
       <SessionProvider session={null}>
