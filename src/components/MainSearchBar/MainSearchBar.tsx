@@ -31,7 +31,10 @@ export const MainSearchBar = () => {
 
   const [isFocused, setIsFocused] = useState(false);
   const [popularTerms, setPopularTerms] = useState<string[]>([]);
-  const debouncedInput = useDebounce(inputValue, 2000);
+  const { debouncedValue: debouncedInput, isDebouncing } = useDebounce(
+    inputValue,
+    2000
+  );
   const inputRef = useRef<HTMLInputElement>(null);
 
   const {
@@ -43,13 +46,6 @@ export const MainSearchBar = () => {
     queryFn: () => getPopularSneakerTerms(debouncedInput),
     staleTime: AI_REQUEST_STALE_TIME,
   });
-
-  const [isTyping, setIsTyping] = useState(false);
-  const isLoading = isTyping || isFetching;
-
-  useEffect(() => {
-    setIsTyping(inputValue !== debouncedInput);
-  }, [inputValue, debouncedInput]);
 
   useEffect(() => {
     if (isSuccess && popularResults) {
@@ -80,6 +76,7 @@ export const MainSearchBar = () => {
   };
 
   const handleClose = () => {
+    inputRef.current?.blur();
     setIsFocused(false);
   };
 
@@ -93,7 +90,6 @@ export const MainSearchBar = () => {
 
   const handleTermClick = (term: string) => {
     setInputValue(term);
-    inputRef.current?.blur();
     handleSearch(term);
     handleClose();
   };
@@ -145,7 +141,7 @@ export const MainSearchBar = () => {
             data-testid="popular-terms-container"
             sx={{ position: 'relative' }}
           >
-            {isLoading && (
+            {(isFetching || isDebouncing) && (
               <LinearProgress
                 data-testid="loading-bar"
                 sx={{
