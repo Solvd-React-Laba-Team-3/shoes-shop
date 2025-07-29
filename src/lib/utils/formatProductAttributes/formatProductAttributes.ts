@@ -26,7 +26,7 @@ export function formatProductAttributes(
     description: attributes.description,
     price: attributes.price,
     teamName: attributes.teamName,
-    images: attributes.images.data.map((img) => ({
+    images: attributes.images?.data?.map((img) => ({
       ...img.attributes,
     })),
     brand: {
