@@ -15,7 +15,11 @@ import {
   StyledInputLabel,
   StyledTextArea,
 } from './ProductFormStyles';
-import { useEffect, useState } from 'react';
+import { getBrandsOptions } from '@/api/brand/getBrandsOptions';
+import { getColorsOptions } from '@/api/color/getColorsOptions';
+import { getGendersOptions } from '@/api/gender/getGendersOptions';
+import { getSizesOptions } from '@/api/size/getSizesOptions';
+import { useSuspenseQueries } from '@tanstack/react-query';
 
 export const productSchema = z.object({
   productName: z.string().min(1, 'Product name is required'),
@@ -41,47 +45,34 @@ export default function ProductForm({
   const { register, control, handleSubmit } = useForm<ProductFormData>({
     resolver: zodResolver(productSchema),
     defaultValues: {
-      gender: 'Male',
+      gender: 'Men',
       color: 'Black',
       brand: 'Nike',
       ...defaultValues,
     },
-
-    // defaultValues: {
-    //   productName: '',
-    //   price: '',
-    //   gender: 'Male',
-    //   description: '',
-    //   color: 'Black',
-    //   brand: 'Nike',
-    //   size: '',
-    //   ...defaultValues,
-    // },
   });
 
-  const [brands, setBrands] = useState<string[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const [
+    { data: genders },
 
-  useEffect(() => {
-    const fetchBrands = async () => {
-      try {
-        const res = await fetch('/api/brand');
-        const data = await res.json();
+    { data: sizes },
 
-        if (Array.isArray(data)) {
-          setBrands(data);
-        } else {
-          console.error('Invalid brand data format:', data);
-        }
-      } catch (error) {
-        console.error('Error fetching brands:', error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
+    { data: brands },
 
-    fetchBrands();
-  }, []);
+    { data: colors },
+  ] = useSuspenseQueries({
+    queries: [
+      getGendersOptions(),
+
+      getSizesOptions(),
+
+      getBrandsOptions(),
+
+      getColorsOptions(),
+    ],
+  });
+
+  console.log({ genders, sizes, brands, colors });
 
   return (
     <Box>
@@ -116,7 +107,11 @@ export default function ProductForm({
                 labelId="color-label"
                 sx={{ mt: '18px', width: '436px', padding: '8px 0' }}
               >
-                <MenuItem value="Black">Black</MenuItem>
+                {colors.data.map((color) => (
+                  <MenuItem key={color.id} value={color.attributes.name}>
+                    {color.attributes.name}
+                  </MenuItem>
+                ))}
               </Select>
             </FormControl>
           )}
@@ -134,9 +129,18 @@ export default function ProductForm({
                 <StyledInputLabel id="gender-label" shrink>
                   Gender
                 </StyledInputLabel>
-                <Select {...field} labelId="gender-label" sx={{ mt: '20px' }}>
-                  <MenuItem value="Male">Male</MenuItem>
-                  <MenuItem value="Female">Female</MenuItem>
+                <Select
+                  {...field}
+                  labelId="gender-label"
+                  label="Gender"
+                  value={field.value || ''}
+                  sx={{ mt: '20px' }}
+                >
+                  {genders?.data?.map((gender) => (
+                    <MenuItem key={gender.id} value={gender.attributes.name}>
+                      {gender.attributes.name}
+                    </MenuItem>
+                  ))}
                 </Select>
               </FormControl>
             )}
@@ -149,7 +153,6 @@ export default function ProductForm({
               <FormControl
                 variant="outlined"
                 sx={{ maxWidth: '210px', width: '100%' }}
-                disabled={isLoading}
               >
                 <StyledInputLabel id="brand-label" shrink>
                   Brand
@@ -164,13 +167,9 @@ export default function ProductForm({
                     <em>Select brand</em>
                   </MenuItem>
 
-                  {field.value && !brands.includes(field.value) && (
-                    <MenuItem value={field.value}>{field.value}</MenuItem>
-                  )}
-
-                  {brands.map((brand) => (
-                    <MenuItem key={brand} value={brand}>
-                      {brand}
+                  {brands.data.map((brand) => (
+                    <MenuItem key={brand.id} value={brand.attributes.name}>
+                      {brand.attributes.name}
                     </MenuItem>
                   ))}
                 </Select>
@@ -199,43 +198,6 @@ export default function ProductForm({
         />
 
         <Box sx={{ marginTop: '8px' }}>
-          {/* <Controller
-            name="size"
-            control={control}
-            render={({ field }) => (
-              <Box>
-                <Typography
-                  component="h6"
-                  variant="caption"
-                  sx={(theme) => ({
-                    mb: 0,
-                    fontWeight: 500,
-                    color: theme.palette.text.secondary,
-                  })}
-                >
-                  Add size
-                </Typography>
-
-                <ToggleButtonGroup
-                  {...field}
-                  exclusive
-                  onChange={(_, value) => field.onChange(value)}
-                  size="small"
-                >
-                  {['EU-36', 'EU-37', 'EU-38', 'EU-39', 'EU-40'].map(
-                    (size, index, arr) => (
-                      <Box
-                        key={size}
-                        sx={{ mr: index < arr.length - 1 ? 0.39 : 0 }}
-                      >
-                        <ToggleButton value={size}>{size}</ToggleButton>
-                      </Box>
-                    )
-                  )}
-                </ToggleButtonGroup>
-              </Box>
-            )}
-          /> */}
           <Controller
             name="size"
             control={control}
@@ -267,7 +229,7 @@ export default function ProductForm({
                     onChange={(_, value) => field.onChange(value)}
                     size="small"
                   >
-                    {['EU-36', 'EU-37', 'EU-38', 'EU-39', 'EU-40'].map(
+                    {/* {['EU-36', 'EU-37', 'EU-38', 'EU-39', 'EU-40'].map(
                       (size, index, arr) => (
                         <Box
                           key={size}
@@ -282,7 +244,21 @@ export default function ProductForm({
                           </ToggleButton>
                         </Box>
                       )
-                    )}
+                    )} */}
+                    {sizes.data.map((size, index, arr) => (
+                      <Box
+                        key={size.attributes.value}
+                        sx={{ mr: index < arr.length - 1 ? 0.39 : 0 }}
+                      >
+                        <ToggleButton
+                          value={size}
+                          selected={field.value?.includes(size)}
+                          onClick={() => handleToggle(size)}
+                        >
+                          {size.attributes.value}
+                        </ToggleButton>
+                      </Box>
+                    ))}
                   </ToggleButtonGroup>
                 </Box>
               );
