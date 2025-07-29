@@ -55,7 +55,6 @@ export const LabeledTextfield: FC<LabeledTextfieldProps> = ({
     <FormControl
       fullWidth
       error={error}
-      color="secondary"
       sx={{
         '& .MuiInputBase-root': {
           maxWidth: maxWidth,
@@ -76,11 +75,13 @@ export const LabeledTextfield: FC<LabeledTextfieldProps> = ({
             display: 'flex',
             alignItems: 'center',
             gap: 1,
-            mt: 0.5,
-            fontSize: '12px',
-            fontWeight: '400',
-            minHeight: '20px',
+            fontSize: '13px',
+            fontWeight: '300',
+            minHeight: '24px',
+            lineHeight: 1,
             visibility: showError ? 'visible' : 'hidden',
+            position: 'relative',
+            left: '-10px',
           }}
         >
           <WarningAmberIcon fontSize="small" />

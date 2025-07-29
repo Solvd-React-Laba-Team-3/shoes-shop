@@ -23,4 +23,7 @@ export const palette = {
     disabled: '#FFFFFF',
     disabledBackground: '#98A2B3',
   },
+  error: {
+    main: '#FE645E',
+  },
 };
