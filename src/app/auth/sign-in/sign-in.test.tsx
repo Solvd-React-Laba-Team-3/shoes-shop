@@ -1,7 +1,19 @@
 import '@testing-library/jest-dom';
-import { fireEvent, render, screen } from '@testing-library/react';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import SignIn from './page';
-import { mockSignIn, mockPush } from '@/testing/mocks/';
+import { signIn } from 'next-auth/react';
+
+jest.mock('next-auth/react', () => ({
+  signIn: jest.fn(),
+}));
+
+const mockRouter = {
+  replace: jest.fn(),
+};
+
+jest.mock('next/navigation', () => ({
+  useRouter: () => mockRouter,
+}));
 
 jest.mock('@/components/ui', () => {
   const originalModule = jest.requireActual('@/components/ui');
@@ -15,6 +27,10 @@ jest.mock('@/components/ui', () => {
 });
 
 describe('SignIn', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
   it('renders without crashing', () => {
     render(<SignIn />);
 
@@ -34,16 +50,19 @@ describe('SignIn', () => {
       screen.getByRole('button', { name: /sign in/i })
     ).toBeInTheDocument();
     expect(screen.getByText(/Forgot password\?/i)).toBeInTheDocument();
-    expect(screen.getByText(/don’t have an account\?/i)).toBeInTheDocument();
+    expect(screen.getByText(/don't have an account\?/i)).toBeInTheDocument();
   });
 
-  it('renders the checkbox and it is checked by default, can be toggled', () => {
+  it('handles remember me checkbox toggle', () => {
     render(<SignIn />);
     const checkbox = screen.getByRole('checkbox');
-    expect(checkbox).toBeInTheDocument();
+    expect(checkbox).not.toBeChecked();
 
     fireEvent.click(checkbox);
     expect(checkbox).toBeChecked();
+
+    fireEvent.click(checkbox);
+    expect(checkbox).not.toBeChecked();
   });
 
   it('renders the "Forgot password?" link with correct href', () => {
@@ -55,55 +74,74 @@ describe('SignIn', () => {
     expect(forgotPasswordLink).toHaveAttribute('href', '/auth/forgot-password');
   });
 
-  it('submits form and navigates to a user profile on sucessful login', async () => {
-    mockSignIn.mockResolvedValue({ ok: true });
+  it('submits form and navigates to products on successful login', async () => {
+    (signIn as jest.Mock).mockResolvedValue({ ok: true, error: null });
 
     render(<SignIn />);
 
-    fireEvent.input(screen.getByLabelText(/email/i), {
+    fireEvent.change(screen.getByLabelText(/email/i), {
       target: { value: 'test@example.com' },
     });
 
-    fireEvent.input(screen.getByLabelText(/password/i), {
-      target: { value: '123456' },
+    fireEvent.change(screen.getByLabelText(/password/i), {
+      target: { value: 'password123' },
     });
 
-    fireEvent.click(screen.getByRole('button', { name: /sign in/i }));
+    fireEvent.submit(screen.getByRole('button', { name: /sign in/i }));
 
-    await screen.findByRole('button', { name: /sign in/i });
+    await waitFor(() => {
+      expect(signIn).toHaveBeenCalledWith(
+        'credentials',
+        expect.objectContaining({
+          identifier: 'test@example.com',
+          password: 'password123',
+          redirect: false,
+        })
+      );
+    });
 
-    expect(mockSignIn).toHaveBeenCalledWith(
-      'credentials',
-      expect.objectContaining({
-        identifier: 'test@example.com',
-        password: '123456',
-      })
-    );
-    expect(mockPush).toHaveBeenCalledWith('/');
+    expect(mockRouter.replace).toHaveBeenCalledWith('/products');
   });
 
-  it('notifies about failed login', async () => {
-    mockSignIn.mockResolvedValue({
+  it('shows error message on failed login', async () => {
+    (signIn as jest.Mock).mockResolvedValue({
       ok: false,
       error: 'Invalid credentials',
     });
 
     render(<SignIn />);
 
-    fireEvent.input(screen.getByLabelText(/email/i), {
-      target: { value: 'fail@example.com' },
+    fireEvent.change(screen.getByLabelText(/email/i), {
+      target: { value: 'wrong@example.com' },
     });
 
-    fireEvent.input(screen.getByLabelText(/password/i), {
-      target: { value: 'wrong1password' },
+    fireEvent.change(screen.getByLabelText(/password/i), {
+      target: { value: 'wrongpassword' },
     });
 
-    fireEvent.click(screen.getByRole('button', { name: /sign in/i }));
+    fireEvent.submit(screen.getByRole('button', { name: /sign in/i }));
 
-    await screen.findByRole('button', { name: /sign in/i });
+    await waitFor(() => {
+      expect(screen.getByText(/Invalid credentials/i)).toBeInTheDocument();
+    });
 
-    expect(
-      screen.getByText(/Invalid login or passsword. Please try again./i)
-    ).toBeInTheDocument();
+    expect(mockRouter.replace).not.toHaveBeenCalled();
+  });
+
+  it('clears error message when form inputs change', async () => {
+    (signIn as jest.Mock).mockResolvedValue({
+      ok: false,
+      error: 'Invalid credentials',
+    });
+
+    render(<SignIn />);
+
+    fireEvent.submit(screen.getByRole('button', { name: /sign in/i }));
+
+    fireEvent.change(screen.getByLabelText(/email/i), {
+      target: { value: 'new@example.com' },
+    });
+
+    expect(screen.queryByText(/Invalid credentials/i)).not.toBeInTheDocument();
   });
 });

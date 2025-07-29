@@ -1,12 +1,12 @@
 import { render, screen } from '@testing-library/react';
-import { AuthFormContainer } from './AuthFormContainer';
+import { AuthContainer } from './AuthContainer';
 
-describe('AuthFormContainer', () => {
+describe('AuthContainer', () => {
   it('renders title', () => {
     render(
-      <AuthFormContainer title="Login">
+      <AuthContainer title="Login">
         <div>Form content</div>
-      </AuthFormContainer>
+      </AuthContainer>
     );
 
     expect(screen.getByRole('heading', { level: 2 })).toHaveTextContent(
@@ -16,12 +16,9 @@ describe('AuthFormContainer', () => {
 
   it('renders description if provided', () => {
     render(
-      <AuthFormContainer
-        title="Login"
-        description="Please enter your credentials"
-      >
+      <AuthContainer title="Login" description="Please enter your credentials">
         <div>Form content</div>
-      </AuthFormContainer>
+      </AuthContainer>
     );
 
     expect(
@@ -31,9 +28,9 @@ describe('AuthFormContainer', () => {
 
   it('does not render description if not provided', () => {
     render(
-      <AuthFormContainer title="Login">
+      <AuthContainer title="Login">
         <div>Form content</div>
-      </AuthFormContainer>
+      </AuthContainer>
     );
 
     const description = screen.queryByText('Please enter your credentials');
@@ -42,9 +39,9 @@ describe('AuthFormContainer', () => {
 
   it('renders children content', () => {
     render(
-      <AuthFormContainer title="Login">
+      <AuthContainer title="Login">
         <div data-testid="form-content">Form content</div>
-      </AuthFormContainer>
+      </AuthContainer>
     );
 
     expect(screen.getByTestId('form-content')).toHaveTextContent(
@@ -54,12 +51,12 @@ describe('AuthFormContainer', () => {
 
   it('renders footer if provided', () => {
     render(
-      <AuthFormContainer
+      <AuthContainer
         title="Login"
         footer={<div data-testid="footer">Footer content</div>}
       >
         <div>Form content</div>
-      </AuthFormContainer>
+      </AuthContainer>
     );
 
     expect(screen.getByTestId('footer')).toHaveTextContent('Footer content');
@@ -67,9 +64,9 @@ describe('AuthFormContainer', () => {
 
   it('does not render footer if not provided', () => {
     render(
-      <AuthFormContainer title="Login">
+      <AuthContainer title="Login">
         <div>Form content</div>
-      </AuthFormContainer>
+      </AuthContainer>
     );
 
     const footer = screen.queryByTestId('footer');
