@@ -174,18 +174,16 @@ export const CheckoutForm = () => {
               reserveErrorSpace
             />
           </Box>
-          <Box sx={{ marginTop: '4px' }}>
-            <LabeledTextfield
-              label="Address"
-              {...register('address')}
-              error={!!errors.address}
-              errorMessage={errors.address?.message}
-              reserveErrorSpace
-              placeholder="Street, appartment, block"
-              maxWidth="800px"
-              sx={{ width: '100%' }}
-            />
-          </Box>
+          <LabeledTextfield
+            label="Address"
+            {...register('address')}
+            error={!!errors.address}
+            errorMessage={errors.address?.message}
+            reserveErrorSpace
+            placeholder="Street, appartment, block"
+            maxWidth="800px"
+            sx={{ width: '100%' }}
+          />
 
           <Divider sx={{ mt: 8, mb: 2 }} />
 
