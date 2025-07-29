@@ -26,6 +26,7 @@ export default function Order() {
           display: 'flex',
           justifyContent: 'space-evenly',
           alignItems: 'end',
+          paddingTop: '80px',
         }}
       >
         <Box>
@@ -64,15 +65,13 @@ export default function Order() {
           </Box>
         </Box>
 
-        <Box>
-          <Image
-            src="/order.png"
-            width={494}
-            height={450}
-            alt="Thank you"
-            style={{ maxWidth: '100%', height: 'auto' }}
-          />
-        </Box>
+        <Image
+          src="/order.png"
+          width={494}
+          height={450}
+          alt="Thank you"
+          style={{ maxWidth: '100%', height: 'auto' }}
+        />
       </Box>
     </>
   );
