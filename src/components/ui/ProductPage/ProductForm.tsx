@@ -54,9 +54,13 @@ export default function ProductForm({
   const { register, control, handleSubmit } = useForm<ProductFormData>({
     resolver: zodResolver(productSchema),
     defaultValues: {
-      gender: 'Men',
-      color: 'Black',
-      brand: 'Nike',
+      productName: '',
+      price: '',
+      color: '',
+      gender: '',
+      brand: '',
+      description: '',
+      size: [],
       ...defaultValues,
     },
   });
@@ -196,6 +200,12 @@ export default function ProductForm({
               <Box sx={{ position: 'relative' }}>
                 <StyledTextArea
                   {...field}
+                  sx={(theme) => ({
+                    ...theme.typography.caption,
+                    minHeight: '276px',
+                    maxHeight: '276px',
+                    resize: 'none',
+                  })}
                   aria-label="Description"
                   minRows={3}
                   placeholder="Lorem ipsum, or lipsum as it is sometimes known, is dummy text used in laying out print, graphic or web designs. The passage is attributed to an unknown typesetter in the 15th century who is thought to have scrambled parts of Cicero's De Finibus Bonorum et Malorum for use in a type specimen book. It usually begins with"
@@ -232,6 +242,7 @@ export default function ProductForm({
                       mb: 0,
                       fontWeight: 500,
                       color: theme.palette.text.secondary,
+                      marginBottom: '8px',
                     })}
                   >
                     Add size
@@ -239,7 +250,7 @@ export default function ProductForm({
 
                   <ToggleButtonGroup
                     size="small"
-                    sx={{ maxWidth: '436px', flexWrap: 'wrap', gap: '27px' }}
+                    sx={{ maxWidth: '436px', flexWrap: 'wrap', gap: '12px' }}
                   >
                     {sizes.data.map((size, index, arr) => {
                       const isSelected = (field.value || []).some(
@@ -252,6 +263,7 @@ export default function ProductForm({
                           sx={{ mr: index < arr.length - 1 ? 0.39 : 0 }}
                         >
                           <ToggleButton
+                            sx={{ height: 48, width: 74, minWidth: 74 }}
                             value={size}
                             selected={isSelected}
                             onClick={() => handleToggle(size)}
