@@ -12,6 +12,7 @@ export const useSearchsParams = () => {
     const params = new URLSearchParams(searchParams.toString());
     if (value === undefined) {
       params.delete(key);
+      history.replaceState(null, '', `${pathname}?${params.toString()}`);
       return;
     }
 

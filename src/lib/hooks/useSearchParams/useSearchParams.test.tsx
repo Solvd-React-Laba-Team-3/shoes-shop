@@ -1,21 +1,33 @@
 import { renderHook, act } from '@testing-library/react';
 import { useSearchsParams } from './useSearchParams';
-import { useRouter, useSearchParams } from 'next/navigation';
+import {
+  usePathname,
+  useSearchParams as useNextSearchParams,
+} from 'next/navigation';
 
-const mockPush = jest.fn();
 const mockSearchParams = new URLSearchParams(
   'search=Shoes&filters=%7B%22size%22%3A13%7D'
 );
 
+const replaceState = jest.fn();
+
 jest.mock('next/navigation', () => ({
-  useRouter: jest.fn(),
   useSearchParams: jest.fn(),
+  usePathname: jest.fn(),
 }));
 
 beforeEach(() => {
-  (useRouter as jest.Mock).mockReturnValue({ push: mockPush });
-  (useSearchParams as jest.Mock).mockReturnValue(mockSearchParams);
-  mockPush.mockReset();
+  (useNextSearchParams as jest.Mock).mockReturnValue(mockSearchParams);
+  (usePathname as jest.Mock).mockReturnValue('/products');
+
+  Object.defineProperty(window, 'history', {
+    writable: true,
+    value: {
+      replaceState,
+    },
+  });
+
+  replaceState.mockClear();
 });
 
 describe('useSearchsParams', () => {
@@ -29,15 +41,17 @@ describe('useSearchsParams', () => {
     expect(result.current.get('nonexistent')).toBeUndefined();
   });
 
-  it('should set param and push to router', () => {
+  it('should set param and call replaceState', () => {
     const { result } = renderHook(() => useSearchsParams());
 
     act(() => {
       result.current.set('page', 2);
     });
 
-    expect(mockPush).toHaveBeenCalledWith(
-      '?search=Shoes&filters=%7B%22size%22%3A13%7D&page=2'
+    expect(replaceState).toHaveBeenCalledWith(
+      null,
+      '',
+      '/products?search=Shoes&filters=%7B%22size%22%3A13%7D&page=2'
     );
   });
 
@@ -48,7 +62,11 @@ describe('useSearchsParams', () => {
       result.current.set('search', undefined);
     });
 
-    expect(mockPush).toHaveBeenCalledWith('?filters=%7B%22size%22%3A13%7D');
+    expect(replaceState).toHaveBeenCalledWith(
+      null,
+      '',
+      '/products?filters=%7B%22size%22%3A13%7D'
+    );
   });
 
   it('should delete param using delete()', () => {
@@ -58,6 +76,10 @@ describe('useSearchsParams', () => {
       result.current.delete('filters');
     });
 
-    expect(mockPush).toHaveBeenCalledWith('?search=Shoes');
+    expect(replaceState).toHaveBeenCalledWith(
+      null,
+      '',
+      '/products?search=Shoes'
+    );
   });
 });
