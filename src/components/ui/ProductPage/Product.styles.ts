@@ -1,6 +1,11 @@
+import { MenuItem } from '@/components/ui';
 import AutoFixHighOutlinedIcon from '@mui/icons-material/AutoFixHighOutlined';
 import { InputLabel, TextareaAutosize, Typography } from '@mui/material';
 import { styled } from '@mui/material/styles';
+
+export const StyledMenuItem = styled(MenuItem)(() => ({
+  fontSize: '15px',
+}));
 
 export const StyledInputLabel = styled(InputLabel)(({ theme }) => ({
   marginLeft: '-13px',
@@ -25,6 +30,10 @@ export const StyledTextArea = styled(TextareaAutosize)(({ theme }) => ({
   borderRadius: '8px',
   border: `1px solid ${theme.palette.divider}`,
   outline: 'none',
+  minHeight: '276px',
+  maxHeight: '276px',
+  resize: 'none',
+  ...theme.typography.caption,
 }));
 
 export const StyledAiButton = styled(AutoFixHighOutlinedIcon)(({ theme }) => ({
