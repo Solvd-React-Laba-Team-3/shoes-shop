@@ -15,50 +15,89 @@ import { getGendersOptions } from '@/api/gender/getGendersOptions';
 import { getSizesOptions } from '@/api/size/getSizesOptions';
 import { getColorsOptions } from '@/api/color/getColorsOptions';
 import { getBrandsOptions } from '@/api/brand/getBrandsOptions';
-import { useEffect, useState } from 'react';
-import { toQueryString } from '@/lib/utils/';
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import { parseQueryString, toQueryString } from '@/lib/utils/';
+
+const StyledFormLabel = styled(FormLabel)(({ theme }) => ({
+  color: theme.palette.grey[400],
+  fontSize: '16px',
+  fontWeight: 400,
+  lineHeight: '24px',
+  cursor: 'pointer',
+}));
+
+const normalizeToArray = (value: unknown): number[] => {
+  if (Array.isArray(value)) return Array.from(new Set(value.map(Number)));
+  if (value != null && value != undefined) return [Number(value)];
+
+  return [];
+};
 
 export const Filters: React.FC = () => {
   const searchParams = useSearchsParams();
 
-  const [selectedSizes, setSelectedSizes] = useState<number[]>([]);
-  const [selectedColors, setSelectedColors] = useState<number[]>([]);
-  const [selectedGenders, setSelectedGenders] = useState<number[]>([]);
-  const [selectedBrands, setSelectedBrands] = useState<number[]>([]);
-  const [selectedPrices, setSelectedPrices] = useState<number[]>([1, 10000]);
-  const debouncedPrices = useDebounce(selectedPrices, 300);
+  const currentFilters = useMemo(() => {
+    const raw = searchParams.get('filters');
+    const parsed = raw ? parseQueryString(raw) : {};
+    return parsed.filters ?? {};
+  }, [searchParams]);
 
-  useEffect(() => {
-    const filters = {
-      sizes: selectedSizes.length ? { id: { $in: selectedSizes } } : '',
-      color: selectedColors.length ? { id: { $in: selectedColors } } : '',
-      gender: selectedGenders.length ? { id: { $in: selectedGenders } } : '',
-      brand: selectedBrands.length ? { id: { $in: selectedBrands } } : '',
-      price: debouncedPrices.length
-        ? { $gte: debouncedPrices[0], $lte: debouncedPrices[1] }
-        : '',
-    };
-    searchParams.delete('filters');
-    searchParams.set('filters', toQueryString(filters, 'filters'));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [
-    selectedSizes,
-    selectedColors,
-    selectedGenders,
-    selectedBrands,
-    debouncedPrices,
+  const updateFilters = useCallback(
+    (
+      key: string,
+      value?: number | number[] | string | Record<string, number | object>
+    ) => {
+      const raw = searchParams.get('filters');
+      const parsed = raw ? parseQueryString(raw) : {};
+      const current = parsed.filters ?? {};
+
+      const updated = {
+        ...current,
+        [key]: value,
+      };
+
+      if (value === undefined) {
+        delete updated[key];
+      }
+
+      searchParams.set('filters', toQueryString(updated, 'filters'));
+    },
+    [searchParams]
+  );
+
+  const [priceInput, setPriceInput] = useState<[number, number]>([
+    currentFilters.price?.$gte || 1,
+    currentFilters.price?.$lte || 10000,
   ]);
 
-  const toggleSelection = (
-    setData: React.Dispatch<React.SetStateAction<number[]>>,
-    checked: boolean,
-    value?: number
-  ) => {
-    if (value === undefined) return;
-    setData((prev) =>
-      checked ? [...prev, value] : prev.filter((item) => item !== value)
-    );
+  const debouncedPrice = useDebounce(priceInput, 300);
+
+  useEffect(() => {
+    updateFilters('price', {
+      $gte: debouncedPrice[0] as number,
+      $lte: debouncedPrice[1] as number,
+    });
+  }, [debouncedPrice, updateFilters]);
+
+  const toggleSelection = (key: string, checked: boolean, value?: number) => {
+    {
+      const existing = normalizeToArray(currentFilters[key]?.id?.$in);
+      const updated = checked
+        ? [...existing, value]
+        : existing.filter((id: number) => id !== value);
+
+      if (updated.length > 0) {
+        updateFilters(key, { id: { $in: updated } });
+      } else {
+        updateFilters(key, undefined);
+      }
+    }
   };
+
+  const selectedGenders = normalizeToArray(currentFilters.gender?.id?.$in);
+  const selectedBrands = normalizeToArray(currentFilters.brand?.id?.$in);
+  const selectedSizes = normalizeToArray(currentFilters.sizes?.id?.$in);
+  const selectedColors = normalizeToArray(currentFilters.color?.id?.$in);
 
   const search = searchParams.get('search');
   const [searchBrands, setSearchBrands] = useState('');
@@ -80,17 +119,10 @@ export const Filters: React.FC = () => {
       getColorsOptions(),
     ],
   });
-
-  const StyledFormLabel = styled(FormLabel)(({ theme }) => ({
-    color: theme.palette.grey[400],
-    fontSize: '16px',
-    fontWeight: 400,
-    lineHeight: '24px',
-    cursor: 'pointer',
-  }));
-
   return (
-    <>
+    <Box
+      sx={{ overflowX: 'hidden', paddingBottom: '200px', minWidth: '320px' }}
+    >
       <Box sx={{ width: '100%', padding: '40px' }}>
         {search && <Typography variant="caption">Shoes/{search}</Typography>}
         <Typography variant="h4">{search ?? 'Catalog'}</Typography>
@@ -98,7 +130,7 @@ export const Filters: React.FC = () => {
       <Box display="flex" flexDirection="column" gap="28px">
         <Divider />
         <Box paddingLeft="40px">
-          <Accordion label="Gender">
+          <Accordion label="Gender" defaultExpanded>
             <Box display="flex" flexDirection="column" gap="20px">
               {genders.map((gender) => (
                 <Box
@@ -108,8 +140,9 @@ export const Filters: React.FC = () => {
                   <Checkbox
                     id={`gender-${gender.id}`}
                     onChange={({ target: { checked } }) =>
-                      toggleSelection(setSelectedGenders, checked, gender.id)
+                      toggleSelection('gender', checked, gender.id)
                     }
+                    checked={selectedGenders.includes(gender.id || -1)}
                     value={gender.id}
                   />{' '}
                   <StyledFormLabel htmlFor={`gender-${gender.id}`}>
@@ -122,7 +155,7 @@ export const Filters: React.FC = () => {
         </Box>
         <Divider />
         <Box paddingLeft="40px">
-          <Accordion label="Brand">
+          <Accordion label="Brand" defaultExpanded>
             <Box display="flex" flexDirection="column" gap="20px">
               <SearchBar
                 type="search"
@@ -138,9 +171,10 @@ export const Filters: React.FC = () => {
                   <Checkbox
                     id={`brand-${brand.id}`}
                     onChange={({ target: { checked } }) =>
-                      toggleSelection(setSelectedBrands, checked, brand.id)
+                      toggleSelection('brand', checked, brand.id)
                     }
                     value={brand.id}
+                    checked={selectedBrands.includes(brand.id || -1)}
                   />{' '}
                   <StyledFormLabel htmlFor={`brand-${brand.id}`}>
                     {brand.name}
@@ -152,7 +186,7 @@ export const Filters: React.FC = () => {
         </Box>
         <Divider />
         <Box paddingLeft="40px">
-          <Accordion label="Price">
+          <Accordion label="Price" defaultExpanded>
             <Box
               display="flex"
               flexDirection="column"
@@ -160,11 +194,13 @@ export const Filters: React.FC = () => {
               alignItems="center"
             >
               <Slider
-                value={selectedPrices}
+                value={priceInput}
                 max={10000}
                 min={1}
                 valueLabelDisplay="auto"
-                onChange={(_, value) => setSelectedPrices(value)}
+                onChange={(_, value) =>
+                  setPriceInput(value as [number, number])
+                }
                 sx={{ width: '90%' }}
               />
               <Box
@@ -197,12 +233,9 @@ export const Filters: React.FC = () => {
                     },
                   }}
                   size="small"
-                  value={selectedPrices[0]}
+                  value={priceInput[0]}
                   onChange={(e) =>
-                    setSelectedPrices([
-                      Number(e.target.value),
-                      selectedPrices[1],
-                    ])
+                    setPriceInput((prev) => [Number(e.target.value), prev[1]])
                   }
                 />
                 <Typography variant="body2" sx={{ color: 'text.secondary' }}>
@@ -213,7 +246,7 @@ export const Filters: React.FC = () => {
                     width: 50,
                   }}
                   type="text"
-                  value={selectedPrices[1]}
+                  value={priceInput[1]}
                   size="small"
                   slotProps={{
                     input: {
@@ -232,10 +265,7 @@ export const Filters: React.FC = () => {
                     },
                   }}
                   onChange={(e) =>
-                    setSelectedPrices([
-                      selectedPrices[0],
-                      Number(e.target.value),
-                    ])
+                    setPriceInput((prev) => [prev[0], Number(e.target.value)])
                   }
                 />
               </Box>
@@ -244,7 +274,7 @@ export const Filters: React.FC = () => {
         </Box>
         <Divider />
         <Box paddingLeft="40px">
-          <Accordion label="Color">
+          <Accordion label="Color" defaultExpanded>
             <Box display="flex" flexDirection="column" gap="20px">
               {colors.map((color) => (
                 <Box
@@ -254,8 +284,9 @@ export const Filters: React.FC = () => {
                   <Checkbox
                     id={`color-${color.id}`}
                     onChange={({ target: { checked } }) =>
-                      toggleSelection(setSelectedColors, checked, color.id)
+                      toggleSelection('color', checked, color.id)
                     }
+                    checked={selectedColors.includes(color.id || -1)}
                     value={color.id}
                   />{' '}
                   <StyledFormLabel htmlFor={`color-${color.id}`}>
@@ -268,7 +299,7 @@ export const Filters: React.FC = () => {
         </Box>
         <Divider />
         <Box paddingLeft="40px">
-          <Accordion label="Size">
+          <Accordion label="Size" defaultExpanded>
             <Box display="flex" flexDirection="column" gap="20px">
               {sizes.map((size) => (
                 <Box
@@ -278,8 +309,9 @@ export const Filters: React.FC = () => {
                   <Checkbox
                     id={`size-${size.id}`}
                     onChange={({ target: { checked } }) =>
-                      toggleSelection(setSelectedSizes, checked, size.id)
+                      toggleSelection('sizes', checked, size.id)
                     }
+                    checked={selectedSizes.includes(size.id || -1)}
                     value={size.id}
                   />{' '}
                   <StyledFormLabel htmlFor={`size-${size.id}`}>
@@ -291,6 +323,6 @@ export const Filters: React.FC = () => {
           </Accordion>
         </Box>
       </Box>
-    </>
+    </Box>
   );
 };

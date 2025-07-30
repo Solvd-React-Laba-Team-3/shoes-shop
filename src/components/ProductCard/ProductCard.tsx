@@ -17,6 +17,7 @@ import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
 import Image from 'next/image';
 import { ProductActionMenu } from '../ProductActionMenu';
 import { ProductWishlistButton } from '../ProductWishlistButton';
+import placeholderImage from '../../../public/product-placeholder.png';
 
 type ProductCardProps = Pick<
   Product,
@@ -90,7 +91,7 @@ export const ProductCard: FC<ProductCardProps> = ({
   price,
   cardType = 'catalog',
 }) => {
-  const productImage = images ? images[0].url : '/product-placeholder.png';
+  const productImage = images?.[0]?.url || placeholderImage;
   const productImageAlt =
     images && images[0].alternativeText
       ? images[0].alternativeText

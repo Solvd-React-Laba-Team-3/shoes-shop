@@ -3,7 +3,7 @@ import { getProductsOptions } from '@/api/products/getProductsOptions';
 import { useSearchsParams } from '@/lib/hooks';
 import { parseQueryString } from '@/lib/utils';
 import { useSuspenseInfiniteQuery } from '@tanstack/react-query';
-import React from 'react';
+import React, { useMemo } from 'react';
 import { ProductList } from '../ProductList';
 import { Box, Typography } from '@mui/material';
 
@@ -13,16 +13,17 @@ export const ProductsContainer: React.FC = () => {
   const filters = parseQueryString(searchParams.get('filters') ?? '');
   const search = searchParams.get('search');
 
-  const queryParams = {
-    populate: '*' as const,
-
-    filters: {
-      ...filters.filters,
-      name: {
-        $contains: search,
+  const queryParams = useMemo(
+    () => ({
+      filters: {
+        ...filters.filters,
+        name: {
+          $contains: search,
+        },
       },
-    },
-  };
+    }),
+    [filters, search]
+  );
 
   const { data } = useSuspenseInfiniteQuery(getProductsOptions(queryParams));
 

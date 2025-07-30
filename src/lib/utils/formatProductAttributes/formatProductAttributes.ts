@@ -30,18 +30,18 @@ export function formatProductAttributes(
       ...img.attributes,
     })),
     brand: {
-      ...attributes.brand.data.attributes,
+      ...attributes.brand.data?.attributes,
     },
-    categories: attributes.categories.data.map((cat) => ({
+    categories: attributes.categories.data?.map((cat) => ({
       ...cat.attributes,
     })),
     color: {
-      ...attributes.color.data.attributes,
+      ...attributes.color.data?.attributes,
     },
     gender: {
-      ...attributes.gender.data.attributes,
+      ...attributes.gender.data?.attributes,
     },
-    sizes: attributes.sizes.data.map((size) => ({
+    sizes: attributes.sizes.data?.map((size) => ({
       ...size.attributes,
     })),
   };
