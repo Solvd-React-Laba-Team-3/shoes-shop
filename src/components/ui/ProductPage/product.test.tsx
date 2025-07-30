@@ -1,6 +1,6 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 import { Product } from './Product';
-import { productSchema } from './Product';
+import { productSchema } from './productForm.schema';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 // import * as reactQuery from '@tanstack/react-query';
 import { ReactElement } from 'react';
