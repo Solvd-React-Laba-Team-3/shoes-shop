@@ -1,15 +1,16 @@
 'use client';
 
-import ProductForm from '@/components/ui/ProductPage/ProductForm';
-import type { ProductFormData } from '@/components/ui/ProductPage/ProductForm';
+import { ProductData } from '@/components/ui/ProductPage/Product';
 
-export default function EditPage() {
-  const handleEdit = (data: ProductFormData) => {
-    console.log('Edit submitted:', data);
+import { Product } from '@/components/ui/ProductPage';
+
+export default function AddPage() {
+  const handleAdd = (data: ProductData) => {
+    console.log('Add submitted: ', data);
   };
 
   return (
-    <ProductForm
+    <Product
       defaultValues={{
         productName: 'Nike Air Max 90',
         price: '$160',
@@ -20,7 +21,7 @@ export default function EditPage() {
           "Lorem ipsum, or lipsum as it is sometimes known, is dummy text used in laying out print, graphic or web designs. The passage is attributed to an unknown typesetter in the 15th century who is thought to have scrambled parts of Cicero's De Finibus Bonorum et Malorum for use in a type specimen book. It usually begins with",
         size: [],
       }}
-      onSubmit={handleEdit}
+      onSubmit={handleAdd}
     />
   );
 }

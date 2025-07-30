@@ -14,7 +14,7 @@ import {
   StyledDescriptionLabel,
   StyledInputLabel,
   StyledTextArea,
-} from './ProductFormStyles';
+} from './Product.styles';
 import { getBrandsOptions } from '@/api/brand/getBrandsOptions';
 import { getColorsOptions } from '@/api/color/getColorsOptions';
 import { getGendersOptions } from '@/api/gender/getGendersOptions';
@@ -40,18 +40,15 @@ export const productSchema = z.object({
     .min(1, 'At least one size is required'),
 });
 
-export type ProductFormData = z.infer<typeof productSchema>;
+export type ProductData = z.infer<typeof productSchema>;
 
-type ProductFormProps = {
-  defaultValues?: Partial<ProductFormData>;
-  onSubmit: (data: ProductFormData) => void;
+type ProductProps = {
+  defaultValues?: Partial<ProductData>;
+  onSubmit: (data: ProductData) => void;
 };
 
-export default function ProductForm({
-  defaultValues,
-  onSubmit,
-}: ProductFormProps) {
-  const { register, control, handleSubmit } = useForm<ProductFormData>({
+export const Product = ({ defaultValues, onSubmit }: ProductProps) => {
+  const { register, control, handleSubmit } = useForm<ProductData>({
     resolver: zodResolver(productSchema),
     defaultValues: {
       productName: '',
@@ -282,4 +279,4 @@ export default function ProductForm({
       </form>
     </Box>
   );
-}
+};

@@ -1,5 +1,6 @@
 import { render, screen, fireEvent } from '@testing-library/react';
-import ProductForm, { productSchema } from './ProductForm';
+import { Product } from './Product';
+import { productSchema } from './Product';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 // import * as reactQuery from '@tanstack/react-query';
 import { ReactElement } from 'react';
@@ -132,7 +133,7 @@ describe('editPage', () => {
     const onSubmit = jest.fn();
 
     renderWithClient(
-      <ProductForm
+      <Product
         onSubmit={onSubmit}
         defaultValues={{
           productName: 'Nike Air Max 90',
