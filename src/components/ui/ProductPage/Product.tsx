@@ -1,23 +1,29 @@
 'use client';
+import { getBrandsOptions } from '@/api/brand/getBrandsOptions';
+import { getColorsOptions } from '@/api/color/getColorsOptions';
+import { getGendersOptions } from '@/api/gender/getGendersOptions';
+import { getSizesOptions } from '@/api/size/getSizesOptions';
 import { LabeledTextfield, Select, ToggleButton } from '@/components/ui';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Box, FormControl, ToggleButtonGroup, Typography } from '@mui/material';
+import {
+  Box,
+  CircularProgress,
+  FormControl,
+  ToggleButtonGroup,
+  Typography,
+} from '@mui/material';
+import { useSuspenseQueries } from '@tanstack/react-query';
+import { FC, Suspense } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import * as z from 'zod';
 import {
   StyledAiButton,
   StyledDescriptionLabel,
   StyledInputLabel,
-  StyledTextArea,
   StyledMenuItem,
+  StyledTextArea,
 } from './Product.styles';
-import { getBrandsOptions } from '@/api/brand/getBrandsOptions';
-import { getColorsOptions } from '@/api/color/getColorsOptions';
-import { getGendersOptions } from '@/api/gender/getGendersOptions';
-import { getSizesOptions } from '@/api/size/getSizesOptions';
-import { useSuspenseQueries } from '@tanstack/react-query';
 import { productSchema } from './productForm.schema';
-import { FC } from 'react';
 
 export type ProductData = z.infer<typeof productSchema>;
 
@@ -37,6 +43,14 @@ const handleToggle = (
     : [...currentValues, selected];
 
   onChange(newValues);
+};
+
+export const ProductWrapper: FC<ProductProps> = (props) => {
+  return (
+    <Suspense fallback={<CircularProgress />}>
+      <Product {...props} />
+    </Suspense>
+  );
 };
 
 export const Product: FC<ProductProps> = ({

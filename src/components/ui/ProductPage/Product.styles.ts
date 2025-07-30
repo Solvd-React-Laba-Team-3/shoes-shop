@@ -1,7 +1,7 @@
+import { MenuItem } from '@/components/ui';
 import AutoFixHighOutlinedIcon from '@mui/icons-material/AutoFixHighOutlined';
 import { InputLabel, TextareaAutosize, Typography } from '@mui/material';
 import { styled } from '@mui/material/styles';
-import { MenuItem } from '@/components/ui';
 
 export const StyledMenuItem = styled(MenuItem)(() => ({
   fontSize: '15px',
