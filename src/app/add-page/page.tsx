@@ -1,8 +1,5 @@
 'use client';
-
-import { ProductData } from '@/components/ui/ProductPage/Product';
-
-import { Product } from '@/components/ui/ProductPage';
+import { ProductData, Product } from '@/components/ui/ProductPage/Product';
 
 export default function AddPage() {
   const handleAdd = (data: ProductData) => {

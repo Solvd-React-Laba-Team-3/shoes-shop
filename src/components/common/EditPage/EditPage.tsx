@@ -2,7 +2,6 @@
 
 import { Product } from '@/components/ui/ProductPage/Product';
 import type { ProductData } from '@/components/ui/ProductPage/Product';
-import { Button } from '@mui/material';
 import Dialog from '@mui/material/Dialog';
 import React from 'react';
 
@@ -17,15 +16,8 @@ export default function EditPage() {
     console.log('Edit submitted:', data);
   };
 
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
-
   return (
     <>
-      <Button variant="outlined" onClick={handleClickOpen}>
-        Open draggable dialog
-      </Button>
       <Dialog
         open={open}
         onClose={handleClose}
