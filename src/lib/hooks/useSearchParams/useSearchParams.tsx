@@ -1,23 +1,22 @@
 'use client';
 import {
   useSearchParams as useNextSearchParams,
-  useRouter,
+  usePathname,
 } from 'next/navigation';
 
 export const useSearchsParams = () => {
   const searchParams = useNextSearchParams();
-  const router = useRouter();
+  const pathname = usePathname();
 
   const set = (key: string, value: string | number | boolean | undefined) => {
     const params = new URLSearchParams(searchParams.toString());
     if (value === undefined) {
       params.delete(key);
-      router.push(`?${params.toString()}`);
       return;
     }
 
     params.set(key, String(value));
-    router.push(`?${params.toString()}`);
+    history.replaceState(null, '', `${pathname}?${params.toString()}`);
   };
   const get = (key: string) => {
     const value = searchParams.get(key);
@@ -28,7 +27,7 @@ export const useSearchsParams = () => {
     const params = new URLSearchParams(searchParams.toString());
     params.delete(key);
     console.log('Removing key:', key, 'New params:', params.get('filters'));
-    router.push(`?${params.toString()}`);
+    history.replaceState(null, '', `${pathname}?${params.toString()}`);
   };
 
   return {
