@@ -1,7 +1,7 @@
 import {
   Box,
+  Divider,
   ButtonGroup,
-  IconButton,
   Stack,
   TextField,
   Typography,
@@ -17,9 +17,18 @@ const Cart = () => {
     <>
       <Header />
       <Box sx={{ padding: '80px 196px' }}>
-        <Typography variant="h4" sx={{ mb: 4, fontWeight: 600 }}>
-          Cart
-        </Typography>
+        <Stack
+          direction="row"
+          alignItems="baseline"
+          justifyContent="space-between"
+          sx={{ maxWidth: '85%' }}
+        >
+          <Typography variant="h2" sx={{ mb: 4, fontWeight: 600 }}>
+            Cart
+          </Typography>
+
+          <Typography variant="h2">Summary</Typography>
+        </Stack>
 
         <Stack direction="row" spacing={4} alignItems="flex-start">
           <Box sx={{ width: 223, height: 214, flexShrink: 0 }}>
@@ -32,19 +41,12 @@ const Cart = () => {
             sx={{
               height: 214,
               flexGrow: 1,
-              maxWidth: '963px',
             }}
           >
             <Stack spacing={0.5}>
-              <Typography variant="h6" sx={{ fontWeight: 600 }}>
-                Nike Air Max 270
-              </Typography>
-              <Typography sx={{ fontSize: '14px', color: '#555' }}>
-                Women&apos;s Shoes
-              </Typography>
-              <Typography
-                sx={{ fontSize: '14px', color: '#FE645E', fontWeight: 500 }}
-              >
+              <Typography variant="h3">Nike Air Max 270</Typography>
+              <Typography variant="h6">Women&apos;s Shoes</Typography>
+              <Typography variant="h4" color="primary.main">
                 In Stock
               </Typography>
             </Stack>
@@ -55,7 +57,7 @@ const Cart = () => {
               alignItems="flex-end"
               sx={{ marginRight: '166px' }}
             >
-              <Typography sx={{ fontWeight: 600 }}>$160</Typography>
+              <Typography variant="h3">$160</Typography>
 
               <Stack direction="row" spacing={1} alignItems="center">
                 <ButtonGroup
@@ -74,7 +76,7 @@ const Cart = () => {
                   <Button sx={{ backgroundColor: '#E8E8E8', color: '#CECECE' }}>
                     -
                   </Button>
-                  <Typography sx={{ px: 1, fontWeight: 500 }}>0</Typography>
+                  <Typography sx={{ px: 1 }}>0</Typography>
                   <Button sx={{ backgroundColor: '#FFD7D6', color: '#FE645E' }}>
                     +
                   </Button>
@@ -82,22 +84,34 @@ const Cart = () => {
 
                 <Typography
                   variant="body2"
-                  sx={{ color: 'text.secondary', fontSize: '14px' }}
+                  sx={{ color: 'text.secondary', fontSize: '24px' }}
                 >
                   Quantity
                 </Typography>
-
-                <IconButton size="small" sx={{ color: '#BDBDBD' }}>
-                  <DeleteIcon fontSize="small" />
-                </IconButton>
+                <Typography sx={{ color: '#8B8E93' }}>|</Typography>
+                <DeleteIcon
+                  fontSize="small"
+                  sx={{ color: '#8B8E93', width: '24px', height: '24px' }}
+                />
+                <Typography>Delete</Typography>
               </Stack>
             </Stack>
           </Stack>
 
-          <Box>
-            <Typography>Summary</Typography>
-            <Accordion label="Do you have a promocode?">
-              <Box sx={{ display: 'flex', gap: 2, mt: 2 }}>
+          <Box sx={{ backgroundColor: 'blue' }}>
+            <Accordion
+              label={
+                <Typography
+                  sx={{
+                    fontSize: '20px',
+                    backgroundColor: 'red',
+                  }}
+                >
+                  Do you have a promocode?
+                </Typography>
+              }
+            >
+              <Box>
                 <TextField
                   size="small"
                   placeholder="Enter promo code"
@@ -132,6 +146,8 @@ const Cart = () => {
             <Button>Checkout</Button>
           </Box>
         </Stack>
+
+        <Divider />
       </Box>
     </>
   );
