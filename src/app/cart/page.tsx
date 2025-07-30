@@ -11,6 +11,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import { Accordion } from '@/components/ui';
 import Image from 'next/image';
 import { Header } from '@/components/common/Header';
+import { GlobalStyles } from '@mui/material';
 
 const Cart = () => {
   return (
@@ -98,13 +99,19 @@ const Cart = () => {
             </Stack>
           </Stack>
 
-          <Box sx={{ backgroundColor: 'blue' }}>
+          <Box>
+            <GlobalStyles
+              styles={{
+                '.MuiAccordionSummary-root': {
+                  width: 'auto !important',
+                },
+              }}
+            />
             <Accordion
               label={
                 <Typography
                   sx={{
                     fontSize: '20px',
-                    backgroundColor: 'red',
                   }}
                 >
                   Do you have a promocode?
@@ -114,21 +121,40 @@ const Cart = () => {
               <Box>
                 <TextField
                   size="small"
+                  sx={{
+                    width: '50%',
+                    height: '40px',
+                    marginRight: '10px',
+                    '& .MuiInputBase-root': {
+                      fontSize: '16px',
+                    },
+                  }}
                   placeholder="Enter promo code"
-                  sx={{ flex: 1 }}
                 />
-                <Button variant="contained" color="primary">
+                <Button variant="contained" color="primary" size="small">
                   Apply
                 </Button>
               </Box>
             </Accordion>
 
-            <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+            <Box
+              sx={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                margin: '38px 0 20px',
+              }}
+            >
               <Typography>Subtotal</Typography>
               <Typography>$410</Typography>
             </Box>
 
-            <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+            <Box
+              sx={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                margin: '20px 0',
+              }}
+            >
               <Typography>Shipping</Typography>
               <Typography>$20</Typography>
             </Box>
@@ -138,7 +164,13 @@ const Cart = () => {
               <Typography>$0</Typography>
             </Box>
 
-            <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+            <Box
+              sx={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                margin: '56px 0 113px',
+              }}
+            >
               <Typography>Total</Typography>
               <Typography>$430</Typography>
             </Box>
