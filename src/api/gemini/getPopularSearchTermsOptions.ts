@@ -23,7 +23,8 @@ Respond with only the full sneaker names, one per line, no extra text.`;
       .filter(Boolean);
 
     return terms;
-  } catch {
+  } catch (e) {
+    console.log(e);
     return [];
   }
 }

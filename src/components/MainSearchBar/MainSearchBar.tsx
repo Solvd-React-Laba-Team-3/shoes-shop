@@ -32,11 +32,16 @@ export const MainSearchBar = () => {
   const { debouncedValue, isDebouncing } = useDebounce(inputValue, 2000);
   const inputRef = useRef<HTMLInputElement>(null);
 
+  const queryOptions = searchPopularTermsOptions(debouncedValue);
+
   const {
     data: popularResults,
     isSuccess,
     isFetching,
-  } = useQuery(searchPopularTermsOptions(debouncedValue));
+  } = useQuery({
+    ...queryOptions,
+    enabled: debouncedValue.length === 0 || debouncedValue.length > 2,
+  });
 
   useEffect(() => {
     if (isSuccess && popularResults) {
