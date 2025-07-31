@@ -1,4 +1,5 @@
 import { QueryParam } from '@/types/api/QueryParam';
+import { toQueryString } from '../toQueryString/toQueryString';
 
 interface FetchOptions {
   endpoint: string;
@@ -6,41 +7,6 @@ interface FetchOptions {
   token?: string;
   body?: unknown;
   queryParams?: QueryParam;
-}
-
-/**
- * Converts an object of query parameters into a URL-encoded query string.
- *
- * @param {Record<string, string | number | boolean>} [queryParams] - The query parameters to convert
- * @returns {string} The URL-encoded query string, starting with '?' if parameters exist, otherwise an empty string
- */
-function toQueryString(queryParams?: QueryParam): string {
-  if (!queryParams || Object.keys(queryParams).length === 0) {
-    return '';
-  }
-
-  function buildParams(obj: QueryParam, prefix = ''): string[] {
-    return Object.entries(obj).flatMap(([key, value]) => {
-      const paramKey = prefix ? `${prefix}[${key}]` : key;
-      if (
-        typeof value === 'object' &&
-        value !== null &&
-        !Array.isArray(value)
-      ) {
-        return buildParams(value as QueryParam, paramKey);
-      } else if (Array.isArray(value)) {
-        return value.map(
-          (v) =>
-            `${encodeURIComponent(paramKey)}[]=${encodeURIComponent(String(v))}`
-        );
-      } else {
-        return `${encodeURIComponent(paramKey)}=${encodeURIComponent(String(value))}`;
-      }
-    });
-  }
-
-  const params = buildParams(queryParams).join('&');
-  return params ? `?${params}` : '';
 }
 
 /**
