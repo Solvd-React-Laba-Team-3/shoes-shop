@@ -11,6 +11,7 @@ import { SignUpSchema, signUpSchema } from './sign-up.schema';
 import { useRouter } from 'next/navigation';
 import { LoaderButton } from '@/components/LoaderButton';
 import WarningAmberIcon from '@mui/icons-material/WarningAmber';
+import registerImage from '../../../../public/register.jpg';
 
 export default function SignUp() {
   const router = useRouter();
@@ -190,7 +191,7 @@ export default function SignUp() {
           width: '100%',
         }}
       >
-        <Image src="/register.jpg" alt="sign up" fill sizes="50vw" />
+        <Image src={registerImage} alt="sign up" fill sizes="50vw" />
         <ReviewPanel
           quote="Lorem Ipsum is a really great company because the team is passionate about the projects they produce, the people they work with, the quality of the work they do."
           name="John Stone"
