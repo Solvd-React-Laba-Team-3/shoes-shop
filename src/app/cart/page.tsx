@@ -20,7 +20,7 @@ const Cart = () => {
       <Box
         sx={{
           display: 'flex',
-          // justifyContent: 'space-around',
+          justifyContent: 'space-around',
           padding: '80px 196px',
         }}
       >
@@ -168,8 +168,12 @@ const Cart = () => {
               margin: '38px 0 20px',
             }}
           >
-            <Typography>Subtotal</Typography>
-            <Typography>$410</Typography>
+            <Typography variant="h3" sx={{ fontWeight: 400 }}>
+              Subtotal
+            </Typography>
+            <Typography variant="h3" sx={{ fontWeight: 400 }}>
+              $410
+            </Typography>
           </Box>
 
           <Box
@@ -177,28 +181,42 @@ const Cart = () => {
               display: 'flex',
               justifyContent: 'space-between',
               margin: '20px 0',
-              // paddingLeft: '237px'
             }}
           >
-            <Typography>Shipping</Typography>
-            <Typography>$20</Typography>
+            <Typography variant="h3" sx={{ fontWeight: 400 }}>
+              Shipping
+            </Typography>
+            <Typography variant="h3" sx={{ fontWeight: 400 }}>
+              $20
+            </Typography>
           </Box>
 
           <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-            <Typography>Tax</Typography>
-            <Typography>$0</Typography>
+            <Typography variant="h3" sx={{ fontWeight: 400 }}>
+              Tax
+            </Typography>
+            <Typography variant="h3" sx={{ fontWeight: 400 }}>
+              $0
+            </Typography>
           </Box>
 
+          <Divider sx={{ marginTop: '56px' }} />
           <Box
             sx={{
               display: 'flex',
               justifyContent: 'space-between',
-              margin: '56px 0 113px',
+              margin: '20px',
             }}
           >
-            <Typography>Total</Typography>
-            <Typography>$430</Typography>
+            <Typography variant="h3" sx={{ fontWeight: 600 }}>
+              Total
+            </Typography>
+
+            <Typography variant="h3" sx={{ fontWeight: 600 }}>
+              $430
+            </Typography>
           </Box>
+          <Divider sx={{ marginBottom: '113px' }} />
 
           <Button>Checkout</Button>
         </Box>
