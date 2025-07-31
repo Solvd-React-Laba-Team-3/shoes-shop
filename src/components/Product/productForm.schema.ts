@@ -1,4 +1,5 @@
 import * as z from 'zod';
+
 export const productSchema = z.object({
   productName: z.string().min(1, 'Product name is required'),
   price: z.string().min(1, 'Price is required'),
@@ -17,3 +18,5 @@ export const productSchema = z.object({
     )
     .min(1, 'At least one size is required'),
 });
+
+export type ProductData = z.infer<typeof productSchema>;

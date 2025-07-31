@@ -2,7 +2,6 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { fireEvent, render, screen } from '@testing-library/react';
 import { Product } from './Product';
 import { productSchema } from './productForm.schema';
-// import * as reactQuery from '@tanstack/react-query';
 import { ReactElement } from 'react';
 
 const createTestQueryClient = () =>
@@ -26,10 +25,10 @@ jest.mock('@tanstack/react-query', () => {
   return {
     ...originalModule,
     useSuspenseQueries: () => [
-      { data: { data: [{ id: 1, attributes: { name: 'Men' } }] } }, // genders
-      { data: { data: [{ id: 1, attributes: { value: 'EU-38' } }] } }, // sizes
-      { data: { data: [{ id: 1, attributes: { name: 'Nike' } }] } }, // brands
-      { data: { data: [{ id: 1, attributes: { name: 'Black' } }] } }, // colors
+      { data: { data: [{ id: 1, attributes: { name: 'Men' } }] } },
+      { data: { data: [{ id: 1, attributes: { value: 'EU-38' } }] } },
+      { data: { data: [{ id: 1, attributes: { name: 'Nike' } }] } },
+      { data: { data: [{ id: 1, attributes: { name: 'Black' } }] } },
     ],
   };
 });
@@ -135,7 +134,7 @@ describe('editPage', () => {
     renderWithClient(
       <Product
         onSubmit={onSubmit}
-        defaultValues={{
+        editingProduct={{
           productName: 'Nike Air Max 90',
           price: '160',
           gender: 'Men',
@@ -159,29 +158,5 @@ describe('editPage', () => {
 
     const sizeButton = await screen.findByRole('button', { name: /EU-38/i });
     fireEvent.click(sizeButton);
-
-    // const submitButton = screen.getByRole('button', { name: /submit/i });
-    // fireEvent.click(submitButton);
-
-    // await waitFor(() => {
-    //   expect(onSubmit).toHaveBeenCalledWith(
-    //     expect.objectContaining({
-    //       productName: 'Nike Air Max 90',
-    //       price: '120',
-    //       description: 'Cool shoes',
-    //       color: 'Black',
-    //       gender: 'Men',
-    //       brand: 'Nike',
-    //       size: [
-    //         expect.objectContaining({
-    //           id: expect.any(Number),
-    //           attributes: expect.objectContaining({
-    //             value: 'EU-38',
-    //           }),
-    //         }),
-    //       ],
-    //     })
-    //   );
-    // });
   });
 });

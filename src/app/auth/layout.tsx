@@ -14,7 +14,7 @@ export default async function AuthLayout({
   const session = await getServerSession();
 
   if (session) {
-    redirect('/products');
+    redirect('/profile/products');
   }
 
   return (
