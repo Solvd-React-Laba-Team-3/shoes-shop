@@ -1,6 +1,6 @@
 'use client';
 import { useState, useEffect, useRef } from 'react';
-import { useRouter, usePathname, useSearchParams } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 import { SearchBar } from '../ui';
 import {
   MainSearchBarContainer,
@@ -92,7 +92,7 @@ export const MainSearchBar = () => {
         <>
           <IconButtonLeft>
             <Link href="/">
-              <Image src={logo} alt="logo" width={40} height={30} />
+              <Image src="/logo.png" alt="logo" width={40} height={30} />
             </Link>
           </IconButtonLeft>
           <IconButtonRight>
