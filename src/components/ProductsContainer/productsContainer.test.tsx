@@ -1,6 +1,6 @@
 import { render, screen } from '@testing-library/react';
 import { ProductsContainer } from './ProductsContainer';
-import { useSearchsParams } from '@/lib/hooks';
+import { useSearchParams } from '@/lib/hooks';
 import { getProductsOptions } from '@/api/products/getProductsOptions';
 import { useSuspenseInfiniteQuery } from '@tanstack/react-query';
 
@@ -8,7 +8,7 @@ jest.mock('@/lib/hooks');
 jest.mock('@/api/products/getProductsOptions');
 jest.mock('@tanstack/react-query');
 
-const mockedUseSearchsParams = useSearchsParams as jest.Mock;
+const mockedUseSearchParams = useSearchParams as jest.Mock;
 const mockedGetProductsOptions = getProductsOptions as jest.Mock;
 const mockedUseSuspenseInfiniteQuery = useSuspenseInfiniteQuery as jest.Mock;
 
@@ -33,7 +33,7 @@ describe('<ProductsContainer />', () => {
   });
 
   it('deve exibir "Catalog" quando não houver search ou filters', () => {
-    mockedUseSearchsParams.mockReturnValue({
+    mockedUseSearchParams.mockReturnValue({
       searchParams: new URLSearchParams(),
     });
 
@@ -47,7 +47,7 @@ describe('<ProductsContainer />', () => {
     const params = new URLSearchParams();
     params.set('search', 'tenis');
 
-    mockedUseSearchsParams.mockReturnValue({
+    mockedUseSearchParams.mockReturnValue({
       searchParams: params,
     });
 

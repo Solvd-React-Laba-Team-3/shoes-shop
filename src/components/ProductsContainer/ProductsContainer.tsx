@@ -1,14 +1,14 @@
 'use client';
 import { getProductsOptions } from '@/api/products/getProductsOptions';
-import { useSearchsParams } from '@/lib/hooks';
+import { useSearchParams } from '@/lib/hooks';
 import { parseQueryString } from '@/lib/utils';
 import { useSuspenseInfiniteQuery } from '@tanstack/react-query';
 import React, { useMemo } from 'react';
 import { ProductList } from '../ProductList';
 import { Box, Typography } from '@mui/material';
 
-export const ProductsContainer: React.FC = () => {
-  const { searchParams } = useSearchsParams();
+export const ProductsContainer = () => {
+  const { searchParams } = useSearchParams();
 
   const filters = parseQueryString(searchParams.get('filters') ?? '');
   const search = searchParams.get('search');

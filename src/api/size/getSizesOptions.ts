@@ -1,5 +1,4 @@
-import { fetchApi } from '@/lib/utils';
-import { flattenStrapiData } from '@/lib/utils/flattenStrapiData/flattenStrapiData';
+import { fetchApi, flatStrapiData } from '@/lib/utils';
 import { Size } from '@/types/Size';
 import { StrapiPaginatedData } from '@/types/api/StrapiPaginatedData';
 import { StrapiQueryParams } from '@/types/api/StrapiQueryParams';
@@ -11,7 +10,7 @@ export const getSizesOptions = (queryParams?: StrapiQueryParams<keyof Size>) =>
   queryOptions({
     queryKey: [GET_SIZES_QUERY_KEY, queryParams],
     queryFn: async () =>
-      flattenStrapiData<Size>(
+      flatStrapiData<Size>(
         await fetchApi<StrapiPaginatedData<Size>>({
           endpoint: '/sizes',
           method: 'GET',
