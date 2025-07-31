@@ -1,11 +1,6 @@
-import { MenuItem } from '@/components/ui';
 import AutoFixHighOutlinedIcon from '@mui/icons-material/AutoFixHighOutlined';
 import { InputLabel, TextareaAutosize, Typography } from '@mui/material';
 import { styled } from '@mui/material/styles';
-
-export const StyledMenuItem = styled(MenuItem)(() => ({
-  fontSize: '15px',
-}));
 
 export const StyledInputLabel = styled(InputLabel)(({ theme }) => ({
   marginLeft: '-13px',

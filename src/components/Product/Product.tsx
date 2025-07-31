@@ -3,32 +3,30 @@ import { getBrandsOptions } from '@/api/brand/getBrandsOptions';
 import { getColorsOptions } from '@/api/color/getColorsOptions';
 import { getGendersOptions } from '@/api/gender/getGendersOptions';
 import { getSizesOptions } from '@/api/size/getSizesOptions';
-import { LabeledTextfield, Select, ToggleButton } from '@/components/ui';
-import { zodResolver } from '@hookform/resolvers/zod';
 import {
-  Box,
-  CircularProgress,
-  FormControl,
-  ToggleButtonGroup,
-  Typography,
-} from '@mui/material';
+  LabeledTextfield,
+  Select,
+  ToggleButton,
+  MenuItem,
+} from '@/components/ui';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { Box, FormControl, ToggleButtonGroup, Typography } from '@mui/material';
 import { useSuspenseQueries } from '@tanstack/react-query';
-import { FC, Suspense } from 'react';
+
 import { Controller, useForm } from 'react-hook-form';
-import * as z from 'zod';
+
 import {
   StyledAiButton,
   StyledDescriptionLabel,
   StyledInputLabel,
-  StyledMenuItem,
   StyledTextArea,
-} from './Product.styles';
+} from './product-styles';
 import { productSchema } from './productForm.schema';
-
-export type ProductData = z.infer<typeof productSchema>;
+import { ProductData } from './productForm.schema';
+import React, { forwardRef, useImperativeHandle } from 'react';
 
 interface ProductProps {
-  defaultValues?: Partial<ProductData>;
+  editingProduct?: Partial<ProductData>;
   onSubmit: (data: ProductData) => void;
 }
 
@@ -37,26 +35,18 @@ const handleToggle = (
   currentValues: { id: number }[],
   onChange: (value: { id: number }[]) => void
 ) => {
-  const exists = currentValues.some((item) => item.id === selected.id);
-  const newValues = exists
+  const isExist = currentValues.some((item) => item.id === selected.id);
+  const newValues = isExist
     ? currentValues.filter((item) => item.id !== selected.id)
     : [...currentValues, selected];
 
   onChange(newValues);
 };
 
-export const ProductWrapper: FC<ProductProps> = (props) => {
-  return (
-    <Suspense fallback={<CircularProgress />}>
-      <Product {...props} />
-    </Suspense>
-  );
-};
-
-export const Product: FC<ProductProps> = ({
-  defaultValues,
-  onSubmit,
-}: ProductProps) => {
+export const Product = forwardRef(function Product(
+  { editingProduct, onSubmit }: ProductProps,
+  ref: React.Ref<{ submit: () => void }>
+) {
   const { register, control, handleSubmit } = useForm<ProductData>({
     resolver: zodResolver(productSchema),
     defaultValues: {
@@ -67,9 +57,15 @@ export const Product: FC<ProductProps> = ({
       brand: '',
       description: '',
       size: [],
-      ...defaultValues,
+      ...editingProduct,
     },
   });
+
+  const internalSubmit = handleSubmit(onSubmit);
+
+  useImperativeHandle(ref, () => ({
+    submit: internalSubmit,
+  }));
 
   const [
     { data: genders },
@@ -92,7 +88,7 @@ export const Product: FC<ProductProps> = ({
   });
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
+    <form onSubmit={internalSubmit}>
       <Box>
         <LabeledTextfield
           label="Product name"
@@ -124,9 +120,11 @@ export const Product: FC<ProductProps> = ({
               sx={{ mt: '18px', width: '436px', padding: '8px 0' }}
             >
               {colors.data.map((color) => (
-                <StyledMenuItem key={color.id} value={color.attributes.name}>
-                  {color.attributes.name}
-                </StyledMenuItem>
+                <MenuItem key={color.id} value={color.attributes.name}>
+                  <Typography variant="caption">
+                    {color.attributes.name}
+                  </Typography>
+                </MenuItem>
               ))}
             </Select>
           </FormControl>
@@ -153,12 +151,11 @@ export const Product: FC<ProductProps> = ({
                 sx={{ mt: '20px' }}
               >
                 {genders?.data?.map((gender) => (
-                  <StyledMenuItem
-                    key={gender.id}
-                    value={gender.attributes.name}
-                  >
-                    {gender.attributes.name}
-                  </StyledMenuItem>
+                  <MenuItem key={gender.id} value={gender.attributes.name}>
+                    <Typography variant="caption">
+                      {gender.attributes.name}
+                    </Typography>
+                  </MenuItem>
                 ))}
               </Select>
             </FormControl>
@@ -182,14 +179,16 @@ export const Product: FC<ProductProps> = ({
                 sx={{ mt: '20px' }}
                 displayEmpty
               >
-                <StyledMenuItem value="">
+                <MenuItem value="">
                   <em>Select brand</em>
-                </StyledMenuItem>
+                </MenuItem>
 
                 {brands.data.map((brand) => (
-                  <StyledMenuItem key={brand.id} value={brand.attributes.name}>
-                    {brand.attributes.name}
-                  </StyledMenuItem>
+                  <MenuItem key={brand.id} value={brand.attributes.name}>
+                    <Typography variant="caption">
+                      {brand.attributes.name}
+                    </Typography>
+                  </MenuItem>
                 ))}
               </Select>
             </FormControl>
@@ -224,7 +223,6 @@ export const Product: FC<ProductProps> = ({
             return (
               <Box>
                 <Typography
-                  // component="h6"
                   variant="subtitle2"
                   sx={{
                     mb: 0,
@@ -274,4 +272,4 @@ export const Product: FC<ProductProps> = ({
       </Box>
     </form>
   );
-};
+});
