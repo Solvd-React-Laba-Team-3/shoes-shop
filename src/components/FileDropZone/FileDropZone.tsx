@@ -63,6 +63,12 @@ export const FileDropZone: FC<FileDropZoneProps> = ({ onFilesDropped }) => {
         name="file"
         accept="image/*"
         multiple
+        onChange={(e) => {
+          const files = e.target.files;
+          if (files) {
+            onFilesDropped(Array.from(files));
+          }
+        }}
       />
     </>
   );
