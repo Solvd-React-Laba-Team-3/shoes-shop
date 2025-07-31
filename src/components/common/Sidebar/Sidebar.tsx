@@ -23,27 +23,27 @@ export const Sidebar: FC<DrawerProps> = ({ open = true, ...props }) => {
     {
       label: 'My Products',
       icon: <StorefrontIcon />,
-      href: '/products',
+      href: '/profile/products',
     },
     {
       label: 'Order history',
       icon: <HistoryIcon />,
-      href: '/history',
+      href: '/profile/history',
     },
     {
       label: 'My Wishlist',
       icon: <LoyaltyIcon />,
-      href: '/wishlist',
+      href: '/profile/wishlist',
     },
     {
       label: 'Recently viewed',
       icon: <PreviewIcon />,
-      href: '/recently-viewed',
+      href: '/profile/recently-viewed',
     },
     {
       label: 'Settings',
       icon: <SettingsIcon />,
-      href: '/settings',
+      href: '/profile/settings',
     },
   ];
 
