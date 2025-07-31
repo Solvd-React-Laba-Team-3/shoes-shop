@@ -14,7 +14,7 @@ import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
 import Link from 'next/link';
 import Image from 'next/image';
-import { useDebounce } from '@/lib/hooks/useDebounce';
+import { useDebounce, useSearchParams } from '@/lib/hooks';
 import { List, Typography } from '@mui/material';
 import LinearProgress from '@mui/material/LinearProgress';
 import { useQuery } from '@tanstack/react-query';
@@ -61,7 +61,7 @@ export const MainSearchBar = () => {
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter') {
-      handleSearch(inputValue.trim());
+      searchParams.set('search', inputValue.trim());
       handleClose();
     }
   };
@@ -92,7 +92,7 @@ export const MainSearchBar = () => {
         <>
           <IconButtonLeft>
             <Link href="/">
-              <Image src="/logo.png" alt="logo" width={40} height={30} />
+              <Image src={logo} alt="logo" width={40} height={30} />
             </Link>
           </IconButtonLeft>
           <IconButtonRight>
