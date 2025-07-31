@@ -3,15 +3,16 @@ import { getColorsOptions } from '@/api/color/getColorsOptions';
 import { getGendersOptions } from '@/api/gender/getGendersOptions';
 import { getProductsOptions } from '@/api/products/getProductsOptions';
 import { getSizesOptions } from '@/api/size/getSizesOptions';
-import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 
 import { Header } from '@/components/common/Header';
-import { ProductsContainer } from '@/components/ProductsContainer/ProductsContainer';
+import { ProductsContainer } from '@/components/ProductsContainer/';
 import { getQueryClient } from '@/lib/utils';
 import { Hydrate } from '@/providers/Hydrate';
 import Box from '@mui/material/Box';
 import { dehydrate } from '@tanstack/react-query';
 import { Filters } from '@/components/Filters';
+import { Suspense } from 'react';
+import { ProductListFallback } from '@/components/ProductListFallback';
 
 const queryClient = getQueryClient();
 queryClient.prefetchQuery(getSizesOptions());
@@ -20,17 +21,20 @@ queryClient.prefetchQuery(getGendersOptions());
 queryClient.prefetchQuery(getColorsOptions());
 queryClient.prefetchInfiniteQuery(getProductsOptions());
 
-export default function Home() {
+export default function Catalog() {
   return (
     <>
       <Header />
       <Hydrate state={dehydrate(queryClient)}>
         <Box sx={{ display: 'flex' }}>
           <Filters />
-          <ProductsContainer />
+          <Box sx={{ flexGrow: 1 }}>
+            <Suspense fallback={<ProductListFallback />}>
+              <ProductsContainer />
+            </Suspense>
+          </Box>
         </Box>
       </Hydrate>
-      <ReactQueryDevtools initialIsOpen={false} />
     </>
   );
 }
