@@ -15,6 +15,7 @@ import {
 import { LoaderButton } from '@/components/LoaderButton';
 import { ReactElement } from 'react';
 import WarningAmberIcon from '@mui/icons-material/WarningAmber';
+import recoveryImage from '../../../../public/recovery.jpg';
 
 export default function ResetPassword(): ReactElement | null {
   const router = useRouter();
@@ -162,7 +163,7 @@ export default function ResetPassword(): ReactElement | null {
           position: 'relative',
         }}
       >
-        <Image src="/recovery.jpg" alt="reset password" fill sizes="50vw" />
+        <Image src={recoveryImage} alt="reset password" fill sizes="50vw" />
       </Box>
     </>
   );
