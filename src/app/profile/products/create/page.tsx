@@ -12,7 +12,7 @@ export default function CreateProductPage() {
 
   const handleAdd = (data: ProductData) => {
     console.log('Add submitted: ', data);
-    router.push('/');
+    router.push('/products');
   };
 
   return (

@@ -20,7 +20,7 @@ export const EditProductModal = ({ open, onClose }: EditPageProps) => {
 
   const handleAdd = (data: ProductData) => {
     console.log('Edit submitted: ', data);
-    router.push('/recently-viewed');
+    router.push('/profile/products');
   };
   const formRef = useRef<{ submit: () => void }>(null);
   return (
