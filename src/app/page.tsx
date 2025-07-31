@@ -1,29 +1,28 @@
-'use client';
-
+import { getBrandsOptions } from '@/api/brand/getBrandsOptions';
+import { getColorsOptions } from '@/api/color/getColorsOptions';
+import { getGendersOptions } from '@/api/gender/getGendersOptions';
 import { getProductsOptions } from '@/api/products/getProductsOptions';
+import { getSizesOptions } from '@/api/size/getSizesOptions';
+import { Catalog } from '@/components/common/Catalog';
 import { Header } from '@/components/common/Header';
-import { ProductList } from '@/components/ProductList';
 import { getQueryClient } from '@/lib/utils';
-import Typography from '@mui/material/Typography';
-import { useSuspenseInfiniteQuery } from '@tanstack/react-query';
+import { Hydrate } from '@/providers/Hydrate';
+import { dehydrate } from '@tanstack/react-query';
 
 const queryClient = getQueryClient();
-const queryParams = {
-  populate: '*' as const,
-  filters: {
-    teamName: 'team-3',
-  },
-};
-queryClient.prefetchInfiniteQuery(getProductsOptions({}));
+queryClient.prefetchQuery(getSizesOptions());
+queryClient.prefetchQuery(getBrandsOptions());
+queryClient.prefetchQuery(getGendersOptions());
+queryClient.prefetchQuery(getColorsOptions());
+queryClient.prefetchInfiniteQuery(getProductsOptions());
 
 export default function Home() {
-  const { data } = useSuspenseInfiniteQuery(getProductsOptions(queryParams));
-
   return (
     <>
       <Header />
-      <Typography>Shoes Shop - Team 3</Typography>
-      <ProductList products={data.pages.flatMap((page) => page.products)} />
+      <Hydrate state={dehydrate(queryClient)}>
+        <Catalog />
+      </Hydrate>
     </>
   );
 }

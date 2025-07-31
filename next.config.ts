@@ -4,7 +4,7 @@ const nextConfig: NextConfig = {
   /* config options here */
   logging: { fetches: { fullUrl: true } },
   images: {
-    domains: ['res.cloudinary.com']
+    remotePatterns: [new URL('https://res.cloudinary.com/**')],
   },
 };
 
