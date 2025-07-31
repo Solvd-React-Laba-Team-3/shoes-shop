@@ -135,7 +135,7 @@ describe('editPage', () => {
     renderWithClient(
       <Product
         onSubmit={onSubmit}
-        defaultValues={{
+        editingProduct={{
           productName: 'Nike Air Max 90',
           price: '160',
           gender: 'Men',

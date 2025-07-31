@@ -3,7 +3,12 @@ import { getBrandsOptions } from '@/api/brand/getBrandsOptions';
 import { getColorsOptions } from '@/api/color/getColorsOptions';
 import { getGendersOptions } from '@/api/gender/getGendersOptions';
 import { getSizesOptions } from '@/api/size/getSizesOptions';
-import { LabeledTextfield, Select, ToggleButton } from '@/components/ui';
+import {
+  LabeledTextfield,
+  Select,
+  ToggleButton,
+  MenuItem,
+} from '@/components/ui';
 import { zodResolver } from '@hookform/resolvers/zod';
 import {
   Box,
@@ -20,14 +25,13 @@ import {
   StyledAiButton,
   StyledDescriptionLabel,
   StyledInputLabel,
-  StyledMenuItem,
   StyledTextArea,
-} from './Product.styles';
+} from './product-styles';
 import { productSchema } from './productForm.schema';
 import { ProductData } from './productForm.schema';
 
 interface ProductProps {
-  defaultValues?: Partial<ProductData>;
+  editingProduct?: Partial<ProductData>;
   onSubmit: (data: ProductData) => void;
 }
 
@@ -53,7 +57,7 @@ export const ProductWrapper: FC<ProductProps> = (props) => {
 };
 
 export const Product: FC<ProductProps> = ({
-  defaultValues,
+  editingProduct,
   onSubmit,
 }: ProductProps) => {
   const { register, control, handleSubmit } = useForm<ProductData>({
@@ -66,7 +70,7 @@ export const Product: FC<ProductProps> = ({
       brand: '',
       description: '',
       size: [],
-      ...defaultValues,
+      ...editingProduct,
     },
   });
 
@@ -123,9 +127,11 @@ export const Product: FC<ProductProps> = ({
               sx={{ mt: '18px', width: '436px', padding: '8px 0' }}
             >
               {colors.data.map((color) => (
-                <StyledMenuItem key={color.id} value={color.attributes.name}>
-                  {color.attributes.name}
-                </StyledMenuItem>
+                <MenuItem key={color.id} value={color.attributes.name}>
+                  <Typography variant="caption">
+                    {color.attributes.name}
+                  </Typography>
+                </MenuItem>
               ))}
             </Select>
           </FormControl>
@@ -152,12 +158,11 @@ export const Product: FC<ProductProps> = ({
                 sx={{ mt: '20px' }}
               >
                 {genders?.data?.map((gender) => (
-                  <StyledMenuItem
-                    key={gender.id}
-                    value={gender.attributes.name}
-                  >
-                    {gender.attributes.name}
-                  </StyledMenuItem>
+                  <MenuItem key={gender.id} value={gender.attributes.name}>
+                    <Typography variant="caption">
+                      {gender.attributes.name}
+                    </Typography>
+                  </MenuItem>
                 ))}
               </Select>
             </FormControl>
@@ -181,14 +186,16 @@ export const Product: FC<ProductProps> = ({
                 sx={{ mt: '20px' }}
                 displayEmpty
               >
-                <StyledMenuItem value="">
+                <MenuItem value="">
                   <em>Select brand</em>
-                </StyledMenuItem>
+                </MenuItem>
 
                 {brands.data.map((brand) => (
-                  <StyledMenuItem key={brand.id} value={brand.attributes.name}>
-                    {brand.attributes.name}
-                  </StyledMenuItem>
+                  <MenuItem key={brand.id} value={brand.attributes.name}>
+                    <Typography variant="caption">
+                      {brand.attributes.name}
+                    </Typography>
+                  </MenuItem>
                 ))}
               </Select>
             </FormControl>
@@ -223,7 +230,6 @@ export const Product: FC<ProductProps> = ({
             return (
               <Box>
                 <Typography
-                  // component="h6"
                   variant="subtitle2"
                   sx={{
                     mb: 0,

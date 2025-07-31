@@ -1,7 +1,9 @@
 'use client';
 
-import { Product } from '@/components/ui/ProductPage/Product';
-import type { ProductData } from '@/components/ui/ProductPage/productForm.schema';
+import { Product } from '@/components/Product/Product';
+import type { ProductData } from '@/components/Product/productForm.schema';
+import { Button } from '@/components/ui';
+import { Box, Typography } from '@mui/material';
 import Dialog from '@mui/material/Dialog';
 import React from 'react';
 
@@ -17,34 +19,54 @@ export const EditProductModal = ({
   onSubmit,
 }: EditPageProps) => {
   return (
-    <>
-      <Dialog
-        open={open}
-        onClose={onClose}
-        aria-labelledby="draggable-dialog-title"
-        fullWidth
-        maxWidth={false}
-        sx={{
-          '& .MuiDialog-paper': {
-            maxWidth: '1487px',
-            padding: '57px 0 40px 57px',
-          },
-        }}
-      >
-        <Product
-          defaultValues={{
-            productName: 'Nike Air Max 90',
-            price: '$160',
-            gender: 'Men',
-            color: 'Black',
-            brand: 'Nike',
-            description:
-              "Lorem ipsum, or lipsum as it is sometimes known, is dummy text used in laying out print, graphic or web designs. The passage is attributed to an unknown typesetter in the 15th century who is thought to have scrambled parts of Cicero's De Finibus Bonorum et Malorum for use in a type specimen book. It usually begins with",
-            size: [],
+    <Dialog
+      open={open}
+      onClose={onClose}
+      aria-labelledby="draggable-dialog-title"
+      fullWidth
+      maxWidth={false}
+      sx={{
+        '& .MuiDialog-paper': {
+          maxWidth: '1487px',
+          padding: '57px 0 40px 57px',
+        },
+      }}
+    >
+      <Box sx={{ marginBottom: '40px' }}>
+        <Box
+          sx={{
+            display: 'flex',
+            paddingRight: '38px',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            marginBottom: '35px',
           }}
-          onSubmit={onSubmit}
-        />
-      </Dialog>
-    </>
+        >
+          <Typography variant="h2">Edit product</Typography>
+          <Button>Save</Button>
+        </Box>
+
+        <Typography variant="caption">
+          Lorem ipsum, or lipsum as it is sometimes known, is dummy text used in
+          laying out print, graphic or web designs. The passage is attributed to
+          an unknown typesetter in the 15th century who is thought to have
+          scrambled parts of Cicero&apos;s De Finibus Bonorum et Malorum for use
+          in a type specimen book. It usually begins with
+        </Typography>
+      </Box>
+      <Product
+        editingProduct={{
+          productName: 'Nike Air Max 90',
+          price: '$160',
+          gender: 'Men',
+          color: 'Black',
+          brand: 'Nike',
+          description:
+            "Lorem ipsum, or lipsum as it is sometimes known, is dummy text used in laying out print, graphic or web designs. The passage is attributed to an unknown typesetter in the 15th century who is thought to have scrambled parts of Cicero's De Finibus Bonorum et Malorum for use in a type specimen book. It usually begins with",
+          size: [],
+        }}
+        onSubmit={onSubmit}
+      />
+    </Dialog>
   );
 };
