@@ -119,7 +119,7 @@ export const Filters: FC<DrawerProps> = ({ ...props }) => {
       getGendersOptions(),
       getSizesOptions(),
       getBrandsOptions({
-        filters: { name: { $containsi: debouncedSearchBrands } },
+        filters: { name: { $containsi: debouncedSearchBrands.debouncedValue } },
       }),
       getColorsOptions(),
     ],
