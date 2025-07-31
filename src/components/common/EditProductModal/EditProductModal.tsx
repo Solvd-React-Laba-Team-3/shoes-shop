@@ -58,13 +58,12 @@ export const EditProductModal = ({
         </Box>
         <Product
           editingProduct={{
-            productName: 'Nike Air Max 90',
+            productName: '',
             price: '$160',
             gender: 'Men',
             color: 'Black',
             brand: 'Nike',
-            description:
-              "Lorem ipsum, or lipsum as it is sometimes known, is dummy text used in laying out print, graphic or web designs. The passage is attributed to an unknown typesetter in the 15th century who is thought to have scrambled parts of Cicero's De Finibus Bonorum et Malorum for use in a type specimen book. It usually begins with",
+            description: '',
             size: [],
           }}
           onSubmit={onSubmit}
