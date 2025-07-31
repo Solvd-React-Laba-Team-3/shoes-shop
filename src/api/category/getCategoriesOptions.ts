@@ -1,4 +1,4 @@
-import { fetchApi } from '@/lib/utils';
+import { fetchApi, flatStrapiData } from '@/lib/utils';
 import { Category } from '@/types/Category';
 import { StrapiPaginatedData } from '@/types/api/StrapiPaginatedData';
 import { StrapiQueryParams } from '@/types/api/StrapiQueryParams';
@@ -12,9 +12,11 @@ export const getCategoriesOptions = (
   queryOptions({
     queryKey: [GET_CATEGORIES_QUERY_KEY, queryParams],
     queryFn: async () =>
-      await fetchApi<StrapiPaginatedData<Category>>({
-        endpoint: '/categories',
-        method: 'GET',
-        queryParams,
-      }),
+      flatStrapiData(
+        await fetchApi<StrapiPaginatedData<Category>>({
+          endpoint: '/categories',
+          method: 'GET',
+          queryParams,
+        })
+      ),
   });

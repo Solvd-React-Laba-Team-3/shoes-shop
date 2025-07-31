@@ -26,4 +26,6 @@ export const palette = {
   error: {
     main: '#FE645E',
   },
+  divider: '#EAECF0',
+  grey: { '400': '#494949' },
 };
