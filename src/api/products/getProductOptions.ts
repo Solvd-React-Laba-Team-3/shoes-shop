@@ -11,6 +11,9 @@ export const getProductOptions = (id: number) =>
       const res = await fetchApi<StrapiSingleData<ProductAttributes>>({
         endpoint: `/products/${id}`,
         method: 'GET',
+        queryParams: {
+          populate: '*',
+        },
       });
       return formatProductAttributes(res.data.id, res.data.attributes);
     },
