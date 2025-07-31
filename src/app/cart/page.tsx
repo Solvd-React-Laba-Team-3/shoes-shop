@@ -21,6 +21,7 @@ const Cart = () => {
         sx={{
           display: 'flex',
           // justifyContent: 'space-around',
+          padding: '80px 196px',
         }}
       >
         {/* cart part */}
@@ -68,7 +69,9 @@ const Cart = () => {
                     direction="row"
                     spacing={1}
                     alignItems="center"
-                    sx={{ marginRight: '237px' }}
+                    sx={{
+                      paddingLeft: '237px',
+                    }}
                   >
                     <ButtonGroup
                       size="small"
@@ -174,6 +177,7 @@ const Cart = () => {
               display: 'flex',
               justifyContent: 'space-between',
               margin: '20px 0',
+              // paddingLeft: '237px'
             }}
           >
             <Typography>Shipping</Typography>
