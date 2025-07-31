@@ -12,7 +12,7 @@ import {
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Box, FormControl, ToggleButtonGroup, Typography } from '@mui/material';
 import { useSuspenseQueries } from '@tanstack/react-query';
-import { FC } from 'react';
+
 import { Controller, useForm } from 'react-hook-form';
 
 import {
@@ -23,6 +23,7 @@ import {
 } from './product-styles';
 import { productSchema } from './productForm.schema';
 import { ProductData } from './productForm.schema';
+import React, { forwardRef, useImperativeHandle } from 'react';
 
 interface ProductProps {
   editingProduct?: Partial<ProductData>;
@@ -42,10 +43,10 @@ const handleToggle = (
   onChange(newValues);
 };
 
-export const Product: FC<ProductProps> = ({
-  editingProduct,
-  onSubmit,
-}: ProductProps) => {
+export const Product = forwardRef(function Product(
+  { editingProduct, onSubmit }: ProductProps,
+  ref: React.Ref<{ submit: () => void }>
+) {
   const { register, control, handleSubmit } = useForm<ProductData>({
     resolver: zodResolver(productSchema),
     defaultValues: {
@@ -59,6 +60,12 @@ export const Product: FC<ProductProps> = ({
       ...editingProduct,
     },
   });
+
+  const internalSubmit = handleSubmit(onSubmit);
+
+  useImperativeHandle(ref, () => ({
+    submit: internalSubmit,
+  }));
 
   const [
     { data: genders },
@@ -81,7 +88,7 @@ export const Product: FC<ProductProps> = ({
   });
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
+    <form onSubmit={internalSubmit}>
       <Box>
         <LabeledTextfield
           label="Product name"
@@ -265,4 +272,4 @@ export const Product: FC<ProductProps> = ({
       </Box>
     </form>
   );
-};
+});
