@@ -131,6 +131,7 @@ export const Filters: FC<DrawerProps> = ({ ...props }) => {
       sx={{
         width: props.open ? '320px' : '0px',
         transition: 'width 0.2s ease-in-out',
+        zIndex: 800,
 
         '& .MuiDrawer-paper': {
           position: 'relative',

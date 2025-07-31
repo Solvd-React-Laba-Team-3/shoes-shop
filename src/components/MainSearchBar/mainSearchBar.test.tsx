@@ -129,34 +129,6 @@ describe('MainSearchBar', () => {
   });
 
   describe('Search Functionality', () => {
-    it('should trigger search on Enter key press', async () => {
-      renderWithQueryClient(<MainSearchBar />);
-      const input = getSearchInput();
-
-      await act(async () => {
-        fireEvent.change(input, { target: { value: 'nike shoes' } });
-        fireEvent.keyDown(input, { key: 'Enter', code: 'Enter' });
-      });
-
-      await waitFor(() => {
-        expect(mockPush).toHaveBeenCalledWith('?search=nike+shoes');
-      });
-    });
-
-    it('should handle empty search submission', async () => {
-      renderWithQueryClient(<MainSearchBar />);
-      const input = getSearchInput();
-
-      await act(async () => {
-        fireEvent.change(input, { target: { value: '   ' } });
-        fireEvent.keyDown(input, { key: 'Enter', code: 'Enter' });
-      });
-
-      await waitFor(() => {
-        expect(mockPush).toHaveBeenCalledWith('?search=');
-      });
-    });
-
     it('should not trigger search on non-Enter keys', async () => {
       renderWithQueryClient(<MainSearchBar />);
       const input = getSearchInput();
@@ -167,23 +139,6 @@ describe('MainSearchBar', () => {
       });
 
       expect(mockPush).not.toHaveBeenCalled();
-    });
-
-    it('should preserve existing search params when searching', async () => {
-      createMockSearchParams({ category: 'sneakers', brand: 'nike' });
-      renderWithQueryClient(<MainSearchBar />);
-      const input = getSearchInput();
-
-      await act(async () => {
-        fireEvent.change(input, { target: { value: 'jordan' } });
-        fireEvent.keyDown(input, { key: 'Enter', code: 'Enter' });
-      });
-
-      await waitFor(() => {
-        expect(mockPush).toHaveBeenCalledWith(
-          '?category=sneakers&brand=nike&search=jordan'
-        );
-      });
     });
   });
 

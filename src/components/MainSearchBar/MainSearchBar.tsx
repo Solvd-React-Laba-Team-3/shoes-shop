@@ -45,23 +45,26 @@ export const MainSearchBar = () => {
   }, [isSuccess, popularResults]);
 
   const handleSearch = (value: string) => {
-    if (searchParams.get('search') === value) return;
+    const trimmedValue = value.trim();
+    const currentParams = new URLSearchParams(searchParams.toString());
 
-    const params = new URLSearchParams(searchParams.toString());
-    params.set('search', value);
+    if (currentParams.get('search') === trimmedValue) return;
 
-    const newQuery = `?${params.toString()}`;
+    currentParams.set('search', trimmedValue);
+    const newQuery = `?${currentParams.toString()}`;
 
     if (pathname !== '/') {
       router.push(`/${newQuery}`);
     } else {
-      router.push(newQuery);
+      history.replaceState(null, '', `${pathname}${newQuery}`);
     }
+
+    handleClose();
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter') {
-      searchParams.set('search', inputValue.trim());
+      handleSearch(inputValue.trim());
       handleClose();
     }
   };
