@@ -18,7 +18,7 @@ const StyledSelect = styled(MUISelect)(({ theme }) => ({
   },
 }));
 
-export const Select: FC<SelectProps> = (props) => {
+export const Select: FC<SelectProps> = ({ error, ...props }) => {
   return (
     <StyledSelect
       variant="outlined"
@@ -28,7 +28,9 @@ export const Select: FC<SelectProps> = (props) => {
           sx={{
             '&.MuiOutlinedInput-root': {
               '& .MuiOutlinedInput-notchedOutline': {
-                borderColor: (theme) => theme.palette.grey[700],
+                borderColor: error
+                  ? (theme) => theme.palette.error.main
+                  : (theme) => theme.palette.grey[700],
               },
             },
           }}

@@ -1,79 +1,85 @@
 'use client';
 
-import { Product } from '@/components/Product/Product';
-import type { ProductData } from '@/components/Product/productForm.schema';
-import { Button } from '@/components/ui';
-import { Box, Typography, CircularProgress } from '@mui/material';
+import { ProductForm } from '@/components/ProductForm';
+import type { ProductFormData } from '@/components/ProductForm/productForm.schema';
+import { Product } from '@/types/Product';
 import Dialog from '@mui/material/Dialog';
-import { useRouter } from 'next/navigation';
-import React, { useRef } from 'react';
+import { FC } from 'react';
 import { Suspense } from 'react';
+import Box from '@mui/material/Box';
+import CircularProgress from '@mui/material/CircularProgress';
+import { useSession } from 'next-auth/react';
+import { useUpdateProduct } from '@/api/products/useUpdateProduct';
 
 interface EditPageProps {
   open: boolean;
   onClose: () => void;
-  onSubmit: (data: ProductData) => void;
+  editingProduct: Product;
 }
 
-export const EditProductModal = ({ open, onClose }: EditPageProps) => {
-  const router = useRouter();
+export const EditProductModal: FC<EditPageProps> = ({
+  open,
+  onClose,
+  editingProduct,
+}) => {
+  const { data: session } = useSession();
+  const { mutate: editProduct, isPending } = useUpdateProduct();
 
-  const handleAdd = (data: ProductData) => {
-    console.log('Edit submitted: ', data);
-    router.push('/profile/products');
+  const handleSubmit = async (data: ProductFormData) => {
+    if (!session) return;
+
+    editProduct({
+      body: {
+        data,
+      },
+      id: editingProduct.id,
+      token: session.user.accessToken,
+    });
+
+    onClose();
   };
-  const formRef = useRef<{ submit: () => void }>(null);
+
   return (
-    <Suspense fallback={<CircularProgress />}>
-      <Dialog
-        open={open}
-        onClose={onClose}
-        aria-labelledby="draggable-dialog-title"
-        fullWidth
-        maxWidth={false}
-        sx={{
-          '& .MuiDialog-paper': {
-            maxWidth: '1487px',
-            padding: '57px 0 40px 57px',
-          },
-        }}
-      >
-        <Box sx={{ marginBottom: '40px' }}>
+    <Dialog
+      open={open}
+      onClose={onClose}
+      sx={{
+        '& .MuiDialog-paper': {
+          minWidth: '1487px',
+          padding: '53px 40px 40px 85px',
+        },
+      }}
+    >
+      <Suspense
+        fallback={
           <Box
             sx={{
               display: 'flex',
-              paddingRight: '38px',
-              justifyContent: 'space-between',
+              justifyContent: 'center',
               alignItems: 'center',
-              marginBottom: '35px',
+              height: '100vh',
             }}
           >
-            <Typography variant="h2">Edit product</Typography>
-            <Button onClick={() => formRef.current?.submit()}>Save</Button>
+            <CircularProgress />
           </Box>
-
-          <Typography variant="caption">
-            Lorem ipsum, or lipsum as it is sometimes known, is dummy text used
-            in laying out print, graphic or web designs. The passage is
-            attributed to an unknown typesetter in the 15th century who is
-            thought to have scrambled parts of Cicero&apos;s De Finibus Bonorum
-            et Malorum for use in a type specimen book. It usually begins with
-          </Typography>
-        </Box>
-        <Product
-          ref={formRef}
+        }
+      >
+        <ProductForm
+          title="Edit product"
+          description="Lorem ipsum, or lipsum as it is sometimes known, is dummy text used in laying out print, graphic or web designs. The passage is attributed to an unknown typesetter in the 15th century who is thought to have scrambled parts of Cicero's De Finibus Bonorum et Malorum for use in a type specimen book. It usually begins with"
+          onSubmit={handleSubmit}
+          isPending={isPending}
           editingProduct={{
-            productName: '',
-            price: '$160',
-            gender: 'Men',
-            color: 'Black',
-            brand: 'Nike',
-            description: '',
-            size: [],
+            name: editingProduct.name,
+            price: editingProduct.price,
+            gender: editingProduct.gender.id,
+            color: editingProduct.color.id,
+            brand: editingProduct.brand?.id,
+            description: editingProduct.description,
+            sizes: editingProduct.sizes.map((size) => size.id),
           }}
-          onSubmit={handleAdd}
         />
-      </Dialog>
-    </Suspense>
+      </Suspense>
+    </Dialog>
   );
 };
