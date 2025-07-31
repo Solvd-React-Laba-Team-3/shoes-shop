@@ -1,21 +1,28 @@
 'use client';
+
 import { Header } from '@/components/common/Header';
 import { Button } from '@/components/ui';
 import { Box, Typography } from '@mui/material';
 import Image from 'next/image';
 import { useSearchParams, useRouter } from 'next/navigation';
+import orderImage from '../../../public/order.png';
 
 export default function Order() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const order = searchParams.get('order');
 
+  if (!order) {
+    router.replace('/');
+    return null;
+  }
+
   const handleViewOrder = () => {
-    router.push('/products');
+    router.replace('/products');
   };
 
   const handleContinueShopping = () => {
-    router.push('/');
+    router.replace('/');
   };
 
   return (
@@ -41,7 +48,7 @@ export default function Order() {
               for your order
             </Typography>
             <Typography component="span" variant="h2" color="primary.main">
-              #{order ?? '9082372'}
+              #{order}
             </Typography>
           </Box>
 
@@ -66,7 +73,7 @@ export default function Order() {
         </Box>
 
         <Image
-          src="/order.png"
+          src={orderImage}
           width={494}
           height={450}
           alt="Thank you"

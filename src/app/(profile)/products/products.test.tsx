@@ -24,14 +24,19 @@ jest.mock('next/image', () => ({
     width,
     height,
   }: {
-    src: string;
+    src: string | { src: string };
     alt: string;
     width: number;
     height: number;
-  }) => (
+  }) => {
+    const imgSrc = typeof src === 'object' ? src.src : src;
     // eslint-disable-next-line @next/next/no-img-element
-    <img src={src} alt={alt} width={width} height={height} />
-  ),
+    return <img src={imgSrc} alt={alt} width={width} height={height} />;
+  },
+}));
+
+jest.mock('../../../../public/profile-banner.png', () => ({
+  src: '/profile-banner.png',
 }));
 
 describe('MyProducts', () => {
@@ -116,7 +121,7 @@ describe('MyProducts', () => {
       screen.getByText("You don't have any products yet")
     ).toBeInTheDocument();
     expect(
-      screen.getByText('Post can contain video, images and text.')
+      screen.getByText('Start adding products to your profile')
     ).toBeInTheDocument();
   });
 });

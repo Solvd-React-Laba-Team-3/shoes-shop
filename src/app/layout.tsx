@@ -5,6 +5,7 @@ import { ThemeProvider } from '@/providers/ThemeProvider';
 import { SessionProvider } from '@/providers/SessionProvider';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/constants/authConfig';
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import '@/styles/globals.css';
 
 const workSans = Work_Sans({
@@ -31,6 +32,7 @@ export default async function RootLayout({
           <ThemeProvider>
             <SessionProvider session={session}>{children}</SessionProvider>
           </ThemeProvider>
+          <ReactQueryDevtools initialIsOpen={false} />
         </QueryProvider>
       </body>
     </html>
