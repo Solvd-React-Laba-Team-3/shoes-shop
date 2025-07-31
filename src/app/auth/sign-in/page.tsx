@@ -50,7 +50,7 @@ export default function SignIn() {
         return;
       }
 
-      router.replace('/products');
+      router.replace('/profile/products');
     } catch {
       setError('An unexpected error occurred. Please try again.');
     }

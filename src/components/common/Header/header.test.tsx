@@ -142,7 +142,7 @@ describe('Header', () => {
       renderHeaderWithTheme();
 
       const avatarLink = screen.getByRole('link', { name: '' });
-      expect(avatarLink).toHaveAttribute('href', '/products');
+      expect(avatarLink).toHaveAttribute('href', '/profile/products');
     });
 
     it('navigates to cart page when clicking cart icon', () => {
