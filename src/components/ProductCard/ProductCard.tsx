@@ -111,7 +111,11 @@ export const ProductCard: FC<ProductCardProps> = ({
               height={300}
               src={productImage}
               alt={productImageAlt}
-              style={{ width: '100%', height: 'auto', aspectRatio: '320/380' }}
+              style={{
+                width: '100%',
+                height: 'auto',
+                aspectRatio: '320/380',
+              }}
             />
 
             <HoverCartBox>

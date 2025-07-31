@@ -18,7 +18,9 @@ describe('<ProductsContainer />', () => {
       data: {
         pages: [
           {
-            products: [{ id: 1, name: 'Tênis XPTO', gender: 'Men', price: 10 }],
+            products: [
+              { id: 1, name: 'Test Product', gender: 'Men', price: 10 },
+            ],
           },
         ],
       },
@@ -32,28 +34,39 @@ describe('<ProductsContainer />', () => {
     });
   });
 
-  it('deve exibir "Catalog" quando não houver search ou filters', () => {
-    mockedUseSearchParams.mockReturnValue({
-      searchParams: new URLSearchParams(),
-    });
-
-    render(<ProductsContainer />);
-    expect(screen.getByText('Catalog')).toBeInTheDocument();
-    expect(screen.queryByText('Search Results')).not.toBeInTheDocument();
-    expect(screen.getByText('Tênis XPTO')).toBeInTheDocument();
-  });
-
-  it('deve exibir "Search Results" quando houver search', () => {
+  it('should display "Catalog" when there is no search or filters', () => {
     const params = new URLSearchParams();
-    params.set('search', 'tenis');
-
     mockedUseSearchParams.mockReturnValue({
+      get: (key: string) => params.get(key),
+      set: jest.fn(),
+      delete: jest.fn(),
       searchParams: params,
     });
 
-    render(<ProductsContainer />);
+    render(
+      <ProductsContainer isFiltersOpen={false} onFiltersToggle={jest.fn()} />
+    );
+    expect(screen.getByText('Catalog')).toBeInTheDocument();
+    expect(screen.queryByText('Search Results')).not.toBeInTheDocument();
+    expect(screen.getByText('Test Product')).toBeInTheDocument();
+  });
+
+  it('should display "Search Results" when there is a search', () => {
+    const params = new URLSearchParams();
+    params.set('search', 'test');
+
+    mockedUseSearchParams.mockReturnValue({
+      get: (key: string) => params.get(key),
+      set: jest.fn(),
+      delete: jest.fn(),
+      searchParams: params,
+    });
+
+    render(
+      <ProductsContainer isFiltersOpen={false} onFiltersToggle={jest.fn()} />
+    );
     expect(screen.getByText('Search Results')).toBeInTheDocument();
     expect(screen.queryByText('Catalog')).not.toBeInTheDocument();
-    expect(screen.getByText('Tênis XPTO')).toBeInTheDocument();
+    expect(screen.getByText('Test Product')).toBeInTheDocument();
   });
 });
