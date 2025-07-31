@@ -1,125 +1,83 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 import Order from './page';
-import { SessionProvider } from 'next-auth/react';
-
-const mockPush = jest.fn();
-const mockGet = jest.fn();
+import { useRouter, useSearchParams } from 'next/navigation';
 
 jest.mock('next/navigation', () => ({
-  useSearchParams: () => ({
-    get: mockGet,
-  }),
-  useRouter: () => ({
-    push: mockPush,
-  }),
+  useRouter: jest.fn(),
+  useSearchParams: jest.fn(),
+}));
+
+jest.mock('@/components/common/Header', () => ({
+  Header: () => <div data-testid="mock-header">Header</div>,
 }));
 
 describe('Order', () => {
+  const mockRouter = {
+    replace: jest.fn(),
+  };
+
+  const mockSearchParams = {
+    get: jest.fn(),
+  };
+
   beforeEach(() => {
-    mockPush.mockClear();
-  });
-  it('renders the Thank You heading', () => {
-    render(
-      <SessionProvider session={null}>
-        <Order />
-      </SessionProvider>
-    );
-
-    expect(screen.getByText('THANK YOU')).toBeInTheDocument();
-  });
-  it('renders  for your order text', () => {
-    render(
-      <SessionProvider session={null}>
-        <Order />
-      </SessionProvider>
-    );
-
-    expect(screen.getByText('for your order')).toBeInTheDocument();
+    jest.clearAllMocks();
+    (useRouter as jest.Mock).mockReturnValue(mockRouter);
+    (useSearchParams as jest.Mock).mockReturnValue(mockSearchParams);
   });
 
-  it('renders order number from search params', () => {
-    mockGet.mockReturnValue('12345');
-    render(
-      <SessionProvider session={null}>
-        <Order />
-      </SessionProvider>
-    );
-    expect(screen.getByText('#12345')).toBeInTheDocument();
+  it('redirects to home if no order number is present', () => {
+    mockSearchParams.get.mockReturnValue(null);
+    render(<Order />);
+    expect(mockRouter.replace).toHaveBeenCalledWith('/');
   });
 
-  it('renders default order number when order param is missing', () => {
-    mockGet.mockReturnValue(null);
-    render(
-      <SessionProvider session={null}>
-        <Order />
-      </SessionProvider>
-    );
+  it('displays order number from search params', () => {
+    mockSearchParams.get.mockReturnValue('9082372');
+    render(<Order />);
     expect(screen.getByText('#9082372')).toBeInTheDocument();
   });
 
+  it('displays thank you message and order confirmation text', () => {
+    mockSearchParams.get.mockReturnValue('9082372');
+    render(<Order />);
+
+    expect(screen.getByText('THANK YOU')).toBeInTheDocument();
+    expect(screen.getByText('for your order')).toBeInTheDocument();
+    expect(
+      screen.getByText(/Your order has been received/)
+    ).toBeInTheDocument();
+  });
+
   it('displays view order button and continue shopping button', () => {
-    render(
-      <SessionProvider session={null}>
-        <Order />
-      </SessionProvider>
-    );
+    mockSearchParams.get.mockReturnValue('9082372');
+    render(<Order />);
 
-    expect(
-      screen.getByRole('button', { name: 'View Order' })
-    ).toBeInTheDocument();
-
-    expect(
-      screen.getByRole('button', { name: 'Continue Shopping' })
-    ).toBeInTheDocument();
+    expect(screen.getByText('View Order')).toBeInTheDocument();
+    expect(screen.getByText('Continue Shopping')).toBeInTheDocument();
   });
 
   it('renders the thank you image', () => {
-    render(
-      <SessionProvider session={null}>
-        <Order />
-      </SessionProvider>
-    );
+    mockSearchParams.get.mockReturnValue('9082372');
+    render(<Order />);
 
-    expect(screen.getByAltText('Thank you')).toBeInTheDocument();
-  });
-
-  it('renders order confirmation text', () => {
-    render(
-      <SessionProvider session={null}>
-        <Order />
-      </SessionProvider>
-    );
-
-    expect(
-      screen.getByText(
-        'Your order has been received and is currently being processed. You will receive an email confirmation with your order details shortly.'
-      )
-    ).toBeInTheDocument();
+    const image = screen.getByAltText('Thank you');
+    expect(image).toBeInTheDocument();
   });
 
   it('navigates to /products when View Order button is clicked', () => {
-    render(
-      <SessionProvider session={null}>
-        <Order />
-      </SessionProvider>
-    );
-    const viewOrderButton = screen.getByRole('button', { name: 'View Order' });
+    mockSearchParams.get.mockReturnValue('9082372');
+    render(<Order />);
 
-    fireEvent.click(viewOrderButton);
-
-    expect(mockPush).toHaveBeenCalledWith('/products');
+    fireEvent.click(screen.getByText('View Order'));
+    expect(mockRouter.replace).toHaveBeenCalledWith('/products');
   });
 
   it('navigates to the home page when Continue shopping button is clicked', () => {
-    render(
-      <SessionProvider session={null}>
-        <Order />
-      </SessionProvider>
-    );
-    const continueOrderButton = screen.getByRole('button', {
-      name: 'Continue Shopping',
-    });
-    fireEvent.click(continueOrderButton);
-    expect(mockPush).toHaveBeenCalledWith('/');
+    mockSearchParams.get.mockReturnValue('9082372');
+    render(<Order />);
+
+    fireEvent.click(screen.getByText('Continue Shopping'));
+    expect(mockRouter.replace).toHaveBeenCalledWith('/');
   });
 });

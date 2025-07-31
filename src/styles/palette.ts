@@ -23,4 +23,6 @@ export const palette = {
     disabled: '#FFFFFF',
     disabledBackground: '#98A2B3',
   },
+  divider: '#EAECF0',
+  grey: { '400': '#494949' },
 };
