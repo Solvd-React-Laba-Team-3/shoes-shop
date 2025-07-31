@@ -33,8 +33,8 @@ export const SizeSelector: FC<SizeSelector> = ({
           gap: '24px',
         }}
       >
-        {data?.data.map((sizeAttributes) => {
-          const size = sizeAttributes.attributes.value;
+        {data?.map((sizeAttributes) => {
+          const size = sizeAttributes.value;
           const isAvailable = availableSizes.some((s) => s === size);
           return (
             <ToggleButton
