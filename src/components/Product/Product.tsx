@@ -10,15 +10,9 @@ import {
   MenuItem,
 } from '@/components/ui';
 import { zodResolver } from '@hookform/resolvers/zod';
-import {
-  Box,
-  CircularProgress,
-  FormControl,
-  ToggleButtonGroup,
-  Typography,
-} from '@mui/material';
+import { Box, FormControl, ToggleButtonGroup, Typography } from '@mui/material';
 import { useSuspenseQueries } from '@tanstack/react-query';
-import { FC, Suspense } from 'react';
+import { FC } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 
 import {
@@ -40,20 +34,12 @@ const handleToggle = (
   currentValues: { id: number }[],
   onChange: (value: { id: number }[]) => void
 ) => {
-  const exists = currentValues.some((item) => item.id === selected.id);
-  const newValues = exists
+  const isExist = currentValues.some((item) => item.id === selected.id);
+  const newValues = isExist
     ? currentValues.filter((item) => item.id !== selected.id)
     : [...currentValues, selected];
 
   onChange(newValues);
-};
-
-export const ProductWrapper: FC<ProductProps> = (props) => {
-  return (
-    <Suspense fallback={<CircularProgress />}>
-      <Product {...props} />
-    </Suspense>
-  );
 };
 
 export const Product: FC<ProductProps> = ({
