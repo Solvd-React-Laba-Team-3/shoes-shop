@@ -104,13 +104,15 @@ export const ProductCard: FC<ProductCardProps> = ({
       </ActionButtonContainer>
       <Link href={`/products/${id}`} style={{ textDecoration: 'none' }}>
         <StyledCardActionArea disableRipple>
-          <Box sx={{ position: 'relative' }}>
+          <Box
+            sx={{ position: 'relative', width: '100%', aspectRatio: 320 / 380 }}
+          >
             <Image
-              width={300}
-              height={300}
+              sizes="400px"
+              fill
               src={productImage}
               alt={productImageAlt}
-              style={{ width: '100%', height: 'auto', aspectRatio: '320/380' }}
+              style={{ objectFit: 'cover' }}
             />
 
             <HoverCartBox>
