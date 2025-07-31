@@ -75,7 +75,10 @@ export default function MyProducts() {
       <Box sx={{ display: 'flex', flexDirection: 'column', gap: '36px' }}>
         <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
           <Typography variant="h2">My Products</Typography>
-          <Button size="small" onClick={() => router.push('/products/create')}>
+          <Button
+            size="small"
+            onClick={() => router.push('/profile/products/create')}
+          >
             Add Product
           </Button>
         </Box>
@@ -103,7 +106,7 @@ export default function MyProducts() {
 
               <Button
                 size="small"
-                onClick={() => router.push('/products/create')}
+                onClick={() => router.push('/profile/products/create')}
               >
                 Add Product
               </Button>
