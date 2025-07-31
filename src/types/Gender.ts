@@ -1,5 +1,5 @@
 export interface Gender {
-  id?: number;
+  id: number;
   name: string;
   createdAt: string;
   updatedAt: string;

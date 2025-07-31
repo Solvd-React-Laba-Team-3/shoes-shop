@@ -1,5 +1,5 @@
 export interface Color {
-  id?: number;
+  id: number;
   name: string;
   createdAt: string;
   updatedAt: string;

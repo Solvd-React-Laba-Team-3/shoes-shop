@@ -1,5 +1,4 @@
-import { fetchApi } from '@/lib/utils';
-import { flattenStrapiData } from '@/lib/utils/flattenStrapiData/flattenStrapiData';
+import { fetchApi, flatStrapiData } from '@/lib/utils';
 import { Brand } from '@/types/Brand';
 import { StrapiPaginatedData } from '@/types/api/StrapiPaginatedData';
 import { StrapiQueryParams } from '@/types/api/StrapiQueryParams';
@@ -13,7 +12,7 @@ export const getBrandsOptions = (
   queryOptions({
     queryKey: [GET_BRANDS_QUERY_KEY, queryParams],
     queryFn: async () =>
-      flattenStrapiData(
+      flatStrapiData(
         await fetchApi<StrapiPaginatedData<Brand>>({
           endpoint: '/brands',
           method: 'GET',

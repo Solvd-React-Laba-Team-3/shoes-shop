@@ -1,5 +1,5 @@
 'use client';
-import { useDebounce, useSearchsParams } from '@/lib/hooks';
+import { useDebounce, useSearchParams } from '@/lib/hooks';
 import {
   Box,
   Divider,
@@ -18,12 +18,23 @@ import { getBrandsOptions } from '@/api/brand/getBrandsOptions';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { parseQueryString, toQueryString } from '@/lib/utils/';
 
+type FilterType = number | number[] | string | Record<string, number | object>;
+
 const StyledFormLabel = styled(FormLabel)(({ theme }) => ({
   color: theme.palette.grey[400],
   fontSize: '16px',
   fontWeight: 400,
   lineHeight: '24px',
   cursor: 'pointer',
+}));
+
+const StyledPricesContainer = styled(FormLabel)(() => ({
+  display: 'flex',
+  justifyContent: 'space-between',
+  alignItems: 'center',
+  mt: 2,
+  gap: '6px',
+  width: '100%',
 }));
 
 const normalizeToArray = (value: unknown): number[] => {
@@ -33,8 +44,8 @@ const normalizeToArray = (value: unknown): number[] => {
   return [];
 };
 
-export const Filters: React.FC = () => {
-  const searchParams = useSearchsParams();
+export const Filters = () => {
+  const searchParams = useSearchParams();
 
   const currentFilters = useMemo(() => {
     const raw = searchParams.get('filters');
@@ -43,10 +54,7 @@ export const Filters: React.FC = () => {
   }, [searchParams]);
 
   const updateFilters = useCallback(
-    (
-      key: string,
-      value?: number | number[] | string | Record<string, number | object>
-    ) => {
+    (key: string, value?: FilterType) => {
       const raw = searchParams.get('filters');
       const parsed = raw ? parseQueryString(raw) : {};
       const current = parsed.filters ?? {};
@@ -88,9 +96,9 @@ export const Filters: React.FC = () => {
 
       if (updated.length > 0) {
         updateFilters(key, { id: { $in: updated } });
-      } else {
-        updateFilters(key, undefined);
+        return;
       }
+      updateFilters(key, undefined);
     }
   };
 
@@ -203,16 +211,7 @@ export const Filters: React.FC = () => {
                 }
                 sx={{ width: '90%' }}
               />
-              <Box
-                sx={{
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  alignItems: 'center',
-                  mt: 2,
-                  gap: '6px',
-                  width: '100%',
-                }}
-              >
+              <StyledPricesContainer>
                 <TextField
                   sx={{ width: 50 }}
                   type="text"
@@ -268,7 +267,7 @@ export const Filters: React.FC = () => {
                     setPriceInput((prev) => [prev[0], Number(e.target.value)])
                   }
                 />
-              </Box>
+              </StyledPricesContainer>
             </Box>
           </Accordion>
         </Box>

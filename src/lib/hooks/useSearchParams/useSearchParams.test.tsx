@@ -1,5 +1,5 @@
 import { renderHook, act } from '@testing-library/react';
-import { useSearchsParams } from './useSearchParams';
+import { useSearchParams } from './useSearchParams';
 import {
   usePathname,
   useSearchParams as useNextSearchParams,
@@ -30,19 +30,19 @@ beforeEach(() => {
   replaceState.mockClear();
 });
 
-describe('useSearchsParams', () => {
+describe('useSearchParams', () => {
   it('should return decoded value from get()', () => {
-    const { result } = renderHook(() => useSearchsParams());
+    const { result } = renderHook(() => useSearchParams());
     expect(result.current.get('search')).toBe('Shoes');
   });
 
   it('should return undefined if key not found in get()', () => {
-    const { result } = renderHook(() => useSearchsParams());
+    const { result } = renderHook(() => useSearchParams());
     expect(result.current.get('nonexistent')).toBeUndefined();
   });
 
   it('should set param and call replaceState', () => {
-    const { result } = renderHook(() => useSearchsParams());
+    const { result } = renderHook(() => useSearchParams());
 
     act(() => {
       result.current.set('page', 2);
@@ -56,7 +56,7 @@ describe('useSearchsParams', () => {
   });
 
   it('should delete param if value is undefined in set()', () => {
-    const { result } = renderHook(() => useSearchsParams());
+    const { result } = renderHook(() => useSearchParams());
 
     act(() => {
       result.current.set('search', undefined);
@@ -70,7 +70,7 @@ describe('useSearchsParams', () => {
   });
 
   it('should delete param using delete()', () => {
-    const { result } = renderHook(() => useSearchsParams());
+    const { result } = renderHook(() => useSearchParams());
 
     act(() => {
       result.current.delete('filters');

@@ -1,5 +1,5 @@
 export interface Size {
-  id?: number;
+  id: number;
   value: number;
   createdAt: string;
   updatedAt: string;

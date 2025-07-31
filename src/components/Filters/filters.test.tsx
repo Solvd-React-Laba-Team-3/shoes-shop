@@ -1,4 +1,3 @@
-// __tests__/Filters.test.tsx
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { Filters } from '@/components/Filters';
 import * as hooks from '@/lib/hooks';
@@ -23,7 +22,7 @@ describe('Filters component', () => {
   beforeEach(() => {
     jest.clearAllMocks();
 
-    (hooks.useSearchsParams as jest.Mock).mockReturnValue({
+    (hooks.useSearchParams as jest.Mock).mockReturnValue({
       get: (key: string) => mockSearchParams.get(key),
       set: setMock,
     });

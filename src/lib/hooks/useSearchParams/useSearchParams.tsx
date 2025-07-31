@@ -4,7 +4,7 @@ import {
   usePathname,
 } from 'next/navigation';
 
-export const useSearchsParams = () => {
+export const useSearchParams = () => {
   const searchParams = useNextSearchParams();
   const pathname = usePathname();
 
