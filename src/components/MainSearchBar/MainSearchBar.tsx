@@ -63,11 +63,13 @@ export const MainSearchBar = () => {
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter') {
       handleSearch(inputValue.trim());
-      handleClose();
     }
   };
 
   const handleClose = () => {
+    if (document.activeElement instanceof HTMLElement) {
+      document.activeElement.blur();
+    }
     inputRef.current?.blur();
     setIsFocused(false);
   };

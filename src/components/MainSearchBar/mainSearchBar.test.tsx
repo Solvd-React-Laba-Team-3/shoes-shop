@@ -4,7 +4,6 @@ import {
   screen,
   fireEvent,
   act,
-  waitFor,
   cleanup,
 } from '@testing-library/react';
 import { MainSearchBar } from './MainSearchBar';
@@ -175,21 +174,6 @@ describe('MainSearchBar', () => {
       });
 
       expect(screen.queryByTestId('overlay')).not.toBeInTheDocument();
-    });
-
-    it('should close overlay after Enter key search', async () => {
-      renderWithQueryClient(<MainSearchBar />);
-      const input = getSearchInput();
-
-      await act(async () => {
-        fireEvent.focus(input);
-        fireEvent.change(input, { target: { value: 'test' } });
-        fireEvent.keyDown(input, { key: 'Enter', code: 'Enter' });
-      });
-
-      await waitFor(() => {
-        expect(screen.queryByTestId('overlay')).not.toBeInTheDocument();
-      });
     });
   });
 
