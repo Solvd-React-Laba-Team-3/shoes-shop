@@ -14,6 +14,6 @@ export interface User {
   firstName: string | null;
   lastName: string | null;
   customerId: number | null;
-  products: Product[];
-  avatar: File;
+  products: Product[] | null;
+  avatar: File | null;
 }
