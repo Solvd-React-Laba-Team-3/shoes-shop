@@ -53,7 +53,7 @@ export const Header = () => {
             <ShoppingBasketOutlinedIcon fontSize="medium" />
           </IconButton>
           {session && (
-            <Link href={session ? '/products' : '/auth/sign-in'}>
+            <Link href={session ? '/profile/products' : '/auth/sign-in'}>
               <Avatar
                 src={session.user?.avatar?.url}
                 sx={{ width: '28px', height: '28px' }}
