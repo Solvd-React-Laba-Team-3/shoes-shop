@@ -5,7 +5,8 @@ import type { ProductData } from '@/components/Product/productForm.schema';
 import { Button } from '@/components/ui';
 import { Box, Typography, CircularProgress } from '@mui/material';
 import Dialog from '@mui/material/Dialog';
-import React from 'react';
+import { useRouter } from 'next/navigation';
+import React, { useRef } from 'react';
 import { Suspense } from 'react';
 
 interface EditPageProps {
@@ -14,11 +15,14 @@ interface EditPageProps {
   onSubmit: (data: ProductData) => void;
 }
 
-export const EditProductModal = ({
-  open,
-  onClose,
-  onSubmit,
-}: EditPageProps) => {
+export const EditProductModal = ({ open, onClose }: EditPageProps) => {
+  const router = useRouter();
+
+  const handleAdd = (data: ProductData) => {
+    console.log('Edit submitted: ', data);
+    router.push('/recently-viewed');
+  };
+  const formRef = useRef<{ submit: () => void }>(null);
   return (
     <Suspense fallback={<CircularProgress />}>
       <Dialog
@@ -45,7 +49,7 @@ export const EditProductModal = ({
             }}
           >
             <Typography variant="h2">Edit product</Typography>
-            <Button>Save</Button>
+            <Button onClick={() => formRef.current?.submit()}>Save</Button>
           </Box>
 
           <Typography variant="caption">
@@ -57,6 +61,7 @@ export const EditProductModal = ({
           </Typography>
         </Box>
         <Product
+          ref={formRef}
           editingProduct={{
             productName: '',
             price: '$160',
@@ -66,7 +71,7 @@ export const EditProductModal = ({
             description: '',
             size: [],
           }}
-          onSubmit={onSubmit}
+          onSubmit={handleAdd}
         />
       </Dialog>
     </Suspense>
