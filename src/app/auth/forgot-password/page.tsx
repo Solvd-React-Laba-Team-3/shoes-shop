@@ -15,6 +15,7 @@ import { LoaderButton } from '@/components/LoaderButton';
 import { Link } from '@/components/ui';
 import { useRouter } from 'next/navigation';
 import WarningAmberIcon from '@mui/icons-material/WarningAmber';
+import recoveryImage from '../../../../public/recovery.jpg';
 
 export default function ForgotPassword() {
   const router = useRouter();
@@ -113,8 +114,7 @@ export default function ForgotPassword() {
 
           {isSuccess && (
             <Typography variant="subtitle2" color="success">
-              A confirmation link has been sent to your email. Redirecting to
-              login...
+              A reset link has been sent to your email. Redirecting to login...
             </Typography>
           )}
 
@@ -127,7 +127,7 @@ export default function ForgotPassword() {
       </AuthContainer>
 
       <Box sx={{ height: '100vh', position: 'relative' }}>
-        <Image src="/recovery.jpg" alt="forgot password" fill sizes="50vw" />
+        <Image src={recoveryImage} alt="forgot password" fill sizes="50vw" />
       </Box>
     </>
   );

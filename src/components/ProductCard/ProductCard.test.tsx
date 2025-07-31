@@ -41,7 +41,7 @@ const mockProduct: Pick<
   id: 1,
   name: 'Test Shoes',
   price: 199.99,
-  gender: { name: 'Men', createdAt: '', updatedAt: '', publishedAt: '' },
+  gender: { id: 1, name: 'Men', createdAt: '', updatedAt: '', publishedAt: '' },
   images: [
     {
       id: 1,
@@ -99,6 +99,7 @@ describe('ProductCard', () => {
     const femaleProduct = {
       ...mockProduct,
       gender: {
+        id: 2,
         name: 'Women',
         createdAt: '0000-00-00',
         updatedAt: '0000-00-00',
