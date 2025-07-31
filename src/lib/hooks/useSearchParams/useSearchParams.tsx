@@ -1,4 +1,5 @@
 'use client';
+
 import {
   useSearchParams as useNextSearchParams,
   usePathname,
@@ -27,7 +28,6 @@ export const useSearchParams = () => {
   const remove = (key: string) => {
     const params = new URLSearchParams(searchParams.toString());
     params.delete(key);
-    console.log('Removing key:', key, 'New params:', params.get('filters'));
     history.replaceState(null, '', `${pathname}?${params.toString()}`);
   };
 
