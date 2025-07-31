@@ -12,13 +12,13 @@ export type ProductAttributes = {
   price: number;
   teamName: string;
   images: {
-    data: StrapiResponse<File>[];
+    data: StrapiResponse<File>[] | null;
   };
   brand: {
     data: StrapiResponse<Brand>;
   };
   categories: {
-    data: StrapiResponse<Category>[];
+    data: StrapiResponse<Category>[] | null;
   };
   color: {
     data: StrapiResponse<Color>;

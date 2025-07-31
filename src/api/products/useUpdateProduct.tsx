@@ -4,12 +4,15 @@ import { CreateProductRequest } from './useCreateProduct';
 import { Product } from '@/types/Product';
 import { StrapiSingleData } from '@/types/api/StrapiSingleData';
 import { ProductAttributes } from '@/types/api/ProductAttributes';
+import { useSession } from 'next-auth/react';
 
-export type UpdateProductRequest = {
-  body: Partial<CreateProductRequest['body']>;
+export interface UpdateProductRequest {
+  body: {
+    data: Partial<CreateProductRequest['body']['data']>;
+  };
   token: string;
   id: number;
-};
+}
 
 const updateProduct = async ({
   body,
@@ -25,13 +28,11 @@ const updateProduct = async ({
   return formatProductAttributes(res.data.id, res.data.attributes);
 };
 
-export const useUpdateProduct = () =>
-  useMutation<Product, Error, UpdateProductRequest>({
+export const useUpdateProduct = () => {
+  const { update: updateSession } = useSession();
+
+  return useMutation<Product, Error, UpdateProductRequest>({
     mutationFn: updateProduct,
-    onError: (error) => {
-      console.error('Product update failed:', error.message);
-    },
-    onSuccess: (data) => {
-      console.log('Product updated successfully:', data);
-    },
+    onSettled: updateSession,
   });
+};

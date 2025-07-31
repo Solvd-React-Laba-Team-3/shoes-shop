@@ -1,63 +1,59 @@
 'use client';
-import { Product } from '@/components/Product/Product';
-import { ProductData } from '@/components/Product/productForm.schema';
-import { Box, Typography, CircularProgress } from '@mui/material';
-import { Suspense, useRef } from 'react';
-import { Button } from '@/components/ui';
+
+import { ProductFormData } from '@/components/ProductForm/productForm.schema';
+import { Suspense } from 'react';
 import { useRouter } from 'next/navigation';
+import { ProductForm } from '@/components/ProductForm';
+import { useCreateProduct } from '@/api/products/useCreateProduct';
+import { useSession } from 'next-auth/react';
+import Box from '@mui/material/Box';
+import CircularProgress from '@mui/material/CircularProgress';
 
 export default function CreateProductPage() {
   const router = useRouter();
-  const formRef = useRef<{ submit: () => void }>(null);
+  const { data: session } = useSession();
+  const { mutate: createProduct, isPending } = useCreateProduct();
 
-  const handleAdd = (data: ProductData) => {
-    console.log('Add submitted: ', data);
-    router.push('/profile/products');
+  const handleSubmit = (data: ProductFormData) => {
+    if (!session) return;
+
+    createProduct({
+      body: {
+        data: {
+          ...data,
+          userID: session.user.id,
+          // TODO: connect Image Dropzone to form
+          images: null,
+          categories: null,
+        },
+      },
+      token: session.user.accessToken,
+    });
+
+    router.replace('/profile/products');
   };
 
   return (
-    <>
-      <Suspense fallback={<CircularProgress />}>
-        <Box sx={{ marginBottom: '40px' }}>
-          <Box
-            sx={{
-              display: 'flex',
-              paddingRight: '38px',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-              marginBottom: '35px',
-            }}
-          >
-            <Typography variant="h2">Add a product</Typography>
-            <Button onClick={() => formRef.current?.submit()}>Save</Button>
-          </Box>
-
-          <Typography
-            variant="caption"
-            sx={{ display: 'block', maxWidth: '890px' }}
-          >
-            Lorem ipsum, or lipsum as it is sometimes known, is dummy text used
-            in laying out print, graphic or web designs. The passage is
-            attributed to an unknown typesetter in the 15th century who is
-            thought to have scrambled parts of Cicero&apos;s De Finibus Bonorum
-            et Malorum for use in a type specimen book. It usually begins with
-          </Typography>
-        </Box>
-
-        <Product
-          ref={formRef}
-          editingProduct={{
-            productName: '',
-            price: '$160',
-            gender: 'Men',
-            color: 'Black',
-            brand: 'Nike',
-            description: '',
-            size: [],
+    <Suspense
+      fallback={
+        <Box
+          sx={{
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            height: '100vh',
           }}
-          onSubmit={handleAdd}
-        />
-      </Suspense>
-    </>
+        >
+          <CircularProgress />
+        </Box>
+      }
+    >
+      <ProductForm
+        title="Add a product"
+        description="Lorem ipsum, or lipsum as it is sometimes known, is dummy text used in laying out print, graphic or web designs. The passage is attributed to an unknown typesetter in the 15th century who is thought to have scrambled parts of Cicero's De Finibus Bonorum et Malorum for use in a type specimen book. It usually begins with"
+        onSubmit={handleSubmit}
+        isPending={isPending}
+      />
+    </Suspense>
   );
 }
