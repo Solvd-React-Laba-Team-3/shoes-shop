@@ -23,7 +23,7 @@ import { searchPopularTermsOptions } from '@/api/gemini/getPopularSearchTermsOpt
 export const MainSearchBar = () => {
   const router = useRouter();
   const pathname = usePathname();
-  const searchParams = useSearchParams();
+  const { update, searchParams } = useSearchParams();
   const [inputValue, setInputValue] = useState(
     searchParams.get('search') || ''
   );
@@ -46,17 +46,15 @@ export const MainSearchBar = () => {
 
   const handleSearch = (value: string) => {
     const trimmedValue = value.trim();
-    const currentParams = new URLSearchParams(searchParams.toString());
+    const params = new URLSearchParams(searchParams.toString());
 
-    if (currentParams.get('search') === trimmedValue) return;
-
-    currentParams.set('search', trimmedValue);
-    const newQuery = `?${currentParams.toString()}`;
+    if (params.get('search') === trimmedValue) return;
+    params.set('search', trimmedValue);
 
     if (pathname !== '/') {
-      router.push(`/${newQuery}`);
+      router.push(`/?${params.toString()}`);
     } else {
-      history.replaceState(null, '', `${pathname}${newQuery}`);
+      update(params);
     }
 
     handleClose();
