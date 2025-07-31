@@ -1,10 +1,10 @@
 import { Box, styled, Typography } from '@mui/material';
 import InsertPhotoOutlined from '@mui/icons-material/InsertPhotoOutlined';
-import React, { useCallback } from 'react';
+import { DragEvent, FC, useCallback, useRef } from 'react';
 
-type FileDropZoneProps = {
+interface FileDropZoneProps {
   onFilesDropped: (files: File[]) => void;
-};
+}
 
 const StyledDropZone = styled(Box)(({ theme }) => ({
   border: `1px dashed ${theme.palette.text.secondary}`,
@@ -18,12 +18,10 @@ const StyledDropZone = styled(Box)(({ theme }) => ({
   padding: '20px',
 }));
 
-export const FileDropZone: React.FC<FileDropZoneProps> = ({
-  onFilesDropped,
-}) => {
-  const fileInputRef = React.useRef<HTMLInputElement | null>(null);
+export const FileDropZone: FC<FileDropZoneProps> = ({ onFilesDropped }) => {
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
   const handleDrop = useCallback(
-    (event: React.DragEvent<HTMLDivElement>) => {
+    (event: DragEvent<HTMLDivElement>) => {
       event.preventDefault();
       const droppedFiles = Array.from(event.dataTransfer.files);
       onFilesDropped(droppedFiles);
@@ -52,6 +50,7 @@ export const FileDropZone: React.FC<FileDropZoneProps> = ({
             sx={{ lineHeight: '100%' }}
             variant="caption"
             color="text.secondary"
+            textAlign="center"
           >
             Drop your image here, or click to select a file
           </Typography>
@@ -62,6 +61,14 @@ export const FileDropZone: React.FC<FileDropZoneProps> = ({
         type="file"
         style={{ display: 'none' }}
         name="file"
+        accept="image/*"
+        multiple
+        onChange={(e) => {
+          const { files } = e.target;
+          if (files) {
+            onFilesDropped(Array.from(files));
+          }
+        }}
       />
     </>
   );
