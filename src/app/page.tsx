@@ -5,10 +5,8 @@ import { getProductsOptions } from '@/api/products/getProductsOptions';
 import { getSizesOptions } from '@/api/size/getSizesOptions';
 import { Catalog } from '@/components/common/Catalog';
 import { Header } from '@/components/common/Header';
-
 import { getQueryClient } from '@/lib/utils';
 import { Hydrate } from '@/providers/Hydrate';
-
 import { dehydrate } from '@tanstack/react-query';
 
 const queryClient = getQueryClient();

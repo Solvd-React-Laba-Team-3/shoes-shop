@@ -1,5 +1,6 @@
 import { useMutation } from '@tanstack/react-query';
 import { fetchApi } from '@/lib/utils';
+import { useSession } from 'next-auth/react';
 
 export type DeleteProductRequest = {
   token: string;
@@ -14,13 +15,11 @@ const deleteProduct = async ({ token, id }: DeleteProductRequest) => {
   });
 };
 
-export const useDeleteProduct = () =>
-  useMutation<void, Error, DeleteProductRequest>({
+export const useDeleteProduct = () => {
+  const { update: updateSession } = useSession();
+
+  return useMutation<void, Error, DeleteProductRequest>({
     mutationFn: deleteProduct,
-    onError: (error) => {
-      console.error('Product delete failed:', error.message);
-    },
-    onSuccess: (data) => {
-      console.log('Product deleted successfully:', data);
-    },
+    onSettled: updateSession,
   });
+};

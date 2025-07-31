@@ -19,12 +19,10 @@ import { ProductActionMenu } from '../ProductActionMenu';
 import { ProductWishlistButton } from '../ProductWishlistButton';
 import placeholderImage from '../../../public/product-placeholder.png';
 
-type ProductCardProps = Pick<
-  Product,
-  'id' | 'name' | 'gender' | 'price' | 'images'
-> & {
+interface ProductCardProps {
+  product: Product;
   cardType?: 'catalog' | 'actionMenu' | 'wishlist';
-};
+}
 
 const StyledCard = styled(Card)({
   backgroundColor: 'transparent',
@@ -84,26 +82,22 @@ const getGenderText = (genderName: string): string => {
 };
 
 export const ProductCard: FC<ProductCardProps> = ({
-  id,
-  images,
-  name,
-  gender,
-  price,
+  product,
   cardType = 'catalog',
 }) => {
-  const productImage = images?.[0]?.url || placeholderImage;
+  const productImage = product.images?.[0]?.url || placeholderImage;
   const productImageAlt =
-    images && images[0].alternativeText
-      ? images[0].alternativeText
-      : `product image: ${name}`;
+    product.images && product.images[0].alternativeText
+      ? product.images[0].alternativeText
+      : `product image: ${product.name}`;
 
   return (
     <StyledCard>
       <ActionButtonContainer>
-        {cardType === 'actionMenu' && <ProductActionMenu productId={id} />}
+        {cardType === 'actionMenu' && <ProductActionMenu product={product} />}
         {cardType === 'wishlist' && <ProductWishlistButton />}
       </ActionButtonContainer>
-      <Link href={`/products/${id}`} style={{ textDecoration: 'none' }}>
+      <Link href={`/products/${product.id}`} style={{ textDecoration: 'none' }}>
         <StyledCardActionArea disableRipple>
           <Box sx={{ position: 'relative' }}>
             <Image
@@ -143,14 +137,14 @@ export const ProductCard: FC<ProductCardProps> = ({
             >
               <Grid size={{ xs: 9 }} sx={{ minWidth: 0 }}>
                 <Typography variant="h5" gutterBottom={false}>
-                  {name}
+                  {product.name}
                 </Typography>
                 <Typography variant="subtitle1" color="text.secondary">
-                  {getGenderText(gender.name)}
+                  {getGenderText(product.gender?.name)}
                 </Typography>
               </Grid>
               <Grid>
-                <Typography variant="h5">${price}</Typography>
+                <Typography variant="h5">${product.price}</Typography>
               </Grid>
             </Grid>
           </StyledCardContent>

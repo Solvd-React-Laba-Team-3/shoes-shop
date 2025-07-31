@@ -34,14 +34,44 @@ jest.mock('../ProductWishlistButton', () => {
   return { ProductWishlistButton: MockWishlistButton };
 });
 
-const mockProduct: Pick<
-  Product,
-  'id' | 'name' | 'gender' | 'price' | 'images'
-> = {
+const mockProduct = {
   id: 1,
   name: 'Test Shoes',
   price: 199.99,
   gender: { id: 1, name: 'Men', createdAt: '', updatedAt: '', publishedAt: '' },
+  description: 'Test description',
+  brand: {
+    id: 1,
+    name: 'Test Brand',
+    createdAt: '',
+    updatedAt: '',
+    publishedAt: '',
+  },
+  categories: [
+    {
+      id: 1,
+      name: 'Test Category',
+      createdAt: '',
+      updatedAt: '',
+      publishedAt: '',
+    },
+  ],
+  color: {
+    id: 1,
+    name: 'Test Color',
+    createdAt: '',
+    updatedAt: '',
+    publishedAt: '',
+  },
+  sizes: [
+    {
+      id: 1,
+      value: 1,
+      createdAt: '',
+      updatedAt: '',
+      publishedAt: '',
+    },
+  ],
   images: [
     {
       id: 1,
@@ -70,14 +100,14 @@ const mockProduct: Pick<
 
 describe('ProductCard', () => {
   it('renders product details correctly', () => {
-    render(<ProductCard {...mockProduct} />);
+    render(<ProductCard product={mockProduct} />);
     expect(screen.getByText('Test Shoes')).toBeInTheDocument();
     expect(screen.getByText("Men's Shoes")).toBeInTheDocument();
     expect(screen.getByText('$199.99')).toBeInTheDocument();
   });
 
   it('renders product image with correct src and alt', () => {
-    render(<ProductCard {...mockProduct} />);
+    render(<ProductCard product={mockProduct} />);
     const img = screen.getByRole('img') as HTMLImageElement;
     expect(img).toHaveAttribute('src', '/test-image.jpg');
     expect(img).toHaveAttribute('alt', 'Alt Text');
@@ -90,7 +120,7 @@ describe('ProductCard', () => {
         ? [{ ...mockProduct.images[0], alternativeText: '' }]
         : [],
     };
-    render(<ProductCard {...productWithoutAlt} />);
+    render(<ProductCard product={productWithoutAlt} />);
     const img = screen.getByRole('img') as HTMLImageElement;
     expect(img).toHaveAttribute('alt', 'product image: Test Shoes');
   });
@@ -106,30 +136,30 @@ describe('ProductCard', () => {
         publishedAt: '0000-00-00',
       },
     };
-    render(<ProductCard {...femaleProduct} />);
+    render(<ProductCard product={femaleProduct} />);
     expect(screen.getByText("Women's Shoes")).toBeInTheDocument();
   });
 
   it('does not render any action buttons by default (catalog)', () => {
-    render(<ProductCard {...mockProduct} cardType="catalog" />);
+    render(<ProductCard product={mockProduct} cardType="catalog" />);
     expect(screen.queryByTestId('product-action-menu')).not.toBeInTheDocument();
     expect(screen.queryByTestId('wishlist-button')).not.toBeInTheDocument();
   });
 
   it('renders ProductActionMenu when cardType is "actionMenu"', () => {
-    render(<ProductCard {...mockProduct} cardType="actionMenu" />);
+    render(<ProductCard product={mockProduct} cardType="actionMenu" />);
     expect(screen.getByTestId('product-action-menu')).toBeInTheDocument();
     expect(screen.queryByTestId('wishlist-button')).not.toBeInTheDocument();
   });
 
   it('renders ProductWishlistButton when cardType is "wishlist"', () => {
-    render(<ProductCard {...mockProduct} cardType="wishlist" />);
+    render(<ProductCard product={mockProduct} cardType="wishlist" />);
     expect(screen.queryByTestId('product-action-menu')).not.toBeInTheDocument();
     expect(screen.getByTestId('wishlist-button')).toBeInTheDocument();
   });
 
   it('navigates to correct product link', () => {
-    render(<ProductCard {...mockProduct} />);
+    render(<ProductCard product={mockProduct} />);
     const link = screen.getByRole('link') as HTMLAnchorElement;
     expect(link).toHaveAttribute('href', '/products/1');
   });
