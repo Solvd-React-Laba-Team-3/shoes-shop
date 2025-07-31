@@ -80,7 +80,7 @@ export default function MyProducts() {
           </Button>
         </Box>
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: '36px' }}>
-          {session?.user?.products.length ? (
+          {session?.user?.products?.length ? (
             <ProductList products={session?.user?.products} type="actionMenu" />
           ) : (
             <StyledNoProductsWrapper>
