@@ -1,4 +1,4 @@
-import { fetchApi } from '@/lib/utils';
+import { fetchApi, flatStrapiData } from '@/lib/utils';
 import { Color } from '@/types/Color';
 import { StrapiPaginatedData } from '@/types/api/StrapiPaginatedData';
 import { StrapiQueryParams } from '@/types/api/StrapiQueryParams';
@@ -12,9 +12,11 @@ export const getColorsOptions = (
   queryOptions({
     queryKey: [GET_COLORS_QUERY_KEY, queryParams],
     queryFn: async () =>
-      await fetchApi<StrapiPaginatedData<Color>>({
-        endpoint: '/colors',
-        method: 'GET',
-        queryParams,
-      }),
+      flatStrapiData(
+        await fetchApi<StrapiPaginatedData<Color>>({
+          endpoint: '/colors',
+          method: 'GET',
+          queryParams,
+        })
+      ),
   });
