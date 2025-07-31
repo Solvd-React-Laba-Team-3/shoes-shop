@@ -1,5 +1,5 @@
 import { fetchApi, formatProductAttributes } from '@/lib/utils';
-import { queryOptions } from '@tanstack/react-query';
+import { infiniteQueryOptions } from '@tanstack/react-query';
 import { StrapiPaginatedData } from '@/types/api/StrapiPaginatedData';
 import { StrapiQueryParams } from '@/types/api/StrapiQueryParams';
 import { ProductAttributes } from '@/types/api/ProductAttributes';
@@ -12,20 +12,32 @@ export type ProductsQueryParams = StrapiQueryParams<ProductsQueries> & {
 };
 
 export const getProductsOptions = (params: ProductsQueryParams) =>
-  queryOptions({
+  infiniteQueryOptions({
     queryKey: ['products', params],
-    queryFn: async () => {
+    queryFn: async ({ pageParam = 1 }) => {
       const res = await fetchApi<StrapiPaginatedData<ProductAttributes>>({
         endpoint: `/products`,
         method: 'GET',
-        queryParams: params,
+        queryParams: {
+          ...params,
+          pagination: {
+            page: pageParam,
+            pageSize: params.pagination?.pageSize ?? 25,
+          },
+        },
       });
-
       return {
         products: res.data.map((p) =>
           formatProductAttributes(p.id, p.attributes)
         ),
         meta: res.meta,
       };
+    },
+    initialPageParam: 1,
+    getNextPageParam: (lastPage) => {
+      const nextPage = lastPage.meta.pagination.page + 1;
+      return nextPage <= lastPage.meta.pagination.pageCount
+        ? nextPage
+        : undefined;
     },
   });
