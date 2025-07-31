@@ -1,7 +1,7 @@
 'use client';
-import { ProductData, Product } from '@/components/ui/ProductPage/Product';
-
-export default function AddPage() {
+import { Product } from '@/components/ui/ProductPage/Product';
+import { ProductData } from '@/components/ui/ProductPage/productForm.schema';
+export default function CreateProductPage() {
   const handleAdd = (data: ProductData) => {
     console.log('Add submitted: ', data);
   };

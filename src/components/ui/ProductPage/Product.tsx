@@ -15,7 +15,7 @@ import {
 import { useSuspenseQueries } from '@tanstack/react-query';
 import { FC, Suspense } from 'react';
 import { Controller, useForm } from 'react-hook-form';
-import * as z from 'zod';
+
 import {
   StyledAiButton,
   StyledDescriptionLabel,
@@ -24,8 +24,7 @@ import {
   StyledTextArea,
 } from './Product.styles';
 import { productSchema } from './productForm.schema';
-
-export type ProductData = z.infer<typeof productSchema>;
+import { ProductData } from './productForm.schema';
 
 interface ProductProps {
   defaultValues?: Partial<ProductData>;
