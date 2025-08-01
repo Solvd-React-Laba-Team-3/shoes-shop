@@ -1,19 +1,73 @@
+'use client';
 import {
   Box,
   Divider,
-  ButtonGroup,
+  // ButtonGroup,
   Stack,
   TextField,
   Typography,
 } from '@mui/material';
 import { Button } from '@/components/ui';
-import DeleteIcon from '@mui/icons-material/Delete';
+// import DeleteIcon from '@mui/icons-material/Delete';
 import { Accordion } from '@/components/ui';
-import Image from 'next/image';
+// import Image from 'next/image';
 import { Header } from '@/components/common/Header';
 import { GlobalStyles } from '@mui/material';
+import { useEffect, useState } from 'react';
+import { CartItem } from '@/components/CartItem/CartItem';
+
+type Product = {
+  id: number;
+  url: string;
+  attributes: {
+    name: string;
+    description: string;
+    price: number;
+    teamName: string;
+  };
+};
 
 const Cart = () => {
+  const [products, setProducts] = useState<Product[]>([]);
+  const [quantities, setQuantities] = useState<{ [key: number]: number }>({});
+
+  useEffect(() => {
+    fetch('https://shoes-shop-strapi.herokuapp.com/api/products') // заменить на реальный URL
+      .then((res) => res.json())
+      .then((data) => {
+        setProducts(data.data);
+
+        const initialQuantities: { [key: number]: number } = {};
+        data.data.forEach((item: Product) => {
+          initialQuantities[item.id] = 0;
+        });
+        setQuantities(initialQuantities);
+      })
+      .catch((err) => console.error(err));
+  }, []);
+
+  const handleIncrease = (id: number) => {
+    setQuantities((prev) => ({ ...prev, [id]: prev[id] + 1 }));
+  };
+
+  const handleDecrease = (id: number) => {
+    setQuantities((prev) => {
+      if (prev[id] <= 1) return prev;
+      return { ...prev, [id]: prev[id] - 1 };
+    });
+  };
+
+  const handleDelete = (id: number) => {
+    // setProducts((prev) => prev.filter((item) => item.id !== id));
+    setQuantities((prev) => ({
+      ...prev,
+      [id]: 0,
+      // const newQuantities = { ...prev };
+      // delete newQuantities[id];
+      // return newQuantities;
+    }));
+  };
+
   return (
     <>
       <Header />
@@ -25,95 +79,27 @@ const Cart = () => {
         }}
       >
         {/* cart part */}
+
         <Stack>
+          <Typography variant="h2" sx={{ marginBottom: '32px' }}>
+            Cart
+          </Typography>
           <Box>
-            <Typography variant="h2" sx={{ marginBottom: '32px' }}>
-              Cart
-            </Typography>
-
-            <Stack direction="row" spacing={4} alignItems="flex-start">
-              <Box sx={{ width: 223, height: 214, flexShrink: 0 }}>
-                <Image
-                  src="/recovery.jpg"
-                  width={223}
-                  height={214}
-                  alt="image"
+            <Stack direction="column" spacing={4} alignItems="stretch">
+              {products.map((product) => (
+                <CartItem
+                  key={product.id}
+                  images={product.url}
+                  name={product.attributes.name}
+                  category={product.attributes.teamName}
+                  inStock={true}
+                  price={product.attributes.price}
+                  quantity={quantities[product.id] || 0}
+                  onIncrease={() => handleIncrease(product.id)}
+                  onDecrease={() => handleDecrease(product.id)}
+                  onDelete={() => handleDelete(product.id)}
                 />
-              </Box>
-
-              <Stack
-                direction="row"
-                justifyContent="space-between"
-                sx={{
-                  height: 214,
-                  flexGrow: 1,
-                }}
-              >
-                <Stack spacing={0.5}>
-                  <Typography variant="h3">Nike Air Max 270</Typography>
-                  <Typography variant="h6">Women&apos;s Shoes</Typography>
-                  <Typography variant="h4" color="primary.main">
-                    In Stock
-                  </Typography>
-                </Stack>
-
-                <Stack
-                  direction="column"
-                  justifyContent="space-between"
-                  alignItems="flex-end"
-                  sx={{ marginRight: '166px' }}
-                >
-                  <Typography variant="h3">$160</Typography>
-
-                  <Stack
-                    direction="row"
-                    spacing={1}
-                    alignItems="center"
-                    sx={{
-                      paddingLeft: '237px',
-                    }}
-                  >
-                    <ButtonGroup
-                      size="small"
-                      sx={{
-                        '& .MuiButton-root': {
-                          width: 32,
-                          height: 32,
-                          borderRadius: '50%',
-                          minWidth: 0,
-                          p: 0,
-                          fontSize: '18px',
-                        },
-                      }}
-                    >
-                      <Button
-                        sx={{ backgroundColor: '#E8E8E8', color: '#CECECE' }}
-                      >
-                        -
-                      </Button>
-                      <Typography sx={{ px: 1 }}>0</Typography>
-                      <Button
-                        sx={{ backgroundColor: '#FFD7D6', color: '#FE645E' }}
-                      >
-                        +
-                      </Button>
-                    </ButtonGroup>
-
-                    <Typography
-                      variant="body2"
-                      sx={{ color: 'text.secondary', fontSize: '24px' }}
-                    >
-                      Quantity
-                    </Typography>
-                    <Typography sx={{ color: '#8B8E93' }}>|</Typography>
-                    <DeleteIcon
-                      fontSize="small"
-                      sx={{ color: '#8B8E93', width: '24px', height: '24px' }}
-                    />
-                    <Typography>Delete</Typography>
-                  </Stack>
-                </Stack>
-              </Stack>
+              ))}
             </Stack>
           </Box>
 
