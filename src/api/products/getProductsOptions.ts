@@ -11,7 +11,7 @@ export type ProductsQueryParams = StrapiQueryParams<ProductsQueries> & {
   locale?: string;
 };
 
-export const getProductsOptions = (params: ProductsQueryParams) =>
+export const getProductsOptions = (params?: ProductsQueryParams) =>
   infiniteQueryOptions({
     queryKey: ['products', params],
     queryFn: async ({ pageParam = 1 }) => {
@@ -22,12 +22,13 @@ export const getProductsOptions = (params: ProductsQueryParams) =>
           ...params,
           pagination: {
             page: pageParam,
-            pageSize: params.pagination?.pageSize ?? 25,
+            pageSize: params?.pagination?.pageSize ?? 25,
           },
+          populate: '*',
         },
       });
       return {
-        products: res.data.map((p) =>
+        products: res.data?.map((p) =>
           formatProductAttributes(p.id, p.attributes)
         ),
         meta: res.meta,

@@ -31,6 +31,7 @@ const StyledInput = styled(Input, {
   color: theme.palette.text.secondary,
   ...theme.typography.caption,
   borderColor: error ? theme.palette.error.main : theme.palette.text.secondary,
+  fontWeight: 500,
 }));
 
 export const LabeledTextfield: FC<LabeledTextfieldProps> = ({

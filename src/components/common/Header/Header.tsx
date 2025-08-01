@@ -11,6 +11,7 @@ import { Button, IconButton, Link } from '@/components/ui';
 import { HEADER_HEIGHT } from '@/constants/headerHeight';
 import { useRouter } from 'next/navigation';
 import { MainSearchBar } from '@/components/MainSearchBar';
+import logo from '../../../../public/logo.png';
 
 const StyledContainer = styled(Box)(({ theme }) => ({
   display: 'flex',
@@ -29,7 +30,7 @@ export const Header = () => {
     <StyledContainer>
       <Box sx={{ display: 'flex', alignItems: 'center', gap: '30px' }}>
         <Link href="/">
-          <Image src="/logo.png" alt="logo" width={40} height={30} />
+          <Image src={logo} alt="logo" width={40} height={30} />
         </Link>
         <Typography variant="subtitle2">Products</Typography>
       </Box>
@@ -53,7 +54,7 @@ export const Header = () => {
             <ShoppingBasketOutlinedIcon fontSize="medium" />
           </IconButton>
           {session && (
-            <Link href={session ? '/products' : '/auth/sign-in'}>
+            <Link href={session ? '/profile/products' : '/auth/sign-in'}>
               <Avatar
                 src={session.user?.avatar?.url}
                 sx={{ width: '28px', height: '28px' }}
