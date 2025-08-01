@@ -64,6 +64,9 @@ const renderProductForm = ({
           editingProduct={editingProduct}
           isPending={isPending}
           onSubmit={onSubmit}
+          images={[]}
+          handleFilesDropped={() => {}}
+          onRemoveImage={() => {}}
         />
       </ThemeProvider>
     </QueryClientProvider>
