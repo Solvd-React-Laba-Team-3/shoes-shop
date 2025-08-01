@@ -30,7 +30,7 @@ export async function POST(req: NextRequest) {
         },
       },
       metadata: {
-        orderNumber: '#' + Date.now(),
+        orderNumber: data.orderNumber,
         email: data.email,
         paymentMethod: data.paymentMethod,
         userId: session.user.id,

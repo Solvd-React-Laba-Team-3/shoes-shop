@@ -19,16 +19,6 @@ const baseSchema = z.object({
 
 const cardPaymentSchema = baseSchema.extend({
   paymentMethod: z.literal('card'),
-  cardNumber: z
-    .string()
-    .regex(/^\d{12,19}$/, { message: 'Invalid card number' }),
-  expirationDate: z.string().regex(/^(0[1-9]|1[0-2])\/?([0-9]{2})$/, {
-    message: 'MM/YY format required',
-  }),
-  securityCode: z
-    .string()
-    .regex(/^\d{3,4}$/, { message: 'CVC must be 3 or 4 digits' }),
-  paymentCountry: z.string().min(1, { message: 'Country is required' }),
 });
 
 const otherPaymentSchema = baseSchema.extend({
