@@ -12,7 +12,7 @@ export const StyledToggleButton = styled(MUIToggleButton)<ToggleButtonProps>(
     height: '55px',
 
     '&.Mui-selected': {
-      backgroundColor: theme.palette.grey[200],
+      backgroundColor: theme.palette.grey[300],
       color: theme.palette.grey[400],
     },
 
