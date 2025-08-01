@@ -1,18 +1,6 @@
 'use client';
-import {
-  Box,
-  Divider,
-  // ButtonGroup,
-  Stack,
-  // TextField,
-  Typography,
-} from '@mui/material';
-// import { Button } from '@/components/ui';
-// import DeleteIcon from '@mui/icons-material/Delete';
-// import { Accordion } from '@/components/ui';
-// import Image from 'next/image';
+import { Box, Divider, Stack, Typography } from '@mui/material';
 import { Header } from '@/components/common/Header';
-// import { GlobalStyles } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { CartItem } from '@/components/CartItem/CartItem';
 import { CartSummary } from '@/components/CartSummary';
@@ -46,7 +34,7 @@ const Cart = () => {
   });
 
   useEffect(() => {
-    fetch('https://shoes-shop-strapi.herokuapp.com/api/products') // заменить на реальный URL
+    fetch('https://shoes-shop-strapi.herokuapp.com/api/products')
       .then((res) => res.json())
       .then((data) => {
         setProducts(data.data);
@@ -66,7 +54,7 @@ const Cart = () => {
       return acc + product.attributes.price * productQuantity;
     }, 0);
 
-    const shipping = subtotal > 0 ? 20 : 0; // for now, delivery is $20, in future need to change this number into the one from the API
+    const shipping = subtotal > 0 ? 20 : 0;
     const tax = 0;
     const total = subtotal + shipping + tax;
 
@@ -85,13 +73,9 @@ const Cart = () => {
   };
 
   const handleDelete = (id: number) => {
-    // setProducts((prev) => prev.filter((item) => item.id !== id));
     setQuantities((prev) => ({
       ...prev,
       [id]: 0,
-      // const newQuantities = { ...prev };
-      // delete newQuantities[id];
-      // return newQuantities;
     }));
   };
 
@@ -105,8 +89,6 @@ const Cart = () => {
           padding: '80px 196px',
         }}
       >
-        {/* cart part */}
-
         <Stack>
           <Typography variant="h2" sx={{ marginBottom: '32px' }}>
             Cart
@@ -132,107 +114,6 @@ const Cart = () => {
 
           <Divider sx={{ margin: '60px 0' }} />
         </Stack>
-        {/* summary part */}
-        {/* <Box sx={{ marginLeft: '166px' }}>
-          <GlobalStyles
-            styles={{
-              '.MuiAccordionSummary-root': {
-                width: 'auto !important',
-              },
-            }}
-          />
-          <Typography variant="h2" sx={{ marginBottom: '32px' }}>
-            Summary
-          </Typography>
-          <Accordion
-            label={
-              <Typography
-                sx={{
-                  fontSize: '20px',
-                }}
-              >
-                Do you have a promocode?
-              </Typography>
-            }
-          >
-            <Box>
-              <TextField
-                size="small"
-                sx={{
-                  width: '50%',
-                  height: '40px',
-                  marginRight: '10px',
-                  '& .MuiInputBase-root': {
-                    fontSize: '16px',
-                  },
-                }}
-                placeholder="Enter promo code"
-              />
-              <Button variant="contained" color="primary" size="small">
-                Apply
-              </Button>
-            </Box>
-          </Accordion>
-
-          <Box
-            sx={{
-              display: 'flex',
-              justifyContent: 'space-between',
-              margin: '38px 0 20px',
-            }}
-          >
-            <Typography variant="h3" sx={{ fontWeight: 400 }}>
-              Subtotal
-            </Typography>
-            <Typography variant="h3" sx={{ fontWeight: 400 }}>
-              $410
-            </Typography>
-          </Box>
-
-          <Box
-            sx={{
-              display: 'flex',
-              justifyContent: 'space-between',
-              margin: '20px 0',
-            }}
-          >
-            <Typography variant="h3" sx={{ fontWeight: 400 }}>
-              Shipping
-            </Typography>
-            <Typography variant="h3" sx={{ fontWeight: 400 }}>
-              $20
-            </Typography>
-          </Box>
-
-          <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-            <Typography variant="h3" sx={{ fontWeight: 400 }}>
-              Tax
-            </Typography>
-            <Typography variant="h3" sx={{ fontWeight: 400 }}>
-              $0
-            </Typography>
-          </Box>
-
-          <Divider sx={{ marginTop: '56px' }} />
-          <Box
-            sx={{
-              display: 'flex',
-              justifyContent: 'space-between',
-              margin: '20px',
-            }}
-          >
-            <Typography variant="h3" sx={{ fontWeight: 600 }}>
-              Total
-            </Typography>
-
-            <Typography variant="h3" sx={{ fontWeight: 600 }}>
-              $430
-            </Typography>
-          </Box>
-          <Divider sx={{ marginBottom: '113px' }} />
-
-          <Button>Checkout</Button>
-        </Box> */}
 
         <Stack>
           <Typography variant="h2" sx={{ marginBottom: '32px' }}>
