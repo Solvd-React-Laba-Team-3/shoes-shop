@@ -3,10 +3,11 @@ import { getColorsOptions } from '@/api/color/getColorsOptions';
 import { getGendersOptions } from '@/api/gender/getGendersOptions';
 import { getProductsOptions } from '@/api/products/getProductsOptions';
 import { getSizesOptions } from '@/api/size/getSizesOptions';
-import { CheckoutForm } from '@/components/CheckoutForm';
+import { Catalog } from '@/components/common/Catalog';
 import { Header } from '@/components/common/Header';
 import { getQueryClient } from '@/lib/utils';
-import { Box } from '@mui/material';
+import { Hydrate } from '@/providers/Hydrate';
+import { dehydrate } from '@tanstack/react-query';
 
 const queryClient = getQueryClient();
 queryClient.prefetchQuery(getSizesOptions());
@@ -19,9 +20,9 @@ export default function Home() {
   return (
     <>
       <Header />
-      <Box sx={{ display: 'flex', justifyContent: 'center' }}>
-        <CheckoutForm></CheckoutForm>
-      </Box>
+      <Hydrate state={dehydrate(queryClient)}>
+        <Catalog />
+      </Hydrate>
     </>
   );
 }
