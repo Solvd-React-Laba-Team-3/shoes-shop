@@ -12,7 +12,7 @@ const StyledDropZone = styled(Box)(({ theme }) => ({
   display: 'flex',
   alignItems: 'center',
   width: '320px',
-  height: '305px',
+  height: '380px',
   justifyContent: 'center',
   cursor: 'pointer',
   padding: '20px',
