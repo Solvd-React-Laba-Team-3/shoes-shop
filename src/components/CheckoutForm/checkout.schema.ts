@@ -1,37 +1,20 @@
 import { z } from 'zod';
 
-const baseSchema = z.object({
+export const checkoutSchema = z.object({
   name: z.string().min(1, { message: 'Name is required' }),
   surname: z.string().min(1, { message: 'Surname is required' }),
-  email: z.email('Invalid email address'),
+  email: z.string().email('Invalid email address'),
   phone: z
     .string()
     .min(10, { message: 'Phone number is too short' })
     .max(20, { message: 'Phone number is too long' }),
-
   country: z.string().min(1, { message: 'Country is required' }),
   city: z.string().min(1, { message: 'City is required' }),
   state: z.string().min(1, { message: 'State is required' }),
   zipCode: z.string().regex(/^\d{4,10}$/, { message: 'Invalid Zip Code' }),
   address: z.string().min(1, { message: 'Address is required' }),
   discountCode: z.string().optional().or(z.literal('')),
+  paymentMethod: z.enum(['card', 'googlePay', 'cashApp', 'afterPay']),
 });
-
-const cardPaymentSchema = baseSchema.extend({
-  paymentMethod: z.literal('card'),
-});
-
-const otherPaymentSchema = baseSchema.extend({
-  paymentMethod: z.enum(['googlePay', 'cashApp', 'afterPay']),
-  cardNumber: z.string().optional(),
-  expirationDate: z.string().optional(),
-  securityCode: z.string().optional(),
-  paymentCountry: z.string().optional(),
-});
-
-export const checkoutSchema = z.discriminatedUnion('paymentMethod', [
-  cardPaymentSchema,
-  otherPaymentSchema,
-]);
 
 export type CheckoutSchema = z.infer<typeof checkoutSchema>;
