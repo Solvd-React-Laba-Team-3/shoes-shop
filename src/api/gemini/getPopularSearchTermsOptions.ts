@@ -1,8 +1,9 @@
 import { geminiModel } from '../../constants/geminiConfig';
+import { AI_REQUEST_STALE_TIME } from '@/constants/queriesStaleTime';
 
-export async function getPopularSneakerTerms(query: string): Promise<string[]> {
+export async function getPopularSearchTerms(query: string): Promise<string[]> {
   const normalizedQuery = (query ?? '').toString().trim();
-  const isEmpty = !!normalizedQuery.length;
+  const isEmpty = normalizedQuery.length === 0;
   const currentYear = new Date().getFullYear();
 
   const prompt = isEmpty
@@ -22,7 +23,14 @@ Respond with only the full sneaker names, one per line, no extra text.`;
       .filter(Boolean);
 
     return terms;
-  } catch {
+  } catch (e) {
+    console.log(e);
     return [];
   }
 }
+
+export const searchPopularTermsOptions = (debouncedInput: string) => ({
+  queryKey: ['searchPopularTerms', debouncedInput],
+  queryFn: () => getPopularSearchTerms(debouncedInput),
+  staleTime: AI_REQUEST_STALE_TIME,
+});
