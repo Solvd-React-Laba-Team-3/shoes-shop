@@ -4,7 +4,7 @@ import { Button } from '../ui/Button/Button';
 import DeleteIcon from '@mui/icons-material/Delete';
 
 type CartItemProps = {
-  image: string;
+  images: string;
   name: string;
   category: string;
   inStock: boolean;
@@ -16,7 +16,7 @@ type CartItemProps = {
 };
 
 export const CartItem: React.FC<CartItemProps> = ({
-  image,
+  images,
   name,
   category,
   inStock,
@@ -26,16 +26,33 @@ export const CartItem: React.FC<CartItemProps> = ({
   onDecrease,
   onDelete,
 }) => {
+  const imageSrc = images && images !== '' ? images : null;
   return (
     <Stack>
       <Box>
-        <Typography variant="h2" sx={{ marginBottom: '32px' }}>
+        {/* <Typography variant="h2" sx={{ marginBottom: '32px' }}>
           Cart
-        </Typography>
+        </Typography> */}
 
-        <Stack direction="row" spacing={4} alignItems="flex-start">
+        <Stack direction="row" spacing={4}>
           <Box sx={{ width: 223, height: 214, flexShrink: 0 }}>
-            <Image src={image} width={223} height={214} alt={image} />
+            {imageSrc ? (
+              <Image
+                src={imageSrc}
+                width={223}
+                height={214}
+                alt="product image"
+              />
+            ) : (
+              <Box
+                sx={{
+                  width: '223px',
+                  height: '214px',
+                  backgroundColor: '#ccc',
+                  borderRadius: '4px',
+                }}
+              />
+            )}
           </Box>
 
           <Stack
