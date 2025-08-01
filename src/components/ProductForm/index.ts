@@ -1,1 +1,1 @@
-export { ProductForm } from './ProductForm';
+export { ProductForm, type ImageType } from './ProductForm';
