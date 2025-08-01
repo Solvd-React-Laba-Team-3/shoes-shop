@@ -4,17 +4,18 @@ import {
   Divider,
   // ButtonGroup,
   Stack,
-  TextField,
+  // TextField,
   Typography,
 } from '@mui/material';
-import { Button } from '@/components/ui';
+// import { Button } from '@/components/ui';
 // import DeleteIcon from '@mui/icons-material/Delete';
-import { Accordion } from '@/components/ui';
+// import { Accordion } from '@/components/ui';
 // import Image from 'next/image';
 import { Header } from '@/components/common/Header';
-import { GlobalStyles } from '@mui/material';
+// import { GlobalStyles } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { CartItem } from '@/components/CartItem/CartItem';
+import { CartSummary } from '@/components/CartSummary';
 
 type Product = {
   id: number;
@@ -27,9 +28,22 @@ type Product = {
   };
 };
 
+type SummaryProps = {
+  subtotal: number;
+  shipping: number;
+  tax: number;
+  total: number;
+};
+
 const Cart = () => {
   const [products, setProducts] = useState<Product[]>([]);
   const [quantities, setQuantities] = useState<{ [key: number]: number }>({});
+  const [summary, setSummary] = useState<SummaryProps>({
+    subtotal: 0,
+    shipping: 0,
+    tax: 0,
+    total: 0,
+  });
 
   useEffect(() => {
     fetch('https://shoes-shop-strapi.herokuapp.com/api/products') // заменить на реальный URL
@@ -45,6 +59,19 @@ const Cart = () => {
       })
       .catch((err) => console.error(err));
   }, []);
+
+  useEffect(() => {
+    const subtotal = products.reduce((acc, product) => {
+      const productQuantity = quantities[product.id] || 0;
+      return acc + product.attributes.price * productQuantity;
+    }, 0);
+
+    const shipping = subtotal > 0 ? 20 : 0; // for now, delivery is $20, in future need to change this number into the one from the API
+    const tax = 0;
+    const total = subtotal + shipping + tax;
+
+    setSummary({ subtotal, shipping, tax, total });
+  }, [products, quantities]);
 
   const handleIncrease = (id: number) => {
     setQuantities((prev) => ({ ...prev, [id]: prev[id] + 1 }));
@@ -106,7 +133,7 @@ const Cart = () => {
           <Divider sx={{ margin: '60px 0' }} />
         </Stack>
         {/* summary part */}
-        <Box sx={{ marginLeft: '166px' }}>
+        {/* <Box sx={{ marginLeft: '166px' }}>
           <GlobalStyles
             styles={{
               '.MuiAccordionSummary-root': {
@@ -205,7 +232,24 @@ const Cart = () => {
           <Divider sx={{ marginBottom: '113px' }} />
 
           <Button>Checkout</Button>
-        </Box>
+        </Box> */}
+
+        <Stack>
+          <Typography variant="h2" sx={{ marginBottom: '32px' }}>
+            Summary
+          </Typography>
+
+          <Box>
+            <Stack direction="column">
+              <CartSummary
+                subtotal={summary.subtotal}
+                shipping={summary.shipping}
+                tax={summary.tax}
+                total={summary.total}
+              />
+            </Stack>
+          </Box>
+        </Stack>
       </Box>
     </>
   );
