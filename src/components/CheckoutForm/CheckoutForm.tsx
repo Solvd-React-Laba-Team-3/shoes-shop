@@ -1,6 +1,6 @@
 'use client';
 
-import { Controller, FormProvider, useForm } from 'react-hook-form';
+import { Controller, FormProvider, useForm, useWatch } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { checkoutSchema, CheckoutSchema } from './checkout.schema';
 import { useState } from 'react';
@@ -19,10 +19,12 @@ import PaymentIcon from '@mui/icons-material/Payment';
 import GoogleIcon from '@mui/icons-material/Google';
 import MoneyIcon from '@mui/icons-material/AttachMoney';
 import ScheduleIcon from '@mui/icons-material/Schedule';
+import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
+import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 
 export const CheckoutForm = () => {
   const [serverError, setServerError] = useState<string | null>(null);
-
+  const [showCardFields, setShowCardFields] = useState(true);
   const methods = useForm<CheckoutSchema>({
     resolver: zodResolver(checkoutSchema),
     defaultValues: {
@@ -57,12 +59,32 @@ export const CheckoutForm = () => {
     { value: 'afterPay', text: 'After Payment', icon: ScheduleIcon },
   ];
 
+  const paymentMethod = useWatch({
+    control,
+    name: 'paymentMethod',
+  });
+
   const onSubmit = async (data: CheckoutSchema) => {
     try {
       console.log('Form submitted:', data);
       setServerError(null);
-    } catch {
-      setServerError('Unexpected error. Please try again.');
+
+      const amount = 1000;
+
+      const res = await fetch('/api/payments', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ...data, amount }),
+      });
+
+      const json = await res.json();
+
+      if (!res.ok) {
+        console.error('Validation errors:', json.issues);
+        return;
+      }
+    } catch (err) {
+      console.error('Unexpected error:', err);
     }
   };
 
@@ -129,7 +151,7 @@ export const CheckoutForm = () => {
             />
           </Box>
 
-          <Divider sx={{ mt: 6, mb: 2 }} />
+          <Divider sx={{ mt: 5, mb: 2 }} />
 
           <Typography variant="h6" sx={{ mt: 9, mb: 3 }}>
             Shipping info
@@ -185,7 +207,7 @@ export const CheckoutForm = () => {
             sx={{ width: '100%' }}
           />
 
-          <Divider sx={{ mt: 8, mb: 2 }} />
+          <Divider sx={{ mt: 6, mb: 2 }} />
 
           <Typography variant="h6" sx={{ mt: 9, mb: 3 }}>
             Payment info
@@ -195,87 +217,141 @@ export const CheckoutForm = () => {
             name="paymentMethod"
             control={control}
             render={({ field }) => (
-              <ToggleButtonGroup
-                exclusive
-                value={field.value}
-                onChange={(_, newValue) => {
-                  if (newValue !== null) {
-                    field.onChange(newValue);
-                  }
-                }}
+              <Box
                 sx={{
-                  width: '100%',
                   display: 'flex',
                   justifyContent: 'space-between',
+                  alignItems: 'flex-start',
+                  width: '100%',
+                  gap: 2,
                 }}
               >
-                {paymentMethods.map(({ value, text, icon: Icon }) => (
-                  <ToggleButton
-                    key={value}
-                    value={value}
-                    sx={{
-                      height: '100px',
-                      minHeight: '100px',
-                      width: '170px',
-                      fontWeight: 500,
-                      textTransform: 'none',
-                      flexDirection: 'column',
-                      alignItems: 'flex-start',
-                      justifyContent: 'center',
-                      gap: '10px',
-                      paddingLeft: '24px',
-                    }}
-                  >
-                    {Icon && <Icon />}
-                    {text}
-                  </ToggleButton>
-                ))}
-              </ToggleButtonGroup>
+                <ToggleButtonGroup
+                  exclusive
+                  value={field.value}
+                  onChange={(_, newValue) => {
+                    if (newValue !== null) {
+                      field.onChange(newValue);
+                    }
+                  }}
+                  sx={{
+                    flexGrow: 1,
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                  }}
+                >
+                  {paymentMethods.map(({ value, text, icon: Icon }) => (
+                    <ToggleButton
+                      key={value}
+                      value={value}
+                      sx={{
+                        height: '100px',
+                        width: '170px',
+                        fontWeight: 500,
+                        textTransform: 'none',
+                        flexDirection: 'column',
+                        alignItems: 'flex-start',
+                        justifyContent: 'center',
+                        gap: '10px',
+                        paddingLeft: '24px',
+                        borderRadius: '12px',
+                        transition: 'transform 0.2s',
+                        '&:hover': {
+                          backgroundColor: 'transparent',
+                          transform: 'scale(1.05)',
+                        },
+                        '&.Mui-selected': {
+                          backgroundColor: 'transparent',
+                          borderColor: theme.palette.action.active,
+                          '&:hover': {
+                            backgroundColor: 'transparent',
+                          },
+                        },
+                      }}
+                      onClick={() => setShowCardFields(true)}
+                    >
+                      {Icon && <Icon />}
+                      {text}
+                    </ToggleButton>
+                  ))}
+                </ToggleButtonGroup>
+                <Button
+                  variant="outlined"
+                  disableRipple
+                  onClick={() => setShowCardFields((prev) => !prev)}
+                  sx={{
+                    height: '100px',
+                    width: '72px',
+                    borderColor: theme.palette.secondary.dark,
+                    transition: 'transform 0.2s',
+                    fontSize: '24px',
+                    '&:hover': {
+                      backgroundColor: 'transparent',
+                      transform: 'scale(1.05)',
+                    },
+                    color: theme.palette.secondary.main,
+                  }}
+                >
+                  {showCardFields ? (
+                    <KeyboardArrowDownIcon />
+                  ) : (
+                    <KeyboardArrowUpIcon />
+                  )}
+                </Button>
+              </Box>
             )}
           />
 
-          <Box sx={{ mt: 1 }}>
-            <LabeledTextfield
-              label="Card number"
-              {...register('cardNumber')}
-              error={!!errors.cardNumber}
-              placeholder="1234 1234 1234 1234"
-              errorMessage={errors.cardNumber?.message}
-              reserveErrorSpace
-              maxWidth="800px"
-              sx={{ width: '100%' }}
-            />
-          </Box>
-          <Box
-            sx={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(3, 1fr)',
-              gap: 2,
-              width: '100%',
-            }}
-          >
-            <LabeledTextfield
-              label="Expiration date"
-              {...register('expirationDate')}
-              error={!!errors.expirationDate}
-              errorMessage={errors.expirationDate?.message}
-              reserveErrorSpace
-            />
-            <LabeledTextfield
-              label="Security code"
-              {...register('securityCode')}
-              error={!!errors.securityCode}
-              errorMessage={errors.securityCode?.message}
-              reserveErrorSpace
-            />
-            <LabeledTextfield
-              label="Country"
-              {...register('paymentCountry')}
-              error={!!errors.paymentCountry}
-              errorMessage={errors.paymentCountry?.message}
-              reserveErrorSpace
-            />
-          </Box>
+          {showCardFields && paymentMethod === 'card' && (
+            <>
+              <Box sx={{ mt: 1 }}>
+                <LabeledTextfield
+                  label="Card number"
+                  {...register('cardNumber')}
+                  error={!!errors.cardNumber}
+                  placeholder="1234 1234 1234 1234"
+                  errorMessage={errors.cardNumber?.message}
+                  reserveErrorSpace
+                  maxWidth="800px"
+                  sx={{ width: '100%' }}
+                />
+              </Box>
+
+              <Box
+                sx={{
+                  display: 'grid',
+                  gridTemplateColumns: 'repeat(3, 1fr)',
+                  gap: 2,
+                  width: '100%',
+                }}
+              >
+                <LabeledTextfield
+                  label="Expiration date"
+                  {...register('expirationDate')}
+                  error={!!errors.expirationDate}
+                  placeholder="MM/YY"
+                  errorMessage={errors.expirationDate?.message}
+                  reserveErrorSpace
+                />
+                <LabeledTextfield
+                  label="Security code"
+                  {...register('securityCode')}
+                  error={!!errors.securityCode}
+                  placeholder="453"
+                  errorMessage={errors.securityCode?.message}
+                  reserveErrorSpace
+                />
+                <LabeledTextfield
+                  label="Country"
+                  {...register('paymentCountry')}
+                  error={!!errors.paymentCountry}
+                  placeholder="USA"
+                  errorMessage={errors.paymentCountry?.message}
+                  reserveErrorSpace
+                />
+              </Box>
+            </>
+          )}
 
           {serverError && (
             <FormLabel
