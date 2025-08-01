@@ -3,7 +3,7 @@
 import { Controller, FormProvider, useForm, useWatch } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { checkoutSchema, CheckoutSchema } from './checkout.schema';
-import { useState } from 'react';
+import { FC, useState } from 'react';
 import {
   Box,
   Button,
@@ -22,7 +22,12 @@ import ScheduleIcon from '@mui/icons-material/Schedule';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 
-export const CheckoutForm = () => {
+type CheckoutProps = {
+  discountCode?: string;
+  amount?: number;
+};
+
+export const CheckoutForm: FC<CheckoutProps> = ({ discountCode, amount }) => {
   const [serverError, setServerError] = useState<string | null>(null);
   const [showCardFields, setShowCardFields] = useState(true);
   const methods = useForm<CheckoutSchema>({
@@ -42,6 +47,7 @@ export const CheckoutForm = () => {
       expirationDate: '',
       securityCode: '',
       paymentCountry: '',
+      discountCode: discountCode,
     },
   });
 
@@ -68,12 +74,16 @@ export const CheckoutForm = () => {
     try {
       setServerError(null);
 
-      const amount = 1000;
+      const body = {
+        ...data,
+        amount: amount ? amount : 0,
+        discountCode: discountCode ? discountCode : undefined,
+      };
 
       await fetch('/api/payments', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ...data, amount }),
+        body: JSON.stringify(body),
       });
     } catch {}
   };

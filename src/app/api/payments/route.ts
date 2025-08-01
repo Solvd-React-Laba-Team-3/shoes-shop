@@ -1,11 +1,17 @@
+import { getServerSession } from 'next-auth';
 import { type NextRequest, NextResponse } from 'next/server';
 import Stripe from 'stripe';
-
+import { authOptions } from '@/constants/authConfig';
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string);
 
 export async function POST(req: NextRequest) {
   try {
-    const data = await req.json();
+    const session = await getServerSession(authOptions);
+    const { discountCode, ...data } = await req.json();
+
+    if (!session?.user?.id) {
+      return;
+    }
 
     const paymentIntent = await stripe.paymentIntents.create({
       amount: Math.round(data.amount * 100),
@@ -24,9 +30,11 @@ export async function POST(req: NextRequest) {
         },
       },
       metadata: {
+        orderNumber: '#' + Date.now(),
         email: data.email,
         paymentMethod: data.paymentMethod,
-        userId: '1234',
+        userId: session.user.id,
+        ...(discountCode && { discountCode }),
       },
     });
 
