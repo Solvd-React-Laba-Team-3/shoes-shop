@@ -503,14 +503,11 @@ export const ProductForm: FC<ProductFormProps> = ({
                                 <ToggleButton
                                   value={size.id}
                                   selected={isSelected}
+                                  error={!!errors.sizes}
                                   sx={{
                                     height: 48,
                                     width: 74,
                                     minWidth: 74,
-                                    border: (theme) =>
-                                      errors.sizes
-                                        ? `1px solid ${theme.palette.error.main} !important`
-                                        : `1px solid ${theme.palette.divider}`,
                                   }}
                                   onClick={() =>
                                     handleToggleSize(
