@@ -10,6 +10,7 @@ import { useRouter } from 'next/navigation';
 import BusinessCenterIcon from '@mui/icons-material/BusinessCenter';
 import { styled } from '@mui/material/styles';
 import { ProductList } from '@/components/ProductList';
+import profileBanner from '../../../../public/profile-banner.png';
 
 const StyledBusinessCenterIcon = styled(BusinessCenterIcon)(({ theme }) => ({
   color: theme.palette.grey[600],
@@ -37,7 +38,7 @@ export default function MyProducts() {
     <Box sx={{ display: 'flex', flexDirection: 'column', gap: '108px' }}>
       <Box sx={{ position: 'relative' }}>
         <Image
-          src="/profile-banner.png"
+          src={profileBanner}
           alt="My Products"
           width={1500}
           height={250}
@@ -75,12 +76,15 @@ export default function MyProducts() {
       <Box sx={{ display: 'flex', flexDirection: 'column', gap: '36px' }}>
         <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
           <Typography variant="h2">My Products</Typography>
-          <Button size="small" onClick={() => router.push('/products/create')}>
+          <Button
+            size="small"
+            onClick={() => router.push('/profile/products/create')}
+          >
             Add Product
           </Button>
         </Box>
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: '36px' }}>
-          {session?.user?.products.length ? (
+          {session?.user?.products?.length ? (
             <ProductList products={session?.user?.products} type="actionMenu" />
           ) : (
             <StyledNoProductsWrapper>
@@ -97,13 +101,13 @@ export default function MyProducts() {
                   {"You don't have any products yet"}
                 </Typography>
                 <Typography variant="caption">
-                  Post can contain video, images and text.
+                  Start adding products to your profile
                 </Typography>
               </Box>
 
               <Button
                 size="small"
-                onClick={() => router.push('/products/create')}
+                onClick={() => router.push('/profile/products/create')}
               >
                 Add Product
               </Button>

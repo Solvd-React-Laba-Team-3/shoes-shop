@@ -19,9 +19,7 @@ export const ProductList: FC<ProductListProps> = ({
       rowSpacing={{ xs: 2, md: 5 }}
     >
       {products.map((product) => (
-        <Grid key={product.id} size={{ xs: 6, sm: 4, md: 3, lg: 2 }}>
-          <ProductCard {...product} cardType={type} />
-        </Grid>
+        <ProductCard key={product.id} product={product} cardType={type} />
       ))}
     </Grid>
   );

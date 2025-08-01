@@ -13,7 +13,7 @@ export type Product = {
   teamName?: string;
   images: File[] | null;
   brand: Brand;
-  categories: Category[];
+  categories: Category[] | null;
   color: Color;
   gender: Gender;
   sizes: Size[];

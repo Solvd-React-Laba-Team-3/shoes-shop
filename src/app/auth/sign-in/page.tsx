@@ -16,6 +16,7 @@ import {
 } from '@/constants/sessionMaxAge';
 import { LoaderButton } from '@/components/LoaderButton';
 import WarningAmberIcon from '@mui/icons-material/WarningAmber';
+import loginImage from '../../../../public/login.jpg';
 
 export default function SignIn() {
   const router = useRouter();
@@ -50,7 +51,7 @@ export default function SignIn() {
         return;
       }
 
-      router.replace('/products');
+      router.replace('/profile/products');
     } catch {
       setError('An unexpected error occurred. Please try again.');
     }
@@ -186,7 +187,7 @@ export default function SignIn() {
           position: 'relative',
         }}
       >
-        <Image src="/login.jpg" alt="sign in" fill sizes="50vw" />
+        <Image src={loginImage} alt="sign in" fill sizes="50vw" />
       </Box>
     </>
   );

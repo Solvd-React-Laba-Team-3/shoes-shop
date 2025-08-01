@@ -1,6 +1,6 @@
 'use client';
-import { useState, useEffect } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useState, useEffect, useRef } from 'react';
+import { useRouter, usePathname } from 'next/navigation';
 import { SearchBar } from '../ui';
 import {
   MainSearchBarContainer,
@@ -14,78 +14,70 @@ import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
 import Link from 'next/link';
 import Image from 'next/image';
-import { useDebounce } from '@/lib/hooks/useDebounce';
+import { useDebounce, useSearchParams } from '@/lib/hooks';
 import { List, Typography } from '@mui/material';
-import { getPopularSneakerTerms } from '@/api/gemini/getPopularSneakerTerms';
 import LinearProgress from '@mui/material/LinearProgress';
+import { useQuery } from '@tanstack/react-query';
+import { searchPopularTermsOptions } from '@/api/gemini/getPopularSearchTermsOptions';
 import { AI_REQUEST_STALE_TIME } from '@/constants/queriesStaleTime';
-
-const searchSuggestionsCache = new Map<
-  string,
-  { timestamp: number; data: string[] }
->();
 
 export const MainSearchBar = () => {
   const router = useRouter();
-  const searchParams = useSearchParams();
+  const pathname = usePathname();
+  const { update, searchParams } = useSearchParams();
   const [inputValue, setInputValue] = useState(
     searchParams.get('search') || ''
   );
   const [isFocused, setIsFocused] = useState(false);
   const [popularTerms, setPopularTerms] = useState<string[]>([]);
-  const debouncedInput = useDebounce(inputValue, 2000);
-  const [isLoading, setIsLoading] = useState(false);
-  const [hasFetchedInitialTerms, setHasFetchedInitialTerms] = useState(false);
+  const { debouncedValue, isDebouncing } = useDebounce(inputValue, 2000);
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  const queryOptions = searchPopularTermsOptions(debouncedValue);
+
+  const {
+    data: popularResults,
+    isSuccess,
+    isFetching,
+  } = useQuery({
+    ...queryOptions,
+    enabled: debouncedValue.length === 0 || debouncedValue.length > 2,
+    staleTime: AI_REQUEST_STALE_TIME,
+  });
 
   useEffect(() => {
-    const getTerms = async () => {
-      const normalizedQuery = debouncedInput.trim().toLowerCase();
-      const now = Date.now();
-
-      const cached = searchSuggestionsCache.get(normalizedQuery);
-      if (cached && now - cached.timestamp < AI_REQUEST_STALE_TIME) {
-        setPopularTerms(cached.data);
-        setIsLoading(false);
-        return;
-      }
-
-      setIsLoading(true);
-      try {
-        const terms = await getPopularSneakerTerms(normalizedQuery);
-        setPopularTerms(terms.length > 0 ? terms : []);
-        searchSuggestionsCache.set(normalizedQuery, {
-          data: terms,
-          timestamp: now,
-        });
-      } catch {
-        setPopularTerms([]);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    if (debouncedInput.trim() === '' && !hasFetchedInitialTerms) {
-      setHasFetchedInitialTerms(true);
+    if (isSuccess && popularResults) {
+      setPopularTerms(popularResults);
     }
-
-    setIsLoading(true);
-    getTerms();
-  }, [debouncedInput, hasFetchedInitialTerms]);
+  }, [isSuccess, popularResults]);
 
   const handleSearch = (value: string) => {
+    const trimmedValue = value.trim();
     const params = new URLSearchParams(searchParams.toString());
-    params.set('search', value);
-    router.push(`?${params.toString()}`);
+
+    if (params.get('search') === trimmedValue) return;
+    params.set('search', trimmedValue);
+
+    if (pathname !== '/') {
+      router.push(`/?${params.toString()}`);
+    } else {
+      update(params);
+    }
+
+    handleClose();
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter') {
       handleSearch(inputValue.trim());
-      handleClose();
     }
   };
 
   const handleClose = () => {
+    if (document.activeElement instanceof HTMLElement) {
+      document.activeElement.blur();
+    }
+    inputRef.current?.blur();
     setIsFocused(false);
   };
 
@@ -100,9 +92,6 @@ export const MainSearchBar = () => {
   const handleTermClick = (term: string) => {
     setInputValue(term);
     handleSearch(term);
-    if (document.activeElement instanceof HTMLElement) {
-      document.activeElement.blur();
-    }
     handleClose();
   };
 
@@ -145,6 +134,7 @@ export const MainSearchBar = () => {
           onKeyDown={handleKeyDown}
           onFocus={handleFocus}
           onBlur={handleBlur}
+          inputRef={inputRef}
           data-testid="search-input"
         />
         {popularTerms.length > 0 && isFocused && (
@@ -152,7 +142,7 @@ export const MainSearchBar = () => {
             data-testid="popular-terms-container"
             sx={{ position: 'relative' }}
           >
-            {isLoading && (
+            {(isFetching || isDebouncing) && (
               <LinearProgress
                 data-testid="loading-bar"
                 sx={{
