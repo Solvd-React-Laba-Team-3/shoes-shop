@@ -1,7 +1,6 @@
 'use client';
 
 import { getProductOptions } from '@/api/products/getProductOptions';
-
 import { Box, NoSsr, Stack, styled, Typography } from '@mui/material';
 import { useSuspenseQuery } from '@tanstack/react-query';
 import { FC, useState } from 'react';
@@ -30,11 +29,11 @@ const ProductWrap = styled(Box)(({ theme }) => ({
   },
 }));
 
-type ProductDetails = {
+interface ProductDetailsProps {
   productId: number;
-};
+}
 
-export const ProductDetails: FC<ProductDetails> = ({
+export const ProductDetails: FC<ProductDetailsProps> = ({
   productId,
 }: {
   productId: number;
@@ -61,6 +60,7 @@ export const ProductDetails: FC<ProductDetails> = ({
             flex: 1,
             minWidth: 0,
             alignSelf: { xs: 'stretch', md: 'flex-start' },
+            maxWidth: 630,
           }}
         >
           <ProductSlider images={data.images} productName={data.name} />
@@ -93,11 +93,21 @@ export const ProductDetails: FC<ProductDetails> = ({
               ${data.price}
             </Typography>
           </Stack>
-          <SizeSelector
-            selectedSize={selectedSize}
-            onSizeChange={setSelectedSize}
-            availableSizes={data.sizes.map((s) => s.value)}
-          />
+          <Stack direction="column" paddingBottom="36px">
+            <Typography
+              variant="h6"
+              paddingBottom="24px"
+              color="text.secondary"
+            >
+              Select Size
+            </Typography>
+
+            <SizeSelector
+              selectedSize={selectedSize}
+              onSizeChange={setSelectedSize}
+              availableSizes={data.sizes.map((s) => s.value)}
+            />
+          </Stack>
           <Stack
             sx={{
               justifyContent: 'space-between',

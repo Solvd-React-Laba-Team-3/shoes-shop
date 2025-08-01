@@ -10,7 +10,11 @@ import 'swiper/css';
 import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 import 'swiper/css/thumbs';
-import { SliderRoot, ThumbsWrap, MainWrap } from './ProductSlider.styles';
+import {
+  StyledSliderContainer,
+  StyledThumbsWrapper,
+  StyledWrapper,
+} from './productSlider.styles';
 import ChevronLeftRounded from '@mui/icons-material/ChevronLeftRounded';
 import ChevronRightRounded from '@mui/icons-material/ChevronRightRounded';
 
@@ -21,10 +25,10 @@ type ProductImage = {
   alternativeText?: string | null;
 };
 
-type ProductSliderProps = {
+interface ProductSliderProps {
   images: ProductImage[] | null;
   productName: string;
-};
+}
 
 export const ProductSlider: FC<ProductSliderProps> = ({
   images,
@@ -35,8 +39,8 @@ export const ProductSlider: FC<ProductSliderProps> = ({
 
   return (
     <>
-      <SliderRoot>
-        <ThumbsWrap>
+      <StyledSliderContainer>
+        <StyledThumbsWrapper>
           <Swiper
             onSwiper={setThumbsSwiper}
             freeMode
@@ -80,10 +84,10 @@ export const ProductSlider: FC<ProductSliderProps> = ({
               </SwiperSlide>
             )}
           </Swiper>
-        </ThumbsWrap>
+        </StyledThumbsWrapper>
 
         <Box sx={{ flex: 1, minWidth: 0 }}>
-          <MainWrap>
+          <StyledWrapper>
             <div className="main-nav-prev" aria-label="Previous image">
               <ChevronLeftRounded fontSize="small" />
             </div>
@@ -136,9 +140,9 @@ export const ProductSlider: FC<ProductSliderProps> = ({
                 </SwiperSlide>
               )}
             </Swiper>
-          </MainWrap>
+          </StyledWrapper>
         </Box>
-      </SliderRoot>
+      </StyledSliderContainer>
     </>
   );
 };

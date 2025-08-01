@@ -1,6 +1,6 @@
 import { Box, styled } from '@mui/material';
 
-export const SliderRoot = styled(Box)(({ theme }) => ({
+export const StyledSliderContainer = styled(Box)(({ theme }) => ({
   display: 'flex',
   flex: 1,
   width: '100%',
@@ -42,7 +42,7 @@ export const SliderRoot = styled(Box)(({ theme }) => ({
   },
 }));
 
-export const MainWrap = styled(Box)(({ theme }) => ({
+export const StyledWrapper = styled(Box)(({ theme }) => ({
   width: '100%',
   aspectRatio: '1 / 1',
   position: 'relative',
@@ -80,7 +80,7 @@ export const MainWrap = styled(Box)(({ theme }) => ({
   },
 }));
 
-export const ThumbsWrap = styled(Box)(({ theme }) => ({
+export const StyledThumbsWrapper = styled(Box)(({ theme }) => ({
   flex: '0 0 auto',
   order: 2,
   width: '100%',
