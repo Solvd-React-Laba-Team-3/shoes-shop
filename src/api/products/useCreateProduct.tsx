@@ -3,25 +3,27 @@ import { fetchApi, formatProductAttributes } from '@/lib/utils';
 import { Product } from '@/types/Product';
 import { ProductAttributes } from '@/types/api/ProductAttributes';
 import { StrapiSingleData } from '@/types/api/StrapiSingleData';
+import { TEAM_NAME } from '@/constants/teamName';
+import { useSession } from 'next-auth/react';
 
-export type CreateProductRequest = {
+export interface CreateProductRequest {
   body: {
     data: {
       name: string;
-      images: (string | number)[];
+      images: number[] | null;
       description: string;
-      brand: string | number;
-      categories: (string | number)[];
-      color: string | number;
-      gender: string | number;
-      sizes: (string | number)[];
-      price: number;
-      userID?: string | number;
+      brand: number | string;
+      categories: number[] | null;
+      color: number | string;
+      gender: number | string;
+      sizes: number[];
+      price: number | string;
+      userID: number;
       teamName?: string;
     };
   };
   token: string;
-};
+}
 
 const createProduct = async ({
   body,
@@ -30,19 +32,22 @@ const createProduct = async ({
   const res = await fetchApi<StrapiSingleData<ProductAttributes>>({
     endpoint: '/products',
     method: 'POST',
-    body,
+    body: {
+      data: {
+        ...body.data,
+        teamName: TEAM_NAME,
+      },
+    },
     token,
   });
   return formatProductAttributes(res.data.id, res.data.attributes);
 };
 
-export const useCreateProduct = () =>
-  useMutation<Product, Error, CreateProductRequest>({
+export const useCreateProduct = () => {
+  const { update: updateSession } = useSession();
+
+  return useMutation<Product, Error, CreateProductRequest>({
     mutationFn: createProduct,
-    onError: (error) => {
-      console.error('Product creation failed:', error.message);
-    },
-    onSuccess: (data) => {
-      console.log('Product created successfully:', data);
-    },
+    onSettled: updateSession,
   });
+};
