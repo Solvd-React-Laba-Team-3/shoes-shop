@@ -3,7 +3,7 @@ import { z } from 'zod';
 const baseSchema = z.object({
   name: z.string().min(1, { message: 'Name is required' }),
   surname: z.string().min(1, { message: 'Surname is required' }),
-  email: z.string().email('Invalid email address'),
+  email: z.email('Invalid email address'),
   phone: z
     .string()
     .min(10, { message: 'Phone number is too short' })
@@ -14,6 +14,7 @@ const baseSchema = z.object({
   state: z.string().min(1, { message: 'State is required' }),
   zipCode: z.string().regex(/^\d{4,10}$/, { message: 'Invalid Zip Code' }),
   address: z.string().min(1, { message: 'Address is required' }),
+  discountCode: z.string().optional().or(z.literal('')),
 });
 
 const cardPaymentSchema = baseSchema.extend({
