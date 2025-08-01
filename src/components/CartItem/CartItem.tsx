@@ -30,10 +30,6 @@ export const CartItem: React.FC<CartItemProps> = ({
   return (
     <Stack>
       <Box>
-        {/* <Typography variant="h2" sx={{ marginBottom: '32px' }}>
-          Cart
-        </Typography> */}
-
         <Stack direction="row" spacing={4}>
           <Box sx={{ width: 223, height: 214, flexShrink: 0 }}>
             {imageSrc ? (

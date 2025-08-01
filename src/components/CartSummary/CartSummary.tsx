@@ -7,6 +7,7 @@ import {
 } from '@mui/material';
 import { Accordion } from '../ui/Accordion/Accordion';
 import { Button } from '../ui/Button/Button';
+import { useRouter } from 'next/navigation';
 type CartSummaryProps = {
   subtotal: number;
   shipping: number;
@@ -20,6 +21,12 @@ export const CartSummary: React.FC<CartSummaryProps> = ({
   tax,
   total,
 }) => {
+  const router = useRouter();
+
+  const handleSubmit = () => {
+    console.log('Checkout button clicked');
+    router.push('/profile/products');
+  };
   return (
     <Box sx={{ marginLeft: '166px' }}>
       <GlobalStyles
@@ -29,9 +36,7 @@ export const CartSummary: React.FC<CartSummaryProps> = ({
           },
         }}
       />
-      {/* <Typography variant="h2" sx={{ marginBottom: '32px' }}>
-        Summary
-      </Typography> */}
+
       <Accordion
         label={
           <Typography
@@ -119,7 +124,7 @@ export const CartSummary: React.FC<CartSummaryProps> = ({
       </Box>
       <Divider sx={{ marginBottom: '113px' }} />
 
-      <Button>Checkout</Button>
+      <Button onClick={() => handleSubmit()}>Checkout</Button>
     </Box>
   );
 };
