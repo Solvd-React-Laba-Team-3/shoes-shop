@@ -7,19 +7,14 @@ export async function POST(req: NextRequest) {
   try {
     const data = await req.json();
 
-    if (!data.amount || typeof data.amount !== 'number') {
-      return NextResponse.json({ error: 'Invalid amount' }, { status: 400 });
-    }
-
     const paymentIntent = await stripe.paymentIntents.create({
       amount: Math.round(data.amount * 100),
       currency: 'usd',
-      automatic_payment_methods: {
-        enabled: true,
-      },
+      automatic_payment_methods: { enabled: true },
       description: 'Checkout of Shoes',
       shipping: {
         name: `${data.name} ${data.surname}`,
+        phone: data.phone,
         address: {
           line1: data.address,
           city: data.city,
@@ -30,7 +25,6 @@ export async function POST(req: NextRequest) {
       },
       metadata: {
         email: data.email,
-        phone: data.phone,
         paymentMethod: data.paymentMethod,
         userId: '1234',
       },
@@ -40,15 +34,7 @@ export async function POST(req: NextRequest) {
       clientSecret: paymentIntent.client_secret,
       paymentIntentId: paymentIntent.id,
     });
-  } catch (error: unknown) {
-    console.error('Error on POST /payments:', error);
-
-    let errorMessage = 'An unknown error occurred';
-    if (error instanceof Error) {
-      errorMessage = error.message;
-    } else if (typeof error === 'string') {
-      errorMessage = error;
-    }
-    return NextResponse.json({ error: errorMessage }, { status: 500 });
+  } catch {
+    return;
   }
 }
