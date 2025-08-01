@@ -66,26 +66,16 @@ export const CheckoutForm = () => {
 
   const onSubmit = async (data: CheckoutSchema) => {
     try {
-      console.log('Form submitted:', data);
       setServerError(null);
 
       const amount = 1000;
 
-      const res = await fetch('/api/payments', {
+      await fetch('/api/payments', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ ...data, amount }),
       });
-
-      const json = await res.json();
-
-      if (!res.ok) {
-        console.error('Validation errors:', json.issues);
-        return;
-      }
-    } catch (err) {
-      console.error('Unexpected error:', err);
-    }
+    } catch {}
   };
 
   return (
