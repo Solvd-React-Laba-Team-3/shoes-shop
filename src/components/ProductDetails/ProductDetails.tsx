@@ -93,21 +93,11 @@ export const ProductDetails: FC<ProductDetailsProps> = ({
               ${data.price}
             </Typography>
           </Stack>
-          <Stack direction="column" paddingBottom="36px">
-            <Typography
-              variant="h6"
-              paddingBottom="24px"
-              color="text.secondary"
-            >
-              Select Size
-            </Typography>
-
-            <SizeSelector
-              selectedSize={selectedSize}
-              onSizeChange={setSelectedSize}
-              availableSizes={data.sizes.map((s) => s.value)}
-            />
-          </Stack>
+          <SizeSelector
+            selectedSize={selectedSize}
+            onSizeChange={setSelectedSize}
+            availableSizes={data.sizes.map((s) => s.value)}
+          />
           <Stack
             sx={{
               justifyContent: 'space-between',
