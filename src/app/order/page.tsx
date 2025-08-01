@@ -48,7 +48,7 @@ export default function Order() {
               for your order
             </Typography>
             <Typography component="span" variant="h2" color="primary.main">
-              #{order}
+              {order}
             </Typography>
           </Box>
 

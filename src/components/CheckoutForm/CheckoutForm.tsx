@@ -21,6 +21,8 @@ import MoneyIcon from '@mui/icons-material/AttachMoney';
 import ScheduleIcon from '@mui/icons-material/Schedule';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
+import { CardElement, useElements, useStripe } from '@stripe/react-stripe-js';
+import { useRouter } from 'next/navigation';
 
 type CheckoutProps = {
   discountCode?: string;
@@ -28,6 +30,9 @@ type CheckoutProps = {
 };
 
 export const CheckoutForm: FC<CheckoutProps> = ({ discountCode, amount }) => {
+  const stripe = useStripe();
+  const elements = useElements();
+  const router = useRouter();
   const [serverError, setServerError] = useState<string | null>(null);
   const [showCardFields, setShowCardFields] = useState(true);
   const methods = useForm<CheckoutSchema>({
@@ -43,10 +48,6 @@ export const CheckoutForm: FC<CheckoutProps> = ({ discountCode, amount }) => {
       zipCode: '',
       address: '',
       paymentMethod: 'card',
-      cardNumber: '',
-      expirationDate: '',
-      securityCode: '',
-      paymentCountry: '',
       discountCode: discountCode,
     },
   });
@@ -71,21 +72,51 @@ export const CheckoutForm: FC<CheckoutProps> = ({ discountCode, amount }) => {
   });
 
   const onSubmit = async (data: CheckoutSchema) => {
+    const orderNumber = '#' + Date.now();
     try {
       setServerError(null);
-
       const body = {
         ...data,
-        amount: amount ? amount : 0,
-        discountCode: discountCode ? discountCode : undefined,
+        amount: amount || 0,
+        discountCode: discountCode || undefined,
+        orderNumber,
       };
 
-      await fetch('/api/payments', {
+      const res = await fetch('/api/payments', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(body),
       });
-    } catch {}
+
+      const { clientSecret } = await res.json();
+
+      if (!stripe || !elements) {
+        return;
+      }
+
+      const result = await stripe.confirmCardPayment(clientSecret, {
+        payment_method: {
+          card: elements.getElement(CardElement)!,
+          billing_details: {
+            name: `${data.name} ${data.surname}`,
+            email: data.email,
+          },
+        },
+      });
+
+      if (result.error) {
+        setServerError(result.error.message ?? 'Payment failed');
+        return;
+      }
+
+      if (result.paymentIntent?.status === 'succeeded') {
+        elements.getElement(CardElement)?.clear();
+        router.push(`/order/?order=${encodeURIComponent(orderNumber)}`);
+      }
+    } catch {
+      methods.reset();
+      router.push(`/order/?order=${encodeURIComponent(orderNumber)}`);
+    }
   };
 
   return (
@@ -302,55 +333,36 @@ export const CheckoutForm: FC<CheckoutProps> = ({ discountCode, amount }) => {
             )}
           />
 
-          {showCardFields && paymentMethod === 'card' && (
-            <>
-              <Box sx={{ mt: 1 }}>
-                <LabeledTextfield
-                  label="Card number"
-                  {...register('cardNumber')}
-                  error={!!errors.cardNumber}
-                  placeholder="1234 1234 1234 1234"
-                  errorMessage={errors.cardNumber?.message}
-                  reserveErrorSpace
-                  maxWidth="800px"
-                  sx={{ width: '100%' }}
-                />
-              </Box>
-
+          {paymentMethod === 'card' && showCardFields && (
+            <Box sx={{ mt: 2 }}>
               <Box
                 sx={{
-                  display: 'grid',
-                  gridTemplateColumns: 'repeat(3, 1fr)',
-                  gap: 2,
-                  width: '100%',
+                  border: `1px solid ${theme.palette.secondary.dark}`,
+                  borderRadius: '8px',
+                  p: 2,
+                  maxWidth: '100%',
+                  height: '56px',
                 }}
               >
-                <LabeledTextfield
-                  label="Expiration date"
-                  {...register('expirationDate')}
-                  error={!!errors.expirationDate}
-                  placeholder="MM/YY"
-                  errorMessage={errors.expirationDate?.message}
-                  reserveErrorSpace
-                />
-                <LabeledTextfield
-                  label="Security code"
-                  {...register('securityCode')}
-                  error={!!errors.securityCode}
-                  placeholder="453"
-                  errorMessage={errors.securityCode?.message}
-                  reserveErrorSpace
-                />
-                <LabeledTextfield
-                  label="Country"
-                  {...register('paymentCountry')}
-                  error={!!errors.paymentCountry}
-                  placeholder="USA"
-                  errorMessage={errors.paymentCountry?.message}
-                  reserveErrorSpace
+                <CardElement
+                  options={{
+                    style: {
+                      base: {
+                        fontSize: '16px',
+                        color: '#424770',
+                        fontFamily: 'Work Sans',
+                        '::placeholder': {
+                          color: theme.palette.secondary.light,
+                        },
+                      },
+                      invalid: {
+                        color: 'error.main',
+                      },
+                    },
+                  }}
                 />
               </Box>
-            </>
+            </Box>
           )}
 
           {serverError && (
