@@ -106,7 +106,7 @@ export const CartSummary: React.FC<CartSummaryProps> = ({
         sx={{
           display: 'flex',
           justifyContent: 'space-between',
-          margin: '20px',
+          margin: '20px 0',
         }}
       >
         <Typography variant="h3" sx={{ fontWeight: 600 }}>
