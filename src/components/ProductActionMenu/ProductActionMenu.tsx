@@ -8,7 +8,6 @@ import { IconButton } from '@/components/ui';
 import { EditProductModal } from '../common/EditProductModal';
 import { Product } from '@/types/Product';
 import { useDeleteProduct } from '@/api/products/useDeleteProduct';
-import { useSession } from 'next-auth/react';
 import { useCreateProduct } from '@/api/products/useCreateProduct';
 import LinearProgress from '@mui/material/LinearProgress';
 import { useRouter } from 'next/navigation';
@@ -19,13 +18,14 @@ interface ProductActionMenuProps {
 
 export const ProductActionMenu: FC<ProductActionMenuProps> = ({ product }) => {
   const router = useRouter();
-  const { data: session } = useSession();
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
+
   const { mutate: deleteProduct, isPending: isDeletePending } =
     useDeleteProduct();
   const { mutate: createProduct, isPending: isCreatePending } =
     useCreateProduct();
-  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-  const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
+
   const open = Boolean(anchorEl);
 
   const handleClick = (event: MouseEvent<HTMLElement>) => {
@@ -33,15 +33,10 @@ export const ProductActionMenu: FC<ProductActionMenuProps> = ({ product }) => {
   };
 
   const handleDuplicateProduct = () => {
-    if (!session) return;
-
     createProduct({
       body: {
         data: {
-          userID: session.user.id,
-          images: product.images?.map((image) => image.id) || null,
-          categories:
-            product.categories?.map((category) => category.id) || null,
+          images: product.images?.map((image) => image.id),
           brand: product.brand.id,
           color: product.color.id,
           gender: product.gender.id,
@@ -51,7 +46,6 @@ export const ProductActionMenu: FC<ProductActionMenuProps> = ({ product }) => {
           description: product.description,
         },
       },
-      token: session.user.accessToken,
     });
     setAnchorEl(null);
   };
@@ -67,11 +61,8 @@ export const ProductActionMenu: FC<ProductActionMenuProps> = ({ product }) => {
   };
 
   const handleDeleteProduct = () => {
-    if (!session) return;
-
     deleteProduct({
       id: product.id,
-      token: session.user.accessToken,
     });
     setAnchorEl(null);
   };

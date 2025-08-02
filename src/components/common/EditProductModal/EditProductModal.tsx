@@ -8,7 +8,6 @@ import { FC, useState } from 'react';
 import { Suspense } from 'react';
 import Box from '@mui/material/Box';
 import CircularProgress from '@mui/material/CircularProgress';
-import { useSession } from 'next-auth/react';
 import { useUpdateProduct } from '@/api/products/useUpdateProduct';
 import { useUploadFile } from '@/api/uploadFile/useUploadFile';
 
@@ -23,7 +22,6 @@ export const EditProductModal: FC<EditPageProps> = ({
   onClose,
   editingProduct,
 }) => {
-  const { data: session } = useSession();
   const { mutate: editProduct, isPending } = useUpdateProduct();
   const { mutate: uploadFile, isPending: isUploading } = useUploadFile();
 
@@ -35,30 +33,29 @@ export const EditProductModal: FC<EditPageProps> = ({
     })) || []
   );
 
-  const handleFilesDropped = (files: File[]) => {
-    setFiles(files);
+  const handleFilesDropped = (uploadedFiles: File[]) => {
+    const updatedFiles = [...files, ...uploadedFiles];
+    setFiles(updatedFiles);
 
-    const tempImages = files.map((file, index) => ({
+    const tempImages = uploadedFiles.map((file, index) => ({
       id: index,
       url: URL.createObjectURL(file),
     }));
 
-    setImages(tempImages);
+    const updatedImages = [...images, ...tempImages];
+    setImages(updatedImages);
   };
 
-  const handleRemoveImage = (index: number) => {
-    const newFiles = [...files];
-    newFiles.splice(index, 1);
-    setFiles(newFiles);
+  const handleRemoveImage = (id: number) => {
+    const updatedFiles = [...files];
+    updatedFiles.splice(id, 1);
+    setFiles(updatedFiles);
 
-    const newImages = [...images];
-    newImages.splice(index, 1);
-    setImages(newImages);
+    const updatedImages = images.filter((image) => image.id !== id);
+    setImages(updatedImages);
   };
 
   const handleSubmit = async (data: ProductFormData) => {
-    if (!session) return;
-
     if (files.length > 0) {
       uploadFile(files, {
         onSuccess: (uploadedFiles) => {
@@ -69,15 +66,16 @@ export const EditProductModal: FC<EditPageProps> = ({
                   ...data,
                   images: [
                     ...uploadedFiles.map((file) => file.id),
-                    ...(editingProduct.images?.map((image) => image.id) || []),
+                    ...images
+                      .filter((image) => !files[image.id])
+                      .map((image) => image.id),
                   ],
                 },
               },
               id: editingProduct.id,
-              token: session.user.accessToken,
             },
             {
-              onSettled: () => {
+              onSuccess: () => {
                 onClose();
               },
             }
@@ -90,14 +88,13 @@ export const EditProductModal: FC<EditPageProps> = ({
           body: {
             data: {
               ...data,
-              images: editingProduct.images?.map((image) => image.id),
+              images: images.map((image) => image.id),
             },
           },
           id: editingProduct.id,
-          token: session.user.accessToken,
         },
         {
-          onSettled: () => {
+          onSuccess: () => {
             onClose();
           },
         }

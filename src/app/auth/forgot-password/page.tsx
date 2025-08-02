@@ -1,7 +1,7 @@
 'use client';
 
-import { LabeledTextfield } from '@/components/ui';
-import { Box, FormLabel, Typography } from '@mui/material';
+import { FormErrorMessage, LabeledTextfield } from '@/components/ui';
+import { Box, Typography } from '@mui/material';
 import Image from 'next/image';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
@@ -14,7 +14,6 @@ import {
 import { LoaderButton } from '@/components/LoaderButton';
 import { Link } from '@/components/ui';
 import { useRouter } from 'next/navigation';
-import WarningAmberIcon from '@mui/icons-material/WarningAmber';
 import recoveryImage from '../../../../public/recovery.jpg';
 
 export default function ForgotPassword() {
@@ -29,6 +28,7 @@ export default function ForgotPassword() {
     defaultValues: {
       email: '',
     },
+    shouldFocusError: true,
   });
 
   const {
@@ -84,33 +84,14 @@ export default function ForgotPassword() {
             {...register('email')}
             error={!!errors.email}
           />
-          {errors.email && (
-            <FormLabel
-              sx={{
-                fontSize: '13px',
-                display: 'flex',
-                alignItems: 'center',
-                gap: 1,
-              }}
-              error
-            >
-              <WarningAmberIcon fontSize="small" /> {errors.email.message}
-            </FormLabel>
-          )}
-          {isError && (
-            <FormLabel
-              sx={{
-                fontSize: '13px',
-                display: 'flex',
-                alignItems: 'center',
-                gap: 1,
-              }}
-              error
-            >
-              <WarningAmberIcon fontSize="small" />
-              Failed to send reset instructions. Please try again.
-            </FormLabel>
-          )}
+          <FormErrorMessage
+            message={
+              errors.email?.message ||
+              (isError
+                ? 'Failed to send reset instructions. Please try again.'
+                : null)
+            }
+          />
 
           {isSuccess && (
             <Typography variant="subtitle2" color="success">

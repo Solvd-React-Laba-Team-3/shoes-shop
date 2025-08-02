@@ -1,7 +1,12 @@
 'use client';
 
-import { LabeledTextfield, Link, ReviewPanel } from '@/components/ui';
-import { Box, Typography, FormLabel } from '@mui/material';
+import {
+  FormErrorMessage,
+  LabeledTextfield,
+  Link,
+  ReviewPanel,
+} from '@/components/ui';
+import { Box, Typography } from '@mui/material';
 import Image from 'next/image';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -10,7 +15,6 @@ import { AuthContainer } from '@/components/AuthContainer';
 import { SignUpSchema, signUpSchema } from './sign-up.schema';
 import { useRouter } from 'next/navigation';
 import { LoaderButton } from '@/components/LoaderButton';
-import WarningAmberIcon from '@mui/icons-material/WarningAmber';
 import registerImage from '../../../../public/register.jpg';
 
 export default function SignUp() {
@@ -28,6 +32,7 @@ export default function SignUp() {
       password: '',
       confirmPassword: '',
     },
+    shouldFocusError: true,
   });
 
   const { mutate: registerUser, error, isPending } = useRegister();
@@ -80,19 +85,7 @@ export default function SignUp() {
             {...register('name')}
             error={!!errors.name}
           />
-          {errors.name && (
-            <FormLabel
-              sx={{
-                fontSize: '13px',
-                display: 'flex',
-                alignItems: 'center',
-                gap: 1,
-              }}
-              error
-            >
-              <WarningAmberIcon fontSize="small" /> {errors.name.message}
-            </FormLabel>
-          )}
+          <FormErrorMessage message={errors.name?.message} />
 
           <LabeledTextfield
             id="email"
@@ -102,19 +95,8 @@ export default function SignUp() {
             {...register('email')}
             error={!!errors.email}
           />
-          {errors.email && (
-            <FormLabel
-              sx={{
-                fontSize: '13px',
-                display: 'flex',
-                alignItems: 'center',
-                gap: 1,
-              }}
-              error
-            >
-              <WarningAmberIcon fontSize="small" /> {errors.email.message}
-            </FormLabel>
-          )}
+          <FormErrorMessage message={errors.email?.message} />
+
           <LabeledTextfield
             id="password"
             label="Password"
@@ -124,19 +106,7 @@ export default function SignUp() {
             {...register('password')}
             error={!!errors.password}
           />
-          {errors.password && (
-            <FormLabel
-              sx={{
-                fontSize: '13px',
-                display: 'flex',
-                alignItems: 'center',
-                gap: 1,
-              }}
-              error
-            >
-              <WarningAmberIcon fontSize="small" /> {errors.password.message}
-            </FormLabel>
-          )}
+          <FormErrorMessage message={errors.password?.message} />
 
           <LabeledTextfield
             id="confirmPassword"
@@ -147,35 +117,10 @@ export default function SignUp() {
             {...register('confirmPassword')}
             error={!!errors.confirmPassword}
           />
-          {errors.confirmPassword && (
-            <FormLabel
-              sx={{
-                fontSize: '13px',
-                display: 'flex',
-                alignItems: 'center',
-                gap: 1,
-              }}
-              error
-            >
-              <WarningAmberIcon fontSize="small" />{' '}
-              {errors.confirmPassword.message}
-            </FormLabel>
-          )}
+          <FormErrorMessage
+            message={errors.confirmPassword?.message || error?.message}
+          />
 
-          {error && (
-            <FormLabel
-              sx={{
-                fontSize: '13px',
-                display: 'flex',
-                alignItems: 'center',
-                gap: 1,
-              }}
-              error
-            >
-              <WarningAmberIcon fontSize="small" />
-              {error.message}
-            </FormLabel>
-          )}
           <LoaderButton
             isSubmitting={isPending}
             text="Sign up"
