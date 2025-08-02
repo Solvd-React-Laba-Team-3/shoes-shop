@@ -92,31 +92,35 @@ export default function SignIn() {
           autoComplete="off"
           display="flex"
           flexDirection="column"
-          gap={2}
+          gap={1.5}
           width="100%"
           maxWidth={400}
           onSubmit={handleSubmit(onSubmit)}
         >
-          <LabeledTextfield
-            id="email"
-            label="Email"
-            required
-            placeholder="example@mail.com"
-            error={!!errors.email || !!error}
-            {...register('email')}
-          />
-          <FormErrorMessage message={errors.email?.message} />
+          <Box>
+            <LabeledTextfield
+              id="email"
+              label="Email"
+              required
+              placeholder="example@mail.com"
+              error={!!errors.email || !!error}
+              {...register('email')}
+            />
+            <FormErrorMessage message={errors.email?.message} />
+          </Box>
 
-          <LabeledTextfield
-            id="password"
-            label="Password"
-            required
-            type="password"
-            placeholder="at least 6 characters"
-            error={!!errors.password || !!error}
-            {...register('password')}
-          />
-          <FormErrorMessage message={errors.password?.message || error} />
+          <Box>
+            <LabeledTextfield
+              id="password"
+              label="Password"
+              required
+              type="password"
+              placeholder="at least 6 characters"
+              error={!!errors.password || !!error}
+              {...register('password')}
+            />
+            <FormErrorMessage message={errors.password?.message || error} />
+          </Box>
 
           <Box
             sx={{

@@ -72,54 +72,62 @@ export default function SignUp() {
           autoComplete="off"
           display="flex"
           flexDirection="column"
-          gap={2}
+          gap={1.5}
           width="100%"
           maxWidth={400}
           onSubmit={handleSubmit(onSubmit)}
         >
-          <LabeledTextfield
-            id="name"
-            label="Name"
-            required
-            placeholder="Hayman Andrews"
-            {...register('name')}
-            error={!!errors.name}
-          />
-          <FormErrorMessage message={errors.name?.message} />
+          <Box>
+            <LabeledTextfield
+              id="name"
+              label="Name"
+              required
+              placeholder="Hayman Andrews"
+              {...register('name')}
+              error={!!errors.name}
+            />
+            <FormErrorMessage message={errors.name?.message} />
+          </Box>
 
-          <LabeledTextfield
-            id="email"
-            label="Email"
-            required
-            placeholder="example@mail.com"
-            {...register('email')}
-            error={!!errors.email}
-          />
-          <FormErrorMessage message={errors.email?.message} />
+          <Box>
+            <LabeledTextfield
+              id="email"
+              label="Email"
+              required
+              placeholder="example@mail.com"
+              {...register('email')}
+              error={!!errors.email}
+            />
+            <FormErrorMessage message={errors.email?.message} />
+          </Box>
 
-          <LabeledTextfield
-            id="password"
-            label="Password"
-            required
-            type="password"
-            placeholder="at least 6 characters"
-            {...register('password')}
-            error={!!errors.password}
-          />
-          <FormErrorMessage message={errors.password?.message} />
+          <Box>
+            <LabeledTextfield
+              id="password"
+              label="Password"
+              required
+              type="password"
+              placeholder="at least 6 characters"
+              {...register('password')}
+              error={!!errors.password}
+            />
+            <FormErrorMessage message={errors.password?.message} />
+          </Box>
 
-          <LabeledTextfield
-            id="confirmPassword"
-            label="Confirm password"
-            required
-            type="password"
-            placeholder="at least 6 characters"
-            {...register('confirmPassword')}
-            error={!!errors.confirmPassword}
-          />
-          <FormErrorMessage
-            message={errors.confirmPassword?.message || error?.message}
-          />
+          <Box>
+            <LabeledTextfield
+              id="confirmPassword"
+              label="Confirm password"
+              required
+              type="password"
+              placeholder="at least 6 characters"
+              {...register('confirmPassword')}
+              error={!!errors.confirmPassword}
+            />
+            <FormErrorMessage
+              message={errors.confirmPassword?.message || error?.message}
+            />
+          </Box>
 
           <LoaderButton
             isSubmitting={isPending}

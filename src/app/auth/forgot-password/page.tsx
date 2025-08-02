@@ -70,34 +70,36 @@ export default function ForgotPassword() {
           autoComplete="off"
           display="flex"
           flexDirection="column"
-          gap={2}
+          gap={1.5}
           width="100%"
           maxWidth={400}
           onSubmit={handleSubmit(onSubmit)}
         >
-          <LabeledTextfield
-            id="Email"
-            label="Email"
-            type="email"
-            placeholder="Enter your email"
-            required
-            {...register('email')}
-            error={!!errors.email}
-          />
-          <FormErrorMessage
-            message={
-              errors.email?.message ||
-              (isError
-                ? 'Failed to send reset instructions. Please try again.'
-                : null)
-            }
-          />
-
-          {isSuccess && (
-            <Typography variant="subtitle2" color="success">
-              A reset link has been sent to your email. Redirecting to login...
-            </Typography>
-          )}
+          <Box>
+            <LabeledTextfield
+              id="Email"
+              label="Email"
+              type="email"
+              placeholder="Enter your email"
+              required
+              {...register('email')}
+              error={!!errors.email}
+            />
+            <FormErrorMessage
+              message={
+                errors.email?.message ||
+                (isError
+                  ? 'Failed to send reset instructions. Please try again.'
+                  : null)
+              }
+            />
+            {isSuccess && (
+              <Typography variant="subtitle2" color="success">
+                A reset link has been sent to your email. Redirecting to
+                login...
+              </Typography>
+            )}
+          </Box>
 
           <LoaderButton
             isSubmitting={isPending || isSuccess}
