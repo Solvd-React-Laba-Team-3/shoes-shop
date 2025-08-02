@@ -1,7 +1,7 @@
 'use client';
 
-import { LabeledTextfield, Link } from '@/components/ui';
-import { Box, FormLabel, Typography } from '@mui/material';
+import { FormErrorMessage, LabeledTextfield, Link } from '@/components/ui';
+import { Box, Typography } from '@mui/material';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useResetPassword } from '@/api/auth/useResetPassword';
@@ -14,7 +14,6 @@ import {
 } from './reset-password.schema';
 import { LoaderButton } from '@/components/LoaderButton';
 import { ReactElement } from 'react';
-import WarningAmberIcon from '@mui/icons-material/WarningAmber';
 import recoveryImage from '../../../../public/recovery.jpg';
 
 export default function ResetPassword(): ReactElement | null {
@@ -32,6 +31,7 @@ export default function ResetPassword(): ReactElement | null {
       password: '',
       confirmPassword: '',
     },
+    shouldFocusError: true,
   });
 
   const { mutate: resetPassword, isError, isSuccess } = useResetPassword();
@@ -94,19 +94,8 @@ export default function ResetPassword(): ReactElement | null {
             error={!!errors.password}
             {...register('password')}
           />
-          {errors.password && (
-            <FormLabel
-              sx={{
-                fontSize: '13px',
-                display: 'flex',
-                alignItems: 'center',
-                gap: 1,
-              }}
-              error
-            >
-              <WarningAmberIcon fontSize="small" /> {errors.password.message}
-            </FormLabel>
-          )}
+          <FormErrorMessage message={errors.password?.message} />
+
           <LabeledTextfield
             id="Confirm password"
             required
@@ -116,34 +105,13 @@ export default function ResetPassword(): ReactElement | null {
             error={!!errors.confirmPassword}
             {...register('confirmPassword')}
           />
-          {errors.confirmPassword && (
-            <FormLabel
-              sx={{
-                fontSize: '13px',
-                display: 'flex',
-                alignItems: 'center',
-                gap: 1,
-              }}
-              error
-            >
-              <WarningAmberIcon fontSize="small" />
-              {errors.confirmPassword.message}
-            </FormLabel>
-          )}
-          {isError && (
-            <FormLabel
-              sx={{
-                fontSize: '13px',
-                display: 'flex',
-                alignItems: 'center',
-                gap: 1,
-              }}
-              error
-            >
-              <WarningAmberIcon fontSize="small" />
-              Failed to reset password. Please try again.
-            </FormLabel>
-          )}
+          <FormErrorMessage
+            message={
+              errors.confirmPassword?.message ||
+              (isError ? 'Failed to reset password. Please try again.' : null)
+            }
+          />
+
           {isSuccess && (
             <Typography variant="subtitle2" color="success">
               Password reset successful. Redirecting to login...

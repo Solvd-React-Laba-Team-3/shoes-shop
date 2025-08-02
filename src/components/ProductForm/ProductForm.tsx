@@ -11,30 +11,20 @@ import {
   MenuItem,
   Button,
   IconButton,
+  FormErrorMessage,
 } from '@/components/ui';
 import { zodResolver } from '@hookform/resolvers/zod';
-import {
-  Box,
-  FormControl,
-  FormLabel,
-  ToggleButtonGroup,
-  Typography,
-  Fab,
-} from '@mui/material';
-import DeleteIcon from '@mui/icons-material/Delete';
+import { Box, FormControl, ToggleButtonGroup, Typography } from '@mui/material';
 import { useSuspenseQueries } from '@tanstack/react-query';
 import { Controller, useForm } from 'react-hook-form';
 import { StyledInputLabel, StyledTextArea } from './productForm.styles';
 import { productSchema } from './productForm.schema';
 import { ProductFormData } from './productForm.schema';
-import { FC, useState } from 'react';
+import { FC } from 'react';
 import { Size } from '@/types/Size';
 import LinearProgress from '@mui/material/LinearProgress';
-import WarningAmberIcon from '@mui/icons-material/WarningAmber';
 import AutoFixHighIcon from '@mui/icons-material/AutoFixHighOutlined';
-import { FileDropZone } from '@/components/FileDropZone';
-import Image from 'next/image';
-import { DeleteImageModal } from '../common/DeleteImageModal';
+import { ProductFormDropzone } from '../ProductFormDropzone';
 
 export type ImageType = {
   id: number;
@@ -76,14 +66,13 @@ export const ProductForm: FC<ProductFormProps> = ({
   handleFilesDropped,
   onRemoveImage,
 }) => {
-  const [isDeleteImageModalOpen, setIsDeleteImageModalOpen] = useState(false);
-
   const {
     register,
     control,
     handleSubmit,
     formState: { isSubmitting },
     formState: { errors },
+    setError,
   } = useForm<ProductFormData>({
     resolver: zodResolver(productSchema),
     defaultValues: {
@@ -96,7 +85,20 @@ export const ProductForm: FC<ProductFormProps> = ({
       sizes: [],
       ...editingProduct,
     },
+    shouldFocusError: true,
   });
+
+  const onFormSubmit = (data: ProductFormData) => {
+    if (images.length > 10) {
+      setError('root', {
+        message: 'You can only upload up to 10 images',
+        type: 'manual',
+      });
+
+      return;
+    }
+    onSubmit(data);
+  };
 
   const [
     { data: genders },
@@ -106,11 +108,8 @@ export const ProductForm: FC<ProductFormProps> = ({
   ] = useSuspenseQueries({
     queries: [
       getGendersOptions(),
-
       getSizesOptions(),
-
       getBrandsOptions(),
-
       getColorsOptions(),
     ],
   });
@@ -128,7 +127,7 @@ export const ProductForm: FC<ProductFormProps> = ({
           }}
         />
       )}
-      <form onSubmit={handleSubmit(onSubmit)}>
+      <form onSubmit={handleSubmit(onFormSubmit)}>
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: '40px' }}>
           <Box
             sx={{
@@ -143,13 +142,23 @@ export const ProductForm: FC<ProductFormProps> = ({
               </Typography>
             </Box>
 
-            <Button
-              type="submit"
-              size="small"
-              loading={isSubmitting || isPending}
+            <Box
+              sx={{
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '8px',
+                alignItems: 'flex-end',
+              }}
             >
-              Save
-            </Button>
+              <Button
+                type="submit"
+                size="small"
+                loading={isSubmitting || isPending}
+              >
+                Save
+              </Button>
+              <FormErrorMessage message={errors.root?.message} />
+            </Box>
           </Box>
 
           <Box sx={{ display: 'flex', gap: '234px' }}>
@@ -161,21 +170,7 @@ export const ProductForm: FC<ProductFormProps> = ({
                   {...register('name')}
                   error={!!errors.name}
                 />
-                {errors.name && (
-                  <FormLabel
-                    sx={{
-                      fontSize: '13px',
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: 1,
-                      mt: 1,
-                    }}
-                    error
-                  >
-                    <WarningAmberIcon fontSize="small" />
-                    {errors.name.message}
-                  </FormLabel>
-                )}
+                <FormErrorMessage message={errors.name?.message} />
               </Box>
 
               <Box sx={{ margin: '8px 0 20px 0' }}>
@@ -193,27 +188,11 @@ export const ProductForm: FC<ProductFormProps> = ({
                         error={!!errors.price}
                         onChange={(e) => {
                           const numValue = Number(e.target.value);
-
                           if (isNaN(numValue)) return;
-
                           field.onChange(numValue);
                         }}
                       />
-                      {errors.price && (
-                        <FormLabel
-                          sx={{
-                            fontSize: '13px',
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: 1,
-                            mt: 1,
-                          }}
-                          error
-                        >
-                          <WarningAmberIcon fontSize="small" />
-                          {errors.price.message}
-                        </FormLabel>
-                      )}
+                      <FormErrorMessage message={errors.price?.message} />
                     </>
                   )}
                 />
@@ -248,11 +227,9 @@ export const ProductForm: FC<ProductFormProps> = ({
                               Select color
                             </Typography>
                           );
-
                         const selectedColor = colors?.find(
                           (c) => c.id === value
                         );
-
                         return selectedColor?.name;
                       }}
                     >
@@ -264,21 +241,7 @@ export const ProductForm: FC<ProductFormProps> = ({
                         </MenuItem>
                       ))}
                     </Select>
-                    {errors.color && (
-                      <FormLabel
-                        sx={{
-                          fontSize: '13px',
-                          display: 'flex',
-                          alignItems: 'center',
-                          gap: 1,
-                          mt: 1,
-                        }}
-                        error
-                      >
-                        <WarningAmberIcon fontSize="small" />
-                        {errors.color.message}
-                      </FormLabel>
-                    )}
+                    <FormErrorMessage message={errors.color?.message} />
                   </FormControl>
                 )}
               />
@@ -316,11 +279,9 @@ export const ProductForm: FC<ProductFormProps> = ({
                                 Select gender
                               </Typography>
                             );
-
                           const selectedGender = genders?.find(
                             (g) => g.id === value
                           );
-
                           return selectedGender?.name;
                         }}
                       >
@@ -332,25 +293,10 @@ export const ProductForm: FC<ProductFormProps> = ({
                           </MenuItem>
                         ))}
                       </Select>
-                      {errors.gender && (
-                        <FormLabel
-                          sx={{
-                            fontSize: '13px',
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: 1,
-                            mt: 1,
-                          }}
-                          error
-                        >
-                          <WarningAmberIcon fontSize="small" />
-                          {errors.gender.message}
-                        </FormLabel>
-                      )}
+                      <FormErrorMessage message={errors.gender?.message} />
                     </FormControl>
                   )}
                 />
-
                 <Controller
                   name="brand"
                   control={control}
@@ -398,26 +344,11 @@ export const ProductForm: FC<ProductFormProps> = ({
                           </MenuItem>
                         ))}
                       </Select>
-                      {errors.brand && (
-                        <FormLabel
-                          sx={{
-                            fontSize: '13px',
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: 1,
-                            mt: 1,
-                          }}
-                          error
-                        >
-                          <WarningAmberIcon fontSize="small" />
-                          {errors.brand.message}
-                        </FormLabel>
-                      )}
+                      <FormErrorMessage message={errors.brand?.message} />
                     </FormControl>
                   )}
                 />
               </Box>
-
               <Controller
                 name="description"
                 control={control}
@@ -452,25 +383,10 @@ export const ProductForm: FC<ProductFormProps> = ({
                         <AutoFixHighIcon />
                       </IconButton>
                     </Box>
-                    {errors.description && (
-                      <FormLabel
-                        sx={{
-                          fontSize: '13px',
-                          display: 'flex',
-                          alignItems: 'center',
-                          gap: 1,
-                          mt: 1,
-                        }}
-                        error
-                      >
-                        <WarningAmberIcon fontSize="small" />
-                        {errors.description.message}
-                      </FormLabel>
-                    )}
+                    <FormErrorMessage message={errors.description?.message} />
                   </Box>
                 )}
               />
-
               <Box sx={{ marginTop: '8px' }}>
                 <Controller
                   name="sizes"
@@ -523,69 +439,18 @@ export const ProductForm: FC<ProductFormProps> = ({
                             );
                           })}
                         </ToggleButtonGroup>
-                        {errors.sizes && (
-                          <FormLabel
-                            sx={{
-                              fontSize: '13px',
-                              display: 'flex',
-                              alignItems: 'center',
-                              gap: 1,
-                              mt: 1,
-                            }}
-                            error
-                          >
-                            <WarningAmberIcon fontSize="small" />
-                            {errors.sizes.message}
-                          </FormLabel>
-                        )}
+                        <FormErrorMessage message={errors.sizes?.message} />
                       </Box>
                     );
                   }}
                 />
               </Box>
             </Box>
-            <Box
-              sx={{
-                display: 'grid',
-                gridTemplateColumns: '1fr 1fr',
-                gap: '52px',
-              }}
-            >
-              <FileDropZone onFilesDropped={handleFilesDropped} />
-
-              {images.map((image) => (
-                <>
-                  <Box key={image.id} sx={{ position: 'relative' }}>
-                    <Image
-                      src={image.url}
-                      alt="Product"
-                      width={320}
-                      height={380}
-                    />
-                    <Fab
-                      size="small"
-                      color="error"
-                      sx={{
-                        position: 'absolute',
-                        top: 8,
-                        right: 8,
-                      }}
-                      onClick={() => setIsDeleteImageModalOpen(true)}
-                    >
-                      <DeleteIcon />
-                    </Fab>
-                  </Box>
-                  <DeleteImageModal
-                    open={isDeleteImageModalOpen}
-                    onClose={() => setIsDeleteImageModalOpen(false)}
-                    onDelete={() => {
-                      onRemoveImage(image.id);
-                      setIsDeleteImageModalOpen(false);
-                    }}
-                  />
-                </>
-              ))}
-            </Box>
+            <ProductFormDropzone
+              images={images}
+              onRemoveImage={onRemoveImage}
+              handleFilesDropped={handleFilesDropped}
+            />
           </Box>
         </Box>
       </form>
