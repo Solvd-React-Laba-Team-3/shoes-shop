@@ -3,10 +3,10 @@ import { ProfileProductsFallback } from '@/components/common/ProfileProductsFall
 import { Hydrate } from '@/providers/Hydrate';
 import { dehydrate, QueryClient } from '@tanstack/react-query';
 import { getServerSession } from 'next-auth';
-import { Suspense } from 'react';
+import { Suspense, ReactNode } from 'react';
 
 interface ProductsLayoutProps {
-  children: React.ReactNode;
+  children: ReactNode;
 }
 
 const queryClient = new QueryClient();
