@@ -80,43 +80,47 @@ export default function ResetPassword(): ReactElement | null {
           autoComplete="off"
           display="flex"
           flexDirection="column"
-          gap={2}
+          gap={1.5}
           width="100%"
           maxWidth={400}
           onSubmit={handleSubmit(onSubmit)}
         >
-          <LabeledTextfield
-            id="password"
-            placeholder="at least 6 characters"
-            required
-            type="password"
-            label="Password"
-            error={!!errors.password}
-            {...register('password')}
-          />
-          <FormErrorMessage message={errors.password?.message} />
+          <Box>
+            <LabeledTextfield
+              id="password"
+              placeholder="at least 6 characters"
+              required
+              type="password"
+              label="Password"
+              error={!!errors.password}
+              {...register('password')}
+            />
+            <FormErrorMessage message={errors.password?.message} />
+          </Box>
 
-          <LabeledTextfield
-            id="Confirm password"
-            required
-            type="password"
-            placeholder="at least 6 characters"
-            label="Confirm password"
-            error={!!errors.confirmPassword}
-            {...register('confirmPassword')}
-          />
-          <FormErrorMessage
-            message={
-              errors.confirmPassword?.message ||
-              (isError ? 'Failed to reset password. Please try again.' : null)
-            }
-          />
+          <Box>
+            <LabeledTextfield
+              id="Confirm password"
+              required
+              type="password"
+              placeholder="at least 6 characters"
+              label="Confirm password"
+              error={!!errors.confirmPassword}
+              {...register('confirmPassword')}
+            />
+            <FormErrorMessage
+              message={
+                errors.confirmPassword?.message ||
+                (isError ? 'Failed to reset password. Please try again.' : null)
+              }
+            />
 
-          {isSuccess && (
-            <Typography variant="subtitle2" color="success">
-              Password reset successful. Redirecting to login...
-            </Typography>
-          )}
+            {isSuccess && (
+              <Typography variant="subtitle2" color="success">
+                Password reset successful. Redirecting to login...
+              </Typography>
+            )}
+          </Box>
           <LoaderButton
             isSubmitting={isSubmitting || isSuccess}
             text="Reset Password"
