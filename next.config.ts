@@ -5,6 +5,7 @@ const nextConfig: NextConfig = {
   images: {
     remotePatterns: [new URL('https://res.cloudinary.com/**')],
   },
+  transpilePackages: ['@mui/material', '@mui/system', '@mui/icons-material'],
 };
 
 export default nextConfig;

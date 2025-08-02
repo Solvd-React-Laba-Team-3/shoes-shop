@@ -1,3 +1,5 @@
+'use client';
+
 import WarningAmberIcon from '@mui/icons-material/WarningAmber';
 import FormLabel from '@mui/material/FormLabel';
 import { styled } from '@mui/material/styles';
@@ -20,7 +22,7 @@ const StyledFormLabel = styled(FormLabel)<FormErrorMessageProps>(
 
 export const FormErrorMessage: FC<FormErrorMessageProps> = ({ message }) => {
   return (
-    <StyledFormLabel message={message} error>
+    <StyledFormLabel message={message} error data-testid="form-error-message">
       <WarningAmberIcon fontSize="small" />
       {message}
     </StyledFormLabel>

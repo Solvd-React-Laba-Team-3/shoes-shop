@@ -14,12 +14,12 @@ describe('FormErrorMessage', () => {
     render(<FormErrorMessage />);
 
     expect(screen.getByTestId('WarningAmberIcon')).toBeInTheDocument();
-    expect(screen.queryByRole('label')).toBeInTheDocument();
+    expect(screen.getByTestId('form-error-message')).toBeInTheDocument();
   });
 
   it('should have correct opacity based on message presence', () => {
     const { rerender } = render(<FormErrorMessage />);
-    const label = screen.getByRole('label');
+    const label = screen.getByTestId('form-error-message');
 
     expect(label).toHaveStyle({ opacity: '0' });
 
