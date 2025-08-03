@@ -1,5 +1,5 @@
 import { render, screen, fireEvent } from '@testing-library/react';
-import { FileDropZone } from './FileDropZone';
+import { FileDropZone } from './FileDropzone';
 
 describe('FileDropZone', () => {
   it('calls onFilesDropped when a file is dropped', () => {

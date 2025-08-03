@@ -1,6 +1,6 @@
 'use client';
 
-import { ProductForm, type ImageType } from '@/components/ProductForm';
+import { ProductForm } from '@/components/ProductForm';
 import type { ProductFormData } from '@/components/ProductForm/productForm.schema';
 import { Product } from '@/types/Product';
 import Dialog from '@mui/material/Dialog';
@@ -10,6 +10,7 @@ import Box from '@mui/material/Box';
 import CircularProgress from '@mui/material/CircularProgress';
 import { useUpdateProduct } from '@/api/products/useUpdateProduct';
 import { useUploadFile } from '@/api/uploadFile/useUploadFile';
+import { TempImage } from '@/types/TempImage';
 
 interface EditPageProps {
   open: boolean;
@@ -26,7 +27,7 @@ export const EditProductModal: FC<EditPageProps> = ({
   const { mutate: uploadFile, isPending: isUploading } = useUploadFile();
 
   const [files, setFiles] = useState<File[]>([]);
-  const [images, setImages] = useState<ImageType[]>(
+  const [images, setImages] = useState<TempImage[]>(
     editingProduct.images?.map((image) => ({
       id: image.id,
       url: image.url,
@@ -37,8 +38,10 @@ export const EditProductModal: FC<EditPageProps> = ({
     const updatedFiles = [...files, ...uploadedFiles];
     setFiles(updatedFiles);
 
+    const maxId = images.reduce((max, img) => Math.max(max, img.id), -1);
+
     const tempImages = uploadedFiles.map((file, index) => ({
-      id: index,
+      id: maxId + index + 1,
       url: URL.createObjectURL(file),
     }));
 
@@ -46,9 +49,9 @@ export const EditProductModal: FC<EditPageProps> = ({
     setImages(updatedImages);
   };
 
-  const handleRemoveImage = (id: number) => {
+  const handleRemoveImage = (id: number, index: number) => {
     const updatedFiles = [...files];
-    updatedFiles.splice(id, 1);
+    updatedFiles.splice(index, 1);
     setFiles(updatedFiles);
 
     const updatedImages = images.filter((image) => image.id !== id);
@@ -137,10 +140,10 @@ export const EditProductModal: FC<EditPageProps> = ({
           onRemoveImage={handleRemoveImage}
           editingProduct={{
             name: editingProduct.name,
-            price: editingProduct.price,
-            gender: editingProduct.gender.id,
-            color: editingProduct.color.id,
-            brand: editingProduct.brand?.id,
+            price: editingProduct.price.toString(),
+            gender: editingProduct.gender.id.toString(),
+            color: editingProduct.color.id.toString(),
+            brand: editingProduct.brand?.id.toString(),
             description: editingProduct.description,
             sizes: editingProduct.sizes.map((size) => size.id),
           }}

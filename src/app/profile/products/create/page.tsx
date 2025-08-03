@@ -3,16 +3,17 @@
 import { ProductFormData } from '@/components/ProductForm/productForm.schema';
 import { Suspense, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { ImageType, ProductForm } from '@/components/ProductForm';
+import { ProductForm } from '@/components/ProductForm';
 import { useCreateProduct } from '@/api/products/useCreateProduct';
 import Box from '@mui/material/Box';
 import CircularProgress from '@mui/material/CircularProgress';
 import { useUploadFile } from '@/api/uploadFile/useUploadFile';
+import { TempImage } from '@/types/TempImage';
 
 export default function CreateProductPage() {
   const router = useRouter();
   const [files, setFiles] = useState<File[]>([]);
-  const [images, setImages] = useState<ImageType[]>([]);
+  const [images, setImages] = useState<TempImage[]>([]);
 
   const { mutate: createProduct, isPending } = useCreateProduct();
   const { mutate: uploadFile, isPending: isUploading } = useUploadFile();
@@ -22,7 +23,7 @@ export default function CreateProductPage() {
     setFiles(updatedFiles);
 
     const tempImages = uploadedFiles.map((file, index) => ({
-      id: index,
+      id: images.length + index,
       url: URL.createObjectURL(file),
     }));
 
@@ -30,9 +31,9 @@ export default function CreateProductPage() {
     setImages(updatedImages);
   };
 
-  const handleRemoveImage = (id: number) => {
+  const handleRemoveImage = (id: number, index: number) => {
     const updatedFiles = [...files];
-    updatedFiles.splice(id, 1);
+    updatedFiles.splice(index, 1);
     setFiles(updatedFiles);
 
     const updatedImages = images.filter((image) => image.id !== id);
