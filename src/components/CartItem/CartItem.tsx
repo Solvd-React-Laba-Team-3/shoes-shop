@@ -119,6 +119,7 @@ export const CartItem: React.FC<CartItemProps> = ({
                 </Typography>
                 <Typography sx={{ color: '#8B8E93' }}>|</Typography>
                 <DeleteIcon
+                  aria-label="delete item"
                   fontSize="small"
                   sx={{ color: '#8B8E93', width: '24px', height: '24px' }}
                   onClick={onDelete}
