@@ -22,7 +22,9 @@ export const ProfileProductsFallback = () => (
           variant="circular"
           width={120}
           height={120}
-          sx={{ border: (theme) => `4px solid ${theme.palette.common.white}` }}
+          sx={{
+            border: (theme) => `4px solid ${theme.palette.common.white}`,
+          }}
         />
         <Box>
           <Skeleton variant="text" width={150} height={32} />

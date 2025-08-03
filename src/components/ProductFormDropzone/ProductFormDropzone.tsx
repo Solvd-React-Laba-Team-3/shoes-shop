@@ -1,15 +1,15 @@
 import { FC, useState } from 'react';
-import { FileDropZone } from '@/components/FileDropZone';
+import { FileDropzone } from '@/components/FileDropZone';
 import Image from 'next/image';
-import { DeleteImageModal } from '../common/DeleteImageModal';
+import { DeleteConfirmationModal } from '../common/DeleteConfirmationModal';
 import DeleteIcon from '@mui/icons-material/Delete';
 import Box from '@mui/material/Box';
 import Fab from '@mui/material/Fab';
-import { ImageType } from '../ProductForm';
+import { TempImage } from '@/types/TempImage';
 
 interface ProductFormDropzoneProps {
-  images: ImageType[];
-  onRemoveImage: (index: number) => void;
+  images: TempImage[];
+  onRemoveImage: (id: number, index: number) => void;
   handleFilesDropped: (files: File[]) => void;
 }
 
@@ -18,7 +18,10 @@ export const ProductFormDropzone: FC<ProductFormDropzoneProps> = ({
   onRemoveImage,
   handleFilesDropped,
 }) => {
-  const [deletingImageId, setDeletingImageId] = useState<number | null>(null);
+  const [deletingImage, setDeletingImage] = useState<{
+    id: number;
+    index: number;
+  } | null>(null);
 
   return (
     <>
@@ -27,9 +30,10 @@ export const ProductFormDropzone: FC<ProductFormDropzoneProps> = ({
           display: 'grid',
           gridTemplateColumns: '1fr 1fr',
           gap: '52px',
+          flex: 1,
         }}
       >
-        <FileDropZone onFilesDropped={handleFilesDropped} />
+        <FileDropzone onFilesDropped={handleFilesDropped} />
 
         {images.map((image, index) => (
           <Box key={index} sx={{ position: 'relative' }}>
@@ -42,20 +46,23 @@ export const ProductFormDropzone: FC<ProductFormDropzoneProps> = ({
                 top: 8,
                 right: 8,
               }}
-              onClick={() => setDeletingImageId(image.id)}
+              onClick={() => setDeletingImage({ id: image.id, index })}
             >
               <DeleteIcon />
             </Fab>
           </Box>
         ))}
       </Box>
-      {deletingImageId !== null && (
-        <DeleteImageModal
-          open={deletingImageId !== null}
-          onClose={() => setDeletingImageId(null)}
+      {deletingImage !== null && (
+        <DeleteConfirmationModal
+          open={deletingImage !== null}
+          title="Are you sure to delete product image?"
+          description="Lorem ipsum dolor sit amet consectetur. Sed imperdiet tempor facilisi
+          massa aliquet sit habitant. Lorem ipsum dolor sit amet consectetur."
+          onClose={() => setDeletingImage(null)}
           onDelete={() => {
-            onRemoveImage(deletingImageId);
-            setDeletingImageId(null);
+            onRemoveImage(deletingImage.id, deletingImage.index);
+            setDeletingImage(null);
           }}
         />
       )}
