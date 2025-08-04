@@ -1,7 +1,7 @@
 import { ProductCard } from '../ProductCard';
 import { Product } from '@/types/Product';
-import { Grid } from '@mui/material';
 import { FC } from 'react';
+import { Grid } from '@mui/material';
 
 interface ProductListProps {
   products: Product[];
@@ -17,9 +17,12 @@ export const ProductList: FC<ProductListProps> = ({
       container
       columnSpacing={{ xs: 2, md: 8 }}
       rowSpacing={{ xs: 2, md: 5 }}
+      sx={{ width: '100%' }}
     >
       {products.map((product) => (
-        <ProductCard key={product.id} product={product} cardType={type} />
+        <Grid key={product.id} size={{ xs: 6, md: 4, lg: 3 }}>
+          <ProductCard key={product.id} product={product} cardType={type} />
+        </Grid>
       ))}
     </Grid>
   );

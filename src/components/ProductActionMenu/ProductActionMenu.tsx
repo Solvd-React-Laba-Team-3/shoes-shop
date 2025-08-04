@@ -11,12 +11,14 @@ import { useDeleteProduct } from '@/api/products/useDeleteProduct';
 import { useSession } from 'next-auth/react';
 import { useCreateProduct } from '@/api/products/useCreateProduct';
 import LinearProgress from '@mui/material/LinearProgress';
+import { useRouter } from 'next/navigation';
 
 interface ProductActionMenuProps {
   product: Product;
 }
 
 export const ProductActionMenu: FC<ProductActionMenuProps> = ({ product }) => {
+  const router = useRouter();
   const { data: session } = useSession();
   const { mutate: deleteProduct, isPending: isDeletePending } =
     useDeleteProduct();
@@ -52,6 +54,11 @@ export const ProductActionMenu: FC<ProductActionMenuProps> = ({ product }) => {
       token: session.user.accessToken,
     });
     setAnchorEl(null);
+  };
+
+  const handleViewProduct = () => {
+    setAnchorEl(null);
+    router.push(`/products/${product.id}`);
   };
 
   const handleEditProduct = () => {
@@ -118,7 +125,7 @@ export const ProductActionMenu: FC<ProductActionMenuProps> = ({ product }) => {
         }}
       >
         <MenuItem
-          onClick={handleClose}
+          onClick={handleViewProduct}
           component={Link}
           href={`/products/${product.id}`}
         >
