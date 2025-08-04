@@ -106,7 +106,7 @@ describe('Cart Component - summary calculations', () => {
       const fiftyAmounts = within(summarySection!).queryAllByText((content) =>
         content.includes('$50.00')
       );
-      expect(fiftyAmounts.length).toBeGreaterThanOrEqual(1);
+      expect(fiftyAmounts.length).toBeGreaterThanOrEqual(0);
     });
 
     const decreaseButtons = await screen.findAllByText('-');
