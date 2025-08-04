@@ -3,15 +3,14 @@
 import { useState, MouseEvent, FC } from 'react';
 import { Menu, MenuItem, ListItemText } from '@mui/material';
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
-import Link from 'next/link';
 import { IconButton } from '@/components/ui';
 import { EditProductModal } from '../common/EditProductModal';
 import { Product } from '@/types/Product';
 import { useDeleteProduct } from '@/api/products/useDeleteProduct';
-import { useSession } from 'next-auth/react';
 import { useCreateProduct } from '@/api/products/useCreateProduct';
 import LinearProgress from '@mui/material/LinearProgress';
 import { useRouter } from 'next/navigation';
+import { DeleteConfirmationModal } from '../common/DeleteConfirmationModal';
 
 interface ProductActionMenuProps {
   product: Product;
@@ -19,29 +18,26 @@ interface ProductActionMenuProps {
 
 export const ProductActionMenu: FC<ProductActionMenuProps> = ({ product }) => {
   const router = useRouter();
-  const { data: session } = useSession();
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
+
   const { mutate: deleteProduct, isPending: isDeletePending } =
     useDeleteProduct();
   const { mutate: createProduct, isPending: isCreatePending } =
     useCreateProduct();
-  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-  const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
-  const open = Boolean(anchorEl);
+
+  const isOpen = Boolean(anchorEl);
 
   const handleClick = (event: MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
   };
 
   const handleDuplicateProduct = () => {
-    if (!session) return;
-
     createProduct({
       body: {
         data: {
-          userID: session.user.id,
-          images: product.images?.map((image) => image.id) || null,
-          categories:
-            product.categories?.map((category) => category.id) || null,
+          images: product.images?.map((image) => image.id),
           brand: product.brand.id,
           color: product.color.id,
           gender: product.gender.id,
@@ -51,7 +47,6 @@ export const ProductActionMenu: FC<ProductActionMenuProps> = ({ product }) => {
           description: product.description,
         },
       },
-      token: session.user.accessToken,
     });
     setAnchorEl(null);
   };
@@ -66,14 +61,14 @@ export const ProductActionMenu: FC<ProductActionMenuProps> = ({ product }) => {
     setAnchorEl(null);
   };
 
-  const handleDeleteProduct = () => {
-    if (!session) return;
-
-    deleteProduct({
-      id: product.id,
-      token: session.user.accessToken,
-    });
+  const handleOpenDeleteModal = () => {
+    setIsDeleteModalOpen(true);
     setAnchorEl(null);
+  };
+
+  const handleDeleteProduct = () => {
+    deleteProduct({ id: product.id });
+    setIsDeleteModalOpen(false);
   };
 
   const handleEditModalClose = () => {
@@ -83,6 +78,25 @@ export const ProductActionMenu: FC<ProductActionMenuProps> = ({ product }) => {
   const handleClose = () => {
     setAnchorEl(null);
   };
+
+  const menuItems = [
+    {
+      label: 'View',
+      action: handleViewProduct,
+    },
+    {
+      label: 'Edit',
+      action: handleEditProduct,
+    },
+    {
+      label: 'Duplicate',
+      action: handleDuplicateProduct,
+    },
+    {
+      label: 'Delete',
+      action: handleOpenDeleteModal,
+    },
+  ];
 
   return (
     <>
@@ -104,7 +118,7 @@ export const ProductActionMenu: FC<ProductActionMenuProps> = ({ product }) => {
 
       <Menu
         anchorEl={anchorEl}
-        open={open}
+        open={isOpen}
         onClose={handleClose}
         anchorOrigin={{
           vertical: 'bottom',
@@ -122,32 +136,31 @@ export const ProductActionMenu: FC<ProductActionMenuProps> = ({ product }) => {
           '& .MuiPaper-root': {
             boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.15)',
           },
+          '& .MuiMenuItem-root:last-child': {
+            color: 'error.main',
+          },
         }}
       >
-        <MenuItem
-          onClick={handleViewProduct}
-          component={Link}
-          href={`/products/${product.id}`}
-        >
-          <ListItemText primary="View" />
-        </MenuItem>
-
-        <MenuItem onClick={handleEditProduct}>
-          <ListItemText primary="Edit" />
-        </MenuItem>
-
-        <MenuItem onClick={handleDuplicateProduct}>
-          <ListItemText primary="Duplicate" />
-        </MenuItem>
-
-        <MenuItem onClick={handleDeleteProduct} sx={{ color: 'error.main' }}>
-          <ListItemText primary="Delete" />
-        </MenuItem>
+        {menuItems.map((item) => (
+          <MenuItem key={item.label} onClick={item.action}>
+            <ListItemText primary={item.label} />
+          </MenuItem>
+        ))}
       </Menu>
-      <EditProductModal
-        open={isEditModalOpen}
-        onClose={handleEditModalClose}
-        editingProduct={product}
+      {isEditModalOpen && (
+        <EditProductModal
+          open={isEditModalOpen}
+          onClose={handleEditModalClose}
+          editingProduct={product}
+        />
+      )}
+      <DeleteConfirmationModal
+        open={isDeleteModalOpen}
+        title="Are you sure to delete this product?"
+        description="Lorem ipsum dolor sit amet consectetur. Sed imperdiet tempor facilisi
+          massa aliquet sit habitant. Lorem ipsum dolor sit amet consectetur."
+        onClose={() => setIsDeleteModalOpen(false)}
+        onDelete={handleDeleteProduct}
       />
     </>
   );

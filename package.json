@@ -46,6 +46,7 @@
     "jest-environment-jsdom": "^30.0.4",
     "lint-staged": "^16.1.2",
     "prettier": "^3.6.2",
+    "sharp": "^0.34.3",
     "ts-node": "^10.9.2",
     "typescript": "^5",
     "typescript-eslint": "^8.36.0"

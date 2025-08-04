@@ -3,46 +3,44 @@
 import { ProductFormData } from '@/components/ProductForm/productForm.schema';
 import { Suspense, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { ImageType, ProductForm } from '@/components/ProductForm';
+import { ProductForm } from '@/components/ProductForm';
 import { useCreateProduct } from '@/api/products/useCreateProduct';
-import { useSession } from 'next-auth/react';
 import Box from '@mui/material/Box';
 import CircularProgress from '@mui/material/CircularProgress';
 import { useUploadFile } from '@/api/uploadFile/useUploadFile';
+import { TempImage } from '@/types/TempImage';
 
 export default function CreateProductPage() {
   const router = useRouter();
-  const { data: session } = useSession();
+  const [files, setFiles] = useState<File[]>([]);
+  const [images, setImages] = useState<TempImage[]>([]);
+
   const { mutate: createProduct, isPending } = useCreateProduct();
   const { mutate: uploadFile, isPending: isUploading } = useUploadFile();
 
-  const [files, setFiles] = useState<File[]>([]);
-  const [images, setImages] = useState<ImageType[]>([]);
+  const handleFilesDropped = (uploadedFiles: File[]) => {
+    const updatedFiles = [...files, ...uploadedFiles];
+    setFiles(updatedFiles);
 
-  const handleFilesDropped = (files: File[]) => {
-    setFiles(files);
-
-    const tempImages = files.map((file, index) => ({
-      id: index,
+    const tempImages = uploadedFiles.map((file, index) => ({
+      id: images.length + index,
       url: URL.createObjectURL(file),
     }));
 
-    setImages(tempImages);
+    const updatedImages = [...images, ...tempImages];
+    setImages(updatedImages);
   };
 
-  const handleRemoveImage = (index: number) => {
-    const newFiles = [...files];
-    newFiles.splice(index, 1);
-    setFiles(newFiles);
+  const handleRemoveImage = (id: number, index: number) => {
+    const updatedFiles = [...files];
+    updatedFiles.splice(index, 1);
+    setFiles(updatedFiles);
 
-    const newImages = [...images];
-    newImages.splice(index, 1);
-    setImages(newImages);
+    const updatedImages = images.filter((image) => image.id !== id);
+    setImages(updatedImages);
   };
 
   const handleSubmit = async (data: ProductFormData) => {
-    if (!session) return;
-
     if (files.length > 0) {
       uploadFile(files, {
         onSuccess: (uploadedFiles) => {
@@ -51,15 +49,12 @@ export default function CreateProductPage() {
               body: {
                 data: {
                   ...data,
-                  userID: session.user.id,
                   images: uploadedFiles.map((file) => file.id),
-                  categories: null,
                 },
               },
-              token: session.user.accessToken,
             },
             {
-              onSettled: () => {
+              onSuccess: () => {
                 router.replace('/profile/products');
               },
             }
@@ -70,17 +65,11 @@ export default function CreateProductPage() {
       createProduct(
         {
           body: {
-            data: {
-              ...data,
-              userID: session.user.id,
-              images: null,
-              categories: null,
-            },
+            data,
           },
-          token: session.user.accessToken,
         },
         {
-          onSettled: () => {
+          onSuccess: () => {
             router.replace('/profile/products');
           },
         }

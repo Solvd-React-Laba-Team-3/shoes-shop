@@ -1,7 +1,12 @@
 'use client';
 
-import { Checkbox, LabeledTextfield, Link } from '@/components/ui';
-import { Box, FormLabel, Typography } from '@mui/material';
+import {
+  Checkbox,
+  FormErrorMessage,
+  LabeledTextfield,
+  Link,
+} from '@/components/ui';
+import { Box, Typography } from '@mui/material';
 import Image from 'next/image';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -15,7 +20,6 @@ import {
   SESSION_MAX_AGE,
 } from '@/constants/sessionMaxAge';
 import { LoaderButton } from '@/components/LoaderButton';
-import WarningAmberIcon from '@mui/icons-material/WarningAmber';
 import loginImage from '../../../../public/login.jpg';
 
 export default function SignIn() {
@@ -33,6 +37,7 @@ export default function SignIn() {
       email: '',
       password: '',
     },
+    shouldFocusError: true,
   });
 
   const onSubmit = async (data: SignInSchema) => {
@@ -87,68 +92,35 @@ export default function SignIn() {
           autoComplete="off"
           display="flex"
           flexDirection="column"
-          gap={2}
+          gap={1.5}
           width="100%"
           maxWidth={400}
           onSubmit={handleSubmit(onSubmit)}
         >
-          <LabeledTextfield
-            id="email"
-            label="Email"
-            required
-            placeholder="example@mail.com"
-            error={!!errors.email || !!error}
-            {...register('email')}
-          />
-          {errors.email && (
-            <FormLabel
-              sx={{
-                fontSize: '13px',
-                display: 'flex',
-                alignItems: 'center',
-                gap: 1,
-              }}
-              error
-            >
-              <WarningAmberIcon fontSize="small" />
-              {errors.email.message}
-            </FormLabel>
-          )}
-          <LabeledTextfield
-            id="password"
-            label="Password"
-            required
-            type="password"
-            placeholder="at least 6 characters"
-            error={!!errors.password || !!error}
-            {...register('password')}
-          />
-          {errors.password && (
-            <FormLabel
-              sx={{
-                fontSize: '13px',
-                display: 'flex',
-                alignItems: 'center',
-                gap: 1,
-              }}
-              error
-            >
-              <WarningAmberIcon fontSize="small" /> {errors.password.message}
-            </FormLabel>
-          )}
-          {error && (
-            <FormLabel
-              sx={{
-                fontSize: '13px',
-                display: 'flex',
-                alignItems: 'center',
-                gap: 1,
-              }}
-              error
-            >
-              <WarningAmberIcon fontSize="small" /> {error}
-            </FormLabel>
-          )}
+          <Box>
+            <LabeledTextfield
+              id="email"
+              label="Email"
+              required
+              placeholder="example@mail.com"
+              error={!!errors.email || !!error}
+              {...register('email')}
+            />
+            <FormErrorMessage message={errors.email?.message} />
+          </Box>
+
+          <Box>
+            <LabeledTextfield
+              id="password"
+              label="Password"
+              required
+              type="password"
+              placeholder="at least 6 characters"
+              error={!!errors.password || !!error}
+              {...register('password')}
+            />
+            <FormErrorMessage message={errors.password?.message || error} />
+          </Box>
 
           <Box
             sx={{

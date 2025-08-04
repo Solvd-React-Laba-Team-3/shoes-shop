@@ -2,10 +2,19 @@ import { render, screen } from '@testing-library/react';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import MyProducts from './page';
+import {
+  QueryClient,
+  QueryClientProvider,
+  useSuspenseQuery,
+} from '@tanstack/react-query';
 
 jest.mock('next-auth/react');
 jest.mock('next/navigation', () => ({
   useRouter: jest.fn(),
+}));
+jest.mock('@tanstack/react-query', () => ({
+  ...jest.requireActual('@tanstack/react-query'),
+  useSuspenseQuery: jest.fn(),
 }));
 
 const ProductListMock = jest.fn();
@@ -39,10 +48,35 @@ jest.mock('../../../../public/profile-banner.png', () => ({
   src: '/profile-banner.png',
 }));
 
+const createWrapper = () => {
+  const queryClient = new QueryClient({
+    defaultOptions: {
+      queries: {
+        retry: false,
+      },
+    },
+  });
+
+  const TestWrapper = ({ children }: { children: React.ReactNode }) => (
+    <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+  );
+  TestWrapper.displayName = 'TestWrapper';
+  return TestWrapper;
+};
+
 describe('MyProducts', () => {
   const mockRouter = {
     push: jest.fn(),
   };
+
+  const mockProducts = [
+    {
+      id: 1,
+      name: 'Test Product',
+      description: 'Test Description',
+      price: 99,
+    },
+  ];
 
   const mockSession = {
     user: {
@@ -51,20 +85,14 @@ describe('MyProducts', () => {
         url: 'https://example.com/avatar.jpg',
       },
       createdAt: '2024-01-01',
-      products: [
-        {
-          id: 1,
-          name: 'Test Product',
-          description: 'Test Description',
-          price: 99,
-        },
-      ],
+      accessToken: 'test-token',
     },
   };
 
   beforeEach(() => {
     (useRouter as jest.Mock).mockReturnValue(mockRouter);
     (useSession as jest.Mock).mockReturnValue({ data: mockSession });
+    (useSuspenseQuery as jest.Mock).mockReturnValue({ data: mockProducts });
     ProductListMock.mockClear();
   });
 
@@ -73,7 +101,7 @@ describe('MyProducts', () => {
   });
 
   it('renders the page with user information', () => {
-    render(<MyProducts />);
+    render(<MyProducts />, { wrapper: createWrapper() });
 
     expect(screen.getByText('testUser')).toBeInTheDocument();
     expect(screen.getByAltText('Avatar')).toHaveAttribute(
@@ -87,7 +115,7 @@ describe('MyProducts', () => {
   });
 
   it('renders profile banner image', () => {
-    render(<MyProducts />);
+    render(<MyProducts />, { wrapper: createWrapper() });
 
     const banner = screen.getByAltText('My Products');
     expect(banner).toBeInTheDocument();
@@ -95,27 +123,19 @@ describe('MyProducts', () => {
   });
 
   it('renders ProductList when user has products', () => {
-    render(<MyProducts />);
+    render(<MyProducts />, { wrapper: createWrapper() });
 
     expect(screen.getByTestId('product-list')).toBeInTheDocument();
     expect(ProductListMock).toHaveBeenCalledWith({
-      products: mockSession.user.products,
+      products: mockProducts,
       type: 'actionMenu',
     });
   });
 
   it('renders empty state when user has no products', () => {
-    (useSession as jest.Mock).mockReturnValue({
-      data: {
-        ...mockSession,
-        user: {
-          ...mockSession.user,
-          products: [],
-        },
-      },
-    });
+    (useSuspenseQuery as jest.Mock).mockReturnValue({ data: [] });
 
-    render(<MyProducts />);
+    render(<MyProducts />, { wrapper: createWrapper() });
 
     expect(
       screen.getByText("You don't have any products yet")
