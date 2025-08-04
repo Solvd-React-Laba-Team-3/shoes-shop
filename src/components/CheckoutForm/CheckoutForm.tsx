@@ -23,13 +23,22 @@ import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import { CardElement, useElements, useStripe } from '@stripe/react-stripe-js';
 import { useRouter } from 'next/navigation';
+import { splitProducts } from '@/lib/utils/splitProducts/splitProducts';
+import { CartProduct } from '@/types/CartProduct';
 
 type CheckoutProps = {
   discountCode?: string;
-  amount?: number;
+  discountAmount?: number;
+  amount: number;
+  products: CartProduct[];
 };
 
-export const CheckoutForm: FC<CheckoutProps> = ({ discountCode, amount }) => {
+export const CheckoutForm: FC<CheckoutProps> = ({
+  discountCode,
+  discountAmount,
+  amount,
+  products,
+}) => {
   const stripe = useStripe();
   const elements = useElements();
   const router = useRouter();
@@ -72,14 +81,25 @@ export const CheckoutForm: FC<CheckoutProps> = ({ discountCode, amount }) => {
   });
 
   const onSubmit = async (data: CheckoutSchema) => {
-    const orderNumber = '#' + Date.now();
+    const orderNumber = Date.now();
+    const productChunks = splitProducts(products);
+    const productsMetadata = productChunks.reduce(
+      (acc, chunk, i) => {
+        acc[`products${i + 1}`] = chunk;
+        return acc;
+      },
+      {} as Record<string, string>
+    );
+
     try {
       setServerError(null);
       const body = {
         ...data,
-        amount: amount || 0,
+        amount: amount,
         discountCode: discountCode || undefined,
         orderNumber,
+        discountAmount: discountAmount || undefined,
+        productsMetadata,
       };
 
       const res = await fetch('/api/payments', {
