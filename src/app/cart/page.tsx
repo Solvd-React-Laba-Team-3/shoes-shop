@@ -18,8 +18,8 @@ type Product = {
 
 type SummaryProps = {
   subtotal: number;
-  shipping: number;
-  tax: number;
+  // shipping: number;
+  // tax: number;
   total: number;
 };
 
@@ -28,8 +28,8 @@ const Cart = () => {
   const [quantities, setQuantities] = useState<{ [key: number]: number }>({});
   const [summary, setSummary] = useState<SummaryProps>({
     subtotal: 0,
-    shipping: 0,
-    tax: 0,
+    // shipping: 0,
+    // tax: 0,
     total: 0,
   });
 
@@ -54,11 +54,11 @@ const Cart = () => {
       return acc + product.attributes.price * productQuantity;
     }, 0);
 
-    const shipping = subtotal > 0 ? 20 : 0;
-    const tax = 0;
-    const total = subtotal + shipping + tax;
+    // const shipping = subtotal > 0 ? 20 : 0;
+    // const tax = 0;
+    const total = subtotal;
 
-    setSummary({ subtotal, shipping, tax, total });
+    setSummary({ subtotal, total });
   }, [products, quantities]);
 
   const handleIncrease = (id: number) => {
@@ -124,8 +124,8 @@ const Cart = () => {
             <Stack direction="column">
               <CartSummary
                 subtotal={summary.subtotal}
-                shipping={summary.shipping}
-                tax={summary.tax}
+                // shipping={summary.shipping}
+                // tax={summary.tax}
                 total={summary.total}
               />
             </Stack>

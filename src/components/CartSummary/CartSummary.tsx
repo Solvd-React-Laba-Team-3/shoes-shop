@@ -7,7 +7,6 @@ import {
   GlobalStyles,
   TextField,
   Typography,
-  Button,
 } from '@mui/material';
 import { Accordion } from '../ui/Accordion/Accordion';
 import { useRouter } from 'next/navigation';
@@ -15,18 +14,19 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { CartSchema } from './CartSchema';
 import type { PromoFormData } from './CartSchema';
+import { Button } from '../ui';
 
 type CartSummaryProps = {
   subtotal: number;
-  shipping: number;
-  tax: number;
+  // shipping: number;
+  // tax: number;
   total: number;
 };
 
 export const CartSummary: React.FC<CartSummaryProps> = ({
   subtotal,
-  shipping,
-  tax,
+  // shipping,
+  // tax,
   total,
 }) => {
   const router = useRouter();
@@ -67,7 +67,7 @@ export const CartSummary: React.FC<CartSummaryProps> = ({
   const finalTotal = total - discount;
 
   return (
-    <Box sx={{ marginLeft: '166px' }}>
+    <Box>
       <GlobalStyles
         styles={{
           '.MuiAccordionSummary-root': {
@@ -123,14 +123,14 @@ export const CartSummary: React.FC<CartSummaryProps> = ({
         }}
       >
         <Typography variant="h3" sx={{ fontWeight: 400 }}>
-          {subtotal > 0 ? 'Subtotal' : 'Total'}
+          {'Subtotal'}
         </Typography>
         <Typography variant="h3" sx={{ fontWeight: 400 }}>
           ${subtotal.toFixed(2)}
         </Typography>
       </Box>
 
-      <Box
+      {/* <Box
         sx={{
           display: 'flex',
           justifyContent: 'space-between',
@@ -143,16 +143,24 @@ export const CartSummary: React.FC<CartSummaryProps> = ({
         <Typography variant="h3" sx={{ fontWeight: 400 }}>
           ${shipping.toFixed(2)}
         </Typography>
-      </Box>
+      </Box> */}
 
-      <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-        <Typography variant="h3" sx={{ fontWeight: 400 }}>
-          {tax > 0 ? 'Tax' : 'Discount'}
-        </Typography>
-        <Typography variant="h3" sx={{ fontWeight: 400 }}>
-          ${tax.toFixed(2)}
-        </Typography>
-      </Box>
+      {discount > 0 && (
+        <Box
+          sx={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            margin: '20px 0',
+          }}
+        >
+          <Typography variant="h3" sx={{ fontWeight: 400 }}>
+            Discount
+          </Typography>
+          <Typography variant="h3" sx={{ fontWeight: 400 }}>
+            -${discount.toFixed(2)}
+          </Typography>
+        </Box>
+      )}
 
       <Divider sx={{ marginTop: '56px' }} />
 
@@ -163,8 +171,15 @@ export const CartSummary: React.FC<CartSummaryProps> = ({
           margin: '20px 0',
         }}
       >
-        <Typography variant="h3" sx={{ fontWeight: 600, maxWidth: '10%' }}>
-          {discount > 0 ? 'Discounted Total' : 'Total'}
+        <Typography
+          variant="h3"
+          sx={{
+            fontWeight: 600,
+            maxWidth: '10%',
+            color: discount > 0 ? 'green' : 'inherit',
+          }}
+        >
+          Total
         </Typography>
         <Typography variant="h3" sx={{ fontWeight: 600 }}>
           ${finalTotal.toFixed(2)}
