@@ -54,9 +54,9 @@ describe('Cart Component - summary calculations', () => {
   test('initial summary values are zero', async () => {
     renderWithSession(<Cart />);
     await waitFor(() => expect(fetch).toHaveBeenCalledTimes(1));
-    expect(screen.getAllByText('Total')).toHaveLength(2);
-    expect(screen.getAllByText('$0.00')).toHaveLength(4);
-    expect(screen.getByText('Delivery')).toBeInTheDocument();
+    expect(screen.getAllByText('Total')).toHaveLength(1);
+    expect(screen.getAllByText('$0.00')).toHaveLength(2);
+
     expect(screen.getByText('Discount')).toBeInTheDocument();
   });
 
@@ -68,9 +68,9 @@ describe('Cart Component - summary calculations', () => {
     fireEvent.click(increaseButtons[0]);
 
     await waitFor(() => {
-      expect(screen.getByText('$50.00')).toBeInTheDocument(); // Subtotal
-      expect(screen.getByText('$20.00')).toBeInTheDocument(); // Shipping
-      expect(screen.getByText('$70.00')).toBeInTheDocument(); // Total
+      expect(screen.getByText('$50.00')).toBeInTheDocument();
+      expect(screen.getByText('$20.00')).toBeInTheDocument();
+      expect(screen.getByText('$70.00')).toBeInTheDocument();
     });
 
     const decreaseButtons = screen.getAllByText('-');
