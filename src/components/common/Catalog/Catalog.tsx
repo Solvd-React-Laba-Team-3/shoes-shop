@@ -6,15 +6,10 @@ import { Filters } from '@/components/common/Filters';
 import { Suspense } from 'react';
 import { ProductListFallback } from '@/components/common/ProductListFallback';
 import { FiltersFallback } from '@/components/common/FiltersFallback';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 
 export const Catalog = () => {
   const [isFiltersOpen, setIsFiltersOpen] = useState(false);
-
-  // TODO: Mb remove this in future. Prevents hydration error caused by Filters Drawer component
-  useEffect(() => {
-    setIsFiltersOpen(true);
-  }, []);
 
   const handleFiltersToggle = () => {
     setIsFiltersOpen(!isFiltersOpen);

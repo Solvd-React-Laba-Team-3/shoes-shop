@@ -2,8 +2,8 @@ import { login } from '@/api/auth/login';
 import { AuthOptions } from 'next-auth';
 import { User as IUser } from '@/types/User';
 import CredentialsProvider from 'next-auth/providers/credentials';
-import { getUserProfile } from '@/api/profile/getUserProfile';
 import { SESSION_MAX_AGE } from './sessionMaxAge';
+import { getUserProfile } from '@/api/profile/getUserProfile';
 
 declare module 'next-auth' {
   interface Session {
