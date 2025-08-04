@@ -16,17 +16,14 @@ import { CartSchema } from './CartSchema';
 import type { PromoFormData } from './CartSchema';
 import { Button } from '../ui';
 
-type CartSummaryProps = {
+interface CartSummaryProps {
   subtotal: number;
-  // shipping: number;
-  // tax: number;
   total: number;
-};
+}
 
 export const CartSummary: React.FC<CartSummaryProps> = ({
   subtotal,
-  // shipping,
-  // tax,
+
   total,
 }) => {
   const router = useRouter();
@@ -129,21 +126,6 @@ export const CartSummary: React.FC<CartSummaryProps> = ({
           ${subtotal.toFixed(2)}
         </Typography>
       </Box>
-
-      {/* <Box
-        sx={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          margin: '20px 0',
-        }}
-      >
-        <Typography variant="h3" sx={{ fontWeight: 400 }}>
-          {shipping > 0 ? 'Shipping' : 'Delivery'}
-        </Typography>
-        <Typography variant="h3" sx={{ fontWeight: 400 }}>
-          ${shipping.toFixed(2)}
-        </Typography>
-      </Box> */}
 
       {discount > 0 && (
         <Box
