@@ -7,7 +7,8 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string);
 export async function POST(req: NextRequest) {
   try {
     const session = await getServerSession(authOptions);
-    const { discountCode, ...data } = await req.json();
+    const { discountCode, discountAmount, productsMetadata, ...data } =
+      await req.json();
 
     if (!session?.user?.id) {
       return;
@@ -35,6 +36,8 @@ export async function POST(req: NextRequest) {
         paymentMethod: data.paymentMethod,
         userId: session.user.id,
         ...(discountCode && { discountCode }),
+        ...(discountAmount && { discountAmount }),
+        ...(productsMetadata ?? {}),
       },
     });
 
