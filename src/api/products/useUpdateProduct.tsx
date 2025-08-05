@@ -1,4 +1,4 @@
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { fetchApi, formatProductAttributes } from '@/lib/utils';
 import { CreateProductRequest } from './useCreateProduct';
 import { Product } from '@/types/Product';
@@ -10,7 +10,7 @@ export interface UpdateProductRequest {
   body: {
     data: Partial<CreateProductRequest['body']['data']>;
   };
-  token: string;
+  token?: string;
   id: number;
 }
 
@@ -24,15 +24,32 @@ const updateProduct = async ({
     method: 'PUT',
     body,
     token,
+    queryParams: {
+      populate: '*',
+    },
   });
+
   return formatProductAttributes(res.data.id, res.data.attributes);
 };
 
 export const useUpdateProduct = () => {
-  const { update: updateSession } = useSession();
+  const queryClient = useQueryClient();
+  const { data: session } = useSession();
 
-  return useMutation<Product, Error, UpdateProductRequest>({
-    mutationFn: updateProduct,
-    onSettled: updateSession,
+  return useMutation<Product, Error, Omit<UpdateProductRequest, 'token'>>({
+    mutationFn: ({ body, id }) =>
+      updateProduct({
+        body: { data: { ...body.data, userID: session?.user.id } },
+        id,
+        token: session?.user.accessToken,
+      }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ['profile-products'],
+      });
+    },
+    onError: (error) => {
+      console.error('Error updating product:', error);
+    },
   });
 };

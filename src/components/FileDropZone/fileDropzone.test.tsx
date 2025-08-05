@@ -1,10 +1,10 @@
 import { render, screen, fireEvent } from '@testing-library/react';
-import { FileDropZone } from './FileDropZone';
+import { FileDropzone } from './FileDropzone';
 
-describe('FileDropZone', () => {
+describe('FileDropzone', () => {
   it('calls onFilesDropped when a file is dropped', () => {
     const handleDrop = jest.fn();
-    render(<FileDropZone onFilesDropped={handleDrop} />);
+    render(<FileDropzone onFilesDropped={handleDrop} />);
 
     const file = new File(['dummy content'], 'image.png', {
       type: 'image/png',
@@ -22,7 +22,7 @@ describe('FileDropZone', () => {
   });
 
   it('opens file input when clicked', async () => {
-    render(<FileDropZone onFilesDropped={() => {}} />);
+    render(<FileDropzone onFilesDropped={() => {}} />);
 
     const file = new File(['dummy'], 'photo.jpg', { type: 'image/jpeg' });
 

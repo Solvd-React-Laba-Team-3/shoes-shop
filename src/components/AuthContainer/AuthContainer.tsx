@@ -18,7 +18,7 @@ export const AuthContainer = ({
 }: AuthContainerProp) => (
   <Box
     sx={{
-      margin: '20% auto',
+      margin: '10% auto',
       position: 'relative',
       display: 'flex',
       flexDirection: 'column',

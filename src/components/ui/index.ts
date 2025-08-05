@@ -10,3 +10,4 @@ export { Select } from './Select/Select';
 export { ToggleButton } from './ToggleButton/ToggleButton';
 export { ReviewPanel } from './ReviewPanel/ReviewPanel';
 export { SearchBar } from './SearchBar/SearchBar';
+export { FormErrorMessage } from './FormErrorMessage/FormErrorMessage';
