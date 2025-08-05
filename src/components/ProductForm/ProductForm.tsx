@@ -76,7 +76,7 @@ export const ProductForm: FC<ProductFormProps> = ({
     resolver: zodResolver(productSchema),
     defaultValues: {
       name: '',
-      price: '',
+      price: 0,
       color: '',
       gender: '',
       brand: '',
@@ -353,7 +353,7 @@ export const ProductForm: FC<ProductFormProps> = ({
                       sx={{
                         border: (theme) =>
                           errors.description
-                            ? `1px solid ${theme.palette.error.main} !important`
+                            ? `1px solid ${theme.palette.error.main}`
                             : `1px solid ${theme.palette.divider}`,
                       }}
                     />
