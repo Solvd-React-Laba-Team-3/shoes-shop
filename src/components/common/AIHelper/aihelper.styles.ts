@@ -20,21 +20,36 @@ export const StyledContainer = styled(Paper, {
   transition: 'height 0.3s ease-in-out',
 }));
 
-export const StyledMessageWrapper = styled(Box)<{ sender: 'user' | 'ai' }>(
-  ({ sender }) => ({
+export const StyledChatContainer = styled(Box)(({ theme }) => ({
+  display: 'flex',
+  flexDirection: 'column',
+  gap: '16px',
+  padding: '10px',
+  border: `1px solid ${theme.palette.divider}`,
+  height: '300px',
+  overflowY: 'auto',
+}));
+
+export const StyledMessageWrapper = styled(Box)<{ sender: 'user' | 'model' }>(
+  ({ theme, sender }) => ({
     display: 'flex',
+    flexDirection: 'column',
     alignSelf: sender === 'user' ? 'flex-end' : 'flex-start',
     borderRadius: '16px',
     borderBottomRightRadius: sender === 'user' ? '4px' : '16px',
     borderBottomLeftRadius: sender === 'user' ? '16px' : '4px',
     padding: '12px 16px',
-    backgroundColor: sender === 'user' ? '#1976d2' : '#f5f5f5',
+    backgroundColor:
+      sender === 'user' ? theme.palette.primary.main : theme.palette.grey[200],
     color: sender === 'user' ? '#fff' : '#000',
     maxWidth: '70%',
     marginLeft: sender === 'user' ? 'auto' : '16px',
     marginRight: sender === 'user' ? '16px' : 'auto',
     textAlign: sender === 'user' ? 'left' : 'left',
     height: 'fit-content',
-    boxShadow: '0 1px 2px rgba(0, 0, 0, 0.1)',
+
+    '& ul': {
+      paddingLeft: '10px',
+    },
   })
 );
