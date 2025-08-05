@@ -1,4 +1,4 @@
-import { CartProduct } from './StrepiProduct';
+import { StrepiProduct } from './StrepiProduct';
 
 export interface OrderHistory {
   userId: number;
@@ -11,5 +11,5 @@ export interface OrderHistory {
   contactPhone: string;
   contactEmail: string;
   status: string;
-  products: CartProduct[];
+  products: StrepiProduct[];
 }
