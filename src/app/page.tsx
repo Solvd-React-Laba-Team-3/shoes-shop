@@ -10,7 +10,7 @@ import StripeProvider from '@/providers/StripeProvider';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/constants/authConfig';
 import { Box } from '@mui/material';
-import { CartProduct } from '@/types/CartProduct';
+import { StrepiProduct } from '@/types/StrepiProduct';
 
 const queryClient = getQueryClient();
 queryClient.prefetchQuery(getSizesOptions());
@@ -19,7 +19,7 @@ queryClient.prefetchQuery(getGendersOptions());
 queryClient.prefetchQuery(getColorsOptions());
 queryClient.prefetchInfiniteQuery(getProductsOptions());
 
-const products: CartProduct[] = [
+const products: StrepiProduct[] = [
   {
     id: 101,
     name: 'Zapatilla Urbana Flex',

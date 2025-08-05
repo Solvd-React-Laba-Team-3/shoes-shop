@@ -11,9 +11,10 @@ import {
   FormLabel,
   ToggleButtonGroup,
   Divider,
+  TextField,
 } from '@mui/material';
 import { WarningAmber } from '@mui/icons-material';
-import { LabeledTextfield, Link, ToggleButton } from '../ui';
+import { LabeledTextfield, Link, MenuItem, ToggleButton } from '../ui';
 import { theme } from '@/providers/ThemeProvider';
 import PaymentIcon from '@mui/icons-material/Payment';
 import GoogleIcon from '@mui/icons-material/Google';
@@ -24,13 +25,14 @@ import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import { CardElement, useElements, useStripe } from '@stripe/react-stripe-js';
 import { useRouter } from 'next/navigation';
 import { splitProducts } from '@/lib/utils/splitProducts/splitProducts';
-import { CartProduct } from '@/types/CartProduct';
+import { StrepiProduct } from '@/types/StrepiProduct';
+import { StyledInputLabel } from '../ProductForm/productForm.styles';
 
 type CheckoutProps = {
   discountCode?: string;
   discountAmount?: number;
   amount: number;
-  products: CartProduct[];
+  products: StrepiProduct[];
 };
 
 export const CheckoutForm: FC<CheckoutProps> = ({
@@ -57,7 +59,7 @@ export const CheckoutForm: FC<CheckoutProps> = ({
       zipCode: '',
       address: '',
       paymentMethod: 'card',
-      discountCode: discountCode,
+      discountCode: discountCode ?? '',
     },
   });
 
@@ -214,13 +216,50 @@ export const CheckoutForm: FC<CheckoutProps> = ({
               gap: '24px',
             }}
           >
-            <LabeledTextfield
-              label="Country"
-              {...register('country')}
-              error={!!errors.country}
-              placeholder="USA"
-              errorMessage={errors.country?.message}
-              reserveErrorSpace
+            <Controller
+              name="country"
+              control={control}
+              defaultValue=""
+              render={({ field }) => (
+                <Box>
+                  <StyledInputLabel
+                    shrink
+                    error={!!errors.country}
+                    sx={{ marginTop: '10px' }}
+                  >
+                    Country
+                  </StyledInputLabel>
+
+                  <TextField
+                    {...field}
+                    select
+                    size="small"
+                    fullWidth
+                    error={!!errors.country}
+                    helperText={errors.country?.message}
+                  >
+                    {[
+                      'Argentina',
+                      'Brazil',
+                      'Mexico',
+                      'Poland',
+                      'Ukraine',
+                      'USA',
+                    ].map((country) => (
+                      <MenuItem
+                        key={country}
+                        value={country}
+                        sx={{
+                          height: '40px',
+                          fontSize: '16px',
+                        }}
+                      >
+                        {country}
+                      </MenuItem>
+                    ))}
+                  </TextField>
+                </Box>
+              )}
             />
             <LabeledTextfield
               label="City"

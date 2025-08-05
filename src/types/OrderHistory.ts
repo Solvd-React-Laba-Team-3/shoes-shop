@@ -1,4 +1,4 @@
-import { CartProduct } from './CartProduct';
+import { CartProduct } from './StrepiProduct';
 
 export interface OrderHistory {
   userId: number;
