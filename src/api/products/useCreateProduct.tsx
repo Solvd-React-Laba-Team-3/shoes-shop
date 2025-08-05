@@ -1,4 +1,4 @@
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { fetchApi, formatProductAttributes } from '@/lib/utils';
 import { Product } from '@/types/Product';
 import { ProductAttributes } from '@/types/api/ProductAttributes';
@@ -10,19 +10,18 @@ export interface CreateProductRequest {
   body: {
     data: {
       name: string;
-      images: number[] | null;
+      images?: number[];
       description: string;
       brand: number | string;
-      categories: number[] | null;
       color: number | string;
       gender: number | string;
       sizes: number[];
       price: number | string;
-      userID: number;
+      userID?: number;
       teamName?: string;
     };
   };
-  token: string;
+  token?: string;
 }
 
 const createProduct = async ({
@@ -38,16 +37,31 @@ const createProduct = async ({
         teamName: TEAM_NAME,
       },
     },
+    queryParams: {
+      populate: '*',
+    },
     token,
   });
   return formatProductAttributes(res.data.id, res.data.attributes);
 };
 
 export const useCreateProduct = () => {
-  const { update: updateSession } = useSession();
+  const { data: session } = useSession();
+  const queryClient = useQueryClient();
 
-  return useMutation<Product, Error, CreateProductRequest>({
-    mutationFn: createProduct,
-    onSettled: updateSession,
+  return useMutation<Product, Error, Omit<CreateProductRequest, 'token'>>({
+    mutationFn: ({ body }) =>
+      createProduct({
+        body: { data: { ...body.data, userID: session?.user.id } },
+        token: session?.user.accessToken,
+      }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ['profile-products'],
+      });
+    },
+    onError: (error) => {
+      console.error('Error creating product:', error);
+    },
   });
 };

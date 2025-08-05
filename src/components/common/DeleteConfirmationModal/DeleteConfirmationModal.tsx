@@ -8,8 +8,10 @@ import { FC } from 'react';
 import CloseIcon from '@mui/icons-material/Close';
 import { styled } from '@mui/material/styles';
 
-interface DeleteImageModalProps {
+interface DeleteConfirmationModalProps {
   open: boolean;
+  title: string;
+  description: string;
   onClose: () => void;
   onDelete: () => void;
 }
@@ -24,8 +26,10 @@ const StyledDialog = styled(Dialog)({
   },
 });
 
-export const DeleteImageModal: FC<DeleteImageModalProps> = ({
+export const DeleteConfirmationModal: FC<DeleteConfirmationModalProps> = ({
   open,
+  title,
+  description,
   onClose,
   onDelete,
 }) => {
@@ -42,14 +46,9 @@ export const DeleteImageModal: FC<DeleteImageModalProps> = ({
       >
         <CloseIcon />
       </IconButton>
-      <DialogTitle variant="h2">
-        Are you sure to delete product image?
-      </DialogTitle>
+      <DialogTitle variant="h2">{title}</DialogTitle>
       <DialogContent>
-        <Typography variant="caption">
-          Lorem ipsum dolor sit amet consectetur. Sed imperdiet tempor facilisi
-          massa aliquet sit habitant. Lorem ipsum dolor sit amet consectetur.
-        </Typography>
+        <Typography variant="caption">{description}</Typography>
       </DialogContent>
       <DialogActions sx={{ gap: '16px', justifyContent: 'center' }}>
         <Button variant="outlined" onClick={onClose}>

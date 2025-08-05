@@ -1,7 +1,12 @@
 'use client';
 
-import { LabeledTextfield, Link, ReviewPanel } from '@/components/ui';
-import { Box, Typography, FormLabel } from '@mui/material';
+import {
+  FormErrorMessage,
+  LabeledTextfield,
+  Link,
+  ReviewPanel,
+} from '@/components/ui';
+import { Box, Typography } from '@mui/material';
 import Image from 'next/image';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -10,7 +15,6 @@ import { AuthContainer } from '@/components/AuthContainer';
 import { SignUpSchema, signUpSchema } from './sign-up.schema';
 import { useRouter } from 'next/navigation';
 import { LoaderButton } from '@/components/LoaderButton';
-import WarningAmberIcon from '@mui/icons-material/WarningAmber';
 import registerImage from '../../../../public/register.jpg';
 
 export default function SignUp() {
@@ -28,6 +32,7 @@ export default function SignUp() {
       password: '',
       confirmPassword: '',
     },
+    shouldFocusError: true,
   });
 
   const { mutate: registerUser, error, isPending } = useRegister();
@@ -67,115 +72,63 @@ export default function SignUp() {
           autoComplete="off"
           display="flex"
           flexDirection="column"
-          gap={2}
+          gap={1.5}
           width="100%"
           maxWidth={400}
           onSubmit={handleSubmit(onSubmit)}
         >
-          <LabeledTextfield
-            id="name"
-            label="Name"
-            required
-            placeholder="Hayman Andrews"
-            {...register('name')}
-            error={!!errors.name}
-          />
-          {errors.name && (
-            <FormLabel
-              sx={{
-                fontSize: '13px',
-                display: 'flex',
-                alignItems: 'center',
-                gap: 1,
-              }}
-              error
-            >
-              <WarningAmberIcon fontSize="small" /> {errors.name.message}
-            </FormLabel>
-          )}
+          <Box>
+            <LabeledTextfield
+              id="name"
+              label="Name"
+              required
+              placeholder="Hayman Andrews"
+              {...register('name')}
+              error={!!errors.name}
+            />
+            <FormErrorMessage message={errors.name?.message} />
+          </Box>
 
-          <LabeledTextfield
-            id="email"
-            label="Email"
-            required
-            placeholder="example@mail.com"
-            {...register('email')}
-            error={!!errors.email}
-          />
-          {errors.email && (
-            <FormLabel
-              sx={{
-                fontSize: '13px',
-                display: 'flex',
-                alignItems: 'center',
-                gap: 1,
-              }}
-              error
-            >
-              <WarningAmberIcon fontSize="small" /> {errors.email.message}
-            </FormLabel>
-          )}
-          <LabeledTextfield
-            id="password"
-            label="Password"
-            required
-            type="password"
-            placeholder="at least 6 characters"
-            {...register('password')}
-            error={!!errors.password}
-          />
-          {errors.password && (
-            <FormLabel
-              sx={{
-                fontSize: '13px',
-                display: 'flex',
-                alignItems: 'center',
-                gap: 1,
-              }}
-              error
-            >
-              <WarningAmberIcon fontSize="small" /> {errors.password.message}
-            </FormLabel>
-          )}
+          <Box>
+            <LabeledTextfield
+              id="email"
+              label="Email"
+              required
+              placeholder="example@mail.com"
+              {...register('email')}
+              error={!!errors.email}
+            />
+            <FormErrorMessage message={errors.email?.message} />
+          </Box>
 
-          <LabeledTextfield
-            id="confirmPassword"
-            label="Confirm password"
-            required
-            type="password"
-            placeholder="at least 6 characters"
-            {...register('confirmPassword')}
-            error={!!errors.confirmPassword}
-          />
-          {errors.confirmPassword && (
-            <FormLabel
-              sx={{
-                fontSize: '13px',
-                display: 'flex',
-                alignItems: 'center',
-                gap: 1,
-              }}
-              error
-            >
-              <WarningAmberIcon fontSize="small" />{' '}
-              {errors.confirmPassword.message}
-            </FormLabel>
-          )}
+          <Box>
+            <LabeledTextfield
+              id="password"
+              label="Password"
+              required
+              type="password"
+              placeholder="at least 6 characters"
+              {...register('password')}
+              error={!!errors.password}
+            />
+            <FormErrorMessage message={errors.password?.message} />
+          </Box>
 
-          {error && (
-            <FormLabel
-              sx={{
-                fontSize: '13px',
-                display: 'flex',
-                alignItems: 'center',
-                gap: 1,
-              }}
-              error
-            >
-              <WarningAmberIcon fontSize="small" />
-              {error.message}
-            </FormLabel>
-          )}
+          <Box>
+            <LabeledTextfield
+              id="confirmPassword"
+              label="Confirm password"
+              required
+              type="password"
+              placeholder="at least 6 characters"
+              {...register('confirmPassword')}
+              error={!!errors.confirmPassword}
+            />
+            <FormErrorMessage
+              message={errors.confirmPassword?.message || error?.message}
+            />
+          </Box>
+
           <LoaderButton
             isSubmitting={isPending}
             text="Sign up"
