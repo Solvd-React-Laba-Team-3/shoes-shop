@@ -3,13 +3,14 @@ import Image from 'next/image';
 import { Button } from '../ui/Button/Button';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { useCart } from '@/lib/hooks/useCart/useCart';
+import { File } from '@/types/api/File';
 
 interface CartItemProps {
   id: number;
-  images: string;
+  images: File[];
   name: string;
-  category: string;
-  inStock: boolean;
+  category?: string;
+  inStock?: boolean;
   price: number;
   quantity: number;
   onIncrease: () => void;
@@ -31,7 +32,7 @@ export const CartItem: React.FC<CartItemProps> = ({
 }) => {
   const { handleIncrease, handleDecrease, handleDelete } = useCart();
 
-  const imageSrc = images && images !== '' ? images : null;
+  const imageSrc = images && images.length > 0 ? images[0].url : null;
 
   return (
     <Stack>

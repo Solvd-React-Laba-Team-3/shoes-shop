@@ -1,10 +1,11 @@
+import { File } from './api/File';
 export interface CartProduct {
   id: number;
   name: string;
   description: string;
   price: number;
-  image: string[];
+  images: File[] | null;
   color: { name: string };
-  size: string;
+  size: number;
   quantity: number;
 }

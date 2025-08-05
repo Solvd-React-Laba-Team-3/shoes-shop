@@ -9,8 +9,7 @@ import { CartSummary } from '@/components/CartSummary';
 // import { CartItemProps } from '@/components/CartItem/CartItem';
 import { useCart } from '@/lib/hooks/useCart/useCart';
 import { CartProduct } from '@/types/CartProduct';
-import { FC, useMemo } from 'react';
-import { useQuery } from '@tanstack/react-query';
+import { FC } from 'react';
 // import { useEffect } from 'react';
 
 // import { Category } from '@mui/icons-material';
@@ -28,21 +27,6 @@ import { useQuery } from '@tanstack/react-query';
 //     teamName: string;
 //   };
 // }
-
-interface Product {
-  id: number;
-  attributes: {
-    name: string;
-    price: number;
-    images?: {
-      data?: {
-        attributes?: {
-          url: string;
-        };
-      }[];
-    };
-  };
-}
 
 const Cart: FC<CartProduct> = () => {
   // const { value: quantities, setValue: setQuantities } = useLocalStorage<{
@@ -77,41 +61,6 @@ const Cart: FC<CartProduct> = () => {
   // const subtotal = items.reduce((acc, item) => {
   //   return acc + item.price * item.quantity;
   // }, 0);
-
-  const { data: productsResponse } = useQuery<Product[]>({
-    queryKey: ['all-products'],
-    queryFn: async () => {
-      const res = await fetch(
-        'https://shoes-shop-strapi.herokuapp.com/api/products?populate=*'
-      );
-      const json = await res.json();
-      return json.data;
-    },
-  });
-
-  const enrichedCartItems = useMemo(() => {
-    if (!productsResponse) return [];
-
-    return items.map((cartItem) => {
-      const productData = productsResponse.find((p) => p.id === cartItem.id);
-
-      const firstImage =
-        productData?.attributes?.images?.data?.[0]?.attributes?.url ?? '';
-
-      return {
-        id: cartItem.id,
-        name: productData?.attributes?.name ?? 'Unknown',
-        price: productData?.attributes?.price ?? 0,
-        images: firstImage,
-        inStock: true,
-        quantity: cartItem.quantity,
-        category: cartItem.size,
-        onIncrease: () => handleIncrease(cartItem.id, cartItem.quantity),
-        onDecrease: () => handleDecrease(cartItem.id, cartItem.quantity),
-        onDelete: () => handleDelete(cartItem.id),
-      };
-    });
-  }, [items, productsResponse, handleDecrease, handleIncrease, handleDelete]);
 
   const total = subtotal;
 
@@ -157,10 +106,19 @@ const Cart: FC<CartProduct> = () => {
           </Typography>
           <Box>
             <Stack direction="column" spacing={4} alignItems="stretch">
-              {productsResponse && enrichedCartItems.length > 0 ? (
-                enrichedCartItems
+              {items && items.length > 0 ? (
+                items
                   .filter((item) => item.quantity > 0)
-                  .map((item) => <CartItem key={item.id} {...item} />)
+                  .map((item) => (
+                    <CartItem
+                      key={item.id}
+                      {...item}
+                      images={item.images || []}
+                      onIncrease={() => handleIncrease(item.id, item.quantity)}
+                      onDecrease={() => handleDecrease(item.id, item.quantity)}
+                      onDelete={() => handleDelete(item.id)}
+                    />
+                  ))
               ) : (
                 <Typography variant="h6" color="text.secondary">
                   Your cart is empty.
