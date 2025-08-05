@@ -2,12 +2,13 @@
 
 import { getProductOptions } from '@/api/products/getProductOptions';
 import { Box, NoSsr, Stack, styled, Typography } from '@mui/material';
-import { useSuspenseQuery } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 import { FC, useState } from 'react';
 import { Button } from '../ui';
 import { SizeSelector } from '../SizeSelector';
 import { ProductSlider } from '../ProductSlider';
-import { useLocalStorage } from '@/lib/hooks/useLocalStorage';
+import { notFound } from 'next/navigation';
+import { useWishlist } from '@/lib/hooks/useWishlist';
 
 const ProductWrap = styled(Box)(({ theme }) => ({
   display: 'flex',
@@ -38,19 +39,11 @@ export const ProductDetails: FC<ProductDetailsProps> = ({
 }: {
   productId: number;
 }) => {
-  const { data } = useSuspenseQuery(getProductOptions(productId));
+  const { data, isError } = useQuery(getProductOptions(productId));
   const [selectedSize, setSelectedSize] = useState<number | null>(null);
-  const { value: wishlist = [], setValue } = useLocalStorage<number[]>(
-    'wishlist',
-    []
-  );
-  const inWishlist = wishlist.includes(productId);
-  const toggleWishlistItem = () => {
-    const updatedValue = inWishlist
-      ? wishlist.filter((id) => id !== productId)
-      : Array.from(new Set([...wishlist, productId]));
-    setValue(updatedValue);
-  };
+  const { inWishlist, toggle } = useWishlist();
+
+  if (isError) return notFound();
 
   return (
     data && (
@@ -118,11 +111,13 @@ export const ProductDetails: FC<ProductDetailsProps> = ({
               }
             >
               <Button
-                onClick={toggleWishlistItem}
-                variant={inWishlist ? 'contained' : 'outlined'}
+                onClick={() => toggle(productId)}
+                variant={inWishlist(productId) ? 'contained' : 'outlined'}
                 sx={{ width: { xs: '100%', md: '250px' } }}
               >
-                {inWishlist ? 'Remove from Wishlist' : 'Add to Wishlist'}
+                {inWishlist(productId)
+                  ? 'Remove from Wishlist'
+                  : 'Add to Wishlist'}
               </Button>
             </NoSsr>
             <Button
@@ -140,8 +135,28 @@ export const ProductDetails: FC<ProductDetailsProps> = ({
             >
               Description
             </Typography>
-            <Typography variant="body2" color="text.secondary">
+            <Typography
+              variant="body2"
+              color="text.secondary"
+              paddingBottom={'35px'}
+            >
               {data.description}
+            </Typography>
+          </Stack>
+          <Stack direction={'row'}>
+            <Typography
+              variant="body2"
+              color="secondary.dark"
+              marginRight={'10px'}
+            >
+              Owner:
+            </Typography>
+            <Typography
+              variant="body2"
+              color="secondary.dark"
+              textTransform={'capitalize'}
+            >
+              {data.teamName}
             </Typography>
           </Stack>
         </Box>

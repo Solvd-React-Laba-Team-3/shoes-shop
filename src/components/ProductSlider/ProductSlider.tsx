@@ -1,6 +1,6 @@
 'use client';
 
-import { FC, useState } from 'react';
+import { FC, useEffect, useState } from 'react';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import type { Swiper as SwiperType } from 'swiper';
 import { Navigation, A11y, Thumbs, FreeMode } from 'swiper/modules';
@@ -36,6 +36,84 @@ export const ProductSlider: FC<ProductSliderProps> = ({
 }) => {
   const [thumbsSwiper, setThumbsSwiper] = useState<SwiperType | null>(null);
   const hasImages = images && images.length > 0;
+  const [loadedImages, setLoadedImages] = useState<number>(0);
+  const [allLoaded, setAllLoaded] = useState<boolean>(false);
+
+  const renderSlides = (isThumbs: boolean = false) => {
+    const size = isThumbs ? 76 : undefined;
+
+    if (hasImages) {
+      return images!.map((image) => (
+        <SwiperSlide key={image.id}>
+          <Box
+            sx={{
+              position: 'relative',
+              width: isThumbs ? size : '100%',
+              height: isThumbs ? size : '100%',
+            }}
+          >
+            {!allLoaded && (
+              <Box
+                sx={{
+                  position: 'absolute',
+                  inset: 0,
+                  bgcolor: 'action.disabledBackground',
+                  zIndex: 1,
+                  transition: 'opacity 0.3s',
+                  opacity: allLoaded ? 0 : 1,
+                  pointerEvents: 'none',
+                }}
+              />
+            )}
+            <Image
+              src={image.url}
+              alt={image.alternativeText || image.name}
+              fill={!isThumbs}
+              width={isThumbs ? size : undefined}
+              height={isThumbs ? size : undefined}
+              onLoad={handleImageLoad}
+              style={{
+                objectFit: 'cover',
+                cursor: 'pointer',
+              }}
+            />
+          </Box>
+        </SwiperSlide>
+      ));
+    }
+
+    return (
+      <SwiperSlide>
+        <Box
+          sx={{
+            position: 'relative',
+            width: isThumbs ? size : '100%',
+            height: isThumbs ? size : '100%',
+          }}
+        >
+          <Image
+            src="/product-placeholder.png"
+            alt={`product: ${productName}`}
+            fill={!isThumbs}
+            width={isThumbs ? size : undefined}
+            height={isThumbs ? size : undefined}
+            style={{ objectFit: 'cover' }}
+          />
+        </Box>
+      </SwiperSlide>
+    );
+  };
+
+  useEffect(() => {
+    if (!images || images.length === 0) return;
+    if (loadedImages > 0) {
+      setAllLoaded(true);
+    }
+  }, [loadedImages, images]);
+
+  const handleImageLoad = () => {
+    setLoadedImages((prev) => prev + 1);
+  };
 
   return (
     <>
@@ -61,28 +139,7 @@ export const ProductSlider: FC<ProductSliderProps> = ({
               },
             }}
           >
-            {hasImages ? (
-              images.map((image) => (
-                <SwiperSlide key={image.id}>
-                  <Image
-                    src={image.url}
-                    alt={image.alternativeText || image.name}
-                    width={200}
-                    height={200}
-                    style={{ cursor: 'pointer', borderRadius: 4 }}
-                  />
-                </SwiperSlide>
-              ))
-            ) : (
-              <SwiperSlide>
-                <Image
-                  src="/product-placeholder.png"
-                  alt={`product: ${productName}`}
-                  width={200}
-                  height={200}
-                />
-              </SwiperSlide>
-            )}
+            {renderSlides(true)}
           </Swiper>
         </StyledThumbsWrapper>
 
@@ -106,39 +163,7 @@ export const ProductSlider: FC<ProductSliderProps> = ({
               thumbs={{ swiper: thumbsSwiper }}
               style={{ width: '100%', height: '100%' }}
             >
-              {hasImages ? (
-                images.map((image) => (
-                  <SwiperSlide key={image.id}>
-                    <Box
-                      sx={{
-                        position: 'relative',
-                        width: '100%',
-                        height: '100%',
-                      }}
-                    >
-                      <Image
-                        src={image.url}
-                        alt={image.alternativeText || image.name}
-                        fill
-                        style={{ objectFit: 'cover' }}
-                      />
-                    </Box>
-                  </SwiperSlide>
-                ))
-              ) : (
-                <SwiperSlide>
-                  <Box
-                    sx={{ position: 'relative', width: '100%', height: '100%' }}
-                  >
-                    <Image
-                      src="/product-placeholder.png"
-                      alt={`product: ${productName}`}
-                      fill
-                      style={{ objectFit: 'cover' }}
-                    />
-                  </Box>
-                </SwiperSlide>
-              )}
+              {renderSlides(false)}
             </Swiper>
           </StyledWrapper>
         </Box>
