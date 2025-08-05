@@ -2,36 +2,62 @@
 import Box from '@mui/material/Box';
 import Avatar from '@mui/material/Avatar';
 import Typography from '@mui/material/Typography';
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import TextareaAutosize from '@mui/material/TextareaAutosize';
 import IconButton from '@mui/material/IconButton';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
-import SendOutlinedIcon from '@mui/icons-material/SendOutlined';
-import { StyledContainer, StyledMessageWrapper } from './aihelper.styles';
-import { Button } from '@/components/ui';
-
-interface Chat {
-  message: string;
-  sender: 'user' | 'ai';
-}
+import SendIcon from '@mui/icons-material/Send';
+import CircularProgress from '@mui/material/CircularProgress';
+import {
+  StyledChatContainer,
+  StyledContainer,
+  StyledMessageWrapper,
+} from './aihelper.styles';
+import { Link } from '@/components/ui';
+import ReactMarkdown from 'react-markdown';
+import { useAIHelperChat } from '@/lib/hooks';
+import { MessageFallback } from '../MessageFallback';
 
 export const AIHelper = () => {
+  const { chat, sendMessage, isPending } = useAIHelperChat();
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [prompt, setPrompt] = useState('');
-  const [chat, setChat] = useState<Chat[]>([
-    {
-      message: 'Hello, how can I help you today?',
-      sender: 'ai',
-    },
-  ]);
+  const [isLoading, setIsLoading] = useState(true);
+  const chatContainerRef = useRef<HTMLDivElement | null>(null);
+
+  const scrollChatToBottom = () => {
+    if (chatContainerRef.current) {
+      const { scrollHeight, clientHeight } = chatContainerRef.current;
+      chatContainerRef.current.scrollTop = scrollHeight - clientHeight;
+    }
+  };
+
+  useEffect(() => {
+    if (!isLoading) {
+      scrollChatToBottom();
+    }
+  }, [chat, isLoading]);
+
+  useEffect(() => {
+    if (!isCollapsed && !isLoading) {
+      scrollChatToBottom();
+    }
+  }, [isCollapsed, isLoading]);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 1000);
+    return () => clearTimeout(timer);
+  }, []);
 
   const toggleCollapsed = () => {
     setIsCollapsed(!isCollapsed);
   };
 
   const handleSend = () => {
-    setChat([...chat, { message: prompt, sender: 'user' }]);
+    sendMessage(prompt);
     setPrompt('');
   };
 
@@ -67,30 +93,43 @@ export const AIHelper = () => {
             gap: '16px',
           }}
         >
-          <Box
-            sx={{
-              display: 'flex',
-              flexDirection: 'column',
-              gap: '16px',
-              padding: '16px',
-              border: (theme) => `1px solid ${theme.palette.divider}`,
-              height: '280px',
-              overflowY: 'auto',
-            }}
-          >
-            {chat.map((item) => (
-              <StyledMessageWrapper key={item.message} sender={item.sender}>
-                <Typography variant="body2">{item.message}</Typography>
-              </StyledMessageWrapper>
-            ))}
-          </Box>
+          <StyledChatContainer ref={chatContainerRef}>
+            {isLoading ? (
+              <>
+                <MessageFallback align="left" />
+                <MessageFallback align="right" />
+                <MessageFallback align="left" />
+              </>
+            ) : (
+              chat.map((message) => (
+                <StyledMessageWrapper
+                  key={message.content}
+                  sender={message.sender}
+                >
+                  <ReactMarkdown
+                    components={{
+                      a({ href, children }) {
+                        return (
+                          <Link href={href} active>
+                            {children}
+                          </Link>
+                        );
+                      },
+                    }}
+                  >
+                    {message.content}
+                  </ReactMarkdown>
+                </StyledMessageWrapper>
+              ))
+            )}
+            {isPending && <MessageFallback align="left" />}
+          </StyledChatContainer>
           <Box
             sx={{
               display: 'flex',
               flexDirection: 'column',
               alignItems: 'end',
               padding: '0px 16px',
-              gap: '20px',
             }}
           >
             <TextareaAutosize
@@ -106,14 +145,21 @@ export const AIHelper = () => {
                 resize: 'none',
               }}
             />
-            <Button
-              size="small"
+            <IconButton
               onClick={handleSend}
-              disabled={!prompt.trim()}
-              endIcon={<SendOutlinedIcon />}
+              disabled={!prompt.trim() || isLoading}
+              sx={{
+                '&.Mui-disabled': {
+                  color: (theme) => theme.palette.grey[500],
+                },
+              }}
             >
-              Send
-            </Button>
+              {isPending ? (
+                <CircularProgress size={24} color="inherit" />
+              ) : (
+                <SendIcon />
+              )}
+            </IconButton>
           </Box>
         </Box>
       )}
