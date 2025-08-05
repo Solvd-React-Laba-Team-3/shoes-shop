@@ -8,6 +8,7 @@ import { Button } from '../ui';
 import { SizeSelector } from '../SizeSelector';
 import { ProductSlider } from '../ProductSlider';
 import { useLocalStorage } from '@/lib/hooks/useLocalStorage';
+import { useCart } from '@/lib/hooks/useCart/useCart';
 
 const ProductWrap = styled(Box)(({ theme }) => ({
   display: 'flex',
@@ -38,7 +39,7 @@ export const ProductDetails: FC<ProductDetailsProps> = ({
 }: {
   productId: number;
 }) => {
-  const { data } = useSuspenseQuery(getProductOptions(productId));
+  const { data: product } = useSuspenseQuery(getProductOptions(productId));
   const [selectedSize, setSelectedSize] = useState<number | null>(null);
   const { value: wishlist = [], setValue } = useLocalStorage<number[]>(
     'wishlist',
@@ -51,9 +52,10 @@ export const ProductDetails: FC<ProductDetailsProps> = ({
       : Array.from(new Set([...wishlist, productId]));
     setValue(updatedValue);
   };
+  const { add } = useCart();
 
   return (
-    data && (
+    product && (
       <ProductWrap>
         <Box
           sx={{
@@ -63,7 +65,7 @@ export const ProductDetails: FC<ProductDetailsProps> = ({
             maxWidth: 630,
           }}
         >
-          <ProductSlider images={data.images} productName={data.name} />
+          <ProductSlider images={product.images} productName={product.name} />
         </Box>
         <Box
           sx={{
@@ -79,9 +81,9 @@ export const ProductDetails: FC<ProductDetailsProps> = ({
             }}
           >
             <Stack direction="column">
-              <Typography variant="h2">{data.name}</Typography>
+              <Typography variant="h2">{product.name}</Typography>
               <Typography variant="h4" color="secondary.dark">
-                {data.color.name}
+                {product.color.name}
               </Typography>
             </Stack>
             <Typography
@@ -90,13 +92,13 @@ export const ProductDetails: FC<ProductDetailsProps> = ({
                 marginTop: '20px',
               }}
             >
-              ${data.price}
+              ${product.price}
             </Typography>
           </Stack>
           <SizeSelector
             selectedSize={selectedSize}
             onSizeChange={setSelectedSize}
-            availableSizes={data.sizes.map((s) => s.value)}
+            availableSizes={product.sizes.map((s) => s.value)}
           />
           <Stack
             sx={{
@@ -128,6 +130,7 @@ export const ProductDetails: FC<ProductDetailsProps> = ({
             <Button
               sx={{ width: { xs: '100%', md: '250px' } }}
               disabled={!selectedSize}
+              onClick={() => add(product, selectedSize!)}
             >
               Add to Bag
             </Button>
@@ -141,7 +144,7 @@ export const ProductDetails: FC<ProductDetailsProps> = ({
               Description
             </Typography>
             <Typography variant="body2" color="text.secondary">
-              {data.description}
+              {product.description}
             </Typography>
           </Stack>
         </Box>

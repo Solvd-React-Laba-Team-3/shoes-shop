@@ -1,3 +1,4 @@
+import { Product } from '@/types/Product';
 import { useLocalStorage } from '../useLocalStorage';
 import { CartProduct } from '@/types/CartProduct';
 
@@ -7,7 +8,7 @@ export const useCart = () => {
     []
   );
 
-  const add = (product: Omit<CartProduct, 'quantity'>) => {
+  const add = (product: Product, size: number) => {
     const existingItem = items.find((item) => item.id === product.id);
 
     if (existingItem) {
@@ -15,9 +16,14 @@ export const useCart = () => {
         item.id === product.id ? { ...item, quantity: item.quantity + 1 } : item
       );
       setItems(updatedItems);
-    } else {
-      setItems([...items, { ...product, quantity: 1 }]);
+      return;
     }
+    const newProduct: CartProduct = {
+      ...product,
+      size,
+      quantity: 1,
+    };
+    setItems([...items, newProduct]);
   };
 
   const updateQuantity = (productId: number, quantity: number) => {
@@ -38,11 +44,13 @@ export const useCart = () => {
 
   const handleIncrease = (id: number, quantity: number) => {
     updateQuantity(id, quantity + 1);
+    console.log('increase btn is clicked');
   };
 
   const handleDecrease = (id: number, quantity: number) => {
     if (quantity > 1) {
       updateQuantity(id, quantity - 1);
+      console.log('decrease btn is clicked');
     }
   };
 
