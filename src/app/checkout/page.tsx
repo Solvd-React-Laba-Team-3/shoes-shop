@@ -15,7 +15,6 @@ import {
 } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { OrderHistory } from '@/types/OrderHistory';
-import Image from 'next/image';
 
 const products: StripeProduct[] = [
   {
@@ -212,7 +211,7 @@ export default function Checkout() {
                           key={idx}
                           sx={{ display: 'flex', alignItems: 'center', gap: 2 }}
                         >
-                          <Image
+                          <img
                             src={product.image ?? '/placeholder.jpg'}
                             alt={product.name}
                             width={50}
