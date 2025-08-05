@@ -2,7 +2,7 @@ import { InputLabel, TextareaAutosize } from '@mui/material';
 import { styled } from '@mui/material/styles';
 
 export const StyledInputLabel = styled(InputLabel)(({ theme }) => ({
-  fontSize: '17px',
+  fontSize: '20px',
   fontWeight: 500,
   color: theme.palette.text.secondary,
 }));

@@ -1,0 +1,1 @@
+export { ProductFormDropzone } from './ProductFormDropzone';
