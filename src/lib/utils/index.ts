@@ -4,4 +4,3 @@ export { formatProductAttributes } from './formatProductAttributes/formatProduct
 export { toQueryString } from './toQueryString/toQueryString';
 export { parseQueryString } from './parseQueryString/parseQueryString';
 export { flatStrapiData } from './flatStrapiData/flatStrapiData';
-export { compressImage } from './compressImage/compressImage';

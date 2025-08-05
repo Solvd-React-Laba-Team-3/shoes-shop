@@ -1,9 +1,13 @@
 'use client';
 
 import { FC } from 'react';
-import { ToggleButtonProps } from '@mui/material/ToggleButton';
+import { ToggleButtonProps as MUIToggleButtonProps } from '@mui/material/ToggleButton';
 import { StyledToggleButton } from './toggleButton.styles';
 
-export const ToggleButton: FC<ToggleButtonProps> = (props) => {
-  return <StyledToggleButton disableRipple {...props} />;
+export interface ToggleButtonProps extends MUIToggleButtonProps {
+  error?: boolean;
+}
+
+export const ToggleButton: FC<ToggleButtonProps> = ({ error, ...props }) => {
+  return <StyledToggleButton disableRipple {...props} error={error} />;
 };

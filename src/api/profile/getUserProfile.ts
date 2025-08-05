@@ -8,9 +8,6 @@ export const getUserProfile = async (token: string) =>
     token,
     queryParams: {
       populate: {
-        products: {
-          populate: '*',
-        },
         avatar: '*',
       },
     },
