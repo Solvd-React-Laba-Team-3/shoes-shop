@@ -1,4 +1,4 @@
-export interface CartProduct {
+export interface StrepiProduct {
   id: number;
   name: string;
   size: number;

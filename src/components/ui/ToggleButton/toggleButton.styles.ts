@@ -8,7 +8,7 @@ export const StyledToggleButton = styled(ToggleButton, {
   ...theme.typography.caption,
 
   color: theme.palette.text.secondary,
-  border: `1px solid ${error ? theme.palette.error.main : theme.palette.secondary.dark} !important`,
+  border: `1px solid ${error ? theme.palette.error.main : theme.palette.secondary.dark}`,
   backgroundColor: 'transparent',
   minWidth: '85px',
   height: '55px',
