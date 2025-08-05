@@ -1,4 +1,4 @@
-import { StrepiProduct } from './StrepiProduct';
+import { StripeProduct } from './StripeProduct';
 
 export interface OrderHistory {
   userId: number;
@@ -6,10 +6,13 @@ export interface OrderHistory {
   summary: number;
   discountAmount?: number;
   discountCode?: string;
+  shippingAmount: number;
+  taxPercent: number;
   delivery: string;
   contactFullName: string;
   contactPhone: string;
   contactEmail: string;
   status: string;
-  products: StrepiProduct[];
+  products: StripeProduct[];
+  receipt_url?: string;
 }

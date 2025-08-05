@@ -11,10 +11,16 @@ import {
   FormLabel,
   ToggleButtonGroup,
   Divider,
-  TextField,
 } from '@mui/material';
 import { WarningAmber } from '@mui/icons-material';
-import { LabeledTextfield, Link, MenuItem, ToggleButton } from '../ui';
+import {
+  FormErrorMessage,
+  LabeledTextfield,
+  Link,
+  MenuItem,
+  Select,
+  ToggleButton,
+} from '../ui';
 import { theme } from '@/providers/ThemeProvider';
 import PaymentIcon from '@mui/icons-material/Payment';
 import GoogleIcon from '@mui/icons-material/Google';
@@ -25,21 +31,27 @@ import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import { CardElement, useElements, useStripe } from '@stripe/react-stripe-js';
 import { useRouter } from 'next/navigation';
 import { splitProducts } from '@/lib/utils/splitProducts/splitProducts';
-import { StrepiProduct } from '@/types/StrepiProduct';
+import { StripeProduct } from '@/types/StripeProduct';
 import { StyledInputLabel } from '../ProductForm/productForm.styles';
 
 type CheckoutProps = {
   discountCode?: string;
   discountAmount?: number;
-  amount: number;
-  products: StrepiProduct[];
+  shippingAmount?: number;
+  taxPercent?: number;
+  totalAmount: number;
+  products: StripeProduct[];
+  onCountryChange: (country: string) => void;
 };
 
 export const CheckoutForm: FC<CheckoutProps> = ({
   discountCode,
   discountAmount,
-  amount,
+  totalAmount,
   products,
+  shippingAmount = 20,
+  taxPercent = 17,
+  onCountryChange,
 }) => {
   const stripe = useStripe();
   const elements = useElements();
@@ -97,10 +109,12 @@ export const CheckoutForm: FC<CheckoutProps> = ({
       setServerError(null);
       const body = {
         ...data,
-        amount: amount,
-        discountCode: discountCode || undefined,
-        orderNumber,
+        amount: totalAmount,
         discountAmount: discountAmount || undefined,
+        discountCode: discountCode || undefined,
+        shippingAmount,
+        taxPercent,
+        orderNumber,
         productsMetadata,
       };
 
@@ -219,24 +233,40 @@ export const CheckoutForm: FC<CheckoutProps> = ({
             <Controller
               name="country"
               control={control}
-              defaultValue=""
               render={({ field }) => (
-                <Box>
-                  <StyledInputLabel
-                    shrink
-                    error={!!errors.country}
-                    sx={{ marginTop: '10px' }}
-                  >
+                <Box
+                  sx={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: '5px',
+                  }}
+                >
+                  <StyledInputLabel shrink error={!!errors.country}>
                     Country
                   </StyledInputLabel>
 
-                  <TextField
+                  <Select
                     {...field}
-                    select
-                    size="small"
-                    fullWidth
+                    displayEmpty
+                    sx={{ padding: '8px' }}
                     error={!!errors.country}
-                    helperText={errors.country?.message}
+                    onChange={(e) => {
+                      field.onChange(e);
+                      onCountryChange((e.target as HTMLInputElement).value);
+                    }}
+                    renderValue={(value) => {
+                      if (!value)
+                        return (
+                          <Typography variant="body2" color="textSecondary">
+                            Select country
+                          </Typography>
+                        );
+                      return (
+                        <Typography sx={{ fontSize: '16px', fontWeight: 400 }}>
+                          {value as string}
+                        </Typography>
+                      );
+                    }}
                   >
                     {[
                       'Argentina',
@@ -246,18 +276,13 @@ export const CheckoutForm: FC<CheckoutProps> = ({
                       'Ukraine',
                       'USA',
                     ].map((country) => (
-                      <MenuItem
-                        key={country}
-                        value={country}
-                        sx={{
-                          height: '40px',
-                          fontSize: '16px',
-                        }}
-                      >
-                        {country}
+                      <MenuItem key={country} value={country}>
+                        <Typography variant="caption">{country}</Typography>
                       </MenuItem>
                     ))}
-                  </TextField>
+                  </Select>
+
+                  <FormErrorMessage message={errors.country?.message} />
                 </Box>
               )}
             />
