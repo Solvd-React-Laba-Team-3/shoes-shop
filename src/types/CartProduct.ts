@@ -1,10 +1,10 @@
 export interface CartProduct {
   id: number;
   name: string;
-  size: number;
-  gender: string;
+  description: string;
   price: number;
+  image: string[];
+  color: { name: string };
+  size: string;
   quantity: number;
-  image: string;
-  color: string;
 }

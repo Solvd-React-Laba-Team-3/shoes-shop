@@ -2,8 +2,10 @@ import { Box, ButtonGroup, Divider, Stack, Typography } from '@mui/material';
 import Image from 'next/image';
 import { Button } from '../ui/Button/Button';
 import DeleteIcon from '@mui/icons-material/Delete';
+import { useCart } from '@/lib/hooks/useCart/useCart';
 
-type CartItemProps = {
+interface CartItemProps {
+  id: number;
   images: string;
   name: string;
   category: string;
@@ -13,20 +15,24 @@ type CartItemProps = {
   onIncrease: () => void;
   onDecrease: () => void;
   onDelete: () => void;
-};
+}
 
 export const CartItem: React.FC<CartItemProps> = ({
+  id,
   images,
   name,
   category,
   inStock,
   price,
   quantity,
-  onIncrease,
-  onDecrease,
-  onDelete,
+  // onIncrease,
+  // onDecrease,
+  // onDelete,
 }) => {
+  const { handleIncrease, handleDecrease, handleDelete } = useCart();
+
   const imageSrc = images && images !== '' ? images : null;
+
   return (
     <Stack>
       <Box>
@@ -98,14 +104,14 @@ export const CartItem: React.FC<CartItemProps> = ({
                 >
                   <Button
                     sx={{ backgroundColor: '#E8E8E8', color: '#CECECE' }}
-                    onClick={onDecrease}
+                    onClick={() => handleDecrease(id, quantity)}
                   >
                     -
                   </Button>
                   <Typography sx={{ px: 1 }}>{quantity}</Typography>
                   <Button
                     sx={{ backgroundColor: '#FFD7D6', color: '#FE645E' }}
-                    onClick={onIncrease}
+                    onClick={() => handleIncrease(id, quantity)}
                   >
                     +
                   </Button>
@@ -122,7 +128,7 @@ export const CartItem: React.FC<CartItemProps> = ({
                   aria-label="delete item"
                   fontSize="small"
                   sx={{ color: '#8B8E93', width: '24px', height: '24px' }}
-                  onClick={onDelete}
+                  onClick={() => handleDelete(id)}
                 />
                 <Typography>Delete</Typography>
               </Stack>

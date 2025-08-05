@@ -2,79 +2,144 @@
 
 import { Box, Divider, Stack, Typography } from '@mui/material';
 import { Header } from '@/components/common/Header';
-import { useState } from 'react';
+// import { useState } from 'react';
 import { CartItem } from '@/components/CartItem/CartItem';
 import { CartSummary } from '@/components/CartSummary';
-import { useLocalStorage } from '@/lib/hooks/useLocalStorage';
+// import { useLocalStorage } from '@/lib/hooks/useLocalStorage';
+// import { CartItemProps } from '@/components/CartItem/CartItem';
+import { useCart } from '@/lib/hooks/useCart/useCart';
+import { CartProduct } from '@/types/CartProduct';
+import { FC, useMemo } from 'react';
+import { useQuery } from '@tanstack/react-query';
+// import { useEffect } from 'react';
+
+// import { Category } from '@mui/icons-material';
+// import { CartProduct } from '@/types/CartProduct';
+// import { Product } from '@/types/Product';
+// import { useLocalStorage } from '@/lib/hooks/useLocalStorage';
+
+// interface Product {
+//   id: number;
+//   url: string;
+//   attributes: {
+//     name: string;
+//     description: string;
+//     price: number;
+//     teamName: string;
+//   };
+// }
 
 interface Product {
   id: number;
-  url: string;
   attributes: {
     name: string;
-    description: string;
     price: number;
-    teamName: string;
+    images?: {
+      data?: {
+        attributes?: {
+          url: string;
+        };
+      }[];
+    };
   };
 }
 
-const Cart = () => {
-  const { value: quantities, setValue: setQuantities } = useLocalStorage<{
-    [key: number]: number;
-  }>('cart-quantities', {});
+const Cart: FC<CartProduct> = () => {
+  // const { value: quantities, setValue: setQuantities } = useLocalStorage<{
+  //   [key: number]: number;
+  // }>('cart-quantities', {});
 
-  const [products] = useState<Product[]>(() => {
-    if (typeof window === 'undefined') return [];
+  // const { value: products, setValue: setProducts } = useLocalStorage<Product[]>(
+  //   'cart-products',
+  //   []
+  // );
 
-    const raw = localStorage.getItem('cart-products');
-    try {
-      return raw ? JSON.parse(raw) : [];
-    } catch (error) {
-      console.error('Error parsing cart-products from localStorage:', error);
-      return [];
-    }
-  });
+  const { items, subtotal, handleIncrease, handleDecrease, handleDelete } =
+    useCart();
+  // const { value: products } = useLocalStorage<Product[]>('products', []);
 
   //to see data on the screen - delete in the future
-  fetch('https://shoes-shop-strapi.herokuapp.com/api/products')
-    .then((res) => res.json())
-    .then((data) => {
-      localStorage.setItem('cart-products', JSON.stringify(data.data));
-    });
 
-  const subtotal = products.reduce((acc, product) => {
-    const quantity = quantities[product.id] || 0;
-    return acc + product.attributes.price * quantity;
-  }, 0);
+  // useEffect(() => {
+  //   // Only set localStorage if empty, to avoid overwriting user changes
+  //   const existingCart = localStorage.getItem('cart-products');
+  //   if (!existingCart) {
+  //     fetch('https://shoes-shop-strapi.herokuapp.com/api/products')
+  //       .then((res) => res.json())
+  //       .then((data) => {
+  //         console.log(data);
+
+  //         localStorage.setItem('cart-products', JSON.stringify(data));
+  //       });
+  //   }
+  // }, []);
+
+  // const subtotal = items.reduce((acc, item) => {
+  //   return acc + item.price * item.quantity;
+  // }, 0);
+
+  const { data: productsResponse } = useQuery<Product[]>({
+    queryKey: ['all-products'],
+    queryFn: async () => {
+      const res = await fetch(
+        'https://shoes-shop-strapi.herokuapp.com/api/products?populate=*'
+      );
+      const json = await res.json();
+      return json.data;
+    },
+  });
+
+  const enrichedCartItems = useMemo(() => {
+    if (!productsResponse) return [];
+
+    return items.map((cartItem) => {
+      const productData = productsResponse.find((p) => p.id === cartItem.id);
+
+      const firstImage =
+        productData?.attributes?.images?.data?.[0]?.attributes?.url ?? '';
+
+      return {
+        id: cartItem.id,
+        name: productData?.attributes?.name ?? 'Unknown',
+        price: productData?.attributes?.price ?? 0,
+        images: firstImage,
+        inStock: true,
+        quantity: cartItem.quantity,
+        category: cartItem.size,
+        onIncrease: () => handleIncrease(cartItem.id, cartItem.quantity),
+        onDecrease: () => handleDecrease(cartItem.id, cartItem.quantity),
+        onDelete: () => handleDelete(cartItem.id),
+      };
+    });
+  }, [items, productsResponse, handleDecrease, handleIncrease, handleDelete]);
 
   const total = subtotal;
 
-  const handleIncrease = (id: number) => {
-    setQuantities({ ...quantities, [id]: (quantities[id] || 0) + 1 });
-  };
+  //  const handleIncrease = (id: number, currentQuantity: number) => {
+  //    updateQuantity(id, currentQuantity + 1);
+  //  };
 
-  const handleDecrease = (id: number) => {
-    if (quantities[id] <= 1) return;
-    setQuantities({ ...quantities, [id]: quantities[id] - 1 });
-  };
+  //  const handleDecrease = (id: number, currentQuantity: number) => {
+  //    if (currentQuantity <= 1) return;
+  //    updateQuantity(id, currentQuantity - 1);
+  //  };
 
-  const handleDelete = (id: number) => {
-    const newQuantities = { ...quantities };
-    delete newQuantities[id];
-    setQuantities(newQuantities);
-  };
+  //  const handleDelete = (id: number) => {
+  //    remove(id);
+  //  };
 
-  const mapProductToCartItemProps = (product: Product) => ({
-    images: product.url,
-    name: product.attributes.name,
-    category: product.attributes.teamName,
-    inStock: true,
-    price: product.attributes.price,
-    quantity: quantities[product.id] || 0,
-    onIncrease: () => handleIncrease(product.id),
-    onDecrease: () => handleDecrease(product.id),
-    onDelete: () => handleDelete(product.id),
-  });
+  // const mapProductToCartItemProps = (product: (typeof items)[number]) => ({
+  //   id: product.id,
+  //   images: product.image,
+  //   name: product.name,
+  //   inStock: true,
+  //   price: product.price,
+  //   quantity: product.quantity,
+  //   category: String(product.size),
+  //   onIncrease: () => handleIncrease(product.id, product.quantity),
+  //   onDecrease: () => handleDecrease(product.id, product.quantity),
+  //   onDelete: () => handleDelete(product.id),
+  // });
 
   return (
     <>
@@ -92,12 +157,15 @@ const Cart = () => {
           </Typography>
           <Box>
             <Stack direction="column" spacing={4} alignItems="stretch">
-              {products.map((product) => (
-                <CartItem
-                  key={product.id}
-                  {...mapProductToCartItemProps(product)}
-                />
-              ))}
+              {productsResponse && enrichedCartItems.length > 0 ? (
+                enrichedCartItems
+                  .filter((item) => item.quantity > 0)
+                  .map((item) => <CartItem key={item.id} {...item} />)
+              ) : (
+                <Typography variant="h6" color="text.secondary">
+                  Your cart is empty.
+                </Typography>
+              )}
             </Stack>
           </Box>
 
