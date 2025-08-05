@@ -1,4 +1,4 @@
-import { StrepiProduct } from '@/types/StrepiProduct';
+import { StrepiProduct } from '@/types/StripeProduct';
 
 export function splitProducts(products: StrepiProduct[], maxChars = 500) {
   const chunks: string[] = [];

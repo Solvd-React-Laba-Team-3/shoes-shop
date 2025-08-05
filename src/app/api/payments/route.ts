@@ -35,6 +35,8 @@ export async function POST(req: NextRequest) {
         email: data.email,
         paymentMethod: data.paymentMethod,
         userId: session.user.id,
+        shippingAmount: data.shippingAmount,
+        taxPercent: data.taxPercent,
         ...(discountCode && { discountCode }),
         ...(discountAmount && { discountAmount }),
         ...(productsMetadata ?? {}),

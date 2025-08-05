@@ -1,4 +1,4 @@
-export interface StrepiProduct {
+export interface StripeProduct {
   id: number;
   name: string;
   size: number;
