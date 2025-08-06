@@ -6,13 +6,13 @@ import { CartItem } from '@/components/CartItem/CartItem';
 import { CartSummary } from '@/components/CartSummary';
 import { useCart } from '@/lib/hooks/useCart/useCart';
 import { FC } from 'react';
-import { Product } from '@/types/Product';
 
-const Cart: FC<Product> = () => {
+const Cart: FC = () => {
   const { items, subtotal, handleIncrease, handleDecrease, handleDelete } =
     useCart();
 
   const total = subtotal;
+  console.log(items);
 
   return (
     <>
