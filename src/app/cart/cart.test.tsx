@@ -1,4 +1,4 @@
-import React from 'react';
+import { ReactElement } from 'react';
 import {
   render,
   screen,
@@ -51,7 +51,7 @@ afterAll(() => {
   (global.fetch as jest.Mock).mockRestore();
 });
 
-function renderWithSession(ui: React.ReactElement) {
+function renderWithSession(ui: ReactElement) {
   return render(<SessionProvider session={null}>{ui}</SessionProvider>);
 }
 
