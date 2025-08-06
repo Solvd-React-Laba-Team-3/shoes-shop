@@ -59,7 +59,9 @@ export const ProductsContainer: FC<ProductsContainerProps> = ({
     [filters, search]
   );
 
-  const { data } = useSuspenseInfiniteQuery(getProductsOptions(queryParams));
+  const { data, isFetching } = useSuspenseInfiniteQuery(
+    getProductsOptions(queryParams)
+  );
 
   const products = data.pages.flatMap((page) => page.products);
 
@@ -102,7 +104,7 @@ export const ProductsContainer: FC<ProductsContainerProps> = ({
         </Box>
       </Box>
 
-      {products.length ? (
+      {products.length || isFetching ? (
         <ProductList products={data.pages.flatMap((page) => page.products)} />
       ) : (
         <StyledNoProductsWrapper>
