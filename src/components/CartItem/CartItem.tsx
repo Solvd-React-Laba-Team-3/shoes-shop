@@ -1,10 +1,10 @@
+import { File } from '@/types/api/File';
+import { Gender } from '@/types/Gender';
+import DeleteIcon from '@mui/icons-material/Delete';
 import { Box, ButtonGroup, Divider, Stack, Typography } from '@mui/material';
 import Image from 'next/image';
-import { Button } from '../ui';
-import DeleteIcon from '@mui/icons-material/Delete';
-import { File } from '@/types/api/File';
 import { FC } from 'react';
-import { Gender } from '@/types/Gender';
+import { Button } from '../ui';
 
 export interface CartItemProps {
   id: number;
@@ -129,6 +129,7 @@ export const CartItem: FC<CartItemProps> = ({
                     fontSize: '28px',
                     gap: 2,
                   }}
+                  onClick={onDelete}
                 >
                   <DeleteIcon
                     aria-label="delete item"
@@ -138,7 +139,7 @@ export const CartItem: FC<CartItemProps> = ({
                       height: '24px',
                       color: (theme) => theme.palette.grey[400],
                     }}
-                    onClick={onDelete}
+                    // onClick={onDelete}
                   />
                   Delete
                 </Button>
