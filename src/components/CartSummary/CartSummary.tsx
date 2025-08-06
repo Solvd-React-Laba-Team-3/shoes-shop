@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { FC, useState } from 'react';
 import {
   Box,
   Divider,
@@ -12,8 +12,8 @@ import { Accordion } from '../ui/Accordion/Accordion';
 import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { CartSchema } from './CartSchema';
-import type { PromoFormData } from './CartSchema';
+import { CartSchema } from './cart.schema';
+import type { PromoFormData } from './cart.schema';
 import { Button } from '../ui';
 
 interface CartSummaryProps {
@@ -21,11 +21,7 @@ interface CartSummaryProps {
   total: number;
 }
 
-export const CartSummary: React.FC<CartSummaryProps> = ({
-  subtotal,
-
-  total,
-}) => {
+export const CartSummary: FC<CartSummaryProps> = ({ subtotal, total }) => {
   const router = useRouter();
 
   const {
@@ -40,15 +36,16 @@ export const CartSummary: React.FC<CartSummaryProps> = ({
 
   const [discount, setDiscount] = useState(0);
 
-  const onApplyPromo = (data: PromoFormData) => {
-    const enteredCode = data.promoCode.trim().toUpperCase();
+  const PROMO_CODE = 'SAVE10';
+  const PROMO_DISCOUNT = 10;
 
-    if (enteredCode === 'SAVE10') {
-      setDiscount(10);
+  const onApplyPromo = (data: PromoFormData) => {
+    const enteredCode = data.promoCode.trim();
+
+    if (enteredCode === PROMO_CODE) {
+      setDiscount(PROMO_DISCOUNT);
       clearErrors('promoCode');
-      console.log('Promo code applied successfully');
     } else {
-      setDiscount(0);
       setError('promoCode', {
         type: 'manual',
         message: 'Invalid promo code',
@@ -58,10 +55,11 @@ export const CartSummary: React.FC<CartSummaryProps> = ({
 
   const handleCheckout = () => {
     console.log('Checkout button clicked');
-    router.push('/profile/products');
+    router.push('/checkout');
   };
 
-  const finalTotal = total - discount;
+  const discountSum = (total * discount) / 100;
+  const finalTotal = total - discountSum;
 
   return (
     <Box>
@@ -139,7 +137,7 @@ export const CartSummary: React.FC<CartSummaryProps> = ({
             Discount
           </Typography>
           <Typography variant="h3" sx={{ fontWeight: 400 }}>
-            -${discount.toFixed(2)}
+            -${discountSum.toFixed(2)}
           </Typography>
         </Box>
       )}

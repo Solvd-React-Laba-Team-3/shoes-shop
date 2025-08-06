@@ -8,8 +8,9 @@ import { CartSummary } from '@/components/CartSummary';
 // import { useLocalStorage } from '@/lib/hooks/useLocalStorage';
 // import { CartItemProps } from '@/components/CartItem/CartItem';
 import { useCart } from '@/lib/hooks/useCart/useCart';
-import { CartProduct } from '@/types/CartProduct';
+// import { CartProduct } from '@/types/CartProduct';
 import { FC } from 'react';
+import { Product } from '@/types/Product';
 // import { useEffect } from 'react';
 
 // import { Category } from '@mui/icons-material';
@@ -28,7 +29,7 @@ import { FC } from 'react';
 //   };
 // }
 
-const Cart: FC<CartProduct> = () => {
+const Cart: FC<Product> = () => {
   // const { value: quantities, setValue: setQuantities } = useLocalStorage<{
   //   [key: number]: number;
   // }>('cart-quantities', {});
@@ -113,6 +114,7 @@ const Cart: FC<CartProduct> = () => {
                     <CartItem
                       key={item.id}
                       {...item}
+                      gender={item.gender}
                       images={item.images || []}
                       onIncrease={() => handleIncrease(item.id, item.quantity)}
                       onDecrease={() => handleDecrease(item.id, item.quantity)}

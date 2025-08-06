@@ -1,29 +1,32 @@
 import { Box, ButtonGroup, Divider, Stack, Typography } from '@mui/material';
 import Image from 'next/image';
-import { Button } from '../ui/Button/Button';
+import { Button } from '../ui';
 import DeleteIcon from '@mui/icons-material/Delete';
 // import { useCart } from '@/lib/hooks/useCart/useCart';
 import { File } from '@/types/api/File';
+import { FC } from 'react';
+import { Gender } from '@/types/Gender';
 
 interface CartItemProps {
   id: number;
   images: File[];
   name: string;
-  category?: string;
-  inStock?: boolean;
+  // category?: string;
+  // inStock: boolean;
   price: number;
   quantity: number;
+  gender: Gender;
   onIncrease: () => void;
   onDecrease: () => void;
   onDelete: () => void;
 }
 
-export const CartItem: React.FC<CartItemProps> = ({
+export const CartItem: FC<CartItemProps> = ({
   // id,
   images,
   name,
-  category,
-  inStock,
+  gender,
+  // inStock,
   price,
   quantity,
   onIncrease,
@@ -68,9 +71,9 @@ export const CartItem: React.FC<CartItemProps> = ({
           >
             <Stack spacing={0.5}>
               <Typography variant="h3">{name}</Typography>
-              <Typography variant="h6">{category}</Typography>
+              <Typography variant="h6">{gender.name}&apos;s Shoes </Typography>
               <Typography variant="h4" color="primary.main">
-                {inStock ? 'In Stock' : 'Out of Stock'}
+                In Stock
               </Typography>
             </Stack>
 
