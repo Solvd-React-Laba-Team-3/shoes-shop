@@ -15,6 +15,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { CartSchema } from './cart.schema';
 import type { PromoFormData } from './cart.schema';
 import { Button } from '../ui';
+// import { useCart } from '@/lib/hooks';
 
 interface CartSummaryProps {
   subtotal: number;
@@ -34,13 +35,15 @@ export const CartSummary: FC<CartSummaryProps> = ({ subtotal, total }) => {
     resolver: zodResolver(CartSchema),
   });
 
+  // const { subtotal } = useCart();
+
   const [discount, setDiscount] = useState(0);
 
   const PROMO_CODE = 'SAVE10';
   const PROMO_DISCOUNT = 10;
 
   const onApplyPromo = (data: PromoFormData) => {
-    const enteredCode = data.promoCode.trim();
+    const enteredCode = data.promoCode.trim().toUpperCase();
 
     if (enteredCode === PROMO_CODE) {
       setDiscount(PROMO_DISCOUNT);
@@ -57,6 +60,8 @@ export const CartSummary: FC<CartSummaryProps> = ({ subtotal, total }) => {
     console.log('Checkout button clicked');
     router.push('/checkout');
   };
+
+  // const total = subtotal;
 
   const discountSum = (total * discount) / 100;
   const finalTotal = total - discountSum;
