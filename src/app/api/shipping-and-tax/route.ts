@@ -33,8 +33,7 @@ export async function GET(request: Request) {
       : 20;
 
     return NextResponse.json({ shippingAmount, taxPercent });
-  } catch (error) {
-    console.error('💥 Stripe error:', error);
+  } catch {
     return NextResponse.json(
       { shippingAmount: 20, taxPercent: 17, error: 'Stripe fetch error' },
       { status: 500 }
