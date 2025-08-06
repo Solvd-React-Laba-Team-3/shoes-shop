@@ -2,7 +2,7 @@ import { Box, ButtonGroup, Divider, Stack, Typography } from '@mui/material';
 import Image from 'next/image';
 import { Button } from '../ui/Button/Button';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { useCart } from '@/lib/hooks/useCart/useCart';
+// import { useCart } from '@/lib/hooks/useCart/useCart';
 import { File } from '@/types/api/File';
 
 interface CartItemProps {
@@ -19,18 +19,18 @@ interface CartItemProps {
 }
 
 export const CartItem: React.FC<CartItemProps> = ({
-  id,
+  // id,
   images,
   name,
   category,
   inStock,
   price,
   quantity,
-  // onIncrease,
-  // onDecrease,
-  // onDelete,
+  onIncrease,
+  onDecrease,
+  onDelete,
 }) => {
-  const { handleIncrease, handleDecrease, handleDelete } = useCart();
+  // const { handleIncrease, handleDecrease, handleDelete } = useCart();
 
   const imageSrc = images && images.length > 0 ? images[0].url : null;
 
@@ -105,14 +105,14 @@ export const CartItem: React.FC<CartItemProps> = ({
                 >
                   <Button
                     sx={{ backgroundColor: '#E8E8E8', color: '#CECECE' }}
-                    onClick={() => handleDecrease(id, quantity)}
+                    onClick={onDecrease}
                   >
                     -
                   </Button>
                   <Typography sx={{ px: 1 }}>{quantity}</Typography>
                   <Button
                     sx={{ backgroundColor: '#FFD7D6', color: '#FE645E' }}
-                    onClick={() => handleIncrease(id, quantity)}
+                    onClick={onIncrease}
                   >
                     +
                   </Button>
@@ -129,7 +129,7 @@ export const CartItem: React.FC<CartItemProps> = ({
                   aria-label="delete item"
                   fontSize="small"
                   sx={{ color: '#8B8E93', width: '24px', height: '24px' }}
-                  onClick={() => handleDelete(id)}
+                  onClick={onDelete}
                 />
                 <Typography>Delete</Typography>
               </Stack>
