@@ -2,94 +2,17 @@
 
 import { Box, Divider, Stack, Typography } from '@mui/material';
 import { Header } from '@/components/common/Header';
-// import { useState } from 'react';
 import { CartItem } from '@/components/CartItem/CartItem';
 import { CartSummary } from '@/components/CartSummary';
-// import { useLocalStorage } from '@/lib/hooks/useLocalStorage';
-// import { CartItemProps } from '@/components/CartItem/CartItem';
 import { useCart } from '@/lib/hooks/useCart/useCart';
-// import { CartProduct } from '@/types/CartProduct';
 import { FC } from 'react';
 import { Product } from '@/types/Product';
-// import { useEffect } from 'react';
-
-// import { Category } from '@mui/icons-material';
-// import { CartProduct } from '@/types/CartProduct';
-// import { Product } from '@/types/Product';
-// import { useLocalStorage } from '@/lib/hooks/useLocalStorage';
-
-// interface Product {
-//   id: number;
-//   url: string;
-//   attributes: {
-//     name: string;
-//     description: string;
-//     price: number;
-//     teamName: string;
-//   };
-// }
 
 const Cart: FC<Product> = () => {
-  // const { value: quantities, setValue: setQuantities } = useLocalStorage<{
-  //   [key: number]: number;
-  // }>('cart-quantities', {});
-
-  // const { value: products, setValue: setProducts } = useLocalStorage<Product[]>(
-  //   'cart-products',
-  //   []
-  // );
-
   const { items, subtotal, handleIncrease, handleDecrease, handleDelete } =
     useCart();
-  // const { value: products } = useLocalStorage<Product[]>('products', []);
-
-  //to see data on the screen - delete in the future
-
-  // useEffect(() => {
-  //   // Only set localStorage if empty, to avoid overwriting user changes
-  //   const existingCart = localStorage.getItem('cart-products');
-  //   if (!existingCart) {
-  //     fetch('https://shoes-shop-strapi.herokuapp.com/api/products')
-  //       .then((res) => res.json())
-  //       .then((data) => {
-  //         console.log(data);
-
-  //         localStorage.setItem('cart-products', JSON.stringify(data));
-  //       });
-  //   }
-  // }, []);
-
-  // const subtotal = items.reduce((acc, item) => {
-  //   return acc + item.price * item.quantity;
-  // }, 0);
 
   const total = subtotal;
-
-  //  const handleIncrease = (id: number, currentQuantity: number) => {
-  //    updateQuantity(id, currentQuantity + 1);
-  //  };
-
-  //  const handleDecrease = (id: number, currentQuantity: number) => {
-  //    if (currentQuantity <= 1) return;
-  //    updateQuantity(id, currentQuantity - 1);
-  //  };
-
-  //  const handleDelete = (id: number) => {
-  //    remove(id);
-  //  };
-
-  // const mapProductToCartItemProps = (product: (typeof items)[number]) => ({
-  //   id: product.id,
-  //   images: product.image,
-  //   name: product.name,
-  //   inStock: true,
-  //   price: product.price,
-  //   quantity: product.quantity,
-  //   category: String(product.size),
-  //   onIncrease: () => handleIncrease(product.id, product.quantity),
-  //   onDecrease: () => handleDecrease(product.id, product.quantity),
-  //   onDelete: () => handleDelete(product.id),
-  // });
 
   return (
     <>
