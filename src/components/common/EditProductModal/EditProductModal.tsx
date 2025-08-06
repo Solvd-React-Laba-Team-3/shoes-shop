@@ -140,7 +140,7 @@ export const EditProductModal: FC<EditPageProps> = ({
           onRemoveImage={handleRemoveImage}
           editingProduct={{
             name: editingProduct.name,
-            price: editingProduct.price.toString(),
+            price: editingProduct.price,
             gender: editingProduct.gender.id.toString(),
             color: editingProduct.color.id.toString(),
             brand: editingProduct.brand?.id.toString(),
