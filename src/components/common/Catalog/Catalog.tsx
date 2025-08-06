@@ -9,7 +9,7 @@ import { FiltersFallback } from '@/components/common/FiltersFallback';
 import { useState } from 'react';
 
 export const Catalog = () => {
-  const [isFiltersOpen, setIsFiltersOpen] = useState(false);
+  const [isFiltersOpen, setIsFiltersOpen] = useState(true);
 
   const handleFiltersToggle = () => {
     setIsFiltersOpen(!isFiltersOpen);

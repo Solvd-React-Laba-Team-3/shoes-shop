@@ -29,6 +29,7 @@ const StyledFormLabel = styled(FormLabel)(({ theme }) => ({
   fontWeight: 400,
   lineHeight: '24px',
   cursor: 'pointer',
+  paddingLeft: '8px',
 }));
 
 const StyledPricesContainer = styled(FormLabel)(() => ({
@@ -152,7 +153,7 @@ export const Filters: FC<DrawerProps> = ({ ...props }) => {
             <Box display="flex" flexDirection="column" gap="20px">
               {genders.map((gender) => (
                 <Box
-                  sx={{ display: 'flex', gap: '8px', alignItems: 'center' }}
+                  sx={{ display: 'flex', alignItems: 'center' }}
                   key={gender.id}
                 >
                   <Checkbox
@@ -183,7 +184,7 @@ export const Filters: FC<DrawerProps> = ({ ...props }) => {
               />
               {brands.map((brand) => (
                 <Box
-                  sx={{ display: 'flex', gap: '8px', alignItems: 'center' }}
+                  sx={{ display: 'flex', alignItems: 'center' }}
                   key={brand.id}
                 >
                   <Checkbox
@@ -300,7 +301,7 @@ export const Filters: FC<DrawerProps> = ({ ...props }) => {
             <Box display="flex" flexDirection="column" gap="20px">
               {colors?.map((color) => (
                 <Box
-                  sx={{ display: 'flex', gap: '8px', alignItems: 'center' }}
+                  sx={{ display: 'flex', alignItems: 'center' }}
                   key={color.id}
                 >
                   <Checkbox
@@ -325,7 +326,7 @@ export const Filters: FC<DrawerProps> = ({ ...props }) => {
             <Box display="flex" flexDirection="column" gap="20px">
               {sizes?.map((size) => (
                 <Box
-                  sx={{ display: 'flex', gap: '8px', alignItems: 'center' }}
+                  sx={{ display: 'flex', alignItems: 'center' }}
                   key={size.id}
                 >
                   <Checkbox
