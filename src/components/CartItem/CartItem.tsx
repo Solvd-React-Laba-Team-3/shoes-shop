@@ -2,7 +2,6 @@ import { Box, ButtonGroup, Divider, Stack, Typography } from '@mui/material';
 import Image from 'next/image';
 import { Button } from '../ui';
 import DeleteIcon from '@mui/icons-material/Delete';
-// import { useCart } from '@/lib/hooks/useCart/useCart';
 import { File } from '@/types/api/File';
 import { FC } from 'react';
 import { Gender } from '@/types/Gender';
@@ -11,8 +10,6 @@ export interface CartItemProps {
   id: number;
   images: File[];
   name: string;
-  // category?: string;
-  // inStock: boolean;
   price: number;
   quantity: number;
   gender: Gender;
@@ -22,19 +19,15 @@ export interface CartItemProps {
 }
 
 export const CartItem: FC<CartItemProps> = ({
-  // id,
   images,
   name,
   gender,
-  // inStock,
   price,
   quantity,
   onIncrease,
   onDecrease,
   onDelete,
 }) => {
-  // const { handleIncrease, handleDecrease, handleDelete } = useCart();
-
   const imageSrc = images && images.length > 0 ? images[0].url : null;
 
   return (
@@ -128,13 +121,15 @@ export const CartItem: FC<CartItemProps> = ({
                   Quantity
                 </Typography>
                 <Typography sx={{ color: '#8B8E93' }}>|</Typography>
-                <DeleteIcon
-                  aria-label="delete item"
-                  fontSize="small"
-                  sx={{ color: '#8B8E93', width: '24px', height: '24px' }}
-                  onClick={onDelete}
-                />
-                <Typography>Delete</Typography>
+                <Button size="small">
+                  <DeleteIcon
+                    aria-label="delete item"
+                    fontSize="small"
+                    sx={{ color: '#8B8E93', width: '24px', height: '24px' }}
+                    onClick={onDelete}
+                  />
+                  Delete
+                </Button>
               </Stack>
             </Stack>
           </Stack>
