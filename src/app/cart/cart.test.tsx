@@ -1,122 +1,85 @@
-import { ReactElement } from 'react';
-import {
-  render,
-  screen,
-  waitFor,
-  fireEvent,
-  within,
-} from '@testing-library/react';
+import { render, screen, fireEvent } from '@testing-library/react';
 import Cart from './page';
 import { SessionProvider } from 'next-auth/react';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { useCart } from '@/lib/hooks';
 
-jest.mock('@tanstack/react-query', () => ({
-  useQuery: jest.fn(() => ({ data: [], isLoading: false })),
-}));
+jest.mock('@/lib/hooks/useCart/useCart');
 
-const mockProductsResponse = {
-  data: [
-    {
-      id: 1,
-      url: '/recovery.jpg',
-      attributes: {
-        name: 'Shoe 1',
-        description: 'Desc 1',
-        price: 50,
-      },
-    },
-    {
-      id: 2,
-      url: '/register.jpg',
-      attributes: {
-        name: 'Shoe 2',
-        description: 'Desc 2',
-        price: 30,
-      },
-    },
-  ],
-};
-
-beforeAll(() => {
-  Object.defineProperty(window, 'localStorage', {
-    value: {
-      getItem: jest.fn(),
-      setItem: jest.fn(),
-      removeItem: jest.fn(),
-    },
-    writable: true,
-  });
-});
-
-afterAll(() => {
-  (global.fetch as jest.Mock).mockRestore();
-});
-
-function renderWithSession(ui: ReactElement) {
-  return render(<SessionProvider session={null}>{ui}</SessionProvider>);
-}
-
-describe('Cart Component - summary calculations', () => {
+describe('Cart', () => {
   beforeEach(() => {
-    (global.fetch as jest.Mock) = jest.fn().mockImplementation(() =>
-      Promise.resolve({
-        json: () => Promise.resolve(mockProductsResponse),
-      })
-    );
-
-    window.localStorage.getItem = jest.fn((key) => {
-      if (key === 'cart-products') {
-        return JSON.stringify(mockProductsResponse.data);
-      }
-      if (key === 'cart-quantities') {
-        return JSON.stringify({ 1: 0, 2: 0 });
-      }
-      return null;
+    (useCart as jest.Mock).mockReturnValue({
+      items: [
+        { id: 1, quantity: 2, gender: 'male', images: ['img1.jpg'] },
+        { id: 2, quantity: 0, gender: 'female', images: [] },
+      ],
+      subtotal: 100,
+      handleIncrease: jest.fn(),
+      handleDecrease: jest.fn(),
+      handleDelete: jest.fn(),
+    });
+  });
+  it('renders the page with cart item information', () => {
+    const queryClient = new QueryClient({
+      defaultOptions: {
+        queries: { retry: false },
+      },
     });
 
-    window.localStorage.setItem = jest.fn();
-  });
-
-  test('initial summary values are zero', async () => {
-    renderWithSession(<Cart />);
-    await waitFor(() => expect(fetch).toHaveBeenCalled());
-
-    const summarySection = screen.getByText(/Summary/i).closest('div');
-    expect(summarySection).toBeTruthy();
-
-    const totalElements = within(summarySection!).getAllByText(/Total/i);
-    expect(totalElements.length).toBeGreaterThan(0);
-
-    const zeroAmounts = within(summarySection!).queryAllByText((content) =>
-      content.includes('$0.00')
+    render(
+      <SessionProvider session={null}>
+        <QueryClientProvider client={queryClient}>
+          <Cart />
+        </QueryClientProvider>
+      </SessionProvider>
     );
-    expect(zeroAmounts.length).toBeGreaterThanOrEqual(2);
+
+    expect(screen.getByText('Cart')).toBeInTheDocument();
+    expect(screen.getByText('Summary')).toBeInTheDocument();
   });
 
-  test('increase and decrease quantity updates summary', async () => {
-    renderWithSession(<Cart />);
-    await waitFor(() => expect(fetch).toHaveBeenCalled());
+  it('calls handleIncrease when increase button clicked', () => {
+    const { handleIncrease } = useCart();
+    const queryClient = new QueryClient({
+      defaultOptions: {
+        queries: { retry: false },
+      },
+    });
+    render(
+      <SessionProvider session={null}>
+        <QueryClientProvider client={queryClient}>
+          <Cart />
+        </QueryClientProvider>
+      </SessionProvider>
+    );
 
-    const increaseButtons = await screen.findAllByText('+');
+    const increaseButtons = screen.getAllByRole('button', {
+      name: /\+/i,
+    });
     fireEvent.click(increaseButtons[0]);
+    expect(handleIncrease).toHaveBeenCalledWith(1, 2);
+  });
 
-    const summarySection = screen.getByText(/Summary/i).closest('div');
-    expect(summarySection).toBeTruthy();
+  it('calls handleDecrease when decrease button is clicked', () => {
+    const { handleDecrease } = useCart();
+    const queryClient = new QueryClient({
+      defaultOptions: {
+        queries: { retry: false },
+      },
+    });
+    render(
+      <SessionProvider session={null}>
+        <QueryClientProvider client={queryClient}>
+          <Cart />
+        </QueryClientProvider>
+      </SessionProvider>
+    );
 
-    await waitFor(() => {
-      const fiftyAmounts = within(summarySection!).queryAllByText((content) =>
-        content.includes('$50.00')
-      );
-      expect(fiftyAmounts.length).toBeGreaterThanOrEqual(0);
+    const decreaseButtons = screen.getAllByRole('button', {
+      name: /\-/i,
     });
 
-    const decreaseButtons = await screen.findAllByText('-');
     fireEvent.click(decreaseButtons[0]);
-
-    await waitFor(() => {
-      const zeroAmounts = within(summarySection!).queryAllByText((content) =>
-        content.includes('$0.00')
-      );
-      expect(zeroAmounts.length).toBeGreaterThanOrEqual(0);
-    });
+    expect(handleDecrease).toHaveBeenCalledWith(1, 2);
   });
 });

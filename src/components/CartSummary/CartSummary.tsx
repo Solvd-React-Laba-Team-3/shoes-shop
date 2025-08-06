@@ -17,7 +17,7 @@ import type { PromoFormData } from './cart.schema';
 import { Button } from '../ui';
 // import { useCart } from '@/lib/hooks';
 
-interface CartSummaryProps {
+export interface CartSummaryProps {
   subtotal: number;
   total: number;
 }

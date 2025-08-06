@@ -7,7 +7,7 @@ import { File } from '@/types/api/File';
 import { FC } from 'react';
 import { Gender } from '@/types/Gender';
 
-interface CartItemProps {
+export interface CartItemProps {
   id: number;
   images: File[];
   name: string;
