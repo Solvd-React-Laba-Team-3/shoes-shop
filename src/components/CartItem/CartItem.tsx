@@ -121,11 +121,23 @@ export const CartItem: FC<CartItemProps> = ({
                   Quantity
                 </Typography>
                 <Typography sx={{ color: '#8B8E93' }}>|</Typography>
-                <Button size="small">
+                <Button
+                  size="small"
+                  sx={{
+                    background: 'transparent',
+                    color: (theme) => theme.palette.grey[400],
+                    fontSize: '28px',
+                    gap: 2,
+                  }}
+                >
                   <DeleteIcon
                     aria-label="delete item"
                     fontSize="small"
-                    sx={{ color: '#8B8E93', width: '24px', height: '24px' }}
+                    sx={{
+                      width: '24px',
+                      height: '24px',
+                      color: (theme) => theme.palette.grey[400],
+                    }}
                     onClick={onDelete}
                   />
                   Delete
