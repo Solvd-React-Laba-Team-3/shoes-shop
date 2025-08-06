@@ -1,12 +1,16 @@
-import { Product } from '@/types/Product';
-import { useLocalStorage } from '../useLocalStorage';
 import { CartProduct } from '@/types/CartProduct';
+import { Product } from '@/types/Product';
+import { useState } from 'react';
+import { useLocalStorage } from '../useLocalStorage';
 
 export const useCart = () => {
   const { value: items, setValue: setItems } = useLocalStorage<CartProduct[]>(
     'cart-products',
     []
   );
+
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [itemToDelete, setItemToDelete] = useState<number | null>(null);
 
   const add = (product: Product, size: number) => {
     const existingItem = items.find((item) => item.id === product.id);
@@ -69,6 +73,26 @@ export const useCart = () => {
     remove(id);
   };
 
+  const onRequestDelete = (id: number) => {
+    setItemToDelete(id);
+    setDeleteModalOpen(true);
+  };
+
+  const onConfirmDelete = () => {
+    console.log('Confirm clicked', itemToDelete);
+    if (itemToDelete !== null) {
+      handleDelete(itemToDelete);
+      setDeleteModalOpen(false);
+      setItemToDelete(null);
+    }
+  };
+
+  const onCancelDelete = () => {
+    console.log('Cancel clicked');
+    setDeleteModalOpen(false);
+    setItemToDelete(null);
+  };
+
   return {
     items,
     add,
@@ -78,5 +102,9 @@ export const useCart = () => {
     handleIncrease,
     handleDecrease,
     handleDelete,
+    deleteModalOpen,
+    onCancelDelete,
+    onConfirmDelete,
+    onRequestDelete,
   };
 };

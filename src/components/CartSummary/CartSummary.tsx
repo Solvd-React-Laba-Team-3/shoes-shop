@@ -1,6 +1,6 @@
 'use client';
 
-import React, { FC, useState } from 'react';
+import { zodResolver } from '@hookform/resolvers/zod';
 import {
   Box,
   Divider,
@@ -8,13 +8,13 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
-import { Accordion } from '../ui/Accordion/Accordion';
 import { useRouter } from 'next/navigation';
+import { FC, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { CartSchema } from './cart.schema';
-import type { PromoFormData } from './cart.schema';
 import { Button } from '../ui';
+import { Accordion } from '../ui/Accordion/Accordion';
+import type { PromoFormData } from './cart.schema';
+import { CartSchema } from './cart.schema';
 // import { useCart } from '@/lib/hooks';
 
 export interface CartSummaryProps {

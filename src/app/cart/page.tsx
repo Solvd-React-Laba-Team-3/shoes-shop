@@ -1,18 +1,49 @@
 'use client';
 
-import { Box, Divider, Stack, Typography } from '@mui/material';
-import { Header } from '@/components/common/Header';
 import { CartItem } from '@/components/CartItem/CartItem';
 import { CartSummary } from '@/components/CartSummary';
+import { DeleteConfirmationModal } from '@/components/common/DeleteConfirmationModal';
+import { Header } from '@/components/common/Header';
 import { useCart } from '@/lib/hooks/useCart/useCart';
+import { Box, Divider, Stack, Typography } from '@mui/material';
 import { FC } from 'react';
 
 const Cart: FC = () => {
-  const { items, subtotal, handleIncrease, handleDecrease, handleDelete } =
-    useCart();
+  const {
+    items,
+    subtotal,
+    handleIncrease,
+    handleDecrease,
+    onCancelDelete,
+    onConfirmDelete,
+    onRequestDelete,
+    deleteModalOpen,
+  } = useCart();
+
+  // const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  // const [itemToDelete, setItemToDelete] = useState<number | null>(null);
 
   const total = subtotal;
-  console.log(items);
+
+  // const onRequestDelete = (id: number) => {
+  //   setItemToDelete(id);
+  //   setDeleteModalOpen(true);
+  // };
+
+  // const onConfirmDelete = () => {
+  //   console.log('Confirm clicked', itemToDelete);
+  //   if (itemToDelete !== null) {
+  //     handleDelete(itemToDelete);
+  //     setDeleteModalOpen(false);
+  //     setItemToDelete(null);
+  //   }
+  // };
+
+  // const onCancelDelete = () => {
+  //   console.log('Cancel clicked');
+  //   setDeleteModalOpen(false);
+  //   setItemToDelete(null);
+  // };
 
   return (
     <>
@@ -41,7 +72,8 @@ const Cart: FC = () => {
                       images={item.images || []}
                       onIncrease={() => handleIncrease(item.id, item.quantity)}
                       onDecrease={() => handleDecrease(item.id, item.quantity)}
-                      onDelete={() => handleDelete(item.id)}
+                      // onDelete={() => handleDelete(item.id)}
+                      onDelete={() => onRequestDelete(item.id)}
                     />
                   ))
               ) : (
@@ -54,6 +86,14 @@ const Cart: FC = () => {
 
           <Divider sx={{ margin: '60px 0' }} />
         </Stack>
+
+        <DeleteConfirmationModal
+          title="Are you sure you want to delete this item?"
+          description="Confirm to continue or cancel."
+          open={deleteModalOpen}
+          onClose={onCancelDelete}
+          onDelete={onConfirmDelete}
+        />
 
         <Stack>
           <Typography variant="h2" sx={{ marginBottom: '32px' }}>

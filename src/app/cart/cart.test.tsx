@@ -1,8 +1,8 @@
-import { render, screen, fireEvent } from '@testing-library/react';
-import Cart from './page';
-import { SessionProvider } from 'next-auth/react';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { useCart } from '@/lib/hooks';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { fireEvent, render, screen } from '@testing-library/react';
+import { SessionProvider } from 'next-auth/react';
+import Cart from './page';
 
 jest.mock('@/lib/hooks/useCart/useCart');
 
