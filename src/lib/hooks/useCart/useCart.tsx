@@ -23,19 +23,30 @@ export const useCart = () => {
       size,
       quantity: 1,
     };
-    setItems([...items, newProduct]);
+
+    setItems((prev) => [...prev, newProduct]);
   };
 
-  const updateQuantity = (productId: number, quantity: number) => {
+  const updateQuantity = (id: number, quantity: number) => {
+    console.log('quantity is updated');
+
+    if (quantity <= 0) {
+      setItems((prev) =>
+        prev.map((item) => (item.id === id ? { ...item, quantity } : item))
+      );
+
+      return;
+    }
+
     const updatedItems = items.map((item) =>
-      item.id === productId ? { ...item, quantity } : item
+      item.id === id ? { ...item, quantity } : item
     );
+
     setItems(updatedItems);
   };
 
   const remove = (productId: number) => {
-    const updatedItems = items.filter((item) => item.id !== productId);
-    setItems(updatedItems);
+    setItems((prev) => prev.filter((item) => item.id !== productId));
   };
 
   const subtotal = items.reduce((acc, item) => {

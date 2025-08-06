@@ -170,7 +170,9 @@ export const CartSummary: React.FC<CartSummaryProps> = ({
 
       <Divider sx={{ marginBottom: '113px' }} />
 
-      <Button onClick={handleCheckout}>Checkout</Button>
+      <Button onClick={handleCheckout} sx={{ width: '100%' }}>
+        Checkout
+      </Button>
     </Box>
   );
 };
