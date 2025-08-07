@@ -28,7 +28,7 @@ export const Sidebar: FC<DrawerProps> = ({ open = true, ...props }) => {
     {
       label: 'Order history',
       icon: <HistoryIcon />,
-      href: '/profile/history',
+      href: '/profile/orders',
     },
     {
       label: 'My Wishlist',
