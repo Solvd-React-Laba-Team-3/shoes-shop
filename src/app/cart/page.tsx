@@ -1,17 +1,16 @@
 'use client';
 
-import { CartItem } from '@/components/CartItem/CartItem';
+import { CartItem } from '@/components/CartItem';
 import { CartSummary } from '@/components/CartSummary';
 import { DeleteConfirmationModal } from '@/components/common/DeleteConfirmationModal';
 import { Header } from '@/components/common/Header';
 import { useCart } from '@/lib/hooks/useCart/useCart';
-import { Box, Divider, Stack, Typography } from '@mui/material';
+import { Box, Stack, Typography } from '@mui/material';
 import { FC } from 'react';
 
 const Cart: FC = () => {
   const {
     items,
-    subtotal,
     handleIncrease,
     handleDecrease,
     onCancelDelete,
@@ -19,8 +18,6 @@ const Cart: FC = () => {
     onRequestDelete,
     deleteModalOpen,
   } = useCart();
-
-  const total = subtotal;
 
   return (
     <>
@@ -49,7 +46,6 @@ const Cart: FC = () => {
                       images={item.images || []}
                       onIncrease={() => handleIncrease(item.id, item.quantity)}
                       onDecrease={() => handleDecrease(item.id, item.quantity)}
-                      // onDelete={() => handleDelete(item.id)}
                       onDelete={() => onRequestDelete(item.id)}
                     />
                   ))
@@ -60,12 +56,10 @@ const Cart: FC = () => {
               )}
             </Stack>
           </Box>
-
-          <Divider sx={{ margin: '60px 0' }} />
         </Stack>
 
         <DeleteConfirmationModal
-          title="Are you sure you want to delete this item?"
+          title="Are you sure you want to remove this product from the cart?"
           description="Confirm to continue or cancel."
           open={deleteModalOpen}
           onClose={onCancelDelete}
@@ -79,7 +73,7 @@ const Cart: FC = () => {
 
           <Box>
             <Stack direction="column">
-              <CartSummary subtotal={subtotal} total={total} />
+              <CartSummary />
             </Stack>
           </Box>
         </Stack>

@@ -15,15 +15,12 @@ import { Button } from '../ui';
 import { Accordion } from '../ui/Accordion/Accordion';
 import type { PromoFormData } from './cart.schema';
 import { CartSchema } from './cart.schema';
-// import { useCart } from '@/lib/hooks';
+import { useCart } from '@/lib/hooks';
 
-export interface CartSummaryProps {
-  subtotal: number;
-  total: number;
-}
-
-export const CartSummary: FC<CartSummaryProps> = ({ subtotal, total }) => {
+export const CartSummary: FC = () => {
   const router = useRouter();
+
+  const { subtotal } = useCart();
 
   const {
     register,
@@ -34,8 +31,6 @@ export const CartSummary: FC<CartSummaryProps> = ({ subtotal, total }) => {
   } = useForm<PromoFormData>({
     resolver: zodResolver(CartSchema),
   });
-
-  // const { subtotal } = useCart();
 
   const [discount, setDiscount] = useState(0);
 
@@ -61,10 +56,8 @@ export const CartSummary: FC<CartSummaryProps> = ({ subtotal, total }) => {
     router.push('/checkout');
   };
 
-  // const total = subtotal;
-
-  const discountSum = (total * discount) / 100;
-  const finalTotal = total - discountSum;
+  const discountSum = (subtotal * discount) / 100;
+  const finalTotal = subtotal - discountSum;
 
   return (
     <Box>
@@ -100,7 +93,12 @@ export const CartSummary: FC<CartSummaryProps> = ({ subtotal, total }) => {
                 fontSize: '16px',
               },
             }}
-            {...register('promoCode')}
+            {...register('promoCode', {
+              onChange: (e) => {
+                const upperValue = e.target.value.toUpperCase();
+                e.target.value = upperValue;
+              },
+            })}
             error={!!errors.promoCode}
             helperText={errors.promoCode?.message}
           />
