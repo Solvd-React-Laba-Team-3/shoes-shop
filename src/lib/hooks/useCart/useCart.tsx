@@ -28,19 +28,12 @@ export const useCart = () => {
       quantity: 1,
     };
 
-    // setItems((prev) => [...prev, newProduct]);
     const updatedItems = [...items, newProduct];
     setItems(updatedItems);
   };
 
   const updateQuantity = (id: number, quantity: number) => {
-    console.log('quantity is updated');
-
     if (quantity <= 0) {
-      // setItems((prev) =>
-      //   prev.map((item) => (item.id === id ? { ...item, quantity } : item))
-      // );
-
       const updatedItems = items.map((item) =>
         item.id === id ? { ...item, quantity } : item
       );
@@ -67,13 +60,11 @@ export const useCart = () => {
 
   const handleIncrease = (id: number, quantity: number) => {
     updateQuantity(id, quantity + 1);
-    console.log('increase btn is clicked');
   };
 
   const handleDecrease = (id: number, quantity: number) => {
     if (quantity > 1) {
       updateQuantity(id, quantity - 1);
-      console.log('decrease btn is clicked');
     }
   };
 
@@ -87,7 +78,6 @@ export const useCart = () => {
   };
 
   const onConfirmDelete = () => {
-    console.log('Confirm clicked', itemToDelete);
     if (itemToDelete !== null) {
       handleDelete(itemToDelete);
       setDeleteModalOpen(false);
@@ -96,7 +86,6 @@ export const useCart = () => {
   };
 
   const onCancelDelete = () => {
-    console.log('Cancel clicked');
     setDeleteModalOpen(false);
     setItemToDelete(null);
   };

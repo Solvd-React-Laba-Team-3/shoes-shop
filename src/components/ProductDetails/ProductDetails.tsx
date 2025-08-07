@@ -7,7 +7,7 @@ import { FC, useState } from 'react';
 import { Button } from '../ui';
 import { SizeSelector } from '../SizeSelector';
 import { ProductSlider } from '../ProductSlider';
-import { useLocalStorage } from '@/lib/hooks/useLocalStorage';
+import { useLocalStorage } from '@/lib/hooks';
 import { useCart } from '@/lib/hooks/useCart/useCart';
 
 const ProductWrap = styled(Box)(({ theme }) => ({
