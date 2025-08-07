@@ -1,4 +1,4 @@
-import { Box, Skeleton, Stack, Typography } from '@mui/material';
+import { Box, Skeleton, Stack } from '@mui/material';
 
 export default function Loading() {
   return (
