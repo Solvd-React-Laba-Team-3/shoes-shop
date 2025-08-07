@@ -2,7 +2,6 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 
 export function useLocalStorage<T>(key: string, initialValue: T) {
   const initialRef = useRef(initialValue);
-
   const read = useCallback((): T => {
     if (typeof window === 'undefined') return initialRef.current;
     try {
