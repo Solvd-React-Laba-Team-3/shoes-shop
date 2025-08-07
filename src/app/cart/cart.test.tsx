@@ -6,19 +6,32 @@ import Cart from './page';
 
 jest.mock('@/lib/hooks/useCart/useCart');
 
+const mockIncreaseQuantity = jest.fn();
+const mockDecreaseQuantity = jest.fn();
+const mockRemoveItem = jest.fn();
+
 describe('Cart', () => {
   beforeEach(() => {
     (useCart as jest.Mock).mockReturnValue({
       items: [
-        { id: 1, quantity: 2, gender: 'male', images: ['img1.jpg'] },
-        { id: 2, quantity: 0, gender: 'female', images: [] },
+        {
+          id: 1,
+          quantity: 2,
+          gender: 'male',
+          image: '/img1.jpg',
+          size: 42,
+          name: 'Test Shoe',
+          price: 50,
+        },
       ],
       subtotal: 100,
-      handleIncrease: jest.fn(),
-      handleDecrease: jest.fn(),
-      handleDelete: jest.fn(),
+      isLoading: false,
+      increaseQuantity: mockIncreaseQuantity,
+      decreaseQuantity: mockDecreaseQuantity,
+      removeItem: mockRemoveItem,
     });
   });
+
   it('renders the page with cart item information', () => {
     const queryClient = new QueryClient({
       defaultOptions: {
@@ -36,10 +49,10 @@ describe('Cart', () => {
 
     expect(screen.getByText('Cart')).toBeInTheDocument();
     expect(screen.getByText('Summary')).toBeInTheDocument();
+    expect(screen.getByText('Test Shoe')).toBeInTheDocument();
   });
 
-  it('calls handleIncrease when increase button clicked', () => {
-    const { handleIncrease } = useCart();
+  it('calls increaseQuantity when increase button clicked', () => {
     const queryClient = new QueryClient({
       defaultOptions: {
         queries: { retry: false },
@@ -53,15 +66,12 @@ describe('Cart', () => {
       </SessionProvider>
     );
 
-    const increaseButtons = screen.getAllByRole('button', {
-      name: /\+/i,
-    });
-    fireEvent.click(increaseButtons[0]);
-    expect(handleIncrease).toHaveBeenCalledWith(1, 2);
+    const increaseButton = screen.getByRole('button', { name: '+' });
+    fireEvent.click(increaseButton);
+    expect(mockIncreaseQuantity).toHaveBeenCalledWith(1, 42, 2);
   });
 
-  it('calls handleDecrease when decrease button is clicked', () => {
-    const { handleDecrease } = useCart();
+  it('calls decreaseQuantity when decrease button is clicked', () => {
     const queryClient = new QueryClient({
       defaultOptions: {
         queries: { retry: false },
@@ -75,11 +85,8 @@ describe('Cart', () => {
       </SessionProvider>
     );
 
-    const decreaseButtons = screen.getAllByRole('button', {
-      name: /\-/i,
-    });
-
-    fireEvent.click(decreaseButtons[0]);
-    expect(handleDecrease).toHaveBeenCalledWith(1, 2);
+    const decreaseButton = screen.getByRole('button', { name: '-' });
+    fireEvent.click(decreaseButton);
+    expect(mockDecreaseQuantity).toHaveBeenCalledWith(1, 42, 2);
   });
 });
