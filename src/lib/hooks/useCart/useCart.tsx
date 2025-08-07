@@ -1,7 +1,7 @@
 import { CartProduct } from '@/types/CartProduct';
 import { Product } from '@/types/Product';
 import { useState } from 'react';
-import { useLocalStorage } from '../useLocalStorage';
+import { useLocalStorage } from '../useLocalStorage/useLocalStorage';
 
 export const useCart = () => {
   const { value: items, setValue: setItems } = useLocalStorage<CartProduct[]>(
@@ -28,16 +28,23 @@ export const useCart = () => {
       quantity: 1,
     };
 
-    setItems((prev) => [...prev, newProduct]);
+    // setItems((prev) => [...prev, newProduct]);
+    const updatedItems = [...items, newProduct];
+    setItems(updatedItems);
   };
 
   const updateQuantity = (id: number, quantity: number) => {
     console.log('quantity is updated');
 
     if (quantity <= 0) {
-      setItems((prev) =>
-        prev.map((item) => (item.id === id ? { ...item, quantity } : item))
+      // setItems((prev) =>
+      //   prev.map((item) => (item.id === id ? { ...item, quantity } : item))
+      // );
+
+      const updatedItems = items.map((item) =>
+        item.id === id ? { ...item, quantity } : item
       );
+      setItems(updatedItems);
 
       return;
     }
@@ -50,7 +57,8 @@ export const useCart = () => {
   };
 
   const remove = (productId: number) => {
-    setItems((prev) => prev.filter((item) => item.id !== productId));
+    const removedItems = items.filter((item) => item.id !== productId);
+    setItems(removedItems);
   };
 
   const subtotal = items.reduce((acc, item) => {
