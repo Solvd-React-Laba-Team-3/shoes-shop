@@ -1,18 +1,19 @@
-import { File } from '@/types/api/File';
-import { Gender } from '@/types/Gender';
+// import { File } from '@/types/api/File';
+// import { Gender } from '@/types/Gender';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { Box, ButtonGroup, Divider, Stack, Typography } from '@mui/material';
 import Image from 'next/image';
 import { FC } from 'react';
 import { Button } from '../ui';
+import { CartProduct } from '@/types/CartProduct';
 
-export interface CartItemProps {
-  id: number;
-  images: File[];
-  name: string;
-  price: number;
-  quantity: number;
-  gender: Gender;
+export interface CartItemProps extends CartProduct {
+  // id: number;
+  // images: File[];
+  // name: string;
+  // price: number;
+  // quantity: number;
+  // gender: string;
   onIncrease: () => void;
   onDecrease: () => void;
   onDelete: () => void;
@@ -23,7 +24,6 @@ export const CartItem: FC<CartItemProps> = ({
   name,
   gender,
   price,
-
   quantity,
   onIncrease,
   onDecrease,
@@ -67,7 +67,7 @@ export const CartItem: FC<CartItemProps> = ({
           >
             <Stack spacing={0.5}>
               <Typography variant="h3">{name}</Typography>
-              <Typography variant="h6">{gender.name}&apos;s Shoes </Typography>
+              <Typography variant="h6">{gender}&apos;s Shoes </Typography>
               <Typography variant="h4" color="primary.main">
                 In Stock
               </Typography>

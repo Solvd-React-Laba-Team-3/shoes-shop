@@ -6,9 +6,8 @@ import { DeleteConfirmationModal } from '@/components/common/DeleteConfirmationM
 import { Header } from '@/components/common/Header';
 import { useCart } from '@/lib/hooks/useCart/useCart';
 import { Box, Stack, Typography } from '@mui/material';
-import { FC } from 'react';
 
-const Cart: FC = () => {
+export default function Cart() {
   const {
     items,
     handleIncrease,
@@ -80,6 +79,4 @@ const Cart: FC = () => {
       </Box>
     </>
   );
-};
-
-export default Cart;
+}
