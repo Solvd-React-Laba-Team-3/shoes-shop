@@ -18,9 +18,9 @@ const StyledPaper = styled(Paper)(({ theme }) => ({
   display: 'grid',
   justifyItems: 'start',
   width: '756px',
-  position: 'absolute',
-  right: '102px',
-  bottom: '255px',
+  position: 'fixed',
+  right: '4%',
+  top: '36%',
 }));
 
 type ReviewPanelProps = {
