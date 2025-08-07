@@ -1,23 +1,21 @@
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
-import {
-  Box,
-  Divider,
-  GlobalStyles,
-  TextField,
-  Typography,
-} from '@mui/material';
+import { Box, Divider, TextField, Typography } from '@mui/material';
 import { useRouter } from 'next/navigation';
-import { FC, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { Button } from '../ui';
 import { Accordion } from '../ui/Accordion/Accordion';
-import type { PromoFormData } from './cart.schema';
-import { CartSchema } from './cart.schema';
+import { cartSchema, CartSchema } from './cart.schema';
 import { useCart } from '@/lib/hooks';
 
-export const CartSummary: FC = () => {
+const MOCK_PROMO_CODE = {
+  value: 'SAVE10',
+  discount: 10,
+};
+
+export const CartSummary = () => {
   const router = useRouter();
 
   const { subtotal } = useCart();
@@ -28,20 +26,22 @@ export const CartSummary: FC = () => {
     setError,
     clearErrors,
     formState: { errors },
-  } = useForm<PromoFormData>({
-    resolver: zodResolver(CartSchema),
+  } = useForm<CartSchema>({
+    resolver: zodResolver(cartSchema),
+    defaultValues: {
+      promoCode: '',
+    },
+    shouldFocusError: true,
   });
 
   const [discount, setDiscount] = useState(0);
 
-  const PROMO_CODE = 'SAVE10';
-  const PROMO_DISCOUNT = 10;
+  const onApplyPromo = (data: CartSchema) => {
+    const promoCode = data.promoCode.trim();
 
-  const onApplyPromo = (data: PromoFormData) => {
-    const enteredCode = data.promoCode.trim().toUpperCase();
-
-    if (enteredCode === PROMO_CODE) {
-      setDiscount(PROMO_DISCOUNT);
+    // TODO: replace with Stripe API call
+    if (promoCode === MOCK_PROMO_CODE.value) {
+      setDiscount(MOCK_PROMO_CODE.discount);
       clearErrors('promoCode');
     } else {
       setError('promoCode', {
@@ -52,23 +52,20 @@ export const CartSummary: FC = () => {
   };
 
   const handleCheckout = () => {
-    console.log('Checkout button clicked');
     router.push('/checkout');
   };
 
-  const discountSum = (subtotal * discount) / 100;
-  const finalTotal = subtotal - discountSum;
+  const discountSum = useMemo(
+    () => (subtotal * discount) / 100,
+    [subtotal, discount]
+  );
+  const finalTotal = useMemo(
+    () => subtotal - discountSum,
+    [subtotal, discountSum]
+  );
 
   return (
     <Box>
-      <GlobalStyles
-        styles={{
-          '.MuiAccordionSummary-root': {
-            width: 'auto !important',
-          },
-        }}
-      />
-
       <Accordion
         label={
           <Typography sx={{ fontSize: '20px' }}>
@@ -84,6 +81,7 @@ export const CartSummary: FC = () => {
         >
           <TextField
             size="small"
+            color="secondary"
             placeholder="Enter promo code"
             sx={{
               width: '50%',

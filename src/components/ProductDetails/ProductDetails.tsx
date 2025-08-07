@@ -7,8 +7,7 @@ import { FC, useState } from 'react';
 import { Button } from '../ui';
 import { SizeSelector } from '../SizeSelector';
 import { ProductSlider } from '../ProductSlider';
-import { useLocalStorage } from '@/lib/hooks';
-import { useCart } from '@/lib/hooks/useCart/useCart';
+import { useLocalStorage, useCart } from '@/lib/hooks';
 
 const ProductWrap = styled(Box)(({ theme }) => ({
   display: 'flex',
@@ -34,17 +33,15 @@ interface ProductDetailsProps {
   productId: number;
 }
 
-export const ProductDetails: FC<ProductDetailsProps> = ({
-  productId,
-}: {
-  productId: number;
-}) => {
+export const ProductDetails: FC<ProductDetailsProps> = ({ productId }) => {
   const { data: product } = useSuspenseQuery(getProductOptions(productId));
   const [selectedSize, setSelectedSize] = useState<number | null>(null);
   const { value: wishlist = [], setValue } = useLocalStorage<number[]>(
     'wishlist',
     []
   );
+  const { addItem, items, removeItem, isLoading } = useCart();
+
   const inWishlist = wishlist.includes(productId);
   const toggleWishlistItem = () => {
     const updatedValue = inWishlist
@@ -52,7 +49,10 @@ export const ProductDetails: FC<ProductDetailsProps> = ({
       : Array.from(new Set([...wishlist, productId]));
     setValue(updatedValue);
   };
-  const { add } = useCart();
+
+  const isInCart = items.some(
+    (item) => item.id === productId && item.size === selectedSize
+  );
 
   return (
     product && (
@@ -123,6 +123,7 @@ export const ProductDetails: FC<ProductDetailsProps> = ({
                 onClick={toggleWishlistItem}
                 variant={inWishlist ? 'contained' : 'outlined'}
                 sx={{ width: { xs: '100%', md: '250px' } }}
+                loading={isLoading}
               >
                 {inWishlist ? 'Remove from Wishlist' : 'Add to Wishlist'}
               </Button>
@@ -130,9 +131,15 @@ export const ProductDetails: FC<ProductDetailsProps> = ({
             <Button
               sx={{ width: { xs: '100%', md: '250px' } }}
               disabled={!selectedSize}
-              onClick={() => add(product, selectedSize!)}
+              variant={isInCart && selectedSize ? 'outlined' : 'contained'}
+              loading={isLoading}
+              onClick={() =>
+                isInCart
+                  ? removeItem(productId, selectedSize!)
+                  : addItem(product, selectedSize!)
+              }
             >
-              Add to Bag
+              {isInCart && selectedSize ? 'Remove from Bag' : 'Add to Bag'}
             </Button>
           </Stack>
           <Stack>
