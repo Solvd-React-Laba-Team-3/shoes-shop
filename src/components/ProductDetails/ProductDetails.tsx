@@ -14,19 +14,22 @@ const ProductWrap = styled(Box)(({ theme }) => ({
   display: 'flex',
   justifyContent: 'center',
   gap: theme.spacing(6),
-  padding: theme.spacing(3),
-  [theme.breakpoints.up('sm')]: {
-    padding: theme.spacing(6),
-    alignItems: 'stretch',
+  [theme.breakpoints.up('xs')]: {
+    flexDirection: 'column',
+    padding: '0 0 36px 0',
   },
   [theme.breakpoints.up('md')]: {
+    padding: '50px 5%',
+  },
+  [theme.breakpoints.up('lg')]: {
     flexDirection: 'row',
-    gap: '100px',
-    padding: '100px 15%',
+    gap: '80px',
+    padding: '50px 10%',
     alignItems: 'flex-start',
   },
-  [theme.breakpoints.down('md')]: {
-    flexDirection: 'column',
+  [theme.breakpoints.up('xl')]: {
+    padding: '100px 15%',
+    gap: '100px',
   },
 }));
 
@@ -43,124 +46,113 @@ export const ProductDetails: FC<ProductDetailsProps> = ({
   const [selectedSize, setSelectedSize] = useState<number | null>(null);
   const { inWishlist, toggle } = useWishlist();
 
-  if (isError) return notFound();
+  if (isError || !data) return notFound();
 
   return (
-    data && (
-      <ProductWrap>
-        <Box
+    <ProductWrap>
+      <Box
+        sx={{
+          flex: 1,
+          minWidth: 0,
+          alignSelf: { xs: 'stretch', md: 'flex-start' },
+          maxWidth: { xs: '100%', lg: 630, xl: 800 },
+        }}
+      >
+        <ProductSlider images={data.images} productName={data.name} />
+      </Box>
+      <Box
+        sx={{
+          width: { xs: '100%', lg: '412px', xl: '525px' },
+          flexShrink: { xs: 1, md: 0 },
+          paddingInline: { xs: '16px', sm: '24px', md: '0' },
+        }}
+      >
+        <Stack
+          direction="column"
           sx={{
-            flex: 1,
-            minWidth: 0,
-            alignSelf: { xs: 'stretch', md: 'flex-start' },
-            maxWidth: 630,
+            justifyContent: 'space-between',
+            paddingBottom: '48px',
           }}
         >
-          <ProductSlider images={data.images} productName={data.name} />
-        </Box>
-        <Box
-          sx={{
-            width: { xs: '100%', md: '525px' },
-            flexShrink: { xs: 1, md: 0 },
-          }}
-        >
-          <Stack
-            direction="row"
-            sx={{
-              justifyContent: 'space-between',
-              paddingBottom: '48px',
-            }}
-          >
-            <Stack direction="column">
-              <Typography variant="h2">{data.name}</Typography>
-              <Typography variant="h4" color="secondary.dark">
-                {data.color.name}
-              </Typography>
-            </Stack>
-            <Typography
-              variant="h5"
-              sx={{
-                marginTop: '20px',
-              }}
-            >
+          <Stack direction="row" alignItems={'end'}>
+            <Typography variant="h2" width={'100%'}>
+              {data.name}
+            </Typography>
+            <Typography variant="h5" margin={'0 0 5px 15px'}>
               ${data.price}
             </Typography>
           </Stack>
-          <SizeSelector
-            selectedSize={selectedSize}
-            onSizeChange={setSelectedSize}
-            availableSizes={data.sizes.map((s) => s.value)}
-          />
-          <Stack
-            sx={{
-              justifyContent: 'space-between',
-              flexWrap: 'wrap',
-              paddingBottom: '64px',
-              gap: '24px',
-              flexDirection: { xs: 'column', md: 'row' },
-            }}
-          >
-            <NoSsr
-              fallback={
-                <Button
-                  variant="outlined"
-                  sx={{ width: { xs: '100%', md: '250px' } }}
-                >
-                  Add to Wishlist
-                </Button>
-              }
-            >
+          <Typography variant="h4" color="secondary.dark">
+            {data.color.name}
+          </Typography>
+        </Stack>
+        <SizeSelector
+          selectedSize={selectedSize}
+          onSizeChange={setSelectedSize}
+          availableSizes={data.sizes.map((s) => s.value)}
+        />
+        <Stack
+          sx={{
+            justifyContent: 'space-between',
+            paddingBottom: '64px',
+            gap: '24px',
+            flexDirection: { xs: 'column', sm: 'row' },
+          }}
+        >
+          <NoSsr
+            fallback={
               <Button
-                onClick={() => toggle(productId)}
-                variant={inWishlist(productId) ? 'contained' : 'outlined'}
-                sx={{ width: { xs: '100%', md: '250px' } }}
+                variant="outlined"
+                sx={{ width: { xs: '100%', xl: '250px' } }}
               >
-                {inWishlist(productId)
-                  ? 'Remove from Wishlist'
-                  : 'Add to Wishlist'}
+                Add to Wishlist
               </Button>
-            </NoSsr>
+            }
+          >
             <Button
-              sx={{ width: { xs: '100%', md: '250px' } }}
-              disabled={!selectedSize}
+              onClick={() => toggle(productId)}
+              variant={inWishlist(productId) ? 'contained' : 'outlined'}
+              sx={{ width: { xs: '100%', xl: '251px' } }}
             >
-              Add to Bag
+              {inWishlist(productId) ? 'Remove Wishlist' : 'Add to Wishlist'}
             </Button>
-          </Stack>
-          <Stack>
-            <Typography
-              variant="h6"
-              paddingBottom="15px"
-              color="text.secondary"
-            >
-              Description
-            </Typography>
-            <Typography
-              variant="body2"
-              color="text.secondary"
-              paddingBottom={'35px'}
-            >
-              {data.description}
-            </Typography>
-          </Stack>
-          <Stack direction={'row'}>
-            <Typography
-              variant="body2"
-              color="secondary.dark"
-              marginRight={'10px'}
-            >
-              Owner:
-            </Typography>
-            <Typography
-              variant="body2"
-              color="secondary.dark"
-              textTransform={'capitalize'}
-            >
-              {data.teamName}
-            </Typography>
-          </Stack>
-        </Box>
-      </ProductWrap>
-    )
+          </NoSsr>
+          <Button
+            sx={{ width: { xs: '100%', xl: '250px' } }}
+            disabled={!selectedSize}
+          >
+            Add to Bag
+          </Button>
+        </Stack>
+        <Stack>
+          <Typography variant="h6" paddingBottom="15px" color="text.secondary">
+            Description
+          </Typography>
+          <Typography
+            variant="body2"
+            color="text.secondary"
+            paddingBottom={'35px'}
+          >
+            {data.description}
+          </Typography>
+        </Stack>
+        <Stack direction={'row'}>
+          <Typography
+            variant="body2"
+            color="secondary.dark"
+            marginRight={'10px'}
+          >
+            Owner:
+          </Typography>
+          <Typography
+            variant="body2"
+            color="secondary.dark"
+            textTransform={'capitalize'}
+          >
+            {data.teamName}
+          </Typography>
+        </Stack>
+      </Box>
+    </ProductWrap>
   );
 };

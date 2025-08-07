@@ -30,7 +30,8 @@ export const SizeSelector: FC<SizeSelector> = ({
         onChange={(_, value) => onSizeChange(value)}
         sx={{
           flexWrap: 'wrap',
-          gap: '24px',
+          gap: { xs: '14px', sm: '24px' },
+          width: '100%',
         }}
       >
         {data?.map((sizeAttributes) => {

@@ -36,47 +36,45 @@ export const ProductSlider: FC<ProductSliderProps> = ({
 }) => {
   const [thumbsSwiper, setThumbsSwiper] = useState<SwiperType | null>(null);
   const hasImages = images && images.length > 0;
-  const [loadedImages, setLoadedImages] = useState<number>(0);
-  const [allLoaded, setAllLoaded] = useState<boolean>(false);
 
   const renderSlides = (isThumbs: boolean = false) => {
-    const size = isThumbs ? 76 : undefined;
-
     if (hasImages) {
       return images!.map((image) => (
         <SwiperSlide key={image.id}>
           <Box
             sx={{
               position: 'relative',
-              width: isThumbs ? size : '100%',
-              height: isThumbs ? size : '100%',
+              width: '100%',
+              height: '100%',
+              aspectRatio: '1 / 1',
             }}
           >
-            {!allLoaded && (
-              <Box
-                sx={{
-                  position: 'absolute',
-                  inset: 0,
-                  bgcolor: 'action.disabledBackground',
-                  zIndex: 1,
-                  transition: 'opacity 0.3s',
-                  opacity: allLoaded ? 0 : 1,
-                  pointerEvents: 'none',
+            {isThumbs ? (
+              <Image
+                src={image.url}
+                alt={image.alternativeText || image.name}
+                width={76}
+                height={76}
+                sizes="250px"
+                priority
+                style={{
+                  objectFit: 'cover',
+                  cursor: 'pointer',
+                }}
+              />
+            ) : (
+              <Image
+                src={image.url}
+                alt={image.alternativeText || image.name}
+                fill
+                sizes="1000px"
+                priority
+                style={{
+                  objectFit: 'cover',
+                  cursor: 'pointer',
                 }}
               />
             )}
-            <Image
-              src={image.url}
-              alt={image.alternativeText || image.name}
-              fill={!isThumbs}
-              width={isThumbs ? size : undefined}
-              height={isThumbs ? size : undefined}
-              onLoad={handleImageLoad}
-              style={{
-                objectFit: 'cover',
-                cursor: 'pointer',
-              }}
-            />
           </Box>
         </SwiperSlide>
       ));
@@ -87,32 +85,21 @@ export const ProductSlider: FC<ProductSliderProps> = ({
         <Box
           sx={{
             position: 'relative',
-            width: isThumbs ? size : '100%',
-            height: isThumbs ? size : '100%',
+            width: isThumbs ? 76 : '100%',
+            height: isThumbs ? 76 : '100%',
           }}
         >
           <Image
             src="/product-placeholder.png"
             alt={`product: ${productName}`}
             fill={!isThumbs}
-            width={isThumbs ? size : undefined}
-            height={isThumbs ? size : undefined}
+            width={isThumbs ? 76 : undefined}
+            height={isThumbs ? 76 : undefined}
             style={{ objectFit: 'cover' }}
           />
         </Box>
       </SwiperSlide>
     );
-  };
-
-  useEffect(() => {
-    if (!images || images.length === 0) return;
-    if (loadedImages > 0) {
-      setAllLoaded(true);
-    }
-  }, [loadedImages, images]);
-
-  const handleImageLoad = () => {
-    setLoadedImages((prev) => prev + 1);
   };
 
   return (
@@ -131,11 +118,15 @@ export const ProductSlider: FC<ProductSliderProps> = ({
             className="thumb-swiper"
             style={{ height: '100%', width: '100%' }}
             breakpoints={{
-              0: { direction: 'horizontal', slidesPerView: 4, spaceBetween: 8 },
+              0: {
+                direction: 'horizontal',
+                slidesPerView: 4.5,
+                spaceBetween: 8,
+              },
               900: {
                 direction: 'vertical',
                 slidesPerView: 'auto',
-                spaceBetween: 8,
+                spaceBetween: 16,
               },
             }}
           >
