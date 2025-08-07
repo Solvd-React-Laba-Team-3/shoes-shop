@@ -10,12 +10,11 @@ export const StyledSliderContainer = styled(Box)(({ theme }) => ({
   overflowY: 'visible',
   alignItems: 'stretch',
 
-  [theme.breakpoints.up('md')]: {
-    flexDirection: 'row',
-    alignItems: 'stretch',
-  },
   [theme.breakpoints.down('md')]: {
     flexDirection: 'column',
+  },
+  [theme.breakpoints.up('md')]: {
+    flexDirection: 'row',
   },
 
   '& .thumb-swiper .swiper-slide': {
@@ -26,7 +25,12 @@ export const StyledSliderContainer = styled(Box)(({ theme }) => ({
     height: 76,
     aspectRatio: '1 / 1',
     overflow: 'hidden',
+
+    [theme.breakpoints.down('lg')]: {
+      height: 'auto',
+    },
   },
+
   '& .thumb-swiper .swiper-slide:hover': { opacity: 1 },
   '& .thumb-swiper .swiper-slide.swiper-slide-thumb-active': { opacity: 1 },
   '& .thumb-swiper .swiper-slide img': {
@@ -46,10 +50,10 @@ export const StyledWrapper = styled(Box)(({ theme }) => ({
   width: '100%',
   aspectRatio: '1 / 1',
   position: 'relative',
-
+  minHeight: '300px',
   '& .swiper': { height: '100%' },
   '& .swiper-wrapper': { height: '100%' },
-  '& .swiper-slide': { height: '100%' },
+  '& .swiper-slide': { height: '100%', minHeight: '1px' },
 
   '& .main-nav-prev, & .main-nav-next': {
     position: 'absolute',
@@ -70,11 +74,11 @@ export const StyledWrapper = styled(Box)(({ theme }) => ({
       pointerEvents: 'none',
     },
 
-  [theme.breakpoints.down('md')]: {
+  [theme.breakpoints.down('lg')]: {
     '& .main-nav-prev': { left: 8, top: '50%', transform: 'translateY(-50%)' },
     '& .main-nav-next': { right: 8, top: '50%', transform: 'translateY(-50%)' },
   },
-  [theme.breakpoints.up('md')]: {
+  [theme.breakpoints.up('lg')]: {
     '& .main-nav-next': { right: 36, bottom: 24 },
     '& .main-nav-prev': { right: 76, bottom: 24 },
   },
@@ -84,7 +88,6 @@ export const StyledThumbsWrapper = styled(Box)(({ theme }) => ({
   flex: '0 0 auto',
   order: 2,
   width: '100%',
-  height: 96,
   minHeight: 0,
 
   [theme.breakpoints.up('md')]: {
