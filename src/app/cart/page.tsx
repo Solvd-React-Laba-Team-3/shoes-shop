@@ -20,30 +20,7 @@ const Cart: FC = () => {
     deleteModalOpen,
   } = useCart();
 
-  // const [deleteModalOpen, setDeleteModalOpen] = useState(false);
-  // const [itemToDelete, setItemToDelete] = useState<number | null>(null);
-
   const total = subtotal;
-
-  // const onRequestDelete = (id: number) => {
-  //   setItemToDelete(id);
-  //   setDeleteModalOpen(true);
-  // };
-
-  // const onConfirmDelete = () => {
-  //   console.log('Confirm clicked', itemToDelete);
-  //   if (itemToDelete !== null) {
-  //     handleDelete(itemToDelete);
-  //     setDeleteModalOpen(false);
-  //     setItemToDelete(null);
-  //   }
-  // };
-
-  // const onCancelDelete = () => {
-  //   console.log('Cancel clicked');
-  //   setDeleteModalOpen(false);
-  //   setItemToDelete(null);
-  // };
 
   return (
     <>
