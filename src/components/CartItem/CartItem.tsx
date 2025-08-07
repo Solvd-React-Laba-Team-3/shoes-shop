@@ -23,12 +23,15 @@ export const CartItem: FC<CartItemProps> = ({
   name,
   gender,
   price,
+
   quantity,
   onIncrease,
   onDecrease,
   onDelete,
 }) => {
   const imageSrc = images && images.length > 0 ? images[0].url : null;
+
+  const updatedPrice = price * quantity;
 
   return (
     <Stack>
@@ -76,7 +79,7 @@ export const CartItem: FC<CartItemProps> = ({
               alignItems="flex-end"
               sx={{ marginRight: '166px' }}
             >
-              <Typography variant="h3">${price}</Typography>
+              <Typography variant="h3">${updatedPrice}</Typography>
 
               <Stack
                 direction="row"
@@ -139,7 +142,6 @@ export const CartItem: FC<CartItemProps> = ({
                       height: '24px',
                       color: (theme) => theme.palette.grey[400],
                     }}
-                    // onClick={onDelete}
                   />
                   Delete
                 </Button>
