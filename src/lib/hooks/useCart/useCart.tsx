@@ -60,8 +60,11 @@ export const useCart = () => {
     return acc + item.price * item.quantity;
   }, 0);
 
-  const handleIncrease = (id: number, quantity: number) => {
-    updateQuantity(id, quantity + 1);
+  const handleIncrease = (id: number) => {
+    const updatedItems = items.map((item) =>
+      item.id === id ? { ...item, quantity: item.quantity + 1 } : item
+    );
+    setItems(updatedItems);
   };
 
   const handleDecrease = (id: number, quantity: number) => {

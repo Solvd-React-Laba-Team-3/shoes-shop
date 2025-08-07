@@ -10,11 +10,11 @@ import { Box, Stack, Typography } from '@mui/material';
 export default function Cart() {
   const {
     items,
-    handleIncrease,
-    handleDecrease,
+    // handleIncrease,
+    // handleDecrease,
     onCancelDelete,
     onConfirmDelete,
-    onRequestDelete,
+    // onRequestDelete,
     deleteModalOpen,
   } = useCart();
 
@@ -43,9 +43,9 @@ export default function Cart() {
                       {...item}
                       gender={item.gender}
                       images={item.images || []}
-                      onIncrease={() => handleIncrease(item.id, item.quantity)}
-                      onDecrease={() => handleDecrease(item.id, item.quantity)}
-                      onDelete={() => onRequestDelete(item.id)}
+                      // onIncrease={() => handleIncrease(item.id, item.quantity)}
+                      // onDecrease={() => handleDecrease(item.id, item.quantity)}
+                      // onDelete={() => onRequestDelete(item.id)}
                     />
                   ))
               ) : (

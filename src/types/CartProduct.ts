@@ -1,5 +1,4 @@
 import { File } from './api/File';
-// import { Gender } from './Gender';
 
 export interface CartProduct {
   id: number;

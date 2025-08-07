@@ -6,32 +6,22 @@ import Image from 'next/image';
 import { FC } from 'react';
 import { Button } from '../ui';
 import { CartProduct } from '@/types/CartProduct';
+import { useCart } from '@/lib/hooks';
 
-export interface CartItemProps extends CartProduct {
-  // id: number;
-  // images: File[];
-  // name: string;
-  // price: number;
-  // quantity: number;
-  // gender: string;
-  onIncrease: () => void;
-  onDecrease: () => void;
-  onDelete: () => void;
-}
-
-export const CartItem: FC<CartItemProps> = ({
+export const CartItem: FC<CartProduct> = ({
   images,
   name,
   gender,
   price,
   quantity,
-  onIncrease,
-  onDecrease,
-  onDelete,
+  id,
+  // handleIncrease,
+  // handleDecrease,
 }) => {
   const imageSrc = images && images.length > 0 ? images[0].url : null;
 
   const updatedPrice = price * quantity;
+  const { handleDecrease, handleIncrease, handleDelete } = useCart();
 
   return (
     <Stack>
@@ -67,7 +57,7 @@ export const CartItem: FC<CartItemProps> = ({
           >
             <Stack spacing={0.5}>
               <Typography variant="h3">{name}</Typography>
-              <Typography variant="h6">{gender}&apos;s Shoes </Typography>
+              <Typography variant="h6">{gender}&apos;s Shoes</Typography>
               <Typography variant="h4" color="primary.main">
                 In Stock
               </Typography>
@@ -104,14 +94,14 @@ export const CartItem: FC<CartItemProps> = ({
                 >
                   <Button
                     sx={{ backgroundColor: '#E8E8E8', color: '#CECECE' }}
-                    onClick={onDecrease}
+                    onClick={() => handleDecrease(id, quantity)}
                   >
                     -
                   </Button>
                   <Typography sx={{ px: 1 }}>{quantity}</Typography>
                   <Button
                     sx={{ backgroundColor: '#FFD7D6', color: '#FE645E' }}
-                    onClick={onIncrease}
+                    onClick={() => handleIncrease(id)}
                   >
                     +
                   </Button>
@@ -132,7 +122,7 @@ export const CartItem: FC<CartItemProps> = ({
                     fontSize: '28px',
                     gap: 2,
                   }}
-                  onClick={onDelete}
+                  onClick={() => handleDelete(id)}
                 >
                   <DeleteIcon
                     aria-label="delete item"
