@@ -83,7 +83,7 @@ export const ProductDetails: FC<ProductDetailsProps> = ({
             </Typography>
           </Stack>
           <Typography variant="h4" color="secondary.dark">
-            {data.color.name}
+            {data.color?.name}
           </Typography>
         </Stack>
         <SizeSelector
@@ -124,33 +124,27 @@ export const ProductDetails: FC<ProductDetailsProps> = ({
             Add to Bag
           </Button>
         </Stack>
-        <Stack>
-          <Typography variant="h6" paddingBottom="15px" color="text.secondary">
-            Description
-          </Typography>
-          <Typography
-            variant="body2"
-            color="text.secondary"
-            paddingBottom={'35px'}
-          >
-            {data.description}
-          </Typography>
-        </Stack>
-        <Stack direction={'row'}>
-          <Typography
-            variant="body2"
-            color="secondary.dark"
-            marginRight={'10px'}
-          >
-            Owner:
-          </Typography>
-          <Typography
-            variant="body2"
-            color="secondary.dark"
-            textTransform={'capitalize'}
-          >
-            {data.teamName}
-          </Typography>
+        <Stack direction={'column'} spacing={'15px'}>
+          <Stack direction={'column'} spacing={'10px'}>
+            <Typography variant="h6" color="text.secondary">
+              Description
+            </Typography>
+            <Typography variant="body2" color="text.secondary">
+              {data.description}
+            </Typography>
+          </Stack>
+          <Stack direction={'row'} spacing={'8px'} alignItems={'center'}>
+            <Typography variant="subtitle1" color="text.secondary">
+              Owner:
+            </Typography>
+            <Typography
+              variant="body2"
+              color="text.secondary"
+              textTransform={'capitalize'}
+            >
+              {data.teamName}
+            </Typography>
+          </Stack>
         </Stack>
       </Box>
     </ProductWrap>
