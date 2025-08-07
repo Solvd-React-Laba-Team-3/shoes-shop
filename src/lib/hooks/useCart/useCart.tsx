@@ -26,6 +26,8 @@ export const useCart = () => {
       ...product,
       size,
       quantity: 1,
+      gender: product.gender.name,
+      color: product.color.name,
     };
 
     const updatedItems = [...items, newProduct];
