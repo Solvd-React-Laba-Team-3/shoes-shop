@@ -1,6 +1,6 @@
 'use client';
 
-import { useDebounce, useSearchParams } from '@/lib/hooks';
+import { useDebounce, useDeviceSize, useSearchParams } from '@/lib/hooks';
 import {
   Box,
   Divider,
@@ -11,8 +11,10 @@ import {
   styled,
   TextField,
   Typography,
+  useTheme,
 } from '@mui/material';
-import { Accordion, Checkbox, SearchBar } from '@/components/ui';
+import CloseIcon from '@mui/icons-material/Close';
+import { Accordion, Checkbox, IconButton, SearchBar } from '@/components/ui';
 import { useSuspenseQueries } from '@tanstack/react-query';
 import { getGendersOptions } from '@/api/gender/getGendersOptions';
 import { getSizesOptions } from '@/api/size/getSizesOptions';
@@ -125,29 +127,56 @@ export const Filters: FC<DrawerProps> = ({ ...props }) => {
       getColorsOptions(),
     ],
   });
+
+  const { isMobile } = useDeviceSize();
   return (
     <Drawer
-      variant="persistent"
-      anchor="left"
+      variant={isMobile ? 'temporary' : 'persistent'}
+      anchor={isMobile ? 'right' : 'left'}
       sx={{
         width: props.open ? '320px' : '0px',
         transition: 'width 0.2s ease-in-out',
         zIndex: 800,
 
         '& .MuiDrawer-paper': {
-          position: 'relative',
           border: 'none',
           paddingBottom: '200px',
+        },
+
+        [useTheme().breakpoints.up('md')]: {
+          position: 'relative',
         },
       }}
       {...props}
     >
-      <Box sx={{ width: '100%', padding: '40px' }}>
-        {search && <Typography variant="caption">Shoes/{search}</Typography>}
-        <Typography variant="h4">{search ?? 'Catalog'}</Typography>
-      </Box>
+      {isMobile ? (
+        <Box
+          sx={{
+            display: 'flex',
+            justifyContent: 'flex-end',
+            paddingBottom: '40px',
+            paddingTop: '16px',
+          }}
+        >
+          <IconButton
+            sx={{
+              cursor: 'pointer',
+              zIndex: 1000,
+              color: 'text.secondary',
+            }}
+            onClick={(e) => props.onClose?.(e, 'backdropClick')}
+          >
+            <CloseIcon />
+          </IconButton>
+        </Box>
+      ) : (
+        <Box sx={{ width: '100%', padding: '48px' }}>
+          {search && <Typography variant="caption">Shoes/{search}</Typography>}
+          <Typography variant="h4">{search ?? 'Catalog'}</Typography>
+        </Box>
+      )}
       <Box display="flex" flexDirection="column" gap="28px">
-        <Divider />
+        <Divider sx={{ display: { xs: 'none', md: 'block' } }} />
         <Box paddingLeft="40px">
           <Accordion label="Gender" defaultExpanded>
             <Box display="flex" flexDirection="column" gap="20px">

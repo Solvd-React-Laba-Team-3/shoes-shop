@@ -6,15 +6,23 @@ export const ProductListFallback = () => (
       display: 'flex',
       flexDirection: 'column',
       gap: '28px',
+      width: '100%',
     }}
   >
+    <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+      <Skeleton variant="text" width={150} height={50} />
+      <Box sx={{ display: 'flex', gap: 1 }}>
+        <Skeleton variant="rectangular" width={150} height={40} />
+        <Skeleton variant="rectangular" width={150} height={40} />
+      </Box>
+    </Box>
     <Grid
       container
       columnSpacing={{ xs: 2, md: 8 }}
       rowSpacing={{ xs: 2, md: 5 }}
       sx={{ width: '100%' }}
     >
-      {Array.from({ length: 6 }).map((_, index) => (
+      {Array.from({ length: 12 }).map((_, index) => (
         <Grid key={index} size={{ xs: 6, md: 4, lg: 3 }}>
           <Box
             sx={{ position: 'relative', width: '100%', aspectRatio: 320 / 380 }}

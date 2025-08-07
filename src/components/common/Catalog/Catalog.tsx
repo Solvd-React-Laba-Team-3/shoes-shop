@@ -17,20 +17,18 @@ export const Catalog = () => {
 
   return (
     <Box sx={{ display: 'flex' }}>
+
       {isFiltersOpen && (
         <Suspense fallback={<FiltersFallback />}>
           <Filters open={isFiltersOpen} />
         </Suspense>
       )}
-
-      <Box sx={{ padding: '40px 60px' }}>
-        <Suspense fallback={<ProductListFallback />}>
-          <ProductsContainer
-            isFiltersOpen={isFiltersOpen}
-            onFiltersToggle={handleFiltersToggle}
-          />
-        </Suspense>
-      </Box>
+      <Suspense fallback={<ProductListFallback />}>
+        <ProductsContainer
+          isFiltersOpen={isFiltersOpen}
+          onFiltersToggle={handleFiltersToggle}
+        />
+      </Suspense>
     </Box>
   );
 };

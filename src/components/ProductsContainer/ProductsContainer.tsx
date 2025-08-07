@@ -12,7 +12,7 @@ import FilterAltIcon from '@mui/icons-material/FilterAltOff';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import { Button } from '@/components/ui';
 import { useRouter } from 'next/navigation';
-import { styled } from '@mui/material/styles';
+import { styled, useTheme } from '@mui/material/styles';
 import LocalMallIcon from '@mui/icons-material/LocalMall';
 
 interface ProductsContainerProps {
@@ -78,7 +78,12 @@ export const ProductsContainer: FC<ProductsContainerProps> = ({
         width: '100%',
       }}
     >
-      <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+      <Box
+        sx={{
+          display: 'flex',
+          justifyContent: 'space-between',
+        }}
+      >
         <Typography variant="h4">
           {search ? 'Search Results' : 'Catalog'}
         </Typography>
@@ -89,6 +94,11 @@ export const ProductsContainer: FC<ProductsContainerProps> = ({
             variant="outlined"
             endIcon={<DeleteOutlineIcon />}
             onClick={handleClearFilters}
+            sx={{
+              [useTheme().breakpoints.down('md')]: {
+                display: 'none',
+              },
+            }}
           >
             Clear Filters
           </Button>
