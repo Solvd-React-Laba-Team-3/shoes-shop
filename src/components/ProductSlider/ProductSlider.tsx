@@ -17,16 +17,10 @@ import {
 } from './productSlider.styles';
 import ChevronLeftRounded from '@mui/icons-material/ChevronLeftRounded';
 import ChevronRightRounded from '@mui/icons-material/ChevronRightRounded';
-
-type ProductImage = {
-  id: number;
-  url: string;
-  name: string;
-  alternativeText?: string | null;
-};
+import { File } from '@/types/api/File';
 
 interface ProductSliderProps {
-  images: ProductImage[] | null;
+  images: File[] | null;
   productName: string;
 }
 
