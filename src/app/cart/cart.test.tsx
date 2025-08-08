@@ -1,0 +1,92 @@
+import { useCart } from '@/lib/hooks';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { fireEvent, render, screen } from '@testing-library/react';
+import { SessionProvider } from 'next-auth/react';
+import Cart from './page';
+
+jest.mock('@/lib/hooks/useCart/useCart');
+
+const mockIncreaseQuantity = jest.fn();
+const mockDecreaseQuantity = jest.fn();
+const mockRemoveItem = jest.fn();
+
+describe('Cart', () => {
+  beforeEach(() => {
+    (useCart as jest.Mock).mockReturnValue({
+      items: [
+        {
+          id: 1,
+          quantity: 2,
+          gender: 'male',
+          image: '/img1.jpg',
+          size: 42,
+          name: 'Test Shoe',
+          price: 50,
+        },
+      ],
+      subtotal: 100,
+      isLoading: false,
+      increaseQuantity: mockIncreaseQuantity,
+      decreaseQuantity: mockDecreaseQuantity,
+      removeItem: mockRemoveItem,
+    });
+  });
+
+  it('renders the page with cart item information', () => {
+    const queryClient = new QueryClient({
+      defaultOptions: {
+        queries: { retry: false },
+      },
+    });
+
+    render(
+      <SessionProvider session={null}>
+        <QueryClientProvider client={queryClient}>
+          <Cart />
+        </QueryClientProvider>
+      </SessionProvider>
+    );
+
+    expect(screen.getByText('Cart')).toBeInTheDocument();
+    expect(screen.getByText('Summary')).toBeInTheDocument();
+    expect(screen.getByText('Test Shoe')).toBeInTheDocument();
+  });
+
+  it('calls increaseQuantity when increase button clicked', () => {
+    const queryClient = new QueryClient({
+      defaultOptions: {
+        queries: { retry: false },
+      },
+    });
+    render(
+      <SessionProvider session={null}>
+        <QueryClientProvider client={queryClient}>
+          <Cart />
+        </QueryClientProvider>
+      </SessionProvider>
+    );
+
+    const increaseButton = screen.getByRole('button', { name: '+' });
+    fireEvent.click(increaseButton);
+    expect(mockIncreaseQuantity).toHaveBeenCalledWith(1, 42, 2);
+  });
+
+  it('calls decreaseQuantity when decrease button is clicked', () => {
+    const queryClient = new QueryClient({
+      defaultOptions: {
+        queries: { retry: false },
+      },
+    });
+    render(
+      <SessionProvider session={null}>
+        <QueryClientProvider client={queryClient}>
+          <Cart />
+        </QueryClientProvider>
+      </SessionProvider>
+    );
+
+    const decreaseButton = screen.getByRole('button', { name: '-' });
+    fireEvent.click(decreaseButton);
+    expect(mockDecreaseQuantity).toHaveBeenCalledWith(1, 42, 2);
+  });
+});
