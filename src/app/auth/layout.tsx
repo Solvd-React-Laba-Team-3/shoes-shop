@@ -5,6 +5,7 @@ import Image from 'next/image';
 import { redirect } from 'next/navigation';
 import { ReactNode } from 'react';
 import logo from '../../../public/logo.png';
+import { AuthLayoutAdaptation } from '@/components/AuthLayoutAdaptation/AuthLayoutAdaptation';
 
 export default async function AuthLayout({
   children,
@@ -24,7 +25,7 @@ export default async function AuthLayout({
           <Image src={logo} alt="logo" width={40} height={30} />
         </Link>
       </Box>
-      <Box
+      {/* <Box
         sx={{
           display: 'grid',
           gridTemplateColumns: '1fr 1fr',
@@ -33,7 +34,8 @@ export default async function AuthLayout({
         }}
       >
         {children}
-      </Box>
+      </Box> */}
+      <AuthLayoutAdaptation>{children}</AuthLayoutAdaptation>
     </>
   );
 }
