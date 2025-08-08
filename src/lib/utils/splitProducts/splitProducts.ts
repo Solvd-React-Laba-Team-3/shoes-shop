@@ -1,8 +1,8 @@
-import { StripeProduct } from '@/types/StripeProduct';
+import { CartProduct } from '@/types/CartProduct';
 
-export function splitProducts(products: StripeProduct[], maxChars = 500) {
+export function splitProducts(products: CartProduct[], maxChars = 500) {
   const chunks: string[] = [];
-  let currentChunk: StripeProduct[] = [];
+  let currentChunk: CartProduct[] = [];
 
   for (const product of products) {
     currentChunk.push(product);

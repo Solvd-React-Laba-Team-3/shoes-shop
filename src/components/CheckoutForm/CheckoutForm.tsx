@@ -3,7 +3,7 @@
 import { Controller, FormProvider, useForm, useWatch } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { checkoutSchema, CheckoutSchema } from './checkout.schema';
-import { FC, useState } from 'react';
+import { FC, useCallback, useEffect, useState } from 'react';
 import {
   Box,
   Button,
@@ -31,8 +31,8 @@ import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import { CardElement, useElements, useStripe } from '@stripe/react-stripe-js';
 import { useRouter } from 'next/navigation';
 import { splitProducts } from '@/lib/utils/splitProducts/splitProducts';
-import { StripeProduct } from '@/types/StripeProduct';
 import { StyledInputLabel } from '../ProductForm/productForm.styles';
+import { CartProduct } from '@/types/CartProduct';
 
 type CheckoutProps = {
   discountCode?: string;
@@ -40,8 +40,9 @@ type CheckoutProps = {
   shippingAmount?: number;
   taxPercent?: number;
   totalAmount: number;
-  products: StripeProduct[];
+  products: CartProduct[];
   onCountryChange: (country: string) => void;
+  onFormSubmitRef: React.RefObject<() => void>;
 };
 
 export const CheckoutForm: FC<CheckoutProps> = ({
@@ -52,6 +53,7 @@ export const CheckoutForm: FC<CheckoutProps> = ({
   shippingAmount = 20,
   taxPercent = 17,
   onCountryChange,
+  onFormSubmitRef,
 }) => {
   const stripe = useStripe();
   const elements = useElements();
@@ -79,7 +81,7 @@ export const CheckoutForm: FC<CheckoutProps> = ({
     register,
     handleSubmit,
     control,
-    formState: { errors, isSubmitting },
+    formState: { errors },
   } = methods;
 
   const paymentMethods = [
@@ -94,66 +96,100 @@ export const CheckoutForm: FC<CheckoutProps> = ({
     name: 'paymentMethod',
   });
 
-  const onSubmit = async (data: CheckoutSchema) => {
-    const orderNumber = Date.now();
-    const productChunks = splitProducts(products);
-    const productsMetadata = productChunks.reduce(
-      (acc, chunk, i) => {
-        acc[`products${i + 1}`] = chunk;
-        return acc;
-      },
-      {} as Record<string, string>
-    );
-
-    try {
-      setServerError(null);
-      const body = {
-        ...data,
-        amount: totalAmount,
-        discountAmount: discountAmount || undefined,
-        discountCode: discountCode || undefined,
-        shippingAmount,
-        taxPercent,
-        orderNumber,
-        productsMetadata,
-      };
-
-      const res = await fetch('/api/payments', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(body),
-      });
-
-      const { clientSecret } = await res.json();
-
-      if (!stripe || !elements) {
-        return;
-      }
-
-      const result = await stripe.confirmCardPayment(clientSecret, {
-        payment_method: {
-          card: elements.getElement(CardElement)!,
-          billing_details: {
-            name: `${data.name} ${data.surname}`,
-            email: data.email,
-          },
+  const onSubmit = useCallback(
+    async (data: CheckoutSchema) => {
+      const orderNumber = Date.now();
+      const productChunks = splitProducts(products);
+      const productsMetadata = productChunks.reduce(
+        (acc, chunk, i) => {
+          acc[`products${i + 1}`] = chunk;
+          return acc;
         },
-      });
+        {} as Record<string, string>
+      );
 
-      if (result.error) {
-        setServerError(result.error.message ?? 'Payment failed');
-        return;
-      }
+      try {
+        setServerError(null);
+        const body = {
+          ...data,
+          amount: totalAmount,
+          discountAmount: discountAmount || undefined,
+          discountCode: discountCode || undefined,
+          shippingAmount,
+          taxPercent,
+          orderNumber,
+          productsMetadata,
+        };
 
-      if (result.paymentIntent?.status === 'succeeded') {
-        elements.getElement(CardElement)?.clear();
+        const res = await fetch('/api/payments', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(body),
+        });
+
+        const resJson = await res.json();
+
+        if (!res.ok) {
+          return;
+        }
+
+        const { clientSecret } = resJson;
+
+        if (!stripe || !elements) {
+          return;
+        }
+
+        const cardEl = elements.getElement(CardElement);
+        if (!cardEl) {
+          return;
+        }
+
+        const result = await stripe.confirmCardPayment(clientSecret, {
+          payment_method: {
+            card: cardEl,
+            billing_details: {
+              name: `${data.name} ${data.surname}`,
+              email: data.email,
+            },
+          },
+        });
+
+        if (result.error) {
+          return;
+        }
+
+        if (result.paymentIntent?.status === 'succeeded') {
+          elements.getElement(CardElement)?.clear();
+          router.push(`/order/?order=${encodeURIComponent(orderNumber)}`);
+          return;
+        }
+
+        console.warn(
+          '[Checkout] Payment did not succeed, status:',
+          result.paymentIntent?.status
+        );
+      } catch {
+        methods.reset();
         router.push(`/order/?order=${encodeURIComponent(orderNumber)}`);
       }
-    } catch {
-      methods.reset();
-      router.push(`/order/?order=${encodeURIComponent(orderNumber)}`);
-    }
-  };
+    },
+    [
+      discountAmount,
+      discountCode,
+      products,
+      shippingAmount,
+      taxPercent,
+      totalAmount,
+      stripe,
+      elements,
+      router,
+      methods,
+    ]
+  );
+
+  useEffect(() => {
+    onFormSubmitRef.current = handleSubmit(onSubmit);
+  }, [handleSubmit, onSubmit, onFormSubmitRef]);
 
   return (
     <FormProvider {...methods}>
@@ -463,16 +499,6 @@ export const CheckoutForm: FC<CheckoutProps> = ({
               {serverError}
             </FormLabel>
           )}
-
-          <Button
-            type="submit"
-            variant="contained"
-            color="primary"
-            sx={{ mt: 4 }}
-            disabled={isSubmitting}
-          >
-            Confirm & Pay
-          </Button>
         </form>
         <Divider sx={{ mt: 6, mb: 2 }} />
       </Box>

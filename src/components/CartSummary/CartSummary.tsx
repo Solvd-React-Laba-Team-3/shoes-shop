@@ -3,22 +3,38 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Box, Divider, TextField, Typography } from '@mui/material';
 import { useRouter } from 'next/navigation';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { Button } from '../ui';
 import { Accordion } from '../ui/Accordion/Accordion';
 import { cartSchema, CartSchema } from './cart.schema';
 import { useCart } from '@/lib/hooks';
 
-const MOCK_PROMO_CODE = {
-  value: 'SAVE10',
-  discount: 10,
-};
+interface CartSummaryProps {
+  isCheckout?: boolean;
+  onConfirmAndPay?: () => void;
+  taxPercent?: number;
+  shippingAmount?: number;
+  onCartSummaryChange?: (
+    total: number,
+    discountAmount: number,
+    discountCode?: string
+  ) => void;
+}
 
-export const CartSummary = () => {
+export const CartSummary = ({
+  isCheckout = false,
+  onConfirmAndPay,
+  taxPercent = 17,
+  shippingAmount = 20,
+  onCartSummaryChange,
+}: CartSummaryProps) => {
   const router = useRouter();
-
   const { subtotal } = useCart();
+  const [discountAmount, setDiscountAmount] = useState(0);
+  const [appliedDiscountCode, setAppliedDiscountCode] = useState<
+    string | undefined
+  >(undefined);
 
   const {
     register,
@@ -34,35 +50,92 @@ export const CartSummary = () => {
     shouldFocusError: true,
   });
 
-  const [discount, setDiscount] = useState(0);
-
-  const onApplyPromo = (data: CartSchema) => {
+  const onApplyPromo = async (data: CartSchema) => {
     const promoCode = data.promoCode.trim();
+    try {
+      const response = await fetch('/api/discount', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ code: promoCode, total: subtotal }),
+      });
+      const result = await response.json();
 
-    // TODO: replace with Stripe API call
-    if (promoCode === MOCK_PROMO_CODE.value) {
-      setDiscount(MOCK_PROMO_CODE.discount);
-      clearErrors('promoCode');
-    } else {
+      if (response.ok && result.valid) {
+        const newDiscountAmount = result.discountAmount;
+        setDiscountAmount(newDiscountAmount);
+        setAppliedDiscountCode(promoCode);
+        clearErrors('promoCode');
+
+        const subtotalWithNewDiscount = subtotal - newDiscountAmount;
+        const taxWithNewDiscount = (subtotalWithNewDiscount * taxPercent) / 100;
+        const finalTotalWithNewDiscount =
+          subtotalWithNewDiscount + taxWithNewDiscount + shippingAmount;
+
+        if (onCartSummaryChange) {
+          onCartSummaryChange(
+            finalTotalWithNewDiscount,
+            newDiscountAmount,
+            promoCode
+          );
+        }
+      } else {
+        setError('promoCode', {
+          type: 'manual',
+          message: result.error || 'Invalid promo code',
+        });
+        setDiscountAmount(0);
+
+        if (onCartSummaryChange) {
+          const totalWithoutDiscount =
+            subtotal + (subtotal * taxPercent) / 100 + shippingAmount;
+          onCartSummaryChange(totalWithoutDiscount, 0, undefined);
+        }
+      }
+    } catch {
       setError('promoCode', {
         type: 'manual',
-        message: 'Invalid promo code',
+        message: 'Error. Try again.',
       });
+      setDiscountAmount(0);
+
+      if (onCartSummaryChange) {
+        const totalWithoutDiscount =
+          subtotal + (subtotal * taxPercent) / 100 + shippingAmount;
+        onCartSummaryChange(totalWithoutDiscount, 0, undefined);
+      }
     }
   };
 
   const handleCheckout = () => {
-    router.push('/checkout');
+    if (isCheckout && onConfirmAndPay) {
+      onConfirmAndPay();
+    } else {
+      router.push('/checkout');
+    }
   };
 
-  const discountSum = useMemo(
-    () => (subtotal * discount) / 100,
-    [subtotal, discount]
+  const subtotalWithDiscount = useMemo(
+    () => subtotal - discountAmount,
+    [subtotal, discountAmount]
   );
+
+  const taxAmount = useMemo(
+    () => (subtotalWithDiscount * taxPercent) / 100,
+    [subtotalWithDiscount, taxPercent]
+  );
+
   const finalTotal = useMemo(
-    () => subtotal - discountSum,
-    [subtotal, discountSum]
+    () => subtotalWithDiscount + taxAmount + shippingAmount,
+    [subtotalWithDiscount, taxAmount, shippingAmount]
   );
+
+  useEffect(() => {
+    if (onCartSummaryChange) {
+      onCartSummaryChange(finalTotal, discountAmount, appliedDiscountCode);
+    }
+  }, [finalTotal, discountAmount, appliedDiscountCode, onCartSummaryChange]);
 
   return (
     <Box>
@@ -126,51 +199,84 @@ export const CartSummary = () => {
         </Typography>
       </Box>
 
-      {discount > 0 && (
+      {discountAmount > 0 && (
         <Box
           sx={{
             display: 'flex',
             justifyContent: 'space-between',
             margin: '20px 0',
+            color: discountAmount > 0 ? 'green' : 'inherit',
           }}
         >
           <Typography variant="h3" sx={{ fontWeight: 400 }}>
             Discount
           </Typography>
           <Typography variant="h3" sx={{ fontWeight: 400 }}>
-            -${discountSum.toFixed(2)}
+            -${discountAmount.toFixed(2)}
           </Typography>
         </Box>
       )}
 
-      <Divider sx={{ marginTop: '56px' }} />
+      {isCheckout && (
+        <>
+          <Box
+            sx={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              margin: '20px 0',
+            }}
+          >
+            <Typography variant="h3" sx={{ fontWeight: 400 }}>
+              Shipping
+            </Typography>
+            <Typography variant="h3" sx={{ fontWeight: 400 }}>
+              ${shippingAmount.toFixed(2)}
+            </Typography>
+          </Box>
 
-      <Box
-        sx={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          margin: '20px 0',
-        }}
-      >
-        <Typography
-          variant="h3"
-          sx={{
-            fontWeight: 600,
-            maxWidth: '10%',
-            color: discount > 0 ? 'green' : 'inherit',
-          }}
-        >
-          Total
-        </Typography>
-        <Typography variant="h3" sx={{ fontWeight: 600 }}>
-          ${finalTotal.toFixed(2)}
-        </Typography>
-      </Box>
+          <Box
+            sx={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              margin: '20px 0',
+            }}
+          >
+            <Typography variant="h3" sx={{ fontWeight: 400 }}>
+              Tax ({taxPercent}%)
+            </Typography>
+            <Typography variant="h3" sx={{ fontWeight: 400 }}>
+              ${taxAmount.toFixed(2)}
+            </Typography>
+          </Box>
+
+          <Divider sx={{ marginTop: '56px' }} />
+
+          <Box
+            sx={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              margin: '20px 0',
+            }}
+          >
+            <Typography
+              variant="h3"
+              sx={{
+                fontWeight: 600,
+                maxWidth: '10%',
+              }}
+            >
+              Total
+            </Typography>
+            <Typography variant="h3" sx={{ fontWeight: 600 }}>
+              ${finalTotal.toFixed(2)}
+            </Typography>
+          </Box>
+        </>
+      )}
 
       <Divider sx={{ marginBottom: '113px' }} />
-
       <Button onClick={handleCheckout} sx={{ width: '100%' }}>
-        Checkout
+        {isCheckout ? 'Confirm & Pay' : 'Checkout'}
       </Button>
     </Box>
   );
