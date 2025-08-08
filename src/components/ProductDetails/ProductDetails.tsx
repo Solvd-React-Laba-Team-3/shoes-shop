@@ -37,19 +37,29 @@ interface ProductDetailsProps {
   productId: number;
 }
 
-export const ProductDetails: FC<ProductDetailsProps> = ({
-  productId,
-}: {
-  productId: number;
-}) => {
+export const ProductDetails: FC<ProductDetailsProps> = ({ productId }) => {
   const { data: product, isError } = useQuery(getProductOptions(productId));
   const [selectedSize, setSelectedSize] = useState<number | null>(null);
-  const { inWishlist, toggle, isLoading: isWishlistLoading } = useWishlist();
-  const { addItem, items, removeItem, isLoading: isCartLoading } = useCart();
 
-  const isInCart = items.some(
+  const {
+    items: wishlist,
+    addItem: addWishlistItem,
+    removeItem: removeWishlistItem,
+    isLoading: isWishlistLoading,
+  } = useWishlist();
+
+  const {
+    addItem: addCartItem,
+    items: cart,
+    removeItem: removeCartItem,
+    isLoading: isCartLoading,
+  } = useCart();
+
+  const isInCart = cart.some(
     (item) => item.id === productId && item.size === selectedSize
   );
+
+  const isInWishlist = (id: number) => wishlist.includes(id);
 
   if (isError || !product) return notFound();
 
@@ -115,12 +125,16 @@ export const ProductDetails: FC<ProductDetailsProps> = ({
             }
           >
             <Button
-              onClick={() => toggle(productId)}
-              variant={inWishlist(productId) ? 'contained' : 'outlined'}
+              onClick={() =>
+                isInWishlist(productId)
+                  ? removeWishlistItem(productId)
+                  : addWishlistItem(productId)
+              }
+              variant={isInWishlist(productId) ? 'contained' : 'outlined'}
               loading={isWishlistLoading}
               sx={{ width: { xs: '100%', xl: '251px' } }}
             >
-              {inWishlist(productId) ? 'Remove Wishlist' : 'Add to Wishlist'}
+              {isInWishlist(productId) ? 'Remove Wishlist' : 'Add to Wishlist'}
             </Button>
           </NoSsr>
           <Button
@@ -129,8 +143,8 @@ export const ProductDetails: FC<ProductDetailsProps> = ({
             loading={isCartLoading}
             onClick={() =>
               isInCart
-                ? removeItem(productId, selectedSize!)
-                : addItem(product, selectedSize!)
+                ? removeCartItem(productId, selectedSize!)
+                : addCartItem(product, selectedSize!)
             }
           >
             {isInCart && selectedSize ? 'Remove from Bag' : 'Add to Bag'}
