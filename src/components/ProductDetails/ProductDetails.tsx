@@ -7,7 +7,7 @@ import { FC, useState } from 'react';
 import { Button } from '../ui';
 import { SizeSelector } from '../SizeSelector';
 import { ProductSlider } from '../ProductSlider';
-import { useLocalStorage } from '@/lib/hooks';
+import { useLocalStorage, useCart } from '@/lib/hooks';
 
 const ProductWrap = styled(Box)(({ theme }) => ({
   display: 'flex',
@@ -33,17 +33,15 @@ interface ProductDetailsProps {
   productId: number;
 }
 
-export const ProductDetails: FC<ProductDetailsProps> = ({
-  productId,
-}: {
-  productId: number;
-}) => {
-  const { data } = useSuspenseQuery(getProductOptions(productId));
+export const ProductDetails: FC<ProductDetailsProps> = ({ productId }) => {
+  const { data: product } = useSuspenseQuery(getProductOptions(productId));
   const [selectedSize, setSelectedSize] = useState<number | null>(null);
   const { value: wishlist = [], setValue } = useLocalStorage<number[]>(
     'wishlist',
     []
   );
+  const { addItem, items, removeItem, isLoading } = useCart();
+
   const inWishlist = wishlist.includes(productId);
   const toggleWishlistItem = () => {
     const updatedValue = inWishlist
@@ -52,8 +50,12 @@ export const ProductDetails: FC<ProductDetailsProps> = ({
     setValue(updatedValue);
   };
 
+  const isInCart = items.some(
+    (item) => item.id === productId && item.size === selectedSize
+  );
+
   return (
-    data && (
+    product && (
       <ProductWrap>
         <Box
           sx={{
@@ -63,7 +65,7 @@ export const ProductDetails: FC<ProductDetailsProps> = ({
             maxWidth: 630,
           }}
         >
-          <ProductSlider images={data.images} productName={data.name} />
+          <ProductSlider images={product.images} productName={product.name} />
         </Box>
         <Box
           sx={{
@@ -79,9 +81,9 @@ export const ProductDetails: FC<ProductDetailsProps> = ({
             }}
           >
             <Stack direction="column">
-              <Typography variant="h2">{data.name}</Typography>
+              <Typography variant="h2">{product.name}</Typography>
               <Typography variant="h4" color="secondary.dark">
-                {data.color.name}
+                {product.color.name}
               </Typography>
             </Stack>
             <Typography
@@ -90,13 +92,13 @@ export const ProductDetails: FC<ProductDetailsProps> = ({
                 marginTop: '20px',
               }}
             >
-              ${data.price}
+              ${product.price}
             </Typography>
           </Stack>
           <SizeSelector
             selectedSize={selectedSize}
             onSizeChange={setSelectedSize}
-            availableSizes={data.sizes.map((s) => s.value)}
+            availableSizes={product.sizes.map((s) => s.value)}
           />
           <Stack
             sx={{
@@ -121,6 +123,7 @@ export const ProductDetails: FC<ProductDetailsProps> = ({
                 onClick={toggleWishlistItem}
                 variant={inWishlist ? 'contained' : 'outlined'}
                 sx={{ width: { xs: '100%', md: '250px' } }}
+                loading={isLoading}
               >
                 {inWishlist ? 'Remove from Wishlist' : 'Add to Wishlist'}
               </Button>
@@ -128,8 +131,15 @@ export const ProductDetails: FC<ProductDetailsProps> = ({
             <Button
               sx={{ width: { xs: '100%', md: '250px' } }}
               disabled={!selectedSize}
+              variant={isInCart && selectedSize ? 'outlined' : 'contained'}
+              loading={isLoading}
+              onClick={() =>
+                isInCart
+                  ? removeItem(productId, selectedSize!)
+                  : addItem(product, selectedSize!)
+              }
             >
-              Add to Bag
+              {isInCart && selectedSize ? 'Remove from Bag' : 'Add to Bag'}
             </Button>
           </Stack>
           <Stack>
@@ -141,7 +151,7 @@ export const ProductDetails: FC<ProductDetailsProps> = ({
               Description
             </Typography>
             <Typography variant="body2" color="text.secondary">
-              {data.description}
+              {product.description}
             </Typography>
           </Stack>
         </Box>
