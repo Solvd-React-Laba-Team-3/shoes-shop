@@ -1,6 +1,6 @@
 import { render, screen } from '@testing-library/react';
 import { ProductsContainer } from './ProductsContainer';
-import { useSearchParams } from '@/lib/hooks';
+import { useSearchParams, useWishlist } from '@/lib/hooks';
 import { getProductsOptions } from '@/api/products/getProductsOptions';
 import { useSuspenseInfiniteQuery } from '@tanstack/react-query';
 
@@ -11,6 +11,7 @@ jest.mock('@tanstack/react-query');
 const mockedUseSearchParams = useSearchParams as jest.Mock;
 const mockedGetProductsOptions = getProductsOptions as jest.Mock;
 const mockedUseSuspenseInfiniteQuery = useSuspenseInfiniteQuery as jest.Mock;
+const mockedUseWishlist = useWishlist as jest.Mock;
 
 describe('<ProductsContainer />', () => {
   beforeEach(() => {
@@ -31,6 +32,13 @@ describe('<ProductsContainer />', () => {
       queryFn: jest.fn(),
       initialPageParam: 0,
       getNextPageParam: jest.fn(),
+    });
+
+    mockedUseWishlist.mockReturnValue({
+      items: [],
+      addItem: jest.fn(),
+      removeItem: jest.fn(),
+      isLoading: false,
     });
   });
 
