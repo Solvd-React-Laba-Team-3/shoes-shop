@@ -70,10 +70,9 @@ export default function Checkout() {
     const fetchOrders = async () => {
       const session = await getSession();
       if (session) {
-        const res = await fetch(
-          `${process.env.NEXT_PUBLIC_BASE_URL ?? 'http://localhost:3000'}/api/orders?userId=${session.user.id}`,
-          { cache: 'no-store' }
-        );
+        const res = await fetch(`/api/orders?userId=${session.user.id}`, {
+          cache: 'no-store',
+        });
         const { orders } = await res.json();
         setOrders(orders);
       }
