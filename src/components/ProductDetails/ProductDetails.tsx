@@ -8,7 +8,7 @@ import { Button } from '../ui';
 import { SizeSelector } from '../SizeSelector';
 import { ProductSlider } from '../ProductSlider';
 import { notFound } from 'next/navigation';
-import { useWishlist } from '@/lib/hooks/useWishlist';
+import { useWishlist, useCart } from '@/lib/hooks';
 
 const ProductWrap = styled(Box)(({ theme }) => ({
   display: 'flex',
@@ -42,11 +42,16 @@ export const ProductDetails: FC<ProductDetailsProps> = ({
 }: {
   productId: number;
 }) => {
-  const { data, isError } = useQuery(getProductOptions(productId));
+  const { data: product, isError } = useQuery(getProductOptions(productId));
   const [selectedSize, setSelectedSize] = useState<number | null>(null);
-  const { inWishlist, toggle } = useWishlist();
+  const { inWishlist, toggle, isLoading: isWishlistLoading } = useWishlist();
+  const { addItem, items, removeItem, isLoading: isCartLoading } = useCart();
 
-  if (isError || !data) return notFound();
+  const isInCart = items.some(
+    (item) => item.id === productId && item.size === selectedSize
+  );
+
+  if (isError || !product) return notFound();
 
   return (
     <ProductWrap>
@@ -58,7 +63,7 @@ export const ProductDetails: FC<ProductDetailsProps> = ({
           maxWidth: { xs: '100%', lg: 630, xl: 800 },
         }}
       >
-        <ProductSlider images={data.images} productName={data.name} />
+        <ProductSlider images={product.images} productName={product.name} />
       </Box>
       <Box
         sx={{
@@ -76,20 +81,20 @@ export const ProductDetails: FC<ProductDetailsProps> = ({
         >
           <Stack direction="row" alignItems={'end'}>
             <Typography variant="h2" width={'100%'}>
-              {data.name}
+              {product.name}
             </Typography>
             <Typography variant="h5" margin={'0 0 5px 15px'}>
-              ${data.price}
+              ${product.price}
             </Typography>
           </Stack>
           <Typography variant="h4" color="secondary.dark">
-            {data.color?.name}
+            {product.color?.name}
           </Typography>
         </Stack>
         <SizeSelector
           selectedSize={selectedSize}
           onSizeChange={setSelectedSize}
-          availableSizes={data.sizes.map((s) => s.value)}
+          availableSizes={product.sizes.map((s) => s.value)}
         />
         <Stack
           sx={{
@@ -112,6 +117,7 @@ export const ProductDetails: FC<ProductDetailsProps> = ({
             <Button
               onClick={() => toggle(productId)}
               variant={inWishlist(productId) ? 'contained' : 'outlined'}
+              loading={isWishlistLoading}
               sx={{ width: { xs: '100%', xl: '251px' } }}
             >
               {inWishlist(productId) ? 'Remove Wishlist' : 'Add to Wishlist'}
@@ -120,8 +126,14 @@ export const ProductDetails: FC<ProductDetailsProps> = ({
           <Button
             sx={{ width: { xs: '100%', xl: '250px' } }}
             disabled={!selectedSize}
+            loading={isCartLoading}
+            onClick={() =>
+              isInCart
+                ? removeItem(productId, selectedSize!)
+                : addItem(product, selectedSize!)
+            }
           >
-            Add to Bag
+            {isInCart && selectedSize ? 'Remove from Bag' : 'Add to Bag'}
           </Button>
         </Stack>
         <Stack direction={'column'} spacing={'15px'}>
@@ -130,7 +142,7 @@ export const ProductDetails: FC<ProductDetailsProps> = ({
               Description
             </Typography>
             <Typography variant="body2" color="text.secondary">
-              {data.description}
+              {product.description}
             </Typography>
           </Stack>
           <Stack direction={'row'} spacing={'8px'} alignItems={'center'}>
@@ -142,7 +154,7 @@ export const ProductDetails: FC<ProductDetailsProps> = ({
               color="text.secondary"
               textTransform={'capitalize'}
             >
-              {data.teamName}
+              {product.teamName}
             </Typography>
           </Stack>
         </Stack>
