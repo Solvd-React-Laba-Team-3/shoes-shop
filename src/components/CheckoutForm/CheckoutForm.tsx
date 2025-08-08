@@ -466,6 +466,7 @@ export const CheckoutForm: FC<CheckoutProps> = ({
               >
                 <CardElement
                   options={{
+                    hidePostalCode: true,
                     style: {
                       base: {
                         fontSize: '16px',
