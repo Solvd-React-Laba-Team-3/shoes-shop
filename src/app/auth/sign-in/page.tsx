@@ -154,10 +154,13 @@ export default function SignIn() {
       </AuthContainer>
 
       <Box
-        sx={{
+        sx={(theme) => ({
           height: '100vh',
           position: 'relative',
-        }}
+          [theme.breakpoints.down('lg')]: {
+            display: 'none',
+          },
+        })}
       >
         <Image src={loginImage} alt="sign in" fill sizes="50vw" />
       </Box>

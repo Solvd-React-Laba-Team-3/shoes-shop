@@ -16,10 +16,12 @@ import { SignUpSchema, signUpSchema } from './sign-up.schema';
 import { useRouter } from 'next/navigation';
 import { LoaderButton } from '@/components/LoaderButton';
 import registerImage from '../../../../public/register.jpg';
+import { useTheme } from '@mui/material/styles';
 
 export default function SignUp() {
   const router = useRouter();
 
+  const theme = useTheme();
   const {
     register,
     handleSubmit,
@@ -56,7 +58,13 @@ export default function SignUp() {
         title="Create an account"
         description="Create an account to get easy access to your dream shopping"
         footer={
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+          <Box
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: 1,
+            }}
+          >
             <Typography variant="subtitle2" color="textSecondary">
               Already have an account?
             </Typography>
@@ -76,6 +84,16 @@ export default function SignUp() {
           width="100%"
           maxWidth={400}
           onSubmit={handleSubmit(onSubmit)}
+          sx={(theme) => ({
+            [theme.breakpoints.down('sm')]: {
+              '& label': {
+                fontSize: '12px',
+              },
+              '& input': {
+                fontSize: '12px',
+              },
+            },
+          })}
         >
           <Box>
             <LabeledTextfield
@@ -140,11 +158,15 @@ export default function SignUp() {
       <Box
         sx={{
           position: 'relative',
-          height: '100%',
+          height: '100vh',
           width: '100%',
+          [theme.breakpoints.down('lg')]: {
+            display: 'none',
+          },
         }}
       >
         <Image src={registerImage} alt="sign up" fill sizes="50vw" />
+
         <ReviewPanel
           quote="Lorem Ipsum is a really great company because the team is passionate about the projects they produce, the people they work with, the quality of the work they do."
           name="John Stone"

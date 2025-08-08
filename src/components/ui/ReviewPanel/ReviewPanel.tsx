@@ -21,6 +21,16 @@ const StyledPaper = styled(Paper)(({ theme }) => ({
   position: 'fixed',
   right: '4%',
   top: '36%',
+
+  [theme.breakpoints.down('xl')]: {
+    width: '540px',
+  },
+  '@media (min-width:1535px) and (max-width:1664px)': {
+    width: '560px',
+  },
+  [theme.breakpoints.down('lg')]: {
+    display: 'none',
+  },
 }));
 
 type ReviewPanelProps = {
@@ -63,7 +73,13 @@ export const ReviewPanel: FC<ReviewPanelProps> = ({
       </Stack>
     </Box>
 
-    <Stack spacing={1} alignItems="center" sx={{ margin: '16px 0 4px' }}>
+    <Stack
+      spacing={1}
+      alignItems="center"
+      sx={{
+        margin: '16px 0 4px',
+      }}
+    >
       <Stack direction="row" spacing={1} alignItems="center">
         <Typography variant="h4">{name}</Typography>
         <Rating value={rating} readOnly size="large" />
