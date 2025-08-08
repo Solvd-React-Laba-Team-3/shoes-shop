@@ -17,9 +17,12 @@ export const Catalog = () => {
 
   return (
     <Box sx={{ display: 'flex' }}>
-      <Suspense fallback={<FiltersFallback />}>
-        <Filters open={isFiltersOpen} />
-      </Suspense>
+      {isFiltersOpen && (
+        <Suspense fallback={<FiltersFallback />}>
+          <Filters open={isFiltersOpen} />
+        </Suspense>
+      )}
+
       <Box sx={{ padding: '40px 60px' }}>
         <Suspense fallback={<ProductListFallback />}>
           <ProductsContainer
