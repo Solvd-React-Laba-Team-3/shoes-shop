@@ -10,9 +10,16 @@ export const StyledToggleButton = styled(ToggleButton, {
   color: theme.palette.text.secondary,
   border: `1px solid ${error ? theme.palette.error.main : theme.palette.secondary.dark} !important`,
   backgroundColor: 'transparent',
-  minWidth: '85px',
-  height: '55px',
 
+  [theme.breakpoints.up('xs')]: {
+    minWidth: '74px',
+    height: '48px',
+  },
+
+  [theme.breakpoints.up('sm')]: {
+    minWidth: '85px',
+    height: '55px',
+  },
   '&.Mui-selected': {
     backgroundColor: theme.palette.grey[300],
     color: theme.palette.grey[400],

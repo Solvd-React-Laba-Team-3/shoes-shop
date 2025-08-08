@@ -90,7 +90,7 @@ export default function MyProducts() {
         </Box>
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: '36px' }}>
           {products?.length ? (
-            <ProductList products={products} type="actionMenu" />
+            <ProductList products={products} variant="actionMenu" />
           ) : (
             <StyledNoProductsWrapper>
               <Box
