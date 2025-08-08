@@ -130,6 +130,9 @@ export default function Checkout() {
                     <strong>Status:</strong> {order.status}
                   </Typography>
                   <Typography variant="body2">
+                    <strong>Payment Method:</strong> {order.paymentMethod}
+                  </Typography>
+                  <Typography variant="body2">
                     <strong>Contact:</strong> {order.contactFullName}
                   </Typography>
                   <Typography variant="body2">
@@ -195,7 +198,7 @@ export default function Checkout() {
                             <strong>{product.name}</strong> x {product.quantity}
                           </Typography>
                           <Typography variant="body2">
-                            ${product.price} - Talle {product.size}, Color{' '}
+                            ${product.price} - Size {product.size}, Color{' '}
                             {product.color}
                           </Typography>
                         </Box>

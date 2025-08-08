@@ -15,4 +15,5 @@ export interface OrderHistory {
   status: string;
   products: CartProduct[];
   receipt_url?: string;
+  paymentMethod: string;
 }

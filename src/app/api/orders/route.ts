@@ -68,6 +68,7 @@ export async function GET(req: Request) {
             : 0,
           products,
           receipt_url: receiptUrl,
+          paymentMethod: intent.metadata.paymentMethod,
         };
       })
     );
