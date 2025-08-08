@@ -20,12 +20,14 @@ export const Catalog = () => {
       <Suspense fallback={<FiltersFallback />}>
         <Filters open={isFiltersOpen} />
       </Suspense>
-      <Suspense fallback={<ProductListFallback />}>
-        <ProductsContainer
-          isFiltersOpen={isFiltersOpen}
-          onFiltersToggle={handleFiltersToggle}
-        />
-      </Suspense>
+      <Box sx={{ padding: '40px 60px' }}>
+        <Suspense fallback={<ProductListFallback />}>
+          <ProductsContainer
+            isFiltersOpen={isFiltersOpen}
+            onFiltersToggle={handleFiltersToggle}
+          />
+        </Suspense>
+      </Box>
     </Box>
   );
 };

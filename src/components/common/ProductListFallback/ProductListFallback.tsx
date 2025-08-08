@@ -1,15 +1,13 @@
-import { Box, Grid, Skeleton, Typography } from '@mui/material';
+import { Box, Grid, Skeleton } from '@mui/material';
 
 export const ProductListFallback = () => (
   <Box
     sx={{
       display: 'flex',
       flexDirection: 'column',
-      padding: '40px 60px',
       gap: '28px',
     }}
   >
-    <Typography variant="h4">Catalog</Typography>
     <Grid
       container
       columnSpacing={{ xs: 2, md: 8 }}
