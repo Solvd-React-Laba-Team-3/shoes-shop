@@ -44,7 +44,7 @@ export async function POST(req: Request) {
       valid: true,
       code: match.code as string,
       type: coupon.amount_off ? 'amount' : 'percent',
-      amountOff: coupon.amount_off ? coupon.amount_off / 100 : undefined, // ¡Conversión a dólares aquí!
+      amountOff: coupon.amount_off ? coupon.amount_off / 100 : undefined,
       percentOff: coupon.percent_off ?? undefined,
     };
 

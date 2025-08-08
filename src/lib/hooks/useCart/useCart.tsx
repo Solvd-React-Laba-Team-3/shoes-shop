@@ -12,7 +12,9 @@ export const useCart = () => {
 
   const addItem = (product: Product, size: number) => {
     const newProduct: CartProduct = {
-      ...product,
+      id: product.id,
+      name: product.name,
+      price: product.price,
       size,
       image: product.images?.[0]?.url || productImagePlaceholder.src,
       quantity: 1,
@@ -52,9 +54,11 @@ export const useCart = () => {
     updateQuantity(id, size, quantity - 1);
   };
 
-  const subtotal = items.reduce((acc, item) => {
-    return acc + item.price * item.quantity;
-  }, 0);
+  const subtotal = isLoading
+    ? 0
+    : items.reduce((acc, item) => {
+        return acc + item.price * item.quantity;
+      }, 0);
 
   return {
     items,
