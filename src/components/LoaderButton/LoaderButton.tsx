@@ -25,6 +25,9 @@ export const LoaderButton: FC<LoaderButtonProps> = ({
           color: (theme) => theme.palette.common.white,
           marginLeft: '10px',
         },
+        '@media (max-width: 420px)': {
+          width: '90%',
+        },
       }}
       disabled={isSubmitting}
     >

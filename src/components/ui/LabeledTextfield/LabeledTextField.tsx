@@ -49,6 +49,9 @@ export const LabeledTextfield: FC<LabeledTextfieldProps> = ({
       sx={{
         '& .MuiInputBase-root': {
           maxWidth: '436px',
+          // '@media (max-width: 420px)': {
+          //   width: '90%',
+          // },
         },
       }}
     >
