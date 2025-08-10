@@ -26,6 +26,10 @@ export const AuthContainer = ({
       gap: '48px',
       [theme.breakpoints.down('sm')]: {
         margin: '25% auto',
+        alignItems: 'center',
+      },
+      '@media (max-width: 400px)': {
+        margin: '30% auto',
       },
     })}
   >
@@ -34,6 +38,9 @@ export const AuthContainer = ({
         display: 'flex',
         flexDirection: 'column',
         gap: '16px',
+        '@media (max-width: 420px)': {
+          textAlign: 'center',
+        },
       }}
     >
       <Typography
@@ -55,6 +62,9 @@ export const AuthContainer = ({
           sx={(theme) => ({
             [theme.breakpoints.down('sm')]: {
               fontSize: '12px',
+            },
+            '@media (max-width: 420px)': {
+              width: '250px',
             },
           })}
         >
