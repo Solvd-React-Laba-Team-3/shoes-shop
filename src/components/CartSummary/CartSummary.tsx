@@ -151,15 +151,19 @@ export const CartSummary = ({
           onSubmit={handleSubmit(onApplyPromo)}
           noValidate
           autoComplete="off"
+          sx={{
+            display: 'flex',
+            flexDirection: { xs: 'column', sm: 'row' },
+            gap: { xs: 2, sm: '10px' },
+          }}
         >
           <TextField
             size="small"
             color="secondary"
             placeholder="Enter promo code"
             sx={{
-              width: '50%',
+              width: { xs: '100%', sm: '50%' },
               height: '40px',
-              marginRight: '10px',
               '& .MuiInputBase-root': {
                 fontSize: '16px',
               },
@@ -188,6 +192,7 @@ export const CartSummary = ({
         sx={{
           display: 'flex',
           justifyContent: 'space-between',
+          flexWrap: 'wrap',
           margin: '38px 0 20px',
         }}
       >
@@ -204,6 +209,7 @@ export const CartSummary = ({
           sx={{
             display: 'flex',
             justifyContent: 'space-between',
+            flexWrap: 'wrap',
             margin: '20px 0',
             color: discountAmount > 0 ? 'green' : 'inherit',
           }}
@@ -223,6 +229,7 @@ export const CartSummary = ({
             sx={{
               display: 'flex',
               justifyContent: 'space-between',
+              flexWrap: 'wrap',
               margin: '20px 0',
             }}
           >
@@ -249,22 +256,17 @@ export const CartSummary = ({
             </Typography>
           </Box>
 
-          <Divider sx={{ marginTop: '56px' }} />
+          <Divider sx={{ mt: '56px' }} />
 
           <Box
             sx={{
               display: 'flex',
               justifyContent: 'space-between',
+              flexWrap: 'wrap',
               margin: '20px 0',
             }}
           >
-            <Typography
-              variant="h3"
-              sx={{
-                fontWeight: 600,
-                maxWidth: '10%',
-              }}
-            >
+            <Typography variant="h3" sx={{ fontWeight: 600, maxWidth: '10%' }}>
               Total
             </Typography>
             <Typography variant="h3" sx={{ fontWeight: 600 }}>
@@ -274,7 +276,7 @@ export const CartSummary = ({
         </>
       )}
 
-      <Divider sx={{ marginBottom: '113px' }} />
+      <Divider sx={{ mb: { xs: 4, md: '113px' } }} />
       <Button onClick={handleCheckout} sx={{ width: '100%' }}>
         {isCheckout ? 'Confirm & Pay' : 'Checkout'}
       </Button>

@@ -44,14 +44,7 @@ export const CartItem: FC<CartProduct> = ({
               />
             </Box>
 
-            <Stack
-              direction="row"
-              justifyContent="space-between"
-              sx={{
-                height: 214,
-                flexGrow: 1,
-              }}
-            >
+            <Stack direction="row" justifyContent="space-between">
               <Stack spacing={0.5}>
                 <Typography variant="h3">{name}</Typography>
                 <Typography variant="h6">{gender}&apos;s Shoes</Typography>
@@ -75,6 +68,9 @@ export const CartItem: FC<CartProduct> = ({
                   spacing={'20px'}
                   sx={{
                     paddingLeft: '237px',
+                    '@media (max-width: 1760px)': {
+                      padding: '0',
+                    },
                   }}
                 >
                   <ButtonGroup
