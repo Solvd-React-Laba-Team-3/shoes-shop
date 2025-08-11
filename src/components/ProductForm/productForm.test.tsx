@@ -88,13 +88,11 @@ describe('ProductForm', () => {
     it('should render all form fields and labels', () => {
       renderProductForm();
 
-      // Check for input fields by their placeholders/names
       expect(
         screen.getByPlaceholderText('Nike Air Max 90')
       ).toBeInTheDocument();
       expect(screen.getByPlaceholderText('160')).toBeInTheDocument();
 
-      // Check for labels
       expect(screen.getByText('Product name')).toBeInTheDocument();
       expect(screen.getByText('Price')).toBeInTheDocument();
       expect(screen.getByText('Color')).toBeInTheDocument();
@@ -103,7 +101,6 @@ describe('ProductForm', () => {
       expect(screen.getByText('Description')).toBeInTheDocument();
       expect(screen.getByText('Add size')).toBeInTheDocument();
 
-      // Check for size toggle buttons
       mockData.sizes.forEach((size) => {
         expect(screen.getByText(size.value)).toBeInTheDocument();
       });
@@ -116,7 +113,14 @@ describe('ProductForm', () => {
     });
 
     it('should pre-fill form when editingProduct is provided', () => {
-      renderProductForm({ editingProduct: validFormData });
+      renderProductForm({
+        editingProduct: {
+          ...validFormData,
+          color: validFormData.color.toString(),
+          gender: validFormData.gender.toString(),
+          brand: validFormData.brand.toString(),
+        },
+      });
 
       expect(screen.getByDisplayValue('Test Sneaker')).toBeInTheDocument();
       expect(screen.getByDisplayValue('199.99')).toBeInTheDocument();
@@ -131,11 +135,9 @@ describe('ProductForm', () => {
       const onSubmit = jest.fn();
       renderProductForm({ onSubmit });
 
-      // Submit empty form
       const submitButton = screen.getByText('Save');
       fireEvent.click(submitButton);
 
-      // Wait for validation messages
       await waitFor(() => {
         expect(
           screen.getByText('Product name is required')
