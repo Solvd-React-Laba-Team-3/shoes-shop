@@ -128,7 +128,7 @@ describe('MyProducts', () => {
     expect(screen.getByTestId('product-list')).toBeInTheDocument();
     expect(ProductListMock).toHaveBeenCalledWith({
       products: mockProducts,
-      type: 'actionMenu',
+      variant: 'actionMenu',
     });
   });
 

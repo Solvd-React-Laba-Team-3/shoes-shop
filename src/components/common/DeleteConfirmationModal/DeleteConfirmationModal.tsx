@@ -14,6 +14,8 @@ interface DeleteConfirmationModalProps {
   description: string;
   onClose: () => void;
   onDelete: () => void;
+  cancelText?: string;
+  deleteText?: string;
 }
 
 const StyledDialog = styled(Dialog)({
@@ -32,6 +34,8 @@ export const DeleteConfirmationModal: FC<DeleteConfirmationModalProps> = ({
   description,
   onClose,
   onDelete,
+  cancelText = 'Cancel',
+  deleteText = 'Delete',
 }) => {
   return (
     <StyledDialog open={open} onClose={onClose}>
@@ -52,10 +56,10 @@ export const DeleteConfirmationModal: FC<DeleteConfirmationModalProps> = ({
       </DialogContent>
       <DialogActions sx={{ gap: '16px', justifyContent: 'center' }}>
         <Button variant="outlined" onClick={onClose}>
-          Cancel
+          {cancelText}
         </Button>
         <Button variant="contained" onClick={onDelete}>
-          Delete
+          {deleteText}
         </Button>
       </DialogActions>
     </StyledDialog>

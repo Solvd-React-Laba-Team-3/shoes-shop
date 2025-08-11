@@ -1,16 +1,15 @@
-import { ProductCard } from '../ProductCard';
 import { Product } from '@/types/Product';
 import { FC } from 'react';
 import { Grid } from '@mui/material';
-
+import { CardVariant, ProductCard } from '../ProductCard';
 interface ProductListProps {
   products: Product[];
-  type?: 'actionMenu' | 'wishlist' | 'catalog';
+  variant?: CardVariant;
 }
 
 export const ProductList: FC<ProductListProps> = ({
   products,
-  type = 'catalog',
+  variant = 'catalog',
 }) => {
   return (
     <Grid
@@ -21,7 +20,7 @@ export const ProductList: FC<ProductListProps> = ({
     >
       {products.map((product) => (
         <Grid key={product.id} size={{ xs: 6, md: 4, lg: 3 }}>
-          <ProductCard key={product.id} product={product} cardType={type} />
+          <ProductCard key={product.id} product={product} variant={variant} />
         </Grid>
       ))}
     </Grid>
