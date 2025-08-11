@@ -3,12 +3,12 @@
 import { getProductOptions } from '@/api/products/getProductOptions';
 import { Box, NoSsr, Stack, styled, Typography } from '@mui/material';
 import { useQuery } from '@tanstack/react-query';
-import { FC, useState } from 'react';
+import { FC, useEffect, useState } from 'react';
 import { Button } from '../ui';
 import { SizeSelector } from '../SizeSelector';
 import { ProductSlider } from '../ProductSlider';
 import { notFound } from 'next/navigation';
-import { useWishlist, useCart } from '@/lib/hooks';
+import { useWishlist, useCart, useRecentlyViewed } from '@/lib/hooks';
 
 const ProductWrap = styled(Box)(({ theme }) => ({
   display: 'flex',
@@ -55,11 +55,16 @@ export const ProductDetails: FC<ProductDetailsProps> = ({ productId }) => {
     isLoading: isCartLoading,
   } = useCart();
 
+  const { addItem: addRecentlyViewed } = useRecentlyViewed();
+
   const isInCart = cart.some(
     (item) => item.id === productId && item.size === selectedSize
   );
 
   const isInWishlist = (id: number) => wishlist.includes(id);
+  useEffect(() => {
+    if (product) addRecentlyViewed(product.id);
+  }, [product]);
 
   if (isError || !product) return notFound();
 
