@@ -8,7 +8,7 @@ export const StyledToggleButton = styled(ToggleButton, {
   ...theme.typography.caption,
 
   color: theme.palette.text.secondary,
-  border: `1px solid ${error ? theme.palette.error.main : theme.palette.secondary.dark} !important`,
+  border: `1px solid ${error ? theme.palette.error.main : theme.palette.secondary.dark}`,
   backgroundColor: 'transparent',
 
   [theme.breakpoints.up('xs')]: {
@@ -41,6 +41,5 @@ export const StyledToggleButton = styled(ToggleButton, {
     border: `1px solid ${theme.palette.secondary.dark}`,
     borderRadius: theme.shape.borderRadius,
     margin: '0',
-    padding: '0',
   },
 }));

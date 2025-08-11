@@ -30,7 +30,7 @@ export const CartItem: FC<CartProduct> = ({
 
   return (
     <>
-      <Stack>
+      <Stack sx={{ marginRight: '100px !important' }}>
         <Box>
           <Stack direction="row" spacing={4}>
             <Box sx={{ width: 223, height: 214, flexShrink: 0 }}>
@@ -65,7 +65,7 @@ export const CartItem: FC<CartProduct> = ({
                 direction="column"
                 justifyContent="space-between"
                 alignItems="flex-end"
-                sx={{ marginRight: '166px' }}
+                sx={{ marginRight: 'auto' }}
               >
                 <Typography variant="h3">${updatedPrice}</Typography>
 
