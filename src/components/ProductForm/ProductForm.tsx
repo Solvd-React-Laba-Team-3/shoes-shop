@@ -137,11 +137,17 @@ export const ProductForm: FC<ProductFormProps> = ({
           sx={{
             display: 'flex',
             justifyContent: 'space-between',
+            flexDirection: { xs: 'column', md: 'row' },
+            alignItems: { xs: 'flex-start', md: 'center' },
+            gap: { xs: 2, md: 0 },
           }}
         >
           <Box sx={{ display: 'flex', flexDirection: 'column', gap: '35px' }}>
             <Typography variant="h2">{title}</Typography>
-            <Typography variant="caption" sx={{ maxWidth: '890px' }}>
+            <Typography
+              variant="caption"
+              sx={{ maxWidth: { xs: '100%', md: '890px' } }}
+            >
               {description}
             </Typography>
           </Box>
@@ -150,7 +156,7 @@ export const ProductForm: FC<ProductFormProps> = ({
               display: 'flex',
               flexDirection: 'column',
               gap: '8px',
-              alignItems: 'flex-end',
+              alignItems: { xs: 'flex-start', md: 'flex-end' },
             }}
           >
             <Button
@@ -163,12 +169,19 @@ export const ProductForm: FC<ProductFormProps> = ({
             <FormErrorMessage message={errors.root?.message} />
           </Box>
         </Box>
-        <Box sx={{ display: 'flex', gap: '234px' }}>
+        <Box
+          sx={{
+            display: 'flex',
+            flexDirection: { xs: 'column', md: 'row' },
+            gap: { xs: 4, md: '234px' },
+          }}
+        >
           <Box
             sx={{
               display: 'flex',
               flexDirection: 'column',
               gap: '16px',
+              flex: 1,
             }}
           >
             <Box>
@@ -431,7 +444,7 @@ export const ProductForm: FC<ProductFormProps> = ({
               }}
             />
           </Box>
-          <Box sx={{ width: '692px' }}>
+          <Box sx={{ width: { xs: '100%', md: '692px' }, maxWidth: '100%' }}>
             <ProductFormDropzone
               images={images}
               onRemoveImage={onRemoveImage}
