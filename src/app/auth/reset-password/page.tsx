@@ -130,10 +130,13 @@ export default function ResetPassword(): ReactElement | null {
       </AuthContainer>
 
       <Box
-        sx={{
+        sx={(theme) => ({
           height: '100vh',
           position: 'relative',
-        }}
+          [theme.breakpoints.down('lg')]: {
+            display: 'none',
+          },
+        })}
       >
         <Image src={recoveryImage} alt="reset password" fill sizes="50vw" />
       </Box>

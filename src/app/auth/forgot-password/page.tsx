@@ -109,7 +109,15 @@ export default function ForgotPassword() {
         </Box>
       </AuthContainer>
 
-      <Box sx={{ height: '100vh', position: 'relative' }}>
+      <Box
+        sx={(theme) => ({
+          height: '100vh',
+          position: 'relative',
+          [theme.breakpoints.down('lg')]: {
+            display: 'none',
+          },
+        })}
+      >
         <Image src={recoveryImage} alt="forgot password" fill sizes="50vw" />
       </Box>
     </>
