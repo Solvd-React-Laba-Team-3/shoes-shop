@@ -19,12 +19,26 @@ export default function Cart() {
         <Box
           sx={{
             display: 'flex',
-            justifyContent: 'space-around',
-            padding: '80px 196px',
+            flexDirection: { xs: 'column', md: 'row' },
+            justifyContent: { md: 'space-between' },
+            alignItems: { xs: 'stretch', md: 'flex-start' },
+            gap: { xs: 3, sm: 4, md: 6, lg: 8 },
+            padding: {
+              xs: '16px',
+              sm: '24px',
+              md: '48px 64px',
+              lg: '80px 196px',
+            },
           }}
         >
-          <Stack>
-            <Typography variant="h2" sx={{ marginBottom: '32px' }}>
+          <Stack sx={{ flex: 2, width: '100%' }}>
+            <Typography
+              variant="h2"
+              sx={{
+                mb: { xs: 2, sm: 3, md: 4 },
+                fontSize: { xs: '1.75rem', sm: '2rem', md: '2.5rem' },
+              }}
+            >
               Cart
             </Typography>
             <Box>
@@ -39,7 +53,11 @@ export default function Cart() {
                     />
                   ))
                 ) : (
-                  <Typography variant="h6" color="text.secondary">
+                  <Typography
+                    variant="h6"
+                    color="text.secondary"
+                    sx={{ textAlign: { xs: 'center', md: 'left' } }}
+                  >
                     Your cart is empty.
                   </Typography>
                 )}
@@ -47,11 +65,24 @@ export default function Cart() {
             </Box>
           </Stack>
 
-          <Stack>
-            <Typography variant="h2" sx={{ marginBottom: '32px' }}>
+          <Stack
+            sx={{
+              flex: 1,
+              maxWidth: { xs: '100%', md: '350px' },
+              position: { md: 'sticky' },
+              top: { md: '100px' },
+              alignSelf: { xs: 'stretch', md: 'flex-start' },
+            }}
+          >
+            <Typography
+              variant="h2"
+              sx={{
+                mb: { xs: 2, sm: 3, md: 4 },
+                fontSize: { xs: '1.5rem', sm: '1.75rem', md: '2rem' },
+              }}
+            >
               Summary
             </Typography>
-
             <Box>
               <Stack direction="column">
                 <CartSummary />
