@@ -70,7 +70,7 @@ describe('Order', () => {
     render(<Order />);
 
     fireEvent.click(screen.getByText('View Order'));
-    expect(mockRouter.replace).toHaveBeenCalledWith('/products');
+    expect(mockRouter.replace).toHaveBeenCalledWith('/profile/orders');
   });
 
   it('navigates to the home page when Continue shopping button is clicked', () => {
