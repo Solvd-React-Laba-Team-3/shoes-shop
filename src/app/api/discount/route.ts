@@ -1,6 +1,6 @@
+import { DiscountResponse } from '@/types/api/DiscountResponse';
 import { NextResponse } from 'next/server';
 import Stripe from 'stripe';
-import { DiscountResult } from '@/types/DiscountResult';
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string, {
   apiVersion: '2025-07-30.basil',
@@ -40,7 +40,7 @@ export async function POST(req: Request) {
       });
     }
 
-    const result: DiscountResult = {
+    const result: DiscountResponse = {
       valid: true,
       code: match.code as string,
       type: coupon.amount_off ? 'amount' : 'percent',

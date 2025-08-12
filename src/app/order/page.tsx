@@ -18,7 +18,7 @@ export default function Order() {
   }
 
   const handleViewOrder = () => {
-    router.replace('/products');
+    router.replace('/profile/orders');
   };
 
   const handleContinueShopping = () => {

@@ -33,6 +33,9 @@ import { useRouter } from 'next/navigation';
 import { splitProducts } from '@/lib/utils/splitProducts/splitProducts';
 import { StyledInputLabel } from '../ProductForm/productForm.styles';
 import { CartProduct } from '@/types/CartProduct';
+import { useMutation } from '@tanstack/react-query';
+import { postPaymentFn } from '@/api/payments/paymentsOptions';
+import { PaymentBody } from '@/types/api/PaymentBody';
 
 type CheckoutProps = {
   discountCode?: string;
@@ -60,6 +63,9 @@ export const CheckoutForm: FC<CheckoutProps> = ({
   const router = useRouter();
   const [serverError, setServerError] = useState<string | null>(null);
   const [showCardFields, setShowCardFields] = useState(true);
+  const { mutateAsync: createPayment } = useMutation({
+    mutationFn: postPaymentFn,
+  });
   const methods = useForm<CheckoutSchema>({
     resolver: zodResolver(checkoutSchema),
     defaultValues: {
@@ -110,7 +116,8 @@ export const CheckoutForm: FC<CheckoutProps> = ({
 
       try {
         setServerError(null);
-        const body = {
+
+        const body: PaymentBody = {
           ...data,
           amount: totalAmount,
           discountAmount: discountAmount || undefined,
@@ -121,15 +128,10 @@ export const CheckoutForm: FC<CheckoutProps> = ({
           productsMetadata,
         };
 
-        const res = await fetch('/api/payments', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(body),
-        });
+        const resJson = await createPayment(body);
 
-        const resJson = await res.json();
-
-        if (!res.ok) {
+        if (data.paymentMethod !== 'card') {
+          router.push(`/order/?order=${encodeURIComponent(orderNumber)}`);
           return;
         }
 
@@ -163,11 +165,6 @@ export const CheckoutForm: FC<CheckoutProps> = ({
           router.push(`/order/?order=${encodeURIComponent(orderNumber)}`);
           return;
         }
-
-        console.warn(
-          '[Checkout] Payment did not succeed, status:',
-          result.paymentIntent?.status
-        );
       } catch {
         methods.reset();
         router.push(`/order/?order=${encodeURIComponent(orderNumber)}`);
@@ -184,6 +181,7 @@ export const CheckoutForm: FC<CheckoutProps> = ({
       elements,
       router,
       methods,
+      createPayment,
     ]
   );
 
@@ -407,13 +405,19 @@ export const CheckoutForm: FC<CheckoutProps> = ({
                         paddingLeft: '24px',
                         borderRadius: '12px',
                         transition: 'transform 0.2s',
+
+                        '&.MuiToggleButton-root.MuiToggleButton-root': {
+                          height: '100px',
+                          width: '170px',
+                        },
+
                         '&:hover': {
                           backgroundColor: 'transparent',
                           transform: 'scale(1.05)',
                         },
                         '&.Mui-selected': {
                           backgroundColor: 'transparent',
-                          borderColor: theme.palette.action.active,
+                          borderColor: (theme) => theme.palette.action.active,
                           '&:hover': {
                             backgroundColor: 'transparent',
                           },
