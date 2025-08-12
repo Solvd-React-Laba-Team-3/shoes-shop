@@ -4,6 +4,7 @@ import { ProductAttributes } from '@/types/api/ProductAttributes';
 describe('formatProductAttributes', () => {
   it('should correctly map complete ProductAttributes to a clean Product', () => {
     const mockAttributes: ProductAttributes = {
+      id: 1,
       name: 'Test Product',
       description: 'A sample description',
       price: 199,
@@ -179,6 +180,7 @@ describe('formatProductAttributes', () => {
 
   it('should handle missing optional fields', () => {
     const mockAttributes: ProductAttributes = {
+      id: 1,
       name: 'Test Product',
       description: 'A description',
       price: 199,
@@ -261,6 +263,7 @@ describe('formatProductAttributes', () => {
 
   it('should handle empty arrays', () => {
     const mockAttributes: ProductAttributes = {
+      id: 1,
       name: 'Test Product',
       description: 'A sample description',
       price: 199,

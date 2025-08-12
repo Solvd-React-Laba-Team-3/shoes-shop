@@ -7,6 +7,7 @@ import { Size } from '@/types/Size';
 import { File } from './File';
 
 export type ProductAttributes = {
+  id: number;
   name: string;
   description: string;
   price: number;

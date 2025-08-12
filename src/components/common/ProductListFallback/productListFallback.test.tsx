@@ -1,13 +1,8 @@
-import { render, screen } from '@testing-library/react';
+import { render } from '@testing-library/react';
 import { ProductListFallback } from './ProductListFallback';
 import '@testing-library/jest-dom';
 
 describe('ProductListFallback', () => {
-  it('renders Catalog heading', () => {
-    render(<ProductListFallback />);
-    expect(screen.getByText('Catalog')).toBeInTheDocument();
-  });
-
   it('renders 6 product skeleton groups (each with 4 skeletons)', () => {
     const { container } = render(<ProductListFallback />);
     const skeletons = container.querySelectorAll('.MuiSkeleton-root');

@@ -9,6 +9,7 @@ import { useSession } from 'next-auth/react';
 export interface CreateProductRequest {
   body: {
     data: {
+      id?: number;
       name: string;
       images?: number[];
       description: string;

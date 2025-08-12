@@ -28,10 +28,10 @@ jest.mock('../ProductActionMenu', () => {
   return { ProductActionMenu: MockProductActionMenu };
 });
 
-jest.mock('../ProductWishlistButton', () => {
+jest.mock('../WishlistButton', () => {
   const MockWishlistButton = () => <div data-testid="wishlist-button" />;
   MockWishlistButton.displayName = 'MockWishlistButton';
-  return { ProductWishlistButton: MockWishlistButton };
+  return { WishlistButton: MockWishlistButton };
 });
 
 const mockProduct = {
@@ -141,19 +141,19 @@ describe('ProductCard', () => {
   });
 
   it('does not render any action buttons by default (catalog)', () => {
-    render(<ProductCard product={mockProduct} cardType="catalog" />);
+    render(<ProductCard product={mockProduct} variant="catalog" />);
     expect(screen.queryByTestId('product-action-menu')).not.toBeInTheDocument();
     expect(screen.queryByTestId('wishlist-button')).not.toBeInTheDocument();
   });
 
-  it('renders ProductActionMenu when cardType is "actionMenu"', () => {
-    render(<ProductCard product={mockProduct} cardType="actionMenu" />);
+  it('renders ProductActionMenu when variant is "actionMenu"', () => {
+    render(<ProductCard product={mockProduct} variant="actionMenu" />);
     expect(screen.getByTestId('product-action-menu')).toBeInTheDocument();
     expect(screen.queryByTestId('wishlist-button')).not.toBeInTheDocument();
   });
 
-  it('renders ProductWishlistButton when cardType is "wishlist"', () => {
-    render(<ProductCard product={mockProduct} cardType="wishlist" />);
+  it('renders ProductWishlistButton when variant is "wishlist"', () => {
+    render(<ProductCard product={mockProduct} variant="wishlist" />);
     expect(screen.queryByTestId('product-action-menu')).not.toBeInTheDocument();
     expect(screen.getByTestId('wishlist-button')).toBeInTheDocument();
   });
