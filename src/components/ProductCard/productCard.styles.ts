@@ -25,23 +25,6 @@ export const StyledCardContent = styled(CardContent)({
   padding: '12px 0 0 0',
 });
 
-export const HoverCartBox = styled(Box)(({ theme }) => ({
-  position: 'absolute',
-  top: '50%',
-  left: '50%',
-  transform: 'translate(-50%, -50%)',
-  opacity: 0,
-  transition: 'opacity 0.2s ease',
-  background: 'rgba(255,255,255,0.75)',
-  width: '80px',
-  height: '80px',
-  borderRadius: '100%',
-  color: theme.palette.text.secondary,
-  '.MuiCardActionArea-root:hover &': {
-    opacity: 1,
-  },
-}));
-
 export const ActionButtonContainer = styled(Box)(({ theme }) => ({
   position: 'absolute',
   top: '10px',
