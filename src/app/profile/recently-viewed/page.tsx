@@ -11,6 +11,7 @@ import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui';
 import { styled } from '@mui/material/styles';
 import VisibilityIcon from '@mui/icons-material/Visibility';
+import { Product } from '@/types/Product';
 
 const StyledNoProductsWrapper = styled(Box)(() => ({
   display: 'flex',
@@ -42,12 +43,12 @@ export default function RecentlyViewed() {
       },
     })
   );
-  const unSortedProducts = data?.pages.flatMap((page) => page.products) || [];
-  const order = new Map(items.map((id, index) => [id, index]));
-  const products = unSortedProducts
-    .filter((product) => order.has(product.id))
-    .slice()
-    .sort((a, b) => order.get(a.id)! - order.get(b.id)!);
+
+  const products = data?.pages.flatMap((page) => page.products) ?? [];
+  const productsMap = new Map(products.map((p) => [p.id, p]));
+  const sortedProducts = items
+    .map((id) => productsMap.get(id))
+    .filter(Boolean) as Product[];
 
   return isPending || isLoading ? (
     <ProductListFallback />
@@ -56,7 +57,7 @@ export default function RecentlyViewed() {
       <Typography variant="h2" paddingBottom={'64px'}>
         Recently Viewed
       </Typography>
-      <ProductList products={products} variant="catalog" />
+      <ProductList products={sortedProducts} variant="catalog" />
     </Box>
   ) : (
     <StyledNoProductsWrapper>
