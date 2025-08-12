@@ -1,0 +1,1 @@
+export const RECENTLTY_VIEWED_LIMIT = 12;
