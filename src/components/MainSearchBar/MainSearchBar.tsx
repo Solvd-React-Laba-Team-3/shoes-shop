@@ -18,8 +18,7 @@ import { useDebounce, useSearchParams } from '@/lib/hooks';
 import { List, Typography } from '@mui/material';
 import LinearProgress from '@mui/material/LinearProgress';
 import { useQuery } from '@tanstack/react-query';
-import { searchPopularTermsOptions } from '@/api/gemini/getPopularSearchTermsOptions';
-import { AI_REQUEST_STALE_TIME } from '@/constants/queriesStaleTime';
+import { getPopularSearchTermsOptions } from '@/api/gemini/getPopularSearchTermsOptions';
 
 export const MainSearchBar = () => {
   const router = useRouter();
@@ -33,7 +32,7 @@ export const MainSearchBar = () => {
   const { debouncedValue, isDebouncing } = useDebounce(inputValue, 2000);
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const queryOptions = searchPopularTermsOptions(debouncedValue);
+  const queryOptions = getPopularSearchTermsOptions(debouncedValue);
 
   const {
     data: popularResults,
@@ -42,7 +41,6 @@ export const MainSearchBar = () => {
   } = useQuery({
     ...queryOptions,
     enabled: debouncedValue.length === 0 || debouncedValue.length > 2,
-    staleTime: AI_REQUEST_STALE_TIME,
   });
 
   useEffect(() => {
