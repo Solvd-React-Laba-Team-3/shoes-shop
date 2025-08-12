@@ -74,7 +74,7 @@ export const ProductsContainer: FC<ProductsContainerProps> = ({
       sx={{
         display: 'flex',
         flexDirection: 'column',
-        gap: '28px',
+        padding: { xs: '12px  20px', md: '40px 60px' },
         width: '100%',
       }}
     >
@@ -91,13 +91,14 @@ export const ProductsContainer: FC<ProductsContainerProps> = ({
           <Button
             color="secondary"
             size="small"
-            variant="outlined"
+            variant="text"
             endIcon={<DeleteOutlineIcon />}
             onClick={handleClearFilters}
             sx={{
               [useTheme().breakpoints.down('md')]: {
                 display: 'none',
               },
+              color: 'text.secondary',
             }}
           >
             Clear Filters
@@ -107,9 +108,10 @@ export const ProductsContainer: FC<ProductsContainerProps> = ({
             endIcon={isFiltersOpen ? <FilterAltIcon /> : <FilterAltOffIcon />}
             onClick={onFiltersToggle}
             size="small"
-            color={isFiltersOpen ? 'secondary' : 'primary'}
+            color="secondary"
+            variant="text"
           >
-            {isFiltersOpen ? 'Hide Filters' : 'Show Filters'}
+            {isFiltersOpen ? 'Hide Filters' : 'Filters'}
           </Button>
         </Box>
       </Box>
