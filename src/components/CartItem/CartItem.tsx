@@ -41,21 +41,27 @@ export const CartItem: FC<CartProduct> = ({
     <>
       <Stack
         sx={{
-          marginRight: '100px !important',
-          '@media (max-width: 780px)': {
-            flexDirection: 'row',
-          },
+          marginRight: { xs: 0, md: 4 },
+          flexDirection: { xs: 'column', sm: 'row' },
+          alignItems: { xs: 'flex-start', sm: 'center' },
+          gap: { xs: 1.5, sm: 3, md: 4 }, // smaller gap for mobile
         }}
       >
         <Box>
-          <Stack direction="row" spacing={4}>
-            <Box sx={{ width: 223, height: 214, flexShrink: 0 }}>
+          <Stack direction="row" spacing={{ xs: 2, sm: 4 }}>
+            <Box
+              sx={{
+                width: { xs: 120, sm: 160, lg: 223 }, // smaller img on mobile
+                height: 'auto',
+                flexShrink: 0,
+              }}
+            >
               <Image
                 src={image}
                 width={223}
                 height={214}
                 alt="product image"
-                style={{ cursor: 'pointer' }}
+                style={{ cursor: 'pointer', maxWidth: '100%', height: 'auto' }}
                 onClick={() => router.push(`/products/${id}`)}
               />
             </Box>
@@ -64,11 +70,15 @@ export const CartItem: FC<CartProduct> = ({
               <Stack spacing={0.5}>
                 <Typography
                   variant="h3"
-                  sx={(theme) => ({
-                    [theme.breakpoints.down('sm')]: {
-                      fontSize: '12px',
+                  sx={{
+                    fontSize: {
+                      xs: '1rem',
+                      sm: '1.25rem',
+                      md: '1.5rem',
+                      lg: '1.75rem',
+                      xl: '2rem',
                     },
-                  })}
+                  }}
                 >
                   {name}
                 </Typography>
@@ -96,7 +106,7 @@ export const CartItem: FC<CartProduct> = ({
                 direction="column"
                 justifyContent="space-between"
                 alignItems="flex-end"
-                sx={{ marginRight: 'auto' }}
+                sx={{ marginRight: 'auto', maxWidth: { sx: '200px' } }}
               >
                 <Typography
                   variant="h3"
