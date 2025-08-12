@@ -52,10 +52,10 @@ export default function MyProducts() {
         <Box
           sx={{
             display: 'flex',
-            gap: '26px',
+            gap: { xs: '12px', md: '26px' },
             alignItems: 'center',
             position: 'absolute',
-            left: '58px',
+            left: { md: '58px' },
             bottom: '-90px',
           }}
         >

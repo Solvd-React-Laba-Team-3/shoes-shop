@@ -17,11 +17,18 @@ export default async function ProfileLayout({
     <>
       <Header />
       <Box
-        sx={{ display: 'grid', gridTemplateColumns: '320px 1fr' }}
+        sx={{
+          display: { md: 'grid', xs: 'flex' },
+          gridTemplateColumns: '320px 1fr',
+        }}
         component="main"
       >
         <Sidebar />
-        <Box sx={{ padding: '38px 53px' }}>{children}</Box>
+        <Box
+          sx={{ padding: { md: '38px 53px', xs: '12px 20px' }, width: '100%' }}
+        >
+          {children}
+        </Box>
       </Box>
     </>
   );

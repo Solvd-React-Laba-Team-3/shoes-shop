@@ -14,7 +14,13 @@ import {
   useTheme,
 } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
-import { Accordion, Checkbox, IconButton, SearchBar } from '@/components/ui';
+import {
+  Accordion,
+  Button,
+  Checkbox,
+  IconButton,
+  SearchBar,
+} from '@/components/ui';
 import { useSuspenseQueries } from '@tanstack/react-query';
 import { getGendersOptions } from '@/api/gender/getGendersOptions';
 import { getSizesOptions } from '@/api/size/getSizesOptions';
@@ -78,6 +84,10 @@ export const Filters: FC<DrawerProps> = ({ ...props }) => {
     },
     [searchParams]
   );
+
+  const clearFilters = useCallback(() => {
+    searchParams.delete('filters');
+  }, [searchParams]);
 
   const priceInput = useMemo<[number, number]>(
     () => [
@@ -150,32 +160,50 @@ export const Filters: FC<DrawerProps> = ({ ...props }) => {
       {...props}
     >
       {isMobile ? (
-        <Box
-          sx={{
-            display: 'flex',
-            justifyContent: 'flex-end',
-            paddingBottom: '40px',
-            paddingTop: '16px',
-          }}
-        >
-          <IconButton
+        <>
+          <Box
             sx={{
-              cursor: 'pointer',
-              zIndex: 1000,
-              color: 'text.secondary',
+              display: 'flex',
+              justifyContent: 'flex-end',
+              paddingBottom: '40px',
+              paddingTop: '16px',
             }}
-            onClick={(e) => props.onClose?.(e, 'backdropClick')}
           >
-            <CloseIcon />
-          </IconButton>
-        </Box>
+            <IconButton
+              sx={{
+                cursor: 'pointer',
+                zIndex: 1000,
+                color: 'text.secondary',
+              }}
+              onClick={(e) => props.onClose?.(e, 'backdropClick')}
+            >
+              <CloseIcon />
+            </IconButton>
+          </Box>
+          <Box
+            display="flex"
+            padding="0 20px 0 40px"
+            alignItems="center"
+            justifyContent="space-between"
+            marginBottom="20px"
+          >
+            <Typography>Filters</Typography>
+            <Button
+              variant="text"
+              onClick={clearFilters}
+              sx={{ width: '18px' }}
+            >
+              Clear
+            </Button>
+          </Box>
+        </>
       ) : (
         <Box sx={{ width: '100%', padding: '48px' }}>
           {search && <Typography variant="caption">Shoes/{search}</Typography>}
           <Typography variant="h4">{search ?? 'Catalog'}</Typography>
         </Box>
       )}
-      <Box display="flex" flexDirection="column" gap="28px">
+      <Box display="flex" flexDirection="column" gap="28px" width="320px">
         <Divider sx={{ display: { xs: 'none', md: 'block' } }} />
         <Box paddingLeft="40px">
           <Accordion label="Gender" defaultExpanded>
@@ -204,7 +232,12 @@ export const Filters: FC<DrawerProps> = ({ ...props }) => {
         <Divider />
         <Box paddingLeft="40px">
           <Accordion label="Brand" defaultExpanded>
-            <Box display="flex" flexDirection="column" gap="20px">
+            <Box
+              display="flex"
+              flexDirection="column"
+              gap="20px"
+              sx={{ width: '92%' }}
+            >
               <SearchBar
                 type="search"
                 value={searchBrands}
