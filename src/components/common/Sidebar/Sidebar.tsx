@@ -64,7 +64,7 @@ export const Sidebar: FC<DrawerProps> = ({ open = false, ...props }) => {
         zIndex: 100,
 
         '& .MuiPaper-root': {
-          top: 0,
+          top: { xs: 0, md: HEADER_HEIGHT },
           height: { xs: '100vh', md: `calc(100vh - ${HEADER_HEIGHT}px)` },
         },
         [useTheme().breakpoints.up('md')]: {
