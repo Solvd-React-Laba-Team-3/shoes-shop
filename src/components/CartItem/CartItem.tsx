@@ -40,18 +40,22 @@ export const CartItem: FC<CartProduct> = ({
   return (
     <>
       <Stack
-        sx={{
+        sx={(theme) => ({
           marginRight: { xs: 0, md: 4 },
           flexDirection: { xs: 'column', sm: 'row' },
           alignItems: { xs: 'flex-start', sm: 'center' },
-          gap: { xs: 1.5, sm: 3, md: 4 }, // smaller gap for mobile
-        }}
+          gap: { xs: 1.5, sm: 3, md: 4 },
+
+          [theme.breakpoints.down('sm')]: {
+            height: '17vh',
+          },
+        })}
       >
         <Box>
-          <Stack direction="row" spacing={{ xs: 2, sm: 4 }}>
+          <Stack direction="row">
             <Box
               sx={{
-                width: { xs: 120, sm: 160, lg: 223 }, // smaller img on mobile
+                width: { xs: 120, sm: 160, lg: 223 },
                 height: 'auto',
                 flexShrink: 0,
               }}
@@ -67,7 +71,7 @@ export const CartItem: FC<CartProduct> = ({
             </Box>
 
             <Stack direction="row" justifyContent="space-between">
-              <Stack spacing={0.5}>
+              <Stack spacing={0.5} sx={{ paddingLeft: '20px' }}>
                 <Typography
                   variant="h3"
                   sx={{
@@ -170,27 +174,6 @@ export const CartItem: FC<CartProduct> = ({
                       >
                         Quantity
                       </Typography>
-
-                      {/* <Button
-                        size="small"
-                        sx={{
-                          background: 'transparent',
-                          color: (theme) => theme.palette.grey[400],
-                          fontSize: '24px',
-                          gap: 1,
-                          padding: 0,
-                          borderRadius: 0,
-                          borderLeft: (theme) =>
-                            `1px solid ${theme.palette.divider}`,
-                        }}
-                        onClick={() => setRemoveModalOpen(true)}
-                      >
-                        <DeleteIcon
-                          aria-label="delete item"
-                          sx={{ color: (theme) => theme.palette.grey[400] }}
-                        />
-                        Delete
-                      </Button> */}
                     </>
                   ) : (
                     <Box sx={{ maxWidth: 100 }}>
@@ -244,20 +227,19 @@ export const CartItem: FC<CartProduct> = ({
 
                   <Button
                     size="small"
-                    sx={{
+                    sx={(theme) => ({
                       background: 'transparent',
-                      color: (theme) => theme.palette.grey[400],
+                      color: theme.palette.grey[400],
                       fontSize: '24px',
                       gap: 1,
                       padding: 0,
                       borderRadius: 0,
-                      borderLeft: (theme) =>
-                        `1px solid ${theme.palette.divider}`,
-
-                      '@media (max-width: 600px)': {
+                      borderLeft: `1px solid ${theme.palette.divider}`,
+                      '@media (max-width: 860px)': {
                         fontSize: '12px',
+                        borderLeft: 'none',
                       },
-                    }}
+                    })}
                     onClick={() => setRemoveModalOpen(true)}
                   >
                     <DeleteIcon
@@ -276,46 +258,6 @@ export const CartItem: FC<CartProduct> = ({
 
         <Divider sx={{ margin: '60px 0' }} />
       </Stack>
-
-      {/* accordion */}
-
-      {/* <Box sx={{ maxWidth: 100 }}>
-        <Accordion
-          label={<Typography sx={{ fontSize: '12px' }}>Quantity</Typography>}
-        >
-          <ButtonGroup
-            size="small"
-            sx={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: '10px',
-
-              '& .MuiButton-root': {
-                width: 25,
-                height: 25,
-                borderRadius: '50%',
-                minWidth: 0,
-                padding: 0,
-                fontSize: '18px',
-              },
-            }}
-          >
-            <Button
-              sx={{ backgroundColor: '#E8E8E8', color: '#CECECE' }}
-              onClick={() => decreaseQuantity(id, size, quantity)}
-            >
-              -
-            </Button>
-            <Typography variant="body1">{quantity}</Typography>
-            <Button
-              sx={{ backgroundColor: '#FFD7D6', color: '#FE645E' }}
-              onClick={() => increaseQuantity(id, size, quantity)}
-            >
-              +
-            </Button>
-          </ButtonGroup>
-        </Accordion>
-      </Box> */}
 
       <DeleteConfirmationModal
         title="Are you sure you want to remove this product from the cart?"

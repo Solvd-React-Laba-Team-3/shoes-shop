@@ -24,13 +24,13 @@ export default function Cart() {
             alignItems: { xs: 'stretch', md: 'flex-start' },
             gap: { xs: 3, sm: 4, md: 6, lg: 8 },
             padding: {
-              xs: '8px', // was 16px
+              xs: '8px',
               sm: '16px',
               md: '48px 64px',
               lg: '64px 120px',
               xl: '80px 160px',
             },
-            maxWidth: '1600px', // keep content readable
+            maxWidth: '1600px',
             margin: '0 auto',
           }}
         >

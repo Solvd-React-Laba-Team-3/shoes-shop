@@ -1,7 +1,13 @@
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Box, Divider, TextField, Typography } from '@mui/material';
+import {
+  Box,
+  Divider,
+  TextField,
+  Typography,
+  useMediaQuery,
+} from '@mui/material';
 import { useRouter } from 'next/navigation';
 import { useEffect, useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
@@ -50,8 +56,12 @@ export const CartSummary = ({
     shouldFocusError: true,
   });
 
+  const isSmall = useMediaQuery('(max-width:400px)');
+  const isMedium = useMediaQuery('(min-width:400px) and (max-width:1280px)');
+
   const onApplyPromo = async (data: CartSchema) => {
     const promoCode = data.promoCode.trim();
+
     try {
       const response = await fetch('/api/discount', {
         method: 'POST',
@@ -277,7 +287,11 @@ export const CartSummary = ({
       )}
 
       <Divider sx={{ mb: { xs: 4, md: '113px' } }} />
-      <Button onClick={handleCheckout} sx={{ width: '100%' }}>
+      <Button
+        onClick={handleCheckout}
+        size={isSmall ? 'small' : isMedium ? 'medium' : 'large'}
+        sx={{ width: '100%' }}
+      >
         {isCheckout ? 'Confirm & Pay' : 'Checkout'}
       </Button>
     </Box>
