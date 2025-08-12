@@ -9,6 +9,10 @@ import { Button } from '../ui';
 import { Accordion } from '../ui/Accordion/Accordion';
 import { cartSchema, CartSchema } from './cart.schema';
 import { useCart } from '@/lib/hooks';
+import { useMutation } from '@tanstack/react-query';
+import { DiscountResponse } from '@/types/api/DiscountResponse';
+import { DiscountBody } from '@/types/api/DiscountBody';
+import { applyDiscountFn } from '@/api/discount/discountOptions';
 
 interface CartSummaryProps {
   isCheckout?: boolean;
@@ -50,22 +54,19 @@ export const CartSummary = ({
     shouldFocusError: true,
   });
 
-  const onApplyPromo = async (data: CartSchema) => {
-    const promoCode = data.promoCode.trim();
-    try {
-      const response = await fetch('/api/discount', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ code: promoCode, total: subtotal }),
-      });
-      const result = await response.json();
+  const mutation = useMutation<DiscountResponse, Error, DiscountBody>({
+    mutationFn: applyDiscountFn,
+    onSuccess: (result, variables) => {
+      if (result.valid) {
+        let newDiscountAmount = 0;
+        if (result.type === 'amount' && result.amountOff) {
+          newDiscountAmount = result.amountOff;
+        } else if (result.type === 'percent' && result.percentOff) {
+          newDiscountAmount = (subtotal * result.percentOff) / 100;
+        }
 
-      if (response.ok && result.valid) {
-        const newDiscountAmount = result.discountAmount;
         setDiscountAmount(newDiscountAmount);
-        setAppliedDiscountCode(promoCode);
+        setAppliedDiscountCode(result.code ?? variables.code);
         clearErrors('promoCode');
 
         const subtotalWithNewDiscount = subtotal - newDiscountAmount;
@@ -77,13 +78,13 @@ export const CartSummary = ({
           onCartSummaryChange(
             finalTotalWithNewDiscount,
             newDiscountAmount,
-            promoCode
+            result.code ?? variables.code
           );
         }
       } else {
         setError('promoCode', {
           type: 'manual',
-          message: result.error || 'Invalid promo code',
+          message: 'Invalid promo code',
         });
         setDiscountAmount(0);
 
@@ -93,7 +94,8 @@ export const CartSummary = ({
           onCartSummaryChange(totalWithoutDiscount, 0, undefined);
         }
       }
-    } catch {
+    },
+    onError: () => {
       setError('promoCode', {
         type: 'manual',
         message: 'Error. Try again.',
@@ -105,7 +107,12 @@ export const CartSummary = ({
           subtotal + (subtotal * taxPercent) / 100 + shippingAmount;
         onCartSummaryChange(totalWithoutDiscount, 0, undefined);
       }
-    }
+    },
+  });
+
+  const onApplyPromo = (data: CartSchema) => {
+    const promoCode = data.promoCode.trim();
+    mutation.mutate({ code: promoCode, total: subtotal });
   };
 
   const handleCheckout = () => {

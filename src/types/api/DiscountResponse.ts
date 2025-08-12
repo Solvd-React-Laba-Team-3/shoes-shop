@@ -1,4 +1,4 @@
-export interface DiscountResult {
+export interface DiscountResponse {
   valid: boolean;
   code?: string;
   type?: 'percent' | 'amount';
