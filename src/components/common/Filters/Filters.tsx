@@ -28,6 +28,7 @@ import { getColorsOptions } from '@/api/color/getColorsOptions';
 import { getBrandsOptions } from '@/api/brand/getBrandsOptions';
 import { FC, useCallback, useMemo, useState } from 'react';
 import { parseQueryString, toQueryString } from '@/lib/utils';
+import { HEADER_HEIGHT } from '@/constants/headerHeight';
 
 type FilterType = number | number[] | string | Record<string, number | object>;
 
@@ -151,6 +152,7 @@ export const Filters: FC<DrawerProps> = ({ ...props }) => {
         '& .MuiDrawer-paper': {
           border: 'none',
           paddingBottom: '200px',
+          top: { xs: 0, md: HEADER_HEIGHT },
         },
 
         [useTheme().breakpoints.up('md')]: {
