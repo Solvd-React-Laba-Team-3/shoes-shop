@@ -48,7 +48,12 @@ export default function Wishlist() {
   return isPending || isLoading ? (
     <ProductListFallback />
   ) : items?.length ? (
-    <ProductList products={products} variant="wishlist" />
+    <Box>
+      <Typography variant="h2" paddingBottom={'64px'}>
+        My Wishlist
+      </Typography>
+      <ProductList products={products} variant="wishlist" />
+    </Box>
   ) : (
     <StyledNoProductsWrapper>
       <Box

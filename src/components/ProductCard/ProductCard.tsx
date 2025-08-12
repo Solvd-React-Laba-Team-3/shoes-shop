@@ -1,10 +1,9 @@
 'use client';
 
 import { Product } from '@/types/Product';
-import { Box, Grid, Typography, Stack } from '@mui/material';
+import { Box, Grid, Typography } from '@mui/material';
 import { FC } from 'react';
 import Link from 'next/link';
-import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
 import Image from 'next/image';
 import { ProductActionMenu } from '../ProductActionMenu';
 import { WishlistButton } from '../WishlistButton';
@@ -12,7 +11,6 @@ import placeholderImage from '../../../public/product-placeholder.png';
 import { useWishlist } from '@/lib/hooks';
 import {
   ActionButtonContainer,
-  HoverCartBox,
   StyledCard,
   StyledCardActionArea,
   StyledCardContent,
@@ -61,21 +59,6 @@ export const ProductCard: FC<ProductCardProps> = ({
               alt={productImageAlt}
               style={{ objectFit: 'cover' }}
             />
-
-            <HoverCartBox>
-              <Stack
-                direction="column"
-                alignItems="center"
-                justifyContent="center"
-                spacing={1}
-                height="100%"
-              >
-                <AddShoppingCartIcon color="inherit" />
-                <Typography fontSize="8px" fontWeight="500">
-                  Add to cart
-                </Typography>
-              </Stack>
-            </HoverCartBox>
           </Box>
 
           <StyledCardContent>
