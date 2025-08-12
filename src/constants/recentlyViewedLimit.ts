@@ -1,1 +1,1 @@
-export const RECENTLTY_VIEWED_LIMIT = 12;
+export const RECENTLY_VIEWED_LIMIT = 12;
