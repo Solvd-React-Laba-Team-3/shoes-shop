@@ -3,12 +3,20 @@ import { Product } from '@/types/Product';
 import { useLocalStorage } from '../useLocalStorage/useLocalStorage';
 import productImagePlaceholder from '../../../../public/product-placeholder.png';
 
+interface CartState {
+  products: CartProduct[];
+  discountCode?: string;
+  discountAmount?: number;
+}
+
 export const useCart = () => {
   const {
-    value: items,
-    setValue: setItems,
+    value: cartState,
+    setValue: setCartState,
     isLoading,
-  } = useLocalStorage<CartProduct[]>('cart-products', []);
+  } = useLocalStorage<CartState>('cart-state', { products: [] });
+
+  const items = cartState.products;
 
   const addItem = (product: Product, size: number) => {
     const newProduct: CartProduct = {
@@ -22,8 +30,7 @@ export const useCart = () => {
       color: product.color.name,
     };
 
-    const updatedItems = [...items, newProduct];
-    setItems(updatedItems);
+    setCartState({ ...cartState, products: [...items, newProduct] });
   };
 
   const updateQuantity = (id: number, size: number, quantity: number) => {
@@ -36,14 +43,14 @@ export const useCart = () => {
       item.id === id && item.size === size ? { ...item, quantity } : item
     );
 
-    setItems(updatedItems);
+    setCartState({ ...cartState, products: updatedItems });
   };
 
   const removeItem = (productId: number, size: number) => {
     const removedItems = items.filter(
       (item) => item.id !== productId || item.size !== size
     );
-    setItems(removedItems);
+    setCartState({ ...cartState, products: removedItems });
   };
 
   const increaseQuantity = (id: number, size: number, quantity: number) => {
@@ -54,6 +61,27 @@ export const useCart = () => {
     updateQuantity(id, size, quantity - 1);
   };
 
+  const setDiscount = (code?: string, amount?: number) => {
+    setCartState({ ...cartState, discountCode: code, discountAmount: amount });
+  };
+
+  const clearDiscount = () => {
+    setCartState({
+      ...cartState,
+      discountCode: undefined,
+      discountAmount: undefined,
+    });
+  };
+
+  const clearCart = () => {
+    setCartState({
+      ...cartState,
+      products: [],
+      discountCode: undefined,
+      discountAmount: undefined,
+    });
+  };
+
   const subtotal = isLoading
     ? 0
     : items.reduce((acc, item) => {
@@ -62,12 +90,17 @@ export const useCart = () => {
 
   return {
     items,
+    subtotal,
+    discountCode: cartState.discountCode,
+    discountAmount: cartState.discountAmount ?? 0,
     addItem,
     updateQuantity,
-    subtotal,
     increaseQuantity,
     decreaseQuantity,
     removeItem,
+    setDiscount,
+    clearDiscount,
+    clearCart,
     isLoading,
   };
 };

@@ -1,18 +1,21 @@
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Box, Divider, TextField, Typography } from '@mui/material';
+import {
+  Box,
+  Divider,
+  LinearProgress,
+  TextField,
+  Typography,
+} from '@mui/material';
 import { useRouter } from 'next/navigation';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo } from 'react';
 import { useForm } from 'react-hook-form';
 import { Button } from '../ui';
 import { Accordion } from '../ui/Accordion/Accordion';
 import { cartSchema, CartSchema } from './cart.schema';
 import { useCart } from '@/lib/hooks';
-import { useMutation } from '@tanstack/react-query';
-import { DiscountResponse } from '@/types/api/DiscountResponse';
-import { DiscountBody } from '@/types/api/DiscountBody';
-import { applyDiscountFn } from '@/api/discount/discountOptions';
+import { useApplyDiscount } from '@/api/checkout/discount/discountOptions';
 
 interface CartSummaryProps {
   isCheckout?: boolean;
@@ -34,11 +37,8 @@ export const CartSummary = ({
   onCartSummaryChange,
 }: CartSummaryProps) => {
   const router = useRouter();
-  const { subtotal } = useCart();
-  const [discountAmount, setDiscountAmount] = useState(0);
-  const [appliedDiscountCode, setAppliedDiscountCode] = useState<
-    string | undefined
-  >(undefined);
+  const { subtotal, discountAmount, discountCode, setDiscount, clearDiscount } =
+    useCart();
 
   const {
     register,
@@ -54,8 +54,7 @@ export const CartSummary = ({
     shouldFocusError: true,
   });
 
-  const mutation = useMutation<DiscountResponse, Error, DiscountBody>({
-    mutationFn: applyDiscountFn,
+  const mutation = useApplyDiscount({
     onSuccess: (result, variables) => {
       if (result.valid) {
         let newDiscountAmount = 0;
@@ -65,8 +64,7 @@ export const CartSummary = ({
           newDiscountAmount = (subtotal * result.percentOff) / 100;
         }
 
-        setDiscountAmount(newDiscountAmount);
-        setAppliedDiscountCode(result.code ?? variables.code);
+        setDiscount(result.code ?? variables.code, newDiscountAmount);
         clearErrors('promoCode');
 
         const subtotalWithNewDiscount = subtotal - newDiscountAmount;
@@ -86,7 +84,7 @@ export const CartSummary = ({
           type: 'manual',
           message: 'Invalid promo code',
         });
-        setDiscountAmount(0);
+        clearDiscount();
 
         if (onCartSummaryChange) {
           const totalWithoutDiscount =
@@ -100,7 +98,7 @@ export const CartSummary = ({
         type: 'manual',
         message: 'Error. Try again.',
       });
-      setDiscountAmount(0);
+      clearDiscount();
 
       if (onCartSummaryChange) {
         const totalWithoutDiscount =
@@ -140,9 +138,9 @@ export const CartSummary = ({
 
   useEffect(() => {
     if (onCartSummaryChange) {
-      onCartSummaryChange(finalTotal, discountAmount, appliedDiscountCode);
+      onCartSummaryChange(finalTotal, discountAmount, discountCode);
     }
-  }, [finalTotal, discountAmount, appliedDiscountCode, onCartSummaryChange]);
+  }, [finalTotal, discountAmount, discountCode, onCartSummaryChange]);
 
   return (
     <Box>
@@ -188,6 +186,11 @@ export const CartSummary = ({
           >
             Apply
           </Button>
+          {mutation.isPending && (
+            <Box sx={{ mt: 1 }}>
+              <LinearProgress />
+            </Box>
+          )}
         </Box>
       </Accordion>
 
@@ -206,7 +209,7 @@ export const CartSummary = ({
         </Typography>
       </Box>
 
-      {discountAmount > 0 && (
+      {typeof discountAmount === 'number' && discountAmount > 0 && (
         <Box
           sx={{
             display: 'flex',
