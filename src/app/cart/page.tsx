@@ -23,7 +23,7 @@ export default function Cart() {
             justifyContent: { md: 'space-between' },
             alignItems: { xs: 'stretch', md: 'flex-start' },
             gap: { xs: 3, sm: 4, md: 6, lg: 8 },
-            padding: '80px 0',
+            padding: '80px 10px',
             [theme.breakpoints.down('xl')]: {
               padding: '60px',
             },
