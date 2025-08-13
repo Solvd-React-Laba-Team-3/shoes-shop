@@ -24,12 +24,9 @@ export const AuthContainer = ({
       flexDirection: 'column',
       alignItems: 'flex-start',
       gap: '48px',
-      [theme.breakpoints.down('sm')]: {
-        margin: '25% auto',
+      [theme.breakpoints.down('lg')]: {
+        padding: '20px',
         alignItems: 'center',
-      },
-      '@media (max-width: 400px)': {
-        margin: '30% auto',
       },
     })}
   >
