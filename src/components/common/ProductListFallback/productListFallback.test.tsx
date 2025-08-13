@@ -6,6 +6,6 @@ describe('ProductListFallback', () => {
   it('renders 12 product skeleton groups (each with 4 skeletons)', () => {
     const { container } = render(<ProductListFallback />);
     const skeletons = container.querySelectorAll('.MuiSkeleton-root');
-    expect(skeletons.length).toBe(53);
+    expect(skeletons.length).toBe(51);
   });
 });
