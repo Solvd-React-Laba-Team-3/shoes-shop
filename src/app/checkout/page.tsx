@@ -16,25 +16,20 @@ export default function Checkout() {
   const [discountCode, setDiscountCode] = useState<string | undefined>(
     undefined
   );
-  const [isProcessingPayment, setIsProcessingPayment] = useState(false);
+  const { items: products } = useCart();
 
+  const [country, setCountry] = useState<string>('');
+  const handleCountryChange = (newCountry: string) => {
+    setCountry(newCountry);
+  };
+  const { data: shippingTax } = useQuery(getShippingTaxOptions(country));
+  const shippingAmount = shippingTax?.shippingAmount ?? 20;
+  const taxPercent = shippingTax?.taxPercent ?? 17;
+
+  const [isProcessingPayment, setIsProcessingPayment] = useState(false);
   const handlePaymentComplete = () => {
     setIsProcessingPayment(false);
   };
-
-  const { items: products } = useCart();
-  const checkoutFormSubmitRef = useRef<() => void>(() => {});
-  const onConfirmAndPay = () => {
-    setIsProcessingPayment(true);
-    checkoutFormSubmitRef.current();
-  };
-
-  const [country, setCountry] = useState<string>('');
-
-  const { data: shippingTax } = useQuery(getShippingTaxOptions(country));
-
-  const shippingAmount = shippingTax?.shippingAmount ?? 20;
-  const taxPercent = shippingTax?.taxPercent ?? 17;
 
   const handleCartSummaryChange = (
     newTotalAmount: number,
@@ -46,9 +41,12 @@ export default function Checkout() {
     setDiscountCode(newDiscountCode);
   };
 
-  const handleCountryChange = (newCountry: string) => {
-    setCountry(newCountry);
+  const checkoutFormSubmitRef = useRef<() => void>(() => {});
+  const onConfirmAndPay = () => {
+    setIsProcessingPayment(true);
+    checkoutFormSubmitRef.current();
   };
+
   return (
     <>
       <Header />
