@@ -57,6 +57,8 @@ export function useLocalStorage<T>(key: string, initialValue: T) {
   useEffect(() => {
     const handleStorageChange = (event: StorageEvent) => {
       if (event.key === key && event.storageArea === localStorage) {
+        console.log('handlestoragechange first log');
+
         queueMicrotask(() => {
           setIsLoading(true);
           try {
