@@ -1,15 +1,8 @@
 import DeleteIcon from '@mui/icons-material/Delete';
-import {
-  Box,
-  ButtonGroup,
-  Divider,
-  Stack,
-  Typography,
-  useMediaQuery,
-} from '@mui/material';
+import { Box, ButtonGroup, Divider, Stack, Typography } from '@mui/material';
 import Image from 'next/image';
 import { FC, useState } from 'react';
-import { Accordion, Button } from '../ui';
+import { Button } from '../ui';
 import { CartProduct } from '@/types/CartProduct';
 import { useCart } from '@/lib/hooks';
 import { DeleteConfirmationModal } from '../common/DeleteConfirmationModal';
@@ -27,8 +20,6 @@ export const CartItem: FC<CartProduct> = ({
   const router = useRouter();
   const { removeItem, decreaseQuantity, increaseQuantity } = useCart();
   const [removeModalOpen, setRemoveModalOpen] = useState(false);
-  const isBigScreen = useMediaQuery('(min-width:860px)');
-  const isSmallScreen = useMediaQuery('(max-width:780px)');
 
   const updatedPrice = price * quantity;
 
@@ -45,14 +36,13 @@ export const CartItem: FC<CartProduct> = ({
           flexDirection: { xs: 'column', sm: 'row' },
           alignItems: { xs: 'flex-start', sm: 'center' },
           gap: { xs: 1.5, sm: 3, md: 4 },
-
-          [theme.breakpoints.down('sm')]: {
-            height: '17vh',
-          },
+          width: { xs: '100%', md: 'auto' }, // <- 100% width for screens <= 900px
+          [theme.breakpoints.down('sm')]: { height: '17vh' },
         })}
       >
-        <Box>
-          <Stack direction="row">
+        <Box sx={{ width: '100%' }}>
+          <Stack direction="row" sx={{ width: '100%' }}>
+            {/* Product Image */}
             <Box
               sx={{
                 width: { xs: 120, sm: 160, lg: 223 },
@@ -70,7 +60,13 @@ export const CartItem: FC<CartProduct> = ({
               />
             </Box>
 
-            <Stack direction="row" justifyContent="space-between">
+            {/* Product Info & Actions */}
+            <Stack
+              direction="row"
+              justifyContent="space-between"
+              sx={{ width: '100%' }}
+            >
+              {/* Product Details */}
               <Stack spacing={0.5} sx={{ paddingLeft: '20px' }}>
                 <Typography
                   variant="h3"
@@ -89,23 +85,18 @@ export const CartItem: FC<CartProduct> = ({
                 <Typography
                   variant="h6"
                   sx={(theme) => ({
-                    [theme.breakpoints.down('sm')]: {
-                      fontSize: '8px',
-                    },
+                    [theme.breakpoints.down('sm')]: { fontSize: '8px' },
                   })}
                 >
                   {gender}&apos;s Shoes
                 </Typography>
-                {!isSmallScreen && (
-                  <>
-                    <Typography variant="subtitle1">Size: {size}</Typography>
-                    <Typography variant="h4" color="primary.main">
-                      In Stock
-                    </Typography>
-                  </>
-                )}
+                <Typography variant="subtitle1">Size: {size}</Typography>
+                <Typography variant="h4" color="primary.main">
+                  In Stock
+                </Typography>
               </Stack>
 
+              {/* Price and Quantity */}
               <Stack
                 direction="column"
                 justifyContent="space-between"
@@ -115,115 +106,50 @@ export const CartItem: FC<CartProduct> = ({
                 <Typography
                   variant="h3"
                   sx={(theme) => ({
-                    [theme.breakpoints.down('sm')]: {
-                      fontSize: '12px',
-                    },
+                    [theme.breakpoints.down('sm')]: { fontSize: '12px' },
                   })}
                 >
                   ${updatedPrice}
                 </Typography>
 
-                <Stack
-                  direction="row"
-                  alignItems="center"
-                  spacing={'20px'}
-                  sx={{
-                    paddingLeft: '237px',
-                    '@media (max-width: 1760px)': {
-                      padding: '0',
-                    },
-                  }}
-                >
-                  {isBigScreen ? (
-                    <>
-                      <ButtonGroup
-                        size="small"
-                        sx={{
-                          display: 'flex',
-                          alignItems: 'center',
-                          gap: '10px',
+                <Stack direction="row" alignItems="center" spacing={2}>
+                  <ButtonGroup
+                    size="small"
+                    sx={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '10px',
+                      '& .MuiButton-root': {
+                        width: 30,
+                        height: 30,
+                        borderRadius: '50%',
+                        minWidth: 0,
+                        padding: 0,
+                        fontSize: '18px',
+                      },
+                    }}
+                  >
+                    <Button
+                      sx={{ backgroundColor: '#E8E8E8', color: '#CECECE' }}
+                      onClick={() => decreaseQuantity(id, size, quantity)}
+                    >
+                      -
+                    </Button>
+                    <Typography variant="body1">{quantity}</Typography>
+                    <Button
+                      sx={{ backgroundColor: '#FFD7D6', color: '#FE645E' }}
+                      onClick={() => increaseQuantity(id, size, quantity)}
+                    >
+                      +
+                    </Button>
+                  </ButtonGroup>
 
-                          '& .MuiButton-root': {
-                            width: 25,
-                            height: 25,
-                            borderRadius: '50%',
-                            minWidth: 0,
-                            padding: 0,
-                            fontSize: '18px',
-                          },
-                        }}
-                      >
-                        <Button
-                          sx={{ backgroundColor: '#E8E8E8', color: '#CECECE' }}
-                          onClick={() => decreaseQuantity(id, size, quantity)}
-                        >
-                          -
-                        </Button>
-                        <Typography variant="body1">{quantity}</Typography>
-                        <Button
-                          sx={{ backgroundColor: '#FFD7D6', color: '#FE645E' }}
-                          onClick={() => increaseQuantity(id, size, quantity)}
-                        >
-                          +
-                        </Button>
-                      </ButtonGroup>
-
-                      <Typography
-                        variant="body2"
-                        sx={{ color: 'text.secondary', fontSize: '24px' }}
-                      >
-                        Quantity
-                      </Typography>
-                    </>
-                  ) : (
-                    <Box sx={{ maxWidth: 100 }}>
-                      <Accordion
-                        label={
-                          <Typography sx={{ fontSize: '12px' }}>
-                            Quantity
-                          </Typography>
-                        }
-                      >
-                        <ButtonGroup
-                          size="small"
-                          sx={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: '10px',
-
-                            '& .MuiButton-root': {
-                              width: 25,
-                              height: 25,
-                              borderRadius: '50%',
-                              minWidth: 0,
-                              padding: 0,
-                              fontSize: '18px',
-                            },
-                          }}
-                        >
-                          <Button
-                            sx={{
-                              backgroundColor: '#E8E8E8',
-                              color: '#CECECE',
-                            }}
-                            onClick={() => decreaseQuantity(id, size, quantity)}
-                          >
-                            -
-                          </Button>
-                          <Typography variant="body1">{quantity}</Typography>
-                          <Button
-                            sx={{
-                              backgroundColor: '#FFD7D6',
-                              color: '#FE645E',
-                            }}
-                            onClick={() => increaseQuantity(id, size, quantity)}
-                          >
-                            +
-                          </Button>
-                        </ButtonGroup>
-                      </Accordion>
-                    </Box>
-                  )}
+                  <Typography
+                    variant="body2"
+                    sx={{ color: 'text.secondary', fontSize: '16px' }}
+                  >
+                    Quantity
+                  </Typography>
 
                   <Button
                     size="small"
@@ -244,9 +170,7 @@ export const CartItem: FC<CartProduct> = ({
                   >
                     <DeleteIcon
                       aria-label="delete item"
-                      sx={{
-                        color: (theme) => theme.palette.grey[400],
-                      }}
+                      sx={{ color: (theme) => theme.palette.grey[400] }}
                     />
                     Delete
                   </Button>
