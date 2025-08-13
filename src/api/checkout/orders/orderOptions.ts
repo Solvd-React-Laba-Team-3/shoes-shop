@@ -12,9 +12,12 @@ export const getOrdersOptions = () =>
       if (!session) {
         return [];
       }
-      const res = await fetch(`/api/orders?userId=${session.user.id}`, {
-        cache: 'no-store',
-      });
+      const res = await fetch(
+        `/api/checkout/orders?userId=${session.user.id}`,
+        {
+          cache: 'no-store',
+        }
+      );
       if (!res.ok) {
         return [];
       }

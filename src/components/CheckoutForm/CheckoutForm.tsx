@@ -34,8 +34,9 @@ import { splitProducts } from '@/lib/utils/splitProducts/splitProducts';
 import { StyledInputLabel } from '../ProductForm/productForm.styles';
 import { CartProduct } from '@/types/CartProduct';
 import { useMutation } from '@tanstack/react-query';
-import { postPaymentFn } from '@/api/payments/paymentsOptions';
+import { postPaymentFn } from '@/api/checkout/payment/paymentsOptions';
 import { PaymentBody } from '@/types/api/PaymentBody';
+import { useCart } from '@/lib/hooks';
 
 type CheckoutProps = {
   discountCode?: string;
@@ -46,6 +47,7 @@ type CheckoutProps = {
   products: CartProduct[];
   onCountryChange: (country: string) => void;
   onFormSubmitRef: React.RefObject<() => void>;
+  onPaymentComplete?: () => void;
 };
 
 export const CheckoutForm: FC<CheckoutProps> = ({
@@ -57,6 +59,7 @@ export const CheckoutForm: FC<CheckoutProps> = ({
   taxPercent = 17,
   onCountryChange,
   onFormSubmitRef,
+  onPaymentComplete = () => {},
 }) => {
   const stripe = useStripe();
   const elements = useElements();
@@ -102,17 +105,27 @@ export const CheckoutForm: FC<CheckoutProps> = ({
     name: 'paymentMethod',
   });
 
+  const { clearCart, clearDiscount } = useCart();
+
   const onSubmit = useCallback(
     async (data: CheckoutSchema) => {
       const orderNumber = Date.now();
-      const productChunks = splitProducts(products);
-      const productsMetadata = productChunks.reduce(
+
+      const productsMetadata = splitProducts(products).reduce(
         (acc, chunk, i) => {
           acc[`products${i + 1}`] = chunk;
           return acc;
         },
         {} as Record<string, string>
       );
+
+      const finalizeOrder = () => {
+        methods.reset();
+        clearCart();
+        clearDiscount();
+        onPaymentComplete();
+        router.push(`/order/?order=${encodeURIComponent(orderNumber)}`);
+      };
 
       try {
         setServerError(null);
@@ -131,22 +144,22 @@ export const CheckoutForm: FC<CheckoutProps> = ({
         const resJson = await createPayment(body);
 
         if (data.paymentMethod !== 'card') {
-          router.push(`/order/?order=${encodeURIComponent(orderNumber)}`);
+          finalizeOrder();
           return;
         }
 
-        const { clientSecret } = resJson;
-
         if (!stripe || !elements) {
+          finalizeOrder();
           return;
         }
 
         const cardEl = elements.getElement(CardElement);
         if (!cardEl) {
+          finalizeOrder();
           return;
         }
 
-        const result = await stripe.confirmCardPayment(clientSecret, {
+        const result = await stripe.confirmCardPayment(resJson.clientSecret, {
           payment_method: {
             card: cardEl,
             billing_details: {
@@ -157,17 +170,18 @@ export const CheckoutForm: FC<CheckoutProps> = ({
         });
 
         if (result.error) {
+          onPaymentComplete();
+          setServerError(result.error.message || 'Payment failed');
           return;
         }
 
         if (result.paymentIntent?.status === 'succeeded') {
+          finalizeOrder();
           elements.getElement(CardElement)?.clear();
-          router.push(`/order/?order=${encodeURIComponent(orderNumber)}`);
           return;
         }
       } catch {
-        methods.reset();
-        router.push(`/order/?order=${encodeURIComponent(orderNumber)}`);
+        finalizeOrder();
       }
     },
     [
@@ -182,12 +196,19 @@ export const CheckoutForm: FC<CheckoutProps> = ({
       router,
       methods,
       createPayment,
+      clearCart,
+      clearDiscount,
+      onPaymentComplete,
     ]
   );
 
+  const onValidationError = useCallback(() => {
+    onPaymentComplete();
+  }, [onPaymentComplete]);
+
   useEffect(() => {
-    onFormSubmitRef.current = handleSubmit(onSubmit);
-  }, [handleSubmit, onSubmit, onFormSubmitRef]);
+    onFormSubmitRef.current = handleSubmit(onSubmit, onValidationError);
+  }, [handleSubmit, onSubmit, onFormSubmitRef, onValidationError]);
 
   return (
     <FormProvider {...methods}>

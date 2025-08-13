@@ -4,11 +4,11 @@ import { useRef, useState } from 'react';
 import { CheckoutForm } from '@/components/CheckoutForm';
 import { Header } from '@/components/common/Header';
 import StripeProvider from '@/providers/StripeProvider';
-import { Box } from '@mui/material';
+import { Box, LinearProgress } from '@mui/material';
 import { CartSummary } from '@/components/CartSummary';
 import { useCart } from '@/lib/hooks';
 import { useQuery } from '@tanstack/react-query';
-import { getShippingTaxOptions } from '@/api/shippingAndTax/shippingAndTaxOptions';
+import { getShippingTaxOptions } from '@/api/checkout/shippingAndTax/shippingAndTaxOptions';
 
 export default function Checkout() {
   const [totalAmount, setTotalAmount] = useState<number>(0);
@@ -16,10 +16,16 @@ export default function Checkout() {
   const [discountCode, setDiscountCode] = useState<string | undefined>(
     undefined
   );
+  const [isProcessingPayment, setIsProcessingPayment] = useState(false);
+
+  const handlePaymentComplete = () => {
+    setIsProcessingPayment(false);
+  };
 
   const { items: products } = useCart();
   const checkoutFormSubmitRef = useRef<() => void>(() => {});
   const onConfirmAndPay = () => {
+    setIsProcessingPayment(true);
     checkoutFormSubmitRef.current();
   };
 
@@ -64,6 +70,7 @@ export default function Checkout() {
             discountCode={discountCode}
             discountAmount={discountAmount}
             onFormSubmitRef={checkoutFormSubmitRef}
+            onPaymentComplete={handlePaymentComplete}
           />
         </StripeProvider>
         <Box sx={{ width: 600 }}>
@@ -74,6 +81,7 @@ export default function Checkout() {
             onConfirmAndPay={onConfirmAndPay}
             onCartSummaryChange={handleCartSummaryChange}
           />
+          {isProcessingPayment && <LinearProgress sx={{ marginTop: 2 }} />}
         </Box>
       </Box>
     </>
