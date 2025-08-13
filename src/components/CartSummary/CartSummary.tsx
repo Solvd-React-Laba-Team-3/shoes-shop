@@ -37,8 +37,14 @@ export const CartSummary = ({
   onCartSummaryChange,
 }: CartSummaryProps) => {
   const router = useRouter();
-  const { subtotal, discountAmount, discountCode, setDiscount, clearDiscount } =
-    useCart();
+  const {
+    subtotal,
+    discountAmount,
+    discountCode,
+    setDiscount,
+    clearDiscount,
+    isLoading,
+  } = useCart();
 
   const {
     register,
@@ -121,20 +127,20 @@ export const CartSummary = ({
     }
   };
 
-  const subtotalWithDiscount = useMemo(
-    () => subtotal - discountAmount,
-    [subtotal, discountAmount]
-  );
+  const subtotalWithDiscount = useMemo(() => {
+    if (isLoading) return 0;
+    return subtotal - discountAmount;
+  }, [subtotal, discountAmount, isLoading]);
 
-  const taxAmount = useMemo(
-    () => (subtotalWithDiscount * taxPercent) / 100,
-    [subtotalWithDiscount, taxPercent]
-  );
+  const taxAmount = useMemo(() => {
+    if (isLoading) return 0;
+    return (subtotalWithDiscount * taxPercent) / 100;
+  }, [subtotalWithDiscount, taxPercent, isLoading]);
 
-  const finalTotal = useMemo(
-    () => subtotalWithDiscount + taxAmount + shippingAmount,
-    [subtotalWithDiscount, taxAmount, shippingAmount]
-  );
+  const finalTotal = useMemo(() => {
+    if (isLoading) return 0;
+    return subtotalWithDiscount + taxAmount + shippingAmount;
+  }, [subtotalWithDiscount, taxAmount, shippingAmount, isLoading]);
 
   useEffect(() => {
     if (onCartSummaryChange) {
@@ -209,21 +215,29 @@ export const CartSummary = ({
         </Typography>
       </Box>
 
-      {typeof discountAmount === 'number' && discountAmount > 0 && (
-        <Box
-          sx={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            margin: '20px 0',
-            color: discountAmount > 0 ? 'green' : 'inherit',
-          }}
-        >
-          <Typography variant="h3" sx={{ fontWeight: 400 }}>
-            Discount
-          </Typography>
-          <Typography variant="h3" sx={{ fontWeight: 400 }}>
-            -${discountAmount.toFixed(2)}
-          </Typography>
+      {!isLoading &&
+        typeof discountAmount === 'number' &&
+        discountAmount > 0 && (
+          <Box
+            sx={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              margin: '20px 0',
+              color: discountAmount > 0 ? 'green' : 'inherit',
+            }}
+          >
+            <Typography variant="h3" sx={{ fontWeight: 400 }}>
+              Discount
+            </Typography>
+            <Typography variant="h3" sx={{ fontWeight: 400 }}>
+              -${discountAmount.toFixed(2)}
+            </Typography>
+          </Box>
+        )}
+
+      {isLoading && (
+        <Box>
+          <LinearProgress />
         </Box>
       )}
 
