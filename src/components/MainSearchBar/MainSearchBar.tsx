@@ -88,7 +88,7 @@ export const MainSearchBar = () => {
   };
 
   const handleBlur = () => {
-    // setIsFocused(false);
+    setIsFocused(false);
   };
 
   const handleTermClick = (term: string) => {
