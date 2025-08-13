@@ -208,19 +208,19 @@ export const CartSummary = ({
       >
         <Typography
           variant="h3"
-          sx={(theme) => ({
+          sx={{
             fontWeight: 400,
-            [theme.breakpoints.down('lg')]: { fontSize: '24px' },
-          })}
+            // [theme.breakpoints.down('lg')]: { fontSize: '24px' },
+          }}
         >
           {'Subtotal'}
         </Typography>
         <Typography
           variant="h3"
-          sx={(theme) => ({
+          sx={{
             fontWeight: 400,
-            [theme.breakpoints.down('lg')]: { fontSize: '24px' },
-          })}
+            // [theme.breakpoints.down('lg')]: { fontSize: '24px' },
+          }}
         >
           ${subtotal.toFixed(2)}
         </Typography>
