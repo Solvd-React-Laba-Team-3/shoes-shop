@@ -36,7 +36,7 @@ export const CartItem: FC<CartProduct> = ({
           flexDirection: { xs: 'column', sm: 'row' },
           alignItems: { xs: 'flex-start', sm: 'center' },
           gap: { xs: 1.5, sm: 3, md: 4 },
-          width: { xs: '100%', md: 'auto' }, // <- 100% width for screens <= 900px
+          width: { xs: '100%', md: 'auto' },
           [theme.breakpoints.down('sm')]: { height: '17vh' },
         })}
       >

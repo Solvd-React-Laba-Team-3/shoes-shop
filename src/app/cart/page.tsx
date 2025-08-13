@@ -24,8 +24,11 @@ export default function Cart() {
             alignItems: { xs: 'stretch', md: 'flex-start' },
             gap: { xs: 3, sm: 4, md: 6, lg: 8 },
             padding: '80px 160px',
+            [theme.breakpoints.down('xl')]: {
+              padding: '60px',
+            },
             [theme.breakpoints.down('lg')]: {
-              padding: '20px', // applies for screen widths <= 1200px
+              padding: '20px',
             },
             maxWidth: '1600px',
             margin: '0 auto',
