@@ -132,7 +132,7 @@ export const MainSearchBar = () => {
           <SearchIcon />
         </IconButton>
       )}
-      {!isMobile || isFocused ? (
+      {(!isMobile || isFocused) && (
         <MainSearchBarContainer
           isFocused={isFocused}
           data-testid="search-container"
@@ -189,7 +189,7 @@ export const MainSearchBar = () => {
             </PopularTermsContainer>
           )}
         </MainSearchBarContainer>
-      ) : null}
+      )}
     </>
   );
 };
