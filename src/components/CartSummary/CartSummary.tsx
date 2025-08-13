@@ -226,6 +226,60 @@ export const CartSummary = ({
         </Typography>
       </Box>
 
+      <Box
+        sx={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          flexWrap: 'wrap',
+          margin: '38px 0 20px',
+        }}
+      >
+        <Typography
+          variant="h3"
+          sx={{
+            fontWeight: 400,
+            // [theme.breakpoints.down('lg')]: { fontSize: '24px' },
+          }}
+        >
+          {'Shipping'}
+        </Typography>
+        <Typography
+          variant="h3"
+          sx={{
+            fontWeight: 400,
+            // [theme.breakpoints.down('lg')]: { fontSize: '24px' },
+          }}
+        >
+          -
+        </Typography>
+      </Box>
+
+      <Box
+        sx={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          flexWrap: 'wrap',
+          margin: '38px 0 20px',
+        }}
+      >
+        <Typography
+          variant="h3"
+          sx={{
+            fontWeight: 400,
+          }}
+        >
+          {'Tax'}
+        </Typography>
+        <Typography
+          variant="h3"
+          sx={{
+            fontWeight: 400,
+          }}
+        >
+          -
+        </Typography>
+      </Box>
+
       {discountAmount > 0 && (
         <Box
           sx={{
