@@ -140,6 +140,7 @@ export const Filters: FC<DrawerProps> = ({ ...props }) => {
   });
 
   const { isMobile } = useDeviceSize();
+
   return (
     <Drawer
       variant={isMobile ? 'temporary' : 'persistent'}
@@ -154,6 +155,9 @@ export const Filters: FC<DrawerProps> = ({ ...props }) => {
           paddingBottom: '200px',
           top: { xs: 0, md: HEADER_HEIGHT },
         },
+        '& .MuiPaper-root': {
+          position: { md: 'sticky' },
+        },
 
         [useTheme().breakpoints.up('md')]: {
           position: 'relative',
@@ -167,8 +171,8 @@ export const Filters: FC<DrawerProps> = ({ ...props }) => {
             sx={{
               display: 'flex',
               justifyContent: 'flex-end',
-              paddingBottom: '40px',
-              paddingTop: '16px',
+              paddingBottom: '8px',
+              paddingTop: '12px',
             }}
           >
             <IconButton
@@ -187,7 +191,6 @@ export const Filters: FC<DrawerProps> = ({ ...props }) => {
             padding="0 20px 0 40px"
             alignItems="center"
             justifyContent="space-between"
-            marginBottom="20px"
           >
             <Typography>Filters</Typography>
             <Button
@@ -200,16 +203,25 @@ export const Filters: FC<DrawerProps> = ({ ...props }) => {
           </Box>
         </>
       ) : (
-        <Box sx={{ width: '100%', padding: '48px' }}>
+        <Box sx={{ width: '100%', padding: '24px 48px' }}>
           {search && <Typography variant="caption">Shoes/{search}</Typography>}
           <Typography variant="h4">{search ?? 'Catalog'}</Typography>
         </Box>
       )}
-      <Box display="flex" flexDirection="column" gap="28px" width="320px">
+      <Box
+        display="flex"
+        flexDirection="column"
+        sx={{ gap: { xs: '12px', md: '28px' } }}
+        width="320px"
+      >
         <Divider sx={{ display: { xs: 'none', md: 'block' } }} />
         <Box paddingLeft="40px">
           <Accordion label="Gender" defaultExpanded>
-            <Box display="flex" flexDirection="column" gap="20px">
+            <Box
+              display="flex"
+              flexDirection="column"
+              sx={{ gap: { xs: '12px', md: '20px' } }}
+            >
               {genders.map((gender) => (
                 <Box
                   sx={{ display: 'flex', alignItems: 'center' }}
@@ -237,8 +249,7 @@ export const Filters: FC<DrawerProps> = ({ ...props }) => {
             <Box
               display="flex"
               flexDirection="column"
-              gap="20px"
-              sx={{ width: '92%' }}
+              sx={{ width: '92%', gap: { xs: '12px', md: '28px' } }}
             >
               <SearchBar
                 type="search"
@@ -362,7 +373,11 @@ export const Filters: FC<DrawerProps> = ({ ...props }) => {
         <Divider />
         <Box paddingLeft="40px">
           <Accordion label="Color" defaultExpanded>
-            <Box display="flex" flexDirection="column" gap="20px">
+            <Box
+              display="flex"
+              flexDirection="column"
+              sx={{ gap: { xs: '12px', md: '20px' } }}
+            >
               {colors?.map((color) => (
                 <Box
                   sx={{ display: 'flex', alignItems: 'center' }}
@@ -387,7 +402,11 @@ export const Filters: FC<DrawerProps> = ({ ...props }) => {
         <Divider />
         <Box paddingLeft="40px">
           <Accordion label="Size" defaultExpanded>
-            <Box display="flex" flexDirection="column" gap="20px">
+            <Box
+              display="flex"
+              flexDirection="column"
+              sx={{ gap: { xs: '12px', md: '20px' } }}
+            >
               {sizes?.map((size) => (
                 <Box
                   sx={{ display: 'flex', alignItems: 'center' }}

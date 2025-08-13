@@ -1,12 +1,12 @@
 'use client';
 
 import { getProductsOptions } from '@/api/products/getProductsOptions';
-import { useSearchParams } from '@/lib/hooks';
+import { useDeviceSize, useSearchParams } from '@/lib/hooks';
 import { parseQueryString } from '@/lib/utils';
 import { useSuspenseInfiniteQuery } from '@tanstack/react-query';
 import React, { FC, useMemo } from 'react';
 import { ProductList } from '../ProductList';
-import { Box, Typography } from '@mui/material';
+import { Box, Divider, Typography } from '@mui/material';
 import FilterAltOffIcon from '@mui/icons-material/FilterAlt';
 import FilterAltIcon from '@mui/icons-material/FilterAltOff';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
@@ -69,12 +69,15 @@ export const ProductsContainer: FC<ProductsContainerProps> = ({
     router.replace('/');
   };
 
+  const { isMobile } = useDeviceSize();
+
   return (
     <Box
       sx={{
         display: 'flex',
         flexDirection: 'column',
         padding: { xs: '12px  20px', md: '40px 60px' },
+        gap: { xs: ' 12px', md: '28px' },
         width: '100%',
       }}
     >
@@ -82,11 +85,22 @@ export const ProductsContainer: FC<ProductsContainerProps> = ({
         sx={{
           display: 'flex',
           justifyContent: 'space-between',
+          alignItems: 'end',
         }}
       >
-        <Typography variant="h4">
-          {search ? 'Search Results' : 'Catalog'}
-        </Typography>
+        <Box display="flex" flexDirection="column" gap={1}>
+          <Typography variant="h4">
+            {search ? 'Search Results' : 'Catalog'}
+          </Typography>
+          {isMobile && search && (
+            <Box>
+              <Divider sx={{ margin: '8px 0' }} />
+              <Typography variant="caption">Shoes/{search}</Typography>
+              <Typography variant="h4">{search}</Typography>
+            </Box>
+          )}
+        </Box>
+
         <Box sx={{ display: 'flex', gap: 1 }}>
           <Button
             color="secondary"
@@ -111,7 +125,7 @@ export const ProductsContainer: FC<ProductsContainerProps> = ({
             color="secondary"
             variant="text"
           >
-            {isFiltersOpen ? 'Hide Filters' : 'Filters'}
+            {isFiltersOpen ? 'Hide Filters' : 'Show Filters'}
           </Button>
         </Box>
       </Box>
