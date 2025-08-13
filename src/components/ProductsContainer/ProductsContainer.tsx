@@ -12,7 +12,7 @@ import FilterAltIcon from '@mui/icons-material/FilterAltOff';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import { Button } from '@/components/ui';
 import { useRouter } from 'next/navigation';
-import { styled, useTheme } from '@mui/material/styles';
+import { styled } from '@mui/material/styles';
 import LocalMallIcon from '@mui/icons-material/LocalMall';
 
 interface ProductsContainerProps {
@@ -109,9 +109,7 @@ export const ProductsContainer: FC<ProductsContainerProps> = ({
             endIcon={<DeleteOutlineIcon />}
             onClick={handleClearFilters}
             sx={{
-              [useTheme().breakpoints.down('md')]: {
-                display: 'none',
-              },
+              display: { xs: 'none', md: 'flex' },
               color: 'text.secondary',
             }}
           >

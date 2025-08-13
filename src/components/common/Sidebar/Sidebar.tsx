@@ -18,7 +18,6 @@ import { HEADER_HEIGHT } from '@/constants/headerHeight';
 import Drawer, { DrawerProps } from '@mui/material/Drawer';
 import { FC } from 'react';
 import { useDeviceSize } from '@/lib/hooks';
-import { useTheme } from '@mui/material';
 
 export const Sidebar: FC<DrawerProps> = ({ open = false, ...props }) => {
   const pathname = usePathname();
@@ -63,13 +62,16 @@ export const Sidebar: FC<DrawerProps> = ({ open = false, ...props }) => {
         minWidth: '320px',
         zIndex: 100,
 
-        '& .MuiPaper-root': {
+        '& .MuiDrawer-paper': {
+          border: 'none',
+          paddingBottom: '200px',
           top: { xs: 0, md: HEADER_HEIGHT },
-          height: { xs: '100vh', md: `calc(100vh - ${HEADER_HEIGHT}px)` },
         },
-        [useTheme().breakpoints.up('md')]: {
-          position: 'sticky',
+        '& .MuiPaper-root': {
+          position: { md: 'sticky' },
         },
+
+        position: { md: 'relative' },
       }}
       {...props}
     >
@@ -78,8 +80,8 @@ export const Sidebar: FC<DrawerProps> = ({ open = false, ...props }) => {
           sx={{
             display: 'flex',
             justifyContent: 'flex-end',
-            paddingBottom: '40px',
-            paddingTop: '16px',
+            paddingBottom: '8px',
+            paddingTop: '12px',
             width: '320px',
           }}
         >

@@ -24,8 +24,6 @@ export const MainSearchBarContainer = styled(Box, {
   transition: 'all 0.3s ease',
   [theme.breakpoints.down('md')]: {
     width: '100%',
-    // paddingLeft: '20px',
-    // paddingRight: '80px',
     height: '26px',
   },
 }));
