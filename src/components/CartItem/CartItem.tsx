@@ -63,7 +63,15 @@ export const CartItem: FC<CartProduct> = ({
             />
           </Box>
 
-          <Stack>
+          <Stack
+            spacing={0.5}
+            sx={{
+              '& .MuiTypography-root': {
+                minWidth: 'max-content',
+                whiteSpace: 'nowrap',
+              },
+            }}
+          >
             <Stack direction="row">
               <Typography
                 variant="h3"
