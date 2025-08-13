@@ -74,12 +74,12 @@ export const useCart = () => {
   };
 
   const clearCart = () => {
-    setCartState({
-      ...cartState,
+    setCartState((prev) => ({
+      ...prev,
       products: [],
       discountCode: undefined,
       discountAmount: undefined,
-    });
+    }));
   };
 
   const subtotal = isLoading
