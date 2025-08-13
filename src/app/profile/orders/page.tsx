@@ -10,7 +10,7 @@ import Typography from '@mui/material/Typography';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { CartProduct } from '@/types/CartProduct';
 import { useQuery } from '@tanstack/react-query';
-import { getOrdersOptions } from '@/api/checkout/orders/orderOptions';
+import { getOrdersOptions } from '@/api/orders/orderOptions';
 
 export default function Orders() {
   const {
@@ -35,7 +35,7 @@ export default function Orders() {
           <Accordion key={order.orderNumber}>
             <AccordionSummary expandIcon={<ExpandMoreIcon />}>
               <Typography>
-                Order #{order.orderNumber} - ${order.summary}
+                Order #{order.orderNumber} - ${order.summary} - {order.date}
               </Typography>
             </AccordionSummary>
             <AccordionDetails>

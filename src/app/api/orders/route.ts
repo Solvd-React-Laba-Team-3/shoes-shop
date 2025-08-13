@@ -1,4 +1,4 @@
-import { OrderHistory } from '@/types/OrderHistory';
+import { OrderResponse } from '@/types/api/OrderResponse';
 import { NextResponse } from 'next/server';
 import Stripe from 'stripe';
 
@@ -48,6 +48,7 @@ export async function GET(req: Request) {
         return {
           userId: Number(intent.metadata.userId),
           orderNumber: Number(intent.metadata.orderNumber),
+          date: new Date(intent.created * 1000).toISOString(),
           summary: intent.amount / 100,
           discountAmount: intent.metadata.discountAmount
             ? Number(intent.metadata.discountAmount)
@@ -75,7 +76,7 @@ export async function GET(req: Request) {
 
     const orders = ordersWithReceipts.filter(
       (order) => order !== null
-    ) as OrderHistory[];
+    ) as OrderResponse[];
 
     return NextResponse.json({ orders });
   } catch (err) {
