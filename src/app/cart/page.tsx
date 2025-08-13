@@ -23,29 +23,39 @@ export default function Cart() {
             justifyContent: { md: 'space-between' },
             alignItems: { xs: 'stretch', md: 'flex-start' },
             gap: { xs: 3, sm: 4, md: 6, lg: 8 },
-            padding: '80px 160px',
+            padding: '80px 0',
             [theme.breakpoints.down('xl')]: {
               padding: '60px',
             },
             [theme.breakpoints.down('lg')]: {
               padding: '20px',
             },
+
             maxWidth: '1600px',
             margin: '0 auto',
           })}
         >
-          <Stack sx={{ flex: 2, width: '100%' }}>
+          <Stack
+            sx={{
+              flex: 2,
+              width: '100%',
+            }}
+          >
             <Typography
               variant="h2"
               sx={{
                 mb: { xs: 2, sm: 3, md: 4 },
-                fontSize: { xs: '1.75rem', sm: '2rem', md: '2.5rem' },
+                // fontSize: { xs: '1.75rem', sm: '2rem', md: '2.5rem' },
               }}
             >
               Cart
             </Typography>
             <Box>
-              <Stack direction="column" spacing={4} alignItems="stretch">
+              <Stack
+                spacing={4}
+                alignItems="stretch"
+                sx={{ flexDirection: { xs: 'column', md: 'row' } }}
+              >
                 {items.length > 0 ? (
                   items.map((item) => (
                     <CartItem
@@ -72,8 +82,8 @@ export default function Cart() {
             sx={{
               flex: 1,
               maxWidth: { xs: '100%', md: '350px' },
-              position: { md: 'sticky' },
-              top: { md: '100px' },
+              // position: { md: 'sticky' },
+              // top: { md: '100px' },
               alignSelf: { xs: 'stretch', md: 'flex-start' },
             }}
           >
@@ -81,7 +91,7 @@ export default function Cart() {
               variant="h2"
               sx={{
                 mb: { xs: 2, sm: 3, md: 4 },
-                fontSize: { xs: '1.5rem', sm: '1.75rem', md: '2rem' },
+                // fontSize: { xs: '1.5rem', sm: '1.75rem', md: '2rem' },
               }}
             >
               Summary
