@@ -121,7 +121,10 @@ export const Sidebar: FC<DrawerProps> = ({ open = false, ...props }) => {
               >
                 Welcome
               </Typography>
-              <Typography variant="subtitle2" sx={{ whiteSpace: 'nowrap' }}>
+              <Typography
+                variant="subtitle2"
+                sx={{ whiteSpace: { md: 'nowrap', xs: 'pre-wrap' } }}
+              >
                 {session?.user?.username}
               </Typography>
             </Box>

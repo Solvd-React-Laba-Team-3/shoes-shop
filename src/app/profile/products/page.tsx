@@ -68,8 +68,10 @@ export default function MyProducts() {
               height: '120px',
             }}
           />
-          <Box>
-            <Typography variant="h6">{session?.user?.username}</Typography>
+          <Box paddingTop="10px">
+            <Typography variant="h6" whiteSpace="pre-wrap" lineHeight="1.2">
+              {session?.user?.username}
+            </Typography>
             <Typography variant="caption">
               {`Joined in ${new Date(
                 session?.user?.createdAt || ''
