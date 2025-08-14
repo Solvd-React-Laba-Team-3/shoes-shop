@@ -58,6 +58,7 @@ jest.mock('@/api/gemini/getPopularSearchTermsOptions', () => ({
   getPopularSearchTermsOptions: jest.fn((query: string) => ({
     queryKey: ['searchPopularTerms', query],
     queryFn: () => Promise.resolve([]),
+    staleTime: 1000,
   })),
 }));
 
