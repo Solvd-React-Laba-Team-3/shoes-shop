@@ -1,3 +1,4 @@
+import { AI_REQUEST_STALE_TIME } from '@/constants/queriesStaleTime';
 import { geminiModel } from '../../constants/geminiConfig';
 
 export async function getPopularSearchTerms(query: string): Promise<string[]> {
@@ -31,4 +32,5 @@ Respond with only the full sneaker names, one per line, no extra text.`;
 export const getPopularSearchTermsOptions = (debouncedInput: string) => ({
   queryKey: ['searchPopularTerms', debouncedInput],
   queryFn: () => getPopularSearchTerms(debouncedInput),
+  staleTime: AI_REQUEST_STALE_TIME,
 });

@@ -8,24 +8,12 @@ export async function getDescriptionSuggestion(
 ): Promise<string> {
   const normalizedName = name.trim();
   const prompt = `
-You are a product description generator for sneakers. Generate a compelling product description based on the available information below.
-
-Product Information:
+You are a product description generator for sneakers. Generate a 100–350 character professional, marketing-friendly sneaker description based on the available information below.
 - Name: ${normalizedName || 'Not specified'}
 - Current Description: ${description || 'None provided'}
 - Gender: ${gender || 'Unisex'}
 - Brand: ${brand || 'Generic'}
-
-INSTRUCTIONS:
-1. Generate a product description that is engaging and marketable
-2. If specific details are missing, create realistic and appealing details for a sneaker
-3. Focus on style, comfort, versatility, and quality
-4. Include mentions of materials, design features, or use cases when appropriate
-5. Keep the description between 100-350 characters
-6. Write in a professional, marketing-friendly tone
-7. DO NOT ask for more information - always generate a description with the available data
-
-IMPORTANT: Always respond with ONLY the product description text, no additional commentary or requests for information.
+If details are missing, create realistic, appealing one description. Focus on style, comfort, versatility, quality, materials, design features, and use cases. Always respond with ONLY the product description text, no additional commentary or requests for information.
   `;
 
   try {

@@ -19,6 +19,7 @@ import { List, Typography } from '@mui/material';
 import LinearProgress from '@mui/material/LinearProgress';
 import { useQuery } from '@tanstack/react-query';
 import { getPopularSearchTermsOptions } from '@/api/gemini/getPopularSearchTermsOptions';
+import { MIN_SEARCH_LENGTH } from '@/constants/minSearchLength';
 
 export const MainSearchBar = () => {
   const router = useRouter();
@@ -40,7 +41,8 @@ export const MainSearchBar = () => {
     isFetching,
   } = useQuery({
     ...queryOptions,
-    enabled: debouncedValue.length === 0 || debouncedValue.length > 2,
+    enabled:
+      debouncedValue.length === 0 || debouncedValue.length > MIN_SEARCH_LENGTH,
   });
 
   useEffect(() => {
@@ -140,20 +142,21 @@ export const MainSearchBar = () => {
             data-testid="popular-terms-container"
             sx={{ position: 'relative' }}
           >
-            {(isFetching || isDebouncing) && (
-              <LinearProgress
-                data-testid="loading-bar"
-                sx={{
-                  position: 'absolute',
-                  top: -20,
-                  left: '50%',
-                  transform: 'translateX(-50%)',
-                  width: '100%',
-                  maxWidth: 1040,
-                  zIndex: 1,
-                }}
-              />
-            )}
+            {(isFetching || isDebouncing) &&
+              inputValue.length > MIN_SEARCH_LENGTH && (
+                <LinearProgress
+                  data-testid="loading-bar"
+                  sx={{
+                    position: 'absolute',
+                    top: -20,
+                    left: '50%',
+                    transform: 'translateX(-50%)',
+                    width: '100%',
+                    maxWidth: 1040,
+                    zIndex: 1,
+                  }}
+                />
+              )}
             <Typography variant="h6">Popular Search Terms</Typography>
             <List disablePadding>
               {popularTerms.map((term, index) => (
