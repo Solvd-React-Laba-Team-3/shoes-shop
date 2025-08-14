@@ -22,20 +22,30 @@ export const MainSearchBarContainer = styled(Box, {
   gap: 45,
   paddingTop: isFocused ? theme.spacing(5) : 0,
   transition: 'all 0.3s ease',
+  [theme.breakpoints.down('md')]: {
+    width: '100%',
+    height: '26px',
+  },
 }));
 
-export const IconButtonLeft = styled(Box)(() => ({
+export const IconButtonLeft = styled(Box)(({ theme }) => ({
   position: 'fixed',
   left: 40,
   top: 34,
   zIndex: 1100,
+  [theme.breakpoints.down('md')]: {
+    display: 'none',
+  },
 }));
 
-export const IconButtonRight = styled(Box)(() => ({
+export const IconButtonRight = styled(Box)(({ theme }) => ({
   position: 'fixed',
-  right: 40,
+  right: 20,
   top: 34,
   zIndex: 1100,
+  [theme.breakpoints.down('md')]: {
+    top: 40,
+  },
 }));
 
 export const PopularTermsContainer = styled(Box)(({ theme }) => ({
@@ -45,6 +55,10 @@ export const PopularTermsContainer = styled(Box)(({ theme }) => ({
   color: theme.palette.grey[600],
   zIndex: 1001,
   backgroundColor: '#fff',
+  [theme.breakpoints.down('md')]: {
+    paddingLeft: '20px',
+    paddingRight: '80px',
+  },
 }));
 
 export const PopularTermItem = styled(ListItem)(({ theme }) => ({

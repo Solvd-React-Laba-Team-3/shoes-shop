@@ -69,15 +69,21 @@ export const ProductCard: FC<ProductCardProps> = ({
               color="text.primary"
             >
               <Grid size={{ xs: 9 }} sx={{ minWidth: 0 }}>
-                <Typography variant="h5" gutterBottom={false}>
+                <Typography variant="h5" component={'p'} gutterBottom={false}>
                   {product.name}
                 </Typography>
-                <Typography variant="subtitle1" color="text.secondary">
+                <Typography
+                  variant="subtitle1"
+                  component={'span'}
+                  color="text.secondary"
+                >
                   {getGenderText(product.gender?.name)}
                 </Typography>
               </Grid>
               <Grid>
-                <Typography variant="h5">${product.price}</Typography>
+                <Typography variant="h5" component={'span'}>
+                  ${product.price}
+                </Typography>
               </Grid>
             </Grid>
           </StyledCardContent>

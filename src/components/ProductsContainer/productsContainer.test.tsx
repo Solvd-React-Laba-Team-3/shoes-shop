@@ -1,6 +1,6 @@
 import { render, screen } from '@testing-library/react';
 import { ProductsContainer } from './ProductsContainer';
-import { useSearchParams, useWishlist } from '@/lib/hooks';
+import { useSearchParams, useWishlist, useDeviceSize } from '@/lib/hooks';
 import { getProductsOptions } from '@/api/products/getProductsOptions';
 import { useSuspenseInfiniteQuery } from '@tanstack/react-query';
 
@@ -12,6 +12,7 @@ const mockedUseSearchParams = useSearchParams as jest.Mock;
 const mockedGetProductsOptions = getProductsOptions as jest.Mock;
 const mockedUseSuspenseInfiniteQuery = useSuspenseInfiniteQuery as jest.Mock;
 const mockedUseWishlist = useWishlist as jest.Mock;
+const mockedUseDeviceSize = useDeviceSize as jest.Mock;
 
 describe('<ProductsContainer />', () => {
   beforeEach(() => {
@@ -25,6 +26,10 @@ describe('<ProductsContainer />', () => {
           },
         ],
       },
+    });
+
+    mockedUseDeviceSize.mockReturnValue({
+      isMobile: false,
     });
 
     mockedGetProductsOptions.mockReturnValue({
