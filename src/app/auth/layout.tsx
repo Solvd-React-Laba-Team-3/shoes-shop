@@ -25,16 +25,7 @@ export default async function AuthLayout({
           <Image src={logo} alt="logo" width={40} height={30} />
         </Link>
       </Box>
-      {/* <Box
-        sx={{
-          display: 'grid',
-          gridTemplateColumns: '1fr 1fr',
-          height: '100vh',
-          overflow: 'hidden',
-        }}
-      >
-        {children}
-      </Box> */}
+
       <AuthLayoutAdaptation>{children}</AuthLayoutAdaptation>
     </>
   );
