@@ -35,11 +35,8 @@ export default function Cart() {
           <Stack
             sx={{
               flex: 2,
-              minWidth: 0, // allows shrinking
-              // maxWidth: '510px',
-              // '@media (min-width:900px) and (max-width:970px)': {
-              //   maxWidth: '510px',
-              // },
+              minWidth: 0,
+
               flexShrink: 1,
               '@media (max-width:600px)': {
                 minWidth: '400px',
@@ -50,7 +47,6 @@ export default function Cart() {
               variant="h2"
               sx={{
                 mb: { xs: 2, sm: 3, md: 4 },
-                // fontSize: { xs: '1.75rem', sm: '2rem', md: '2.5rem' },
               }}
             >
               Cart
@@ -84,21 +80,9 @@ export default function Cart() {
           </Stack>
 
           <Stack
-            // sx={{
-            //   flex: 1,
-            //   minWidth: { md: '550px' },
-            //   // position: { md: 'sticky' },
-            //   // top: { md: '100px' },
-            //   alignSelf: { xs: 'stretch', md: 'flex-start' },
-            // }}
             sx={{
-              // flex: 1,
-              // minWidth: { md: '300px' }, // never smaller than this on desktop
-              // maxWidth: { md: '350px' }, // cap size so it doesn’t hog space
-              // flexShrink: 1,
-
               flex: 1,
-              minWidth: { md: '300px' }, // prevents over-shrinking
+              minWidth: { md: '300px' },
               maxWidth: { md: '350px' },
               flexShrink: 1,
               alignSelf: { xs: 'stretch', md: 'flex-start' },
@@ -112,7 +96,6 @@ export default function Cart() {
               variant="h2"
               sx={{
                 mb: { xs: 2, sm: 3, md: 4 },
-                // fontSize: { xs: '1.5rem', sm: '1.75rem', md: '2rem' },
               }}
             >
               Summary
