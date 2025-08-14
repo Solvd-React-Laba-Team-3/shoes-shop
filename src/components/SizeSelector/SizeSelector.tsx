@@ -21,7 +21,12 @@ export const SizeSelector: FC<SizeSelector> = ({
 
   return (
     <Stack direction="column" paddingBottom="36px">
-      <Typography variant="h6" paddingBottom="24px" color="text.secondary">
+      <Typography
+        variant="h6"
+        component={'h2'}
+        paddingBottom="24px"
+        color="text.secondary"
+      >
         Select Size
       </Typography>
       <ToggleButtonGroup
