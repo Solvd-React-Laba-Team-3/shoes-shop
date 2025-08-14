@@ -45,15 +45,30 @@ export const CartItem: FC<CartProduct> = ({
             alignItems: 'flex-end',
             gap: { xs: 1.5, sm: 3, md: 4 },
             width: 'auto',
-            [theme.breakpoints.down(900)]: {
-              width: '100%',
+            // [theme.breakpoints.down(900)]: {
+            //   width: '100%',
+            // },
+            '@media (min-width:900px) and (max-width:970px)': {
+              maxWidth: '510px',
+            },
+
+            '@media (min-width:1200px) and (max-width:1237px)': {
+              maxWidth: '760px',
             },
             [theme.breakpoints.down('sm')]: {
               flexDirection: 'row',
             },
           })}
         >
-          <Stack direction="row" sx={{ width: '100%' }}>
+          <Stack
+            direction="row"
+            sx={{
+              flexShrink: 1,
+              minWidth: 0,
+              gap: { xs: 1.5, sm: 3, md: 4 },
+              alignItems: 'flex-start',
+            }}
+          >
             {/* Product Image */}
             <Box
               sx={{
@@ -62,6 +77,10 @@ export const CartItem: FC<CartProduct> = ({
                 height: 'auto',
                 flexShrink: 0,
                 marginRight: '46px',
+
+                '@media (max-width: 1100px)': {
+                  marginRight: '10px',
+                },
               }}
             >
               <Image
@@ -77,6 +96,8 @@ export const CartItem: FC<CartProduct> = ({
             <Stack
               spacing={0.5}
               sx={{
+                flex: 1,
+                minWidth: 0,
                 '& .MuiTypography-root': {
                   minWidth: 'max-content',
                   whiteSpace: 'nowrap',
@@ -138,7 +159,16 @@ export const CartItem: FC<CartProduct> = ({
             </Typography>
 
             {/* Buttons at bottom */}
-            <Box display="flex" alignItems="center" gap={2}>
+            <Box
+              display="flex"
+              alignItems="center"
+              gap={2}
+              sx={{
+                '@media (max-width: 1100px)': {
+                  gap: 0,
+                },
+              }}
+            >
               <ButtonGroup
                 size="small"
                 sx={{
@@ -191,7 +221,7 @@ export const CartItem: FC<CartProduct> = ({
                   padding: 0,
                   borderRadius: 0,
                   borderLeft: `1px solid ${theme.palette.divider}`,
-                  '@media (max-width: 860px)': {
+                  '@media (max-width: 1280px)': {
                     borderLeft: 'none',
                   },
                 })}
