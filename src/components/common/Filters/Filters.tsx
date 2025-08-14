@@ -196,7 +196,12 @@ export const Filters: FC<DrawerProps> = ({ ...props }) => {
             <Button
               variant="text"
               onClick={clearFilters}
-              sx={{ width: '18px' }}
+              sx={{
+                width: '18px',
+                '&:hover': {
+                  backgroundColor: 'transparent',
+                },
+              }}
             >
               Clear
             </Button>

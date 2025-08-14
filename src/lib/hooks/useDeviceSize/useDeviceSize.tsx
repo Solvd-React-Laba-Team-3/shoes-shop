@@ -8,10 +8,16 @@ export function useDeviceSize() {
   const breakpoint = breakpoints.values.md;
 
   const [isMobile, setIsMobile] = useState(
-    typeof window !== 'undefined' ? window.innerWidth <= breakpoint : false
+    typeof window !== 'undefined' ? window.innerWidth <= breakpoint : true
   );
+  const [isInitialized, setIsInitialized] = useState(false);
 
   useEffect(() => {
+    if (typeof window !== 'undefined') {
+      setIsMobile(window.innerWidth <= breakpoint);
+      setIsInitialized(true);
+    }
+
     const handleResize = () => {
       setIsMobile(window.innerWidth <= breakpoint);
     };
@@ -20,5 +26,5 @@ export function useDeviceSize() {
     return () => window.removeEventListener('resize', handleResize);
   }, [breakpoint]);
 
-  return { isMobile };
+  return { isMobile, isInitialized };
 }
