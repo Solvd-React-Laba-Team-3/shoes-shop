@@ -127,9 +127,19 @@ export default function SignIn() {
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'space-between',
+              '@media (max-width: 420px)': {
+                flexDirection: 'column',
+                alignItems: 'center',
+              },
             }}
           >
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+            <Box
+              sx={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: 1,
+              }}
+            >
               <Checkbox
                 size="large"
                 checked={isRememberMe}
@@ -139,11 +149,20 @@ export default function SignIn() {
                 Remember me
               </Typography>
             </Box>
-
-            <Link size="thin" href="/auth/forgot-password">
-              Forgot password?
-            </Link>
           </Box>
+
+          <Link
+            size="thin"
+            href="/auth/forgot-password"
+            sx={{
+              display: 'block', // make it block-level
+              textAlign: 'center', // now text-align works
+              width: '100%', // optional: ensure it spans full width
+              mt: 1, // optional: add margin-top if needed
+            }}
+          >
+            Forgot password?
+          </Link>
 
           <LoaderButton
             isSubmitting={isSubmitting}
