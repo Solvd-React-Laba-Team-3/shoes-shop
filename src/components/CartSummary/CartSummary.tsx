@@ -232,21 +232,11 @@ export const CartSummary = ({
           margin: '38px 0 20px',
         }}
       >
-        <Typography
-          variant="h3"
-          sx={{
-            fontWeight: 400,
-          }}
-        >
-          {'Shipping'}
+        <Typography variant="h3" sx={{ fontWeight: 400 }}>
+          Shipping
         </Typography>
-        <Typography
-          variant="h3"
-          sx={{
-            fontWeight: 400,
-          }}
-        >
-          -
+        <Typography variant="h3" sx={{ fontWeight: 400 }}>
+          {isCheckout ? `$${shippingAmount.toFixed(2)}` : '-'}
         </Typography>
       </Box>
 
@@ -258,23 +248,19 @@ export const CartSummary = ({
           margin: '38px 0 20px',
         }}
       >
-        <Typography
-          variant="h3"
-          sx={{
-            fontWeight: 400,
-          }}
-        >
-          {'Tax'}
+        <Typography variant="h3" sx={{ fontWeight: 400 }}>
+          Tax
         </Typography>
-        <Typography
-          variant="h3"
-          sx={{
-            fontWeight: 400,
-          }}
-        >
-          -
+        <Typography variant="h3" sx={{ fontWeight: 400 }}>
+          {isCheckout ? `$${taxAmount.toFixed(2)}` : '-'}
         </Typography>
       </Box>
+
+      <Divider />
+
+      <Typography variant="caption">
+        Shipping and tax will be calculated at checkout.
+      </Typography>
 
       {discountAmount > 0 && (
         <Box
@@ -295,60 +281,45 @@ export const CartSummary = ({
         </Box>
       )}
 
-      {isCheckout && (
-        <>
-          <Box
-            sx={{
-              display: 'flex',
-              justifyContent: 'space-between',
-              flexWrap: 'wrap',
-              margin: '20px 0',
-            }}
-          >
-            <Typography variant="h3" sx={{ fontWeight: 400 }}>
-              Shipping
-            </Typography>
-            <Typography variant="h3" sx={{ fontWeight: 400 }}>
-              ${shippingAmount.toFixed(2)}
-            </Typography>
-          </Box>
+      {/* {isCheckout && (
+        <Box
+          sx={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            flexWrap: 'wrap',
+            margin: '20px 0',
+          }}
+        >
+          <Typography variant="h3" sx={{ fontWeight: 600, maxWidth: '10%' }}>
+            Total
+          </Typography>
+          <Typography variant="h3" sx={{ fontWeight: 600 }}>
+            ${finalTotal.toFixed(2)}
+          </Typography>
+        </Box>
+      )} */}
 
-          <Box
-            sx={{
-              display: 'flex',
-              justifyContent: 'space-between',
-              margin: '20px 0',
-            }}
-          >
-            <Typography variant="h3" sx={{ fontWeight: 400 }}>
-              Tax ({taxPercent}%)
-            </Typography>
-            <Typography variant="h3" sx={{ fontWeight: 400 }}>
-              ${taxAmount.toFixed(2)}
-            </Typography>
-          </Box>
+      <Box
+        sx={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          flexWrap: 'wrap',
+          margin: '20px 0',
+        }}
+      >
+        <Typography variant="h3" sx={{ fontWeight: 600, maxWidth: '10%' }}>
+          Total
+        </Typography>
+        <Typography variant="h3" sx={{ fontWeight: 600 }}>
+          {isCheckout
+            ? `$${finalTotal.toFixed(2)}`
+            : discountAmount > 0
+              ? `$${(subtotal - discountAmount).toFixed(2)}`
+              : `$${subtotal.toFixed(2)}`}
+        </Typography>
+      </Box>
 
-          <Divider sx={{ mt: '56px' }} />
-
-          <Box
-            sx={{
-              display: 'flex',
-              justifyContent: 'space-between',
-              flexWrap: 'wrap',
-              margin: '20px 0',
-            }}
-          >
-            <Typography variant="h3" sx={{ fontWeight: 600, maxWidth: '10%' }}>
-              Total
-            </Typography>
-            <Typography variant="h3" sx={{ fontWeight: 600 }}>
-              ${finalTotal.toFixed(2)}
-            </Typography>
-          </Box>
-        </>
-      )}
-
-      <Divider sx={{ mb: { xs: 4, md: '113px' } }} />
+      <Divider sx={{ mb: { xs: 4, md: '22px' } }} />
       <Button
         onClick={handleCheckout}
         size={isSmall ? 'small' : isMedium ? 'medium' : 'large'}

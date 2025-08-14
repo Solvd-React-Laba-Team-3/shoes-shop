@@ -102,7 +102,7 @@ export default function Cart() {
             </Typography>
             <Box>
               <Stack direction="column">
-                <CartSummary />
+                <CartSummary isCheckout={false} />
               </Stack>
             </Box>
           </Stack>
