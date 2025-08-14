@@ -1,10 +1,10 @@
-import { mockLocalStorageReturn } from '../types/mockLocalStorageReturn';
+import { LocalStorageValues } from '../types/LocalStorageValues';
 
 export const { useLocalStorage } = jest.requireMock(
   '@/lib/hooks/useLocalStorage'
 ) as {
   useLocalStorage: jest.Mock<
-    mockLocalStorageReturn<number[]>,
+    LocalStorageValues<number[]>,
     [key: string, initial: number[]]
   >;
 };

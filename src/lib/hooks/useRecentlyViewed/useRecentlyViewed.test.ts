@@ -1,7 +1,7 @@
 import { renderHook, act } from '@testing-library/react';
 import { useRecentlyViewed } from './useRecentlyViewed';
-import { mockLocalStorageReturn } from '@/testing/types/mockLocalStorageReturn';
-import { useLocalStorage } from '@/testing/mocks/mockUseLocalStorage';
+import { useLocalStorage } from '@/testing/mocks/useLocalStorage.mock';
+import { LocalStorageValues } from '@/testing/types/LocalStorageValues';
 
 jest.mock('@/constants/recentlyViewedLimit', () => ({
   RECENTLY_VIEWED_LIMIT: 5,
@@ -14,7 +14,7 @@ jest.mock('../useLocalStorage', () => ({
 describe('useRecentlyViewed', () => {
   const setValue = jest.fn();
 
-  const setMock = (opts: Partial<mockLocalStorageReturn<number[]>> = {}) => {
+  const setMock = (opts: Partial<LocalStorageValues<number[]>> = {}) => {
     useLocalStorage.mockReturnValue({
       value: [],
       setValue,
