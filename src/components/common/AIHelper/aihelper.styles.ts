@@ -8,7 +8,7 @@ export const StyledContainer = styled(Paper, {
   position: 'fixed',
   bottom: 10,
   right: 10,
-  zIndex: 1000,
+  zIndex: 700,
   padding: `14px 0px`,
   width: '420px',
   display: 'flex',
