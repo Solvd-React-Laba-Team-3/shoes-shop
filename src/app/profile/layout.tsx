@@ -23,7 +23,9 @@ export default async function ProfileLayout({
         }}
         component="main"
       >
-        <Sidebar />
+        <Box sx={{ display: { xs: 'none', md: 'block' } }}>
+          <Sidebar />
+        </Box>
         <Box
           sx={{
             padding: { md: '38px 53px', xs: '12px 16px', sm: '12px 24px' },

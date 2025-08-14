@@ -6,7 +6,6 @@ import LoyaltyIcon from '@mui/icons-material/Loyalty';
 import SettingsIcon from '@mui/icons-material/Settings';
 import LogoutIcon from '@mui/icons-material/Logout';
 import LoginIcon from '@mui/icons-material/Login';
-
 import CloseIcon from '@mui/icons-material/Close';
 import PreviewIcon from '@mui/icons-material/Preview';
 import Avatar from '@mui/material/Avatar';
@@ -57,7 +56,7 @@ export const Sidebar: FC<DrawerProps> = ({ open = false, ...props }) => {
     <Drawer
       variant={isMobile ? 'temporary' : 'persistent'}
       anchor={isMobile ? 'right' : 'left'}
-      open={!isMobile || open}
+      open={isMobile ? open : true}
       sx={{
         minWidth: '320px',
         zIndex: 100,

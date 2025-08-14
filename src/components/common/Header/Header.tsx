@@ -13,9 +13,9 @@ import { HEADER_HEIGHT } from '@/constants/headerHeight';
 import { useRouter } from 'next/navigation';
 import { MainSearchBar } from '@/components/MainSearchBar';
 import logo from '../../../../public/logo.png';
-import { useDeviceSize } from '@/lib/hooks';
 import { useState } from 'react';
 import { Sidebar } from '../Sidebar';
+import { useDeviceSize } from '@/lib/hooks';
 
 const StyledContainer = styled(Box)(({ theme }) => ({
   display: 'flex',
@@ -33,7 +33,6 @@ const StyledContainer = styled(Box)(({ theme }) => ({
 export const Header = () => {
   const router = useRouter();
   const { data: session } = useSession();
-
   const { isMobile } = useDeviceSize();
 
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -61,9 +60,10 @@ export const Header = () => {
             gap: { sx: '0', md: '40px' },
           }}
         >
-          {!session && !isMobile && (
+          {!session && (
             <Button
               variant="outlined"
+              sx={{ display: { xs: 'none', md: 'block' } }}
               size="small"
               onClick={() => router.push('/auth/sign-in')}
             >
@@ -71,7 +71,13 @@ export const Header = () => {
             </Button>
           )}
           <MainSearchBar />
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
+          <Box
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: { xs: '10px', md: '20px' },
+            }}
+          >
             <IconButton
               onClick={() => router.push('/cart')}
               color="secondary"
@@ -79,28 +85,31 @@ export const Header = () => {
             >
               <LocalMallOutlinedIcon fontSize="medium" />
             </IconButton>
-            {session && !isMobile && (
-              <Link href={session ? '/profile/products' : '/auth/sign-in'}>
+            {session && (
+              <Link
+                href={session ? '/profile/products' : '/auth/sign-in'}
+                sx={{ display: { xs: 'none', md: 'flex' } }}
+              >
                 <Avatar
                   src={session.user?.avatar?.url}
                   sx={{ width: '28px', height: '28px' }}
                 />
               </Link>
             )}
-            {isMobile && (
-              <>
-                <IconButton
-                  color="secondary"
-                  onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-                >
-                  <MenuIcon />
-                </IconButton>
+            <Box sx={{ display: { xs: 'block', md: 'none' } }}>
+              <IconButton
+                color="secondary"
+                onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+              >
+                <MenuIcon />
+              </IconButton>
+              {isMobile && (
                 <Sidebar
                   open={isSidebarOpen}
                   onClose={() => setIsSidebarOpen(false)}
                 />
-              </>
-            )}
+              )}
+            </Box>
           </Box>
         </Box>
       </StyledContainer>
