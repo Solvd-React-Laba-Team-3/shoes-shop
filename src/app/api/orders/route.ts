@@ -6,10 +6,35 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string, {
   apiVersion: '2025-07-30.basil',
 });
 
-export async function GET(req: Request) {
-  const { searchParams } = new URL(req.url);
-  const userId = searchParams.get('userId');
+function parseProducts(metadata: Record<string, string>) {
+  return Array.from({ length: 50 }, (_, i) => {
+    const chunk = metadata[`products${i + 1}`];
+    if (!chunk) return null;
+    try {
+      return JSON.parse(chunk);
+    } catch {
+      return null;
+    }
+  })
+    .filter(Boolean)
+    .flat();
+}
 
+async function getChargeDetails(latestChargeId?: string) {
+  if (!latestChargeId) return { receiptUrl: null, declineReason: null };
+  try {
+    const charge = await stripe.charges.retrieve(latestChargeId);
+    return {
+      receiptUrl: charge.receipt_url ?? null,
+      declineReason: charge.outcome?.reason ?? null,
+    };
+  } catch {
+    return { receiptUrl: null, declineReason: null };
+  }
+}
+
+export async function GET(req: Request) {
+  const userId = new URL(req.url).searchParams.get('userId');
   if (!userId) {
     return NextResponse.json({ error: 'Missing userId' }, { status: 400 });
   }
@@ -20,63 +45,58 @@ export async function GET(req: Request) {
       limit: 100,
     });
 
-    const ordersWithReceipts = await Promise.all(
-      searchResults.data.map(async (intent) => {
-        const products = [];
+    const orders = (
+      await Promise.all(
+        searchResults.data.map(async (intent) => {
+          const products = parseProducts(intent.metadata);
+          if (products.length === 0) return null;
 
-        for (let i = 1; i <= 50; i++) {
-          const chunk = intent.metadata[`products${i}`];
-          if (!chunk) break;
+          const { receiptUrl, declineReason } = await getChargeDetails(
+            intent.latest_charge as string
+          );
 
-          try {
-            const parsed = JSON.parse(chunk);
-            products.push(...parsed);
-          } catch {}
-        }
+          const {
+            userId,
+            orderNumber,
+            discountAmount,
+            discountCode,
+            shippingAmount,
+            taxPercent,
+            email,
+            paymentMethod,
+          } = intent.metadata;
+          const { shipping } = intent;
 
-        if (products.length === 0) return null;
-        let receiptUrl = null;
-        if (intent.latest_charge) {
-          try {
-            const charge = await stripe.charges.retrieve(
-              intent.latest_charge as string
-            );
-            receiptUrl = charge.receipt_url;
-          } catch {}
-        }
-
-        return {
-          userId: Number(intent.metadata.userId),
-          orderNumber: Number(intent.metadata.orderNumber),
-          date: new Date(intent.created * 1000).toISOString(),
-          summary: intent.amount / 100,
-          discountAmount: intent.metadata.discountAmount
-            ? Number(intent.metadata.discountAmount)
-            : undefined,
-          discountCode: intent.metadata.discountCode
-            ? intent.metadata.discountCode
-            : undefined,
-          delivery: intent.shipping?.address?.line1 ?? '',
-          contactFullName: intent.shipping?.name ?? '',
-          contactPhone: intent.shipping?.phone ?? '',
-          contactEmail: intent.metadata.email ?? '',
-          status: intent.status,
-          shippingAmount: intent.metadata.shippingAmount
-            ? Number(intent.metadata.shippingAmount)
-            : 0,
-          taxPercent: intent.metadata.taxPercent
-            ? Number(intent.metadata.taxPercent)
-            : 0,
-          products,
-          receipt_url: receiptUrl,
-          paymentMethod: intent.metadata.paymentMethod,
-        };
-      })
-    );
-
-    const orders = ordersWithReceipts.filter(
-      (order) => order !== null
-    ) as OrderResponse[];
+          return {
+            userId: Number(userId),
+            orderNumber: Number(orderNumber),
+            date: new Date(intent.created * 1000).toISOString(),
+            summary: intent.amount / 100,
+            discountAmount: discountAmount ? Number(discountAmount) : undefined,
+            discountCode: discountCode || undefined,
+            delivery: shipping?.address?.line1 ?? '',
+            contactFullName: shipping?.name ?? '',
+            contactPhone: shipping?.phone ?? '',
+            contactEmail: email ?? '',
+            status: intent.status,
+            shippingAmount: shippingAmount ? Number(shippingAmount) : 0,
+            taxPercent: taxPercent ? Number(taxPercent) : 0,
+            products,
+            receipt_url: receiptUrl,
+            paymentMethod,
+            decline_reason: declineReason,
+          } as OrderResponse;
+        })
+      )
+    )
+      .filter(Boolean)
+      .filter(
+        (order) =>
+          order!.status === 'succeeded' ||
+          order!.status === 'canceled' ||
+          (order!.status === 'requires_payment_method' &&
+            order!.decline_reason === null)
+      ) as OrderResponse[];
 
     return NextResponse.json({ orders });
   } catch (err) {

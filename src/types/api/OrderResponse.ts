@@ -17,4 +17,5 @@ export interface OrderResponse {
   products: CartProduct[];
   receipt_url?: string;
   paymentMethod: string;
+  decline_reason?: string;
 }
