@@ -1,7 +1,7 @@
 import { renderHook, act } from '@testing-library/react';
 import { useWishlist } from './useWishlist';
-import { mockLocalStorageReturn } from '@/testing/types/mockLocalStorageReturn';
-import { useLocalStorage } from '@/testing/mocks/mockUseLocalStorage';
+import { useLocalStorage } from '@/testing/mocks/useLocalStorage.mock';
+import { LocalStorageValues } from '@/testing/types/LocalStorageValues';
 
 jest.mock('../useLocalStorage', () => ({
   useLocalStorage: jest.fn(),
@@ -10,7 +10,7 @@ jest.mock('../useLocalStorage', () => ({
 describe('useWishlist', () => {
   const setValue = jest.fn();
 
-  const setMock = (opts: Partial<mockLocalStorageReturn<number[]>> = {}) => {
+  const setMock = (opts: Partial<LocalStorageValues<number[]>> = {}) => {
     useLocalStorage.mockReturnValue({
       value: [],
       setValue,
