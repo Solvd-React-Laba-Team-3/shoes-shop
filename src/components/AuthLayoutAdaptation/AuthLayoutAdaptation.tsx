@@ -12,7 +12,7 @@ export function AuthLayoutAdaptation({ children }: Props) {
         display: 'grid',
         gridTemplateColumns: '1fr 1fr',
         height: '100vh',
-        overflow: 'hidden',
+        overflow: 'scroll',
         [theme.breakpoints.down('lg')]: {
           gridTemplateColumns: '1fr',
         },

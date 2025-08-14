@@ -27,6 +27,7 @@ export const LoaderButton: FC<LoaderButtonProps> = ({
         },
         '@media (max-width: 420px)': {
           width: '90%',
+          mt: '20px',
         },
       }}
       disabled={isSubmitting}

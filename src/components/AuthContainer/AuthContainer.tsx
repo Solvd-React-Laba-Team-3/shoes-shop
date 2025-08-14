@@ -28,6 +28,9 @@ export const AuthContainer = ({
         padding: '20px',
         alignItems: 'center',
       },
+      '@media (max-width: 420px)': {
+        margin: '20% auto',
+      },
     })}
   >
     <Box
