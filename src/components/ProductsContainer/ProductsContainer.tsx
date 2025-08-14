@@ -76,7 +76,7 @@ export const ProductsContainer: FC<ProductsContainerProps> = ({
       sx={{
         display: 'flex',
         flexDirection: 'column',
-        padding: { xs: '12px  20px', md: '40px 60px' },
+        padding: { xs: '12px  16px', sm: '12px 24px', md: '40px 60px' },
         gap: { xs: ' 12px', md: '28px' },
         width: '100%',
       }}
