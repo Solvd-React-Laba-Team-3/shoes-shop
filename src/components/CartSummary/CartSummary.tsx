@@ -210,7 +210,6 @@ export const CartSummary = ({
           variant="h3"
           sx={{
             fontWeight: 400,
-            // [theme.breakpoints.down('lg')]: { fontSize: '24px' },
           }}
         >
           {'Subtotal'}
@@ -219,7 +218,6 @@ export const CartSummary = ({
           variant="h3"
           sx={{
             fontWeight: 400,
-            // [theme.breakpoints.down('lg')]: { fontSize: '24px' },
           }}
         >
           ${subtotal.toFixed(2)}
@@ -238,7 +236,6 @@ export const CartSummary = ({
           variant="h3"
           sx={{
             fontWeight: 400,
-            // [theme.breakpoints.down('lg')]: { fontSize: '24px' },
           }}
         >
           {'Shipping'}
@@ -247,7 +244,6 @@ export const CartSummary = ({
           variant="h3"
           sx={{
             fontWeight: 400,
-            // [theme.breakpoints.down('lg')]: { fontSize: '24px' },
           }}
         >
           -

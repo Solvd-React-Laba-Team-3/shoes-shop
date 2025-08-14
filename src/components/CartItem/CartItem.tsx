@@ -32,9 +32,8 @@ export const CartItem: FC<CartProduct> = ({
     <>
       <Box
         sx={(theme) => ({
-          // Default: no extra horizontal margin above 1200px
           [theme.breakpoints.down('xl')]: {
-            mx: '20px', // applies from 1200px down to 0
+            mx: '20px',
           },
         })}
       >
@@ -45,9 +44,7 @@ export const CartItem: FC<CartProduct> = ({
             alignItems: 'flex-end',
             gap: { xs: 1.5, sm: 3, md: 4 },
             width: 'auto',
-            // [theme.breakpoints.down(900)]: {
-            //   width: '100%',
-            // },
+
             '@media (min-width:900px) and (max-width:970px)': {
               maxWidth: '510px',
             },
@@ -69,7 +66,6 @@ export const CartItem: FC<CartProduct> = ({
               alignItems: 'flex-start',
             }}
           >
-            {/* Product Image */}
             <Box
               sx={{
                 aspectRatio: '1 / 1',
@@ -137,7 +133,6 @@ export const CartItem: FC<CartProduct> = ({
             </Stack>
           </Stack>
 
-          {/* Right column */}
           <Stack
             direction="column"
             justifyContent="space-between"
@@ -148,7 +143,6 @@ export const CartItem: FC<CartProduct> = ({
               minHeight: '100%',
             }}
           >
-            {/* Price at top */}
             <Typography
               variant="h3"
               sx={(theme) => ({
@@ -158,7 +152,6 @@ export const CartItem: FC<CartProduct> = ({
               ${updatedPrice}
             </Typography>
 
-            {/* Buttons at bottom */}
             <Box
               display="flex"
               alignItems="center"
