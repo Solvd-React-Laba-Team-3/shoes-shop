@@ -17,28 +17,33 @@ export default function Cart() {
         <CartFallback />
       ) : (
         <Box
-          sx={(theme) => ({
+          sx={{
             display: 'flex',
             flexDirection: { xs: 'column', md: 'row' },
             justifyContent: { md: 'space-between' },
             alignItems: { xs: 'stretch', md: 'flex-start' },
-            gap: { xs: 3, sm: 4, md: 6, lg: 8 },
-            padding: '80px 10px',
-            [theme.breakpoints.down('xl')]: {
-              padding: '60px',
+            gap: { xs: 3, md: 6 },
+            padding: { xs: '20px', md: '60px' },
+            '@media (max-width: 1280px)': {
+              padding: '60px 30px',
+              gap: '40px',
             },
-            [theme.breakpoints.down('lg')]: {
-              padding: '20px',
-            },
-
             maxWidth: '1600px',
             margin: '0 auto',
-          })}
+          }}
         >
           <Stack
             sx={{
               flex: 2,
-              width: '100%',
+              minWidth: 0, // allows shrinking
+              // maxWidth: '510px',
+              // '@media (min-width:900px) and (max-width:970px)': {
+              //   maxWidth: '510px',
+              // },
+              flexShrink: 1,
+              '@media (max-width:600px)': {
+                minWidth: '400px',
+              },
             }}
           >
             <Typography
@@ -54,7 +59,7 @@ export default function Cart() {
               <Stack
                 spacing={4}
                 alignItems="stretch"
-                sx={{ flexDirection: { xs: 'column', md: 'row' } }}
+                sx={{ flexDirection: 'column' }}
               >
                 {items.length > 0 ? (
                   items.map((item) => (
@@ -79,12 +84,28 @@ export default function Cart() {
           </Stack>
 
           <Stack
+            // sx={{
+            //   flex: 1,
+            //   minWidth: { md: '550px' },
+            //   // position: { md: 'sticky' },
+            //   // top: { md: '100px' },
+            //   alignSelf: { xs: 'stretch', md: 'flex-start' },
+            // }}
             sx={{
+              // flex: 1,
+              // minWidth: { md: '300px' }, // never smaller than this on desktop
+              // maxWidth: { md: '350px' }, // cap size so it doesn’t hog space
+              // flexShrink: 1,
+
               flex: 1,
-              maxWidth: { xs: '100%', md: '350px' },
-              // position: { md: 'sticky' },
-              // top: { md: '100px' },
+              minWidth: { md: '300px' }, // prevents over-shrinking
+              maxWidth: { md: '350px' },
+              flexShrink: 1,
               alignSelf: { xs: 'stretch', md: 'flex-start' },
+
+              '@media (max-width:600px)': {
+                minWidth: '300px',
+              },
             }}
           >
             <Typography
