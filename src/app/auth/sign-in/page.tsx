@@ -125,11 +125,13 @@ export default function SignIn() {
           <Box
             sx={{
               display: 'flex',
+              flexDirection: 'row',
               alignItems: 'center',
               justifyContent: 'space-between',
               '@media (max-width: 420px)': {
                 flexDirection: 'column',
                 alignItems: 'center',
+                gap: 1,
               },
             }}
           >
@@ -137,32 +139,41 @@ export default function SignIn() {
               sx={{
                 display: 'flex',
                 alignItems: 'center',
-                gap: 1,
+                justifyContent: 'space-between',
+                flexDirection: 'row',
               }}
             >
-              <Checkbox
-                size="large"
-                checked={isRememberMe}
-                onChange={() => setIsRememberMe(!isRememberMe)}
-              />
-              <Typography variant="subtitle2" color="secondary">
-                Remember me
-              </Typography>
-            </Box>
-          </Box>
+              <Box
+                sx={{
+                  display: 'flex',
+                  alignItems: 'center',
 
-          <Link
-            size="thin"
-            href="/auth/forgot-password"
-            sx={{
-              display: 'block', // make it block-level
-              textAlign: 'center', // now text-align works
-              width: '100%', // optional: ensure it spans full width
-              mt: 1, // optional: add margin-top if needed
-            }}
-          >
-            Forgot password?
-          </Link>
+                  gap: 1,
+                }}
+              >
+                <Checkbox
+                  size="large"
+                  checked={isRememberMe}
+                  onChange={() => setIsRememberMe(!isRememberMe)}
+                />
+                <Typography variant="subtitle2" color="secondary">
+                  Remember me
+                </Typography>
+              </Box>
+            </Box>
+
+            <Link
+              size="thin"
+              href="/auth/forgot-password"
+              sx={{
+                display: 'block',
+                textAlign: 'center',
+                width: '100%',
+              }}
+            >
+              Forgot password?
+            </Link>
+          </Box>
 
           <LoaderButton
             isSubmitting={isSubmitting}
