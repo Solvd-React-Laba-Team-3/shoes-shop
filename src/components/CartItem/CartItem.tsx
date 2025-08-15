@@ -43,9 +43,7 @@ export const CartItem: FC<CartProduct> = ({
             flexDirection: { sm: 'row' },
             alignItems: 'flex-end',
             gap: { xs: 1.5, sm: 3, md: 4 },
-            // width: 'auto',
             maxWidth: '963px',
-
             '@media (min-width:900px) and (max-width:970px)': {
               maxWidth: '510px',
             },
