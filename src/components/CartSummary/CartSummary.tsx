@@ -172,7 +172,6 @@ export const CartSummary = ({
             color="secondary"
             placeholder="Enter promo code"
             sx={{
-              width: { xs: '100%', sm: '50%' },
               height: '40px',
               '& .MuiInputBase-root': {
                 fontSize: '16px',
@@ -197,7 +196,6 @@ export const CartSummary = ({
           </Button>
         </Box>
       </Accordion>
-
       <Box
         sx={{
           display: 'flex',
@@ -223,7 +221,6 @@ export const CartSummary = ({
           ${subtotal.toFixed(2)}
         </Typography>
       </Box>
-
       <Box
         sx={{
           display: 'flex',
@@ -239,7 +236,6 @@ export const CartSummary = ({
           {isCheckout ? `$${shippingAmount.toFixed(2)}` : '-'}
         </Typography>
       </Box>
-
       <Box
         sx={{
           display: 'flex',
@@ -255,13 +251,10 @@ export const CartSummary = ({
           {isCheckout ? `$${taxAmount.toFixed(2)}` : '-'}
         </Typography>
       </Box>
-
       <Divider />
-
       <Typography variant="caption">
         Shipping and tax will be calculated at checkout.
       </Typography>
-
       {discountAmount > 0 && (
         <Box
           sx={{
@@ -280,24 +273,6 @@ export const CartSummary = ({
           </Typography>
         </Box>
       )}
-
-      {/* {isCheckout && (
-        <Box
-          sx={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            flexWrap: 'wrap',
-            margin: '20px 0',
-          }}
-        >
-          <Typography variant="h3" sx={{ fontWeight: 600, maxWidth: '10%' }}>
-            Total
-          </Typography>
-          <Typography variant="h3" sx={{ fontWeight: 600 }}>
-            ${finalTotal.toFixed(2)}
-          </Typography>
-        </Box>
-      )} */}
 
       <Box
         sx={{
@@ -318,7 +293,6 @@ export const CartSummary = ({
               : `$${subtotal.toFixed(2)}`}
         </Typography>
       </Box>
-
       <Divider sx={{ mb: { xs: 4, md: '22px' } }} />
       <Button
         onClick={handleCheckout}

@@ -28,16 +28,13 @@ export default function Cart() {
               padding: '60px 85px',
             },
             '@media (max-width: 1200px)': {
-              // padding: '60px 30px',
               padding: '50px 100px',
               gap: '40px',
             },
             '@media (max-width: 1024px)': {
               flexDirection: 'column',
             },
-            // '@media (max-width: 1200px)': {
-            //   padding: '50px 100px',
-            // },
+
             [theme.breakpoints.down('sm')]: {
               padding: '20px 30px',
             },
@@ -53,7 +50,7 @@ export default function Cart() {
 
               flexShrink: 1,
               '@media (max-width:600px)': {
-                minWidth: '400px',
+                minWidth: '700px',
               },
             }}
           >
@@ -91,14 +88,10 @@ export default function Cart() {
 
           <Stack
             sx={{
-              flex: 1,
-              minWidth: { md: '300px' },
-              maxWidth: { md: '350px' },
-              flexShrink: 1,
-              alignSelf: { xs: 'stretch', md: 'flex-start' },
-
-              '@media (max-width:600px)': {
-                minWidth: '450px',
+              flex: '0 0 auto',
+              '@media (max-width: 1024px)': {
+                minWidth: '800px',
+                maxWidth: '800px',
               },
             }}
           >
@@ -111,7 +104,14 @@ export default function Cart() {
               Summary
             </Typography>
             <Box>
-              <Stack direction="column">
+              <Stack
+                direction="column"
+                sx={{
+                  '@media (max-width: 768px)': {
+                    maxWidth: '700px',
+                  },
+                }}
+              >
                 <CartSummary isCheckout={false} />
               </Stack>
             </Box>
