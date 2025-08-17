@@ -7,6 +7,7 @@ interface FetchOptions {
   token?: string;
   body?: unknown;
   queryParams?: QueryParam;
+  apiRoute?: boolean;
 }
 
 /**
@@ -29,6 +30,7 @@ export const fetchApi = async <T>({
   body,
   token,
   queryParams,
+  apiRoute = false,
 }: FetchOptions): Promise<T> => {
   const isFormData = body instanceof FormData;
 
@@ -39,18 +41,17 @@ export const fetchApi = async <T>({
   };
 
   const queryString = toQueryString(queryParams);
-  const response = await fetch(
-    `${process.env.NEXT_PUBLIC_API_URL}${endpoint}${queryString}`,
-    {
-      method,
-      headers,
-      body: isFormData
-        ? (body as FormData)
-        : body
-          ? JSON.stringify(body)
-          : undefined,
-    }
-  );
+  const baseUrl = apiRoute ? '' : process.env.NEXT_PUBLIC_API_URL;
+
+  const response = await fetch(`${baseUrl}${endpoint}${queryString}`, {
+    method,
+    headers,
+    body: isFormData
+      ? (body as FormData)
+      : body
+        ? JSON.stringify(body)
+        : undefined,
+  });
 
   const data = await response.json();
 
