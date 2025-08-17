@@ -7,6 +7,7 @@ interface CartState {
   products: CartProduct[];
   discountCode?: string;
   discountAmount?: number;
+  discountType?: 'fixed' | 'percent';
 }
 
 export const useCart = () => {
@@ -29,7 +30,6 @@ export const useCart = () => {
       gender: product.gender.name,
       color: product.color.name,
     };
-
     setCartState({ ...cartState, products: [...items, newProduct] });
   };
 
@@ -38,11 +38,9 @@ export const useCart = () => {
       removeItem(id, size);
       return;
     }
-
     const updatedItems = items.map((item) =>
       item.id === id && item.size === size ? { ...item, quantity } : item
     );
-
     setCartState({ ...cartState, products: updatedItems });
   };
 
@@ -61,8 +59,17 @@ export const useCart = () => {
     updateQuantity(id, size, quantity - 1);
   };
 
-  const setDiscount = (code?: string, amount?: number) => {
-    setCartState({ ...cartState, discountCode: code, discountAmount: amount });
+  const setDiscount = (
+    code?: string,
+    amount?: number,
+    type?: 'fixed' | 'percent'
+  ) => {
+    setCartState({
+      ...cartState,
+      discountCode: code,
+      discountAmount: amount,
+      discountType: type,
+    });
   };
 
   const clearDiscount = () => {
@@ -70,29 +77,44 @@ export const useCart = () => {
       ...cartState,
       discountCode: undefined,
       discountAmount: undefined,
+      discountType: undefined,
     });
   };
 
   const clearCart = () => {
-    setCartState((prev) => ({
-      ...prev,
+    setCartState({
       products: [],
       discountCode: undefined,
       discountAmount: undefined,
-    }));
+      discountType: undefined,
+    });
   };
 
-  const subtotal = isLoading
-    ? 0
-    : items.reduce((acc, item) => {
-        return acc + item.price * item.quantity;
-      }, 0);
+  const subtotal = items.reduce(
+    (acc, item) => acc + item.price * item.quantity,
+    0
+  );
+
+  let discountAmountValid = cartState.discountAmount ?? 0;
+  if (
+    cartState.discountType === 'fixed' &&
+    discountAmountValid > subtotal * 0.5
+  ) {
+    discountAmountValid = 0;
+    if (cartState.discountCode || cartState.discountAmount) {
+      clearDiscount();
+    }
+  }
+
+  const subtotalWithDiscount = subtotal - discountAmountValid;
 
   return {
     items,
     subtotal,
+    discountAmount: discountAmountValid,
     discountCode: cartState.discountCode,
-    discountAmount: cartState.discountAmount ?? 0,
+    discountType: cartState.discountType,
+    subtotalWithDiscount,
     addItem,
     updateQuantity,
     increaseQuantity,

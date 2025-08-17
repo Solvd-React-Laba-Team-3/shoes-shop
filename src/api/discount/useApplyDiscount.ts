@@ -24,7 +24,11 @@ interface UseApplyDiscountProps {
   subtotal: number;
   taxPercent: number;
   shippingAmount: number;
-  setDiscount: (code: string, amount: number) => void;
+  setDiscount: (
+    code: string,
+    amount: number,
+    type: 'fixed' | 'percent'
+  ) => void;
   clearDiscount: () => void;
   setError: UseFormSetError<CartSchema>;
   clearErrors: UseFormClearErrors<CartSchema>;
@@ -33,6 +37,7 @@ interface UseApplyDiscountProps {
     discount: number,
     code?: string
   ) => void;
+  onAppliedSuccessfully?: () => void;
 }
 
 export const useApplyDiscount = ({
@@ -44,6 +49,7 @@ export const useApplyDiscount = ({
   setError,
   clearErrors,
   onCartSummaryChange,
+  onAppliedSuccessfully,
 }: UseApplyDiscountProps) => {
   return useMutation<DiscountResponse, Error, DiscountBody>({
     mutationFn: applyDiscount,
@@ -53,11 +59,30 @@ export const useApplyDiscount = ({
 
         if (result.type === 'amount' && result.amountOff) {
           newDiscountAmount = result.amountOff;
+
+          if (newDiscountAmount > subtotal * 0.5) {
+            setError('promoCode', {
+              type: 'manual',
+              message: 'Insufficent subtotal',
+            });
+            clearDiscount();
+            return;
+          }
+
+          setDiscount(
+            result.code ?? variables.code,
+            newDiscountAmount,
+            'fixed'
+          );
         } else if (result.type === 'percent' && result.percentOff) {
           newDiscountAmount = (subtotal * result.percentOff) / 100;
+          setDiscount(
+            result.code ?? variables.code,
+            newDiscountAmount,
+            'percent'
+          );
         }
 
-        setDiscount(result.code ?? variables.code, newDiscountAmount);
         clearErrors('promoCode');
 
         const subtotalWithNewDiscount = subtotal - newDiscountAmount;
@@ -70,6 +95,8 @@ export const useApplyDiscount = ({
           newDiscountAmount,
           result.code ?? variables.code
         );
+
+        onAppliedSuccessfully?.();
       } else {
         setError('promoCode', {
           type: 'manual',

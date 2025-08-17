@@ -9,13 +9,13 @@ import {
   Typography,
 } from '@mui/material';
 import { useRouter } from 'next/navigation';
-import { useEffect, useMemo } from 'react';
 import { useForm } from 'react-hook-form';
 import { Button } from '../ui';
 import { Accordion } from '../ui/Accordion/Accordion';
 import { cartSchema, CartSchema } from './cart.schema';
-import { useCart } from '@/lib/hooks';
+import { useCart, useLocalStorage } from '@/lib/hooks';
 import { useApplyDiscount } from '@/api/discount/useApplyDiscount';
+import { useEffect } from 'react';
 
 interface CartSummaryProps {
   isCheckout?: boolean;
@@ -32,11 +32,16 @@ interface CartSummaryProps {
 export const CartSummary = ({
   isCheckout = false,
   onConfirmAndPay,
+  onCartSummaryChange,
   taxPercent = 17,
   shippingAmount = 20,
-  onCartSummaryChange,
 }: CartSummaryProps) => {
   const router = useRouter();
+  const { value: promoOpen, setValue: setPromoOpen } = useLocalStorage<boolean>(
+    'promoOpen',
+    false
+  );
+
   const {
     subtotal,
     discountAmount,
@@ -46,6 +51,10 @@ export const CartSummary = ({
     isLoading,
   } = useCart();
 
+  const subtotalWithDiscount = subtotal - discountAmount;
+  const taxAmount = (subtotalWithDiscount * taxPercent) / 100;
+  const finalTotal = subtotalWithDiscount + shippingAmount + taxAmount;
+
   const {
     register,
     handleSubmit,
@@ -54,15 +63,13 @@ export const CartSummary = ({
     formState: { errors },
   } = useForm<CartSchema>({
     resolver: zodResolver(cartSchema),
-    defaultValues: {
-      promoCode: '',
-    },
+    defaultValues: { promoCode: '' },
     shouldFocusError: true,
   });
 
   const mutation = useApplyDiscount({
     subtotal,
-    taxPercent,
+    taxPercent: (taxAmount / subtotalWithDiscount) * 100,
     shippingAmount,
     setDiscount,
     clearDiscount,
@@ -77,37 +84,27 @@ export const CartSummary = ({
   };
 
   const handleCheckout = () => {
-    if (isCheckout && onConfirmAndPay) {
-      onConfirmAndPay();
-    } else {
-      router.push('/checkout');
-    }
+    if (isCheckout && onConfirmAndPay) onConfirmAndPay();
+    else router.push('/checkout');
   };
 
-  const subtotalWithDiscount = useMemo(() => {
-    if (isLoading) return 0;
-    return subtotal - discountAmount;
-  }, [subtotal, discountAmount, isLoading]);
-
-  const taxAmount = useMemo(() => {
-    if (isLoading) return 0;
-    return (subtotalWithDiscount * taxPercent) / 100;
-  }, [subtotalWithDiscount, taxPercent, isLoading]);
-
-  const finalTotal = useMemo(() => {
-    if (isLoading) return 0;
-    return subtotalWithDiscount + taxAmount + shippingAmount;
-  }, [subtotalWithDiscount, taxAmount, shippingAmount, isLoading]);
-
   useEffect(() => {
-    if (onCartSummaryChange) {
-      onCartSummaryChange(finalTotal, discountAmount, discountCode);
+    if (!isLoading) {
+      onCartSummaryChange?.(finalTotal, discountAmount, discountCode);
     }
-  }, [finalTotal, discountAmount, discountCode, onCartSummaryChange]);
+  }, [
+    finalTotal,
+    discountAmount,
+    discountCode,
+    isLoading,
+    onCartSummaryChange,
+  ]);
 
   return (
     <Box>
       <Accordion
+        expanded={promoOpen}
+        onChange={(_, isExpanded) => setPromoOpen(isExpanded)}
         label={
           <Typography sx={{ fontSize: '20px' }}>
             Do you have a promocode?
@@ -123,20 +120,15 @@ export const CartSummary = ({
           <TextField
             size="small"
             color="secondary"
-            placeholder="Enter promo code"
+            placeholder={discountCode || 'Enter promo code'}
             sx={{
               width: '50%',
               height: '40px',
               marginRight: '10px',
-              '& .MuiInputBase-root': {
-                fontSize: '16px',
-              },
+              '& .MuiInputBase-root': { fontSize: '16px' },
             }}
             {...register('promoCode', {
-              onChange: (e) => {
-                const upperValue = e.target.value.toUpperCase();
-                e.target.value = upperValue;
-              },
+              onChange: (e) => (e.target.value = e.target.value.toUpperCase()),
             })}
             error={!!errors.promoCode}
             helperText={errors.promoCode?.message}
@@ -147,7 +139,7 @@ export const CartSummary = ({
             size="small"
             type="submit"
           >
-            Apply
+            {discountCode ? 'Change' : 'Apply'}
           </Button>
           {mutation.isPending && <LinearProgress sx={{ mt: 1 }} />}
         </Box>
@@ -161,36 +153,28 @@ export const CartSummary = ({
         }}
       >
         <Typography variant="h3" sx={{ fontWeight: 400 }}>
-          {'Subtotal'}
+          Subtotal
         </Typography>
         <Typography variant="h3" sx={{ fontWeight: 400 }}>
           ${subtotal.toFixed(2)}
         </Typography>
       </Box>
 
-      {!isLoading &&
-        typeof discountAmount === 'number' &&
-        discountAmount > 0 && (
-          <Box
-            sx={{
-              display: 'flex',
-              justifyContent: 'space-between',
-              margin: '20px 0',
-              color: discountAmount > 0 ? 'green' : 'inherit',
-            }}
-          >
-            <Typography variant="h3" sx={{ fontWeight: 400 }}>
-              Discount
-            </Typography>
-            <Typography variant="h3" sx={{ fontWeight: 400 }}>
-              -${discountAmount.toFixed(2)}
-            </Typography>
-          </Box>
-        )}
-
-      {isLoading && (
-        <Box>
-          <LinearProgress />
+      {!isLoading && discountAmount > 0 && (
+        <Box
+          sx={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            margin: '20px 0',
+            color: 'green',
+          }}
+        >
+          <Typography variant="h3" sx={{ fontWeight: 400 }}>
+            Discount
+          </Typography>
+          <Typography variant="h3" sx={{ fontWeight: 400 }}>
+            -${discountAmount.toFixed(2)}
+          </Typography>
         </Box>
       )}
 
@@ -235,13 +219,7 @@ export const CartSummary = ({
               margin: '20px 0',
             }}
           >
-            <Typography
-              variant="h3"
-              sx={{
-                fontWeight: 600,
-                maxWidth: '10%',
-              }}
-            >
+            <Typography variant="h3" sx={{ fontWeight: 600 }}>
               Total
             </Typography>
             <Typography variant="h3" sx={{ fontWeight: 600 }}>
