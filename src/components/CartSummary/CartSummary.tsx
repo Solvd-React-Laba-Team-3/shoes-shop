@@ -15,7 +15,7 @@ import { Button } from '../ui';
 import { Accordion } from '../ui/Accordion/Accordion';
 import { cartSchema, CartSchema } from './cart.schema';
 import { useCart } from '@/lib/hooks';
-import { useApplyDiscount } from '@/api/checkout/discount/discountOptions';
+import { useApplyDiscount } from '@/api/checkout/discount/useApplyDiscount';
 
 interface CartSummaryProps {
   isCheckout?: boolean;
@@ -61,57 +61,14 @@ export const CartSummary = ({
   });
 
   const mutation = useApplyDiscount({
-    onSuccess: (result, variables) => {
-      if (result.valid) {
-        let newDiscountAmount = 0;
-        if (result.type === 'amount' && result.amountOff) {
-          newDiscountAmount = result.amountOff;
-        } else if (result.type === 'percent' && result.percentOff) {
-          newDiscountAmount = (subtotal * result.percentOff) / 100;
-        }
-
-        setDiscount(result.code ?? variables.code, newDiscountAmount);
-        clearErrors('promoCode');
-
-        const subtotalWithNewDiscount = subtotal - newDiscountAmount;
-        const taxWithNewDiscount = (subtotalWithNewDiscount * taxPercent) / 100;
-        const finalTotalWithNewDiscount =
-          subtotalWithNewDiscount + taxWithNewDiscount + shippingAmount;
-
-        if (onCartSummaryChange) {
-          onCartSummaryChange(
-            finalTotalWithNewDiscount,
-            newDiscountAmount,
-            result.code ?? variables.code
-          );
-        }
-      } else {
-        setError('promoCode', {
-          type: 'manual',
-          message: 'Invalid promo code',
-        });
-        clearDiscount();
-
-        if (onCartSummaryChange) {
-          const totalWithoutDiscount =
-            subtotal + (subtotal * taxPercent) / 100 + shippingAmount;
-          onCartSummaryChange(totalWithoutDiscount, 0, undefined);
-        }
-      }
-    },
-    onError: () => {
-      setError('promoCode', {
-        type: 'manual',
-        message: 'Error. Try again.',
-      });
-      clearDiscount();
-
-      if (onCartSummaryChange) {
-        const totalWithoutDiscount =
-          subtotal + (subtotal * taxPercent) / 100 + shippingAmount;
-        onCartSummaryChange(totalWithoutDiscount, 0, undefined);
-      }
-    },
+    subtotal,
+    taxPercent,
+    shippingAmount,
+    setDiscount,
+    clearDiscount,
+    setError,
+    clearErrors,
+    onCartSummaryChange,
   });
 
   const onApplyPromo = (data: CartSchema) => {
@@ -192,11 +149,7 @@ export const CartSummary = ({
           >
             Apply
           </Button>
-          {mutation.isPending && (
-            <Box sx={{ mt: 1 }}>
-              <LinearProgress />
-            </Box>
-          )}
+          {mutation.isPending && <LinearProgress sx={{ mt: 1 }} />}
         </Box>
       </Accordion>
 
