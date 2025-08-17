@@ -15,7 +15,7 @@ import { Button } from '../ui';
 import { Accordion } from '../ui/Accordion/Accordion';
 import { cartSchema, CartSchema } from './cart.schema';
 import { useCart } from '@/lib/hooks';
-import { useApplyDiscount } from '@/api/checkout/discount/useApplyDiscount';
+import { useApplyDiscount } from '@/api/discount/useApplyDiscount';
 
 interface CartSummaryProps {
   isCheckout?: boolean;

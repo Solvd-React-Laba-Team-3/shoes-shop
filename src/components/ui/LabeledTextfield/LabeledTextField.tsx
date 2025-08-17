@@ -25,6 +25,12 @@ const StyledInputLabel = styled(InputLabel)(({ theme }: { theme: Theme }) => ({
   '& .MuiInputLabel-asterisk': {
     color: theme.palette.error.main,
   },
+  '&.Mui-focused': {
+    color: theme.palette.text.secondary,
+  },
+  '&.Mui-error': {
+    color: theme.palette.text.secondary,
+  },
 }));
 
 const StyledInput = styled(Input, {

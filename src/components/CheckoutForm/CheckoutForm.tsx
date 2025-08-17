@@ -30,10 +30,10 @@ import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import { CardElement, useElements, useStripe } from '@stripe/react-stripe-js';
 import { useRouter } from 'next/navigation';
-import { splitProducts } from '@/lib/utils/splitProducts/splitProducts';
+import { splitProducts } from '@/lib/utils/';
 import { StyledInputLabel } from '../ProductForm/productForm.styles';
 import { CartProduct } from '@/types/CartProduct';
-import { useCreatePayment } from '@/api/checkout/payment/useCreatePayment';
+import { useCreatePayment } from '@/api/payment/useCreatePayment';
 import { PaymentBody } from '@/types/api/PaymentBody';
 import { useCart } from '@/lib/hooks';
 
