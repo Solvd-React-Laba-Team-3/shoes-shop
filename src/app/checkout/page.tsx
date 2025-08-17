@@ -22,7 +22,10 @@ export default function Checkout() {
   const handleCountryChange = (newCountry: string) => {
     setCountry(newCountry);
   };
-  const { data: shippingTax } = useQuery(getShippingTaxOptions(country));
+
+  const { data: shippingTax, isFetching } = useQuery(
+    getShippingTaxOptions(country)
+  );
   const shippingAmount = shippingTax?.shippingAmount ?? 20;
   const taxPercent = shippingTax?.taxPercent ?? 17;
 
@@ -79,7 +82,9 @@ export default function Checkout() {
             onConfirmAndPay={onConfirmAndPay}
             onCartSummaryChange={handleCartSummaryChange}
           />
-          {isProcessingPayment && <LinearProgress sx={{ marginTop: 2 }} />}
+          {(isProcessingPayment || isFetching) && (
+            <LinearProgress sx={{ marginTop: 2 }} />
+          )}
         </Box>
       </Box>
     </>
