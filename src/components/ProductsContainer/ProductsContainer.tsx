@@ -1,12 +1,12 @@
 'use client';
 
 import { getProductsOptions } from '@/api/products/getProductsOptions';
-import { useSearchParams } from '@/lib/hooks';
+import { useDeviceSize, useSearchParams } from '@/lib/hooks';
 import { parseQueryString } from '@/lib/utils';
 import { useSuspenseInfiniteQuery } from '@tanstack/react-query';
 import React, { FC, useMemo } from 'react';
 import { ProductList } from '../ProductList';
-import { Box, Typography } from '@mui/material';
+import { Box, Divider, Typography } from '@mui/material';
 import FilterAltOffIcon from '@mui/icons-material/FilterAlt';
 import FilterAltIcon from '@mui/icons-material/FilterAltOff';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
@@ -59,7 +59,9 @@ export const ProductsContainer: FC<ProductsContainerProps> = ({
     [filters, search]
   );
 
-  const { data } = useSuspenseInfiniteQuery(getProductsOptions(queryParams));
+  const { data, isFetching } = useSuspenseInfiniteQuery(
+    getProductsOptions(queryParams)
+  );
 
   const products = data.pages.flatMap((page) => page.products);
 
@@ -67,26 +69,49 @@ export const ProductsContainer: FC<ProductsContainerProps> = ({
     router.replace('/');
   };
 
+  const { isMobile } = useDeviceSize();
+
   return (
     <Box
       sx={{
         display: 'flex',
         flexDirection: 'column',
-        gap: '28px',
+        padding: { xs: '12px  16px', sm: '12px 24px', md: '40px 60px' },
+        gap: { xs: ' 12px', md: '28px' },
         width: '100%',
       }}
     >
-      <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-        <Typography variant="h4">
-          {search ? 'Search Results' : 'Catalog'}
-        </Typography>
+      <Box
+        sx={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'end',
+        }}
+      >
+        <Box display="flex" flexDirection="column" gap={1}>
+          <Typography variant="h4">
+            {search ? 'Search Results' : 'Catalog'}
+          </Typography>
+          {isMobile && search && (
+            <Box>
+              <Divider sx={{ margin: '8px 0' }} />
+              <Typography variant="caption">Shoes/{search}</Typography>
+              <Typography variant="h4">{search}</Typography>
+            </Box>
+          )}
+        </Box>
+
         <Box sx={{ display: 'flex', gap: 1 }}>
           <Button
             color="secondary"
             size="small"
-            variant="outlined"
+            variant="text"
             endIcon={<DeleteOutlineIcon />}
             onClick={handleClearFilters}
+            sx={{
+              display: { xs: 'none', md: 'flex' },
+              color: 'text.secondary',
+            }}
           >
             Clear Filters
           </Button>
@@ -95,14 +120,15 @@ export const ProductsContainer: FC<ProductsContainerProps> = ({
             endIcon={isFiltersOpen ? <FilterAltIcon /> : <FilterAltOffIcon />}
             onClick={onFiltersToggle}
             size="small"
-            color={isFiltersOpen ? 'secondary' : 'primary'}
+            color="secondary"
+            variant="text"
           >
             {isFiltersOpen ? 'Hide Filters' : 'Show Filters'}
           </Button>
         </Box>
       </Box>
 
-      {products.length ? (
+      {products.length || isFetching ? (
         <ProductList products={data.pages.flatMap((page) => page.products)} />
       ) : (
         <StyledNoProductsWrapper>

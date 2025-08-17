@@ -12,14 +12,16 @@ import {
 } from './mainSearchBar.styles';
 import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
+import SearchIcon from '@mui/icons-material/Search';
+
 import Link from 'next/link';
 import Image from 'next/image';
-import { useDebounce, useSearchParams } from '@/lib/hooks';
+import { useDebounce, useDeviceSize, useSearchParams } from '@/lib/hooks';
 import { List, Typography } from '@mui/material';
 import LinearProgress from '@mui/material/LinearProgress';
 import { useQuery } from '@tanstack/react-query';
-import { searchPopularTermsOptions } from '@/api/gemini/getPopularSearchTermsOptions';
-import { AI_REQUEST_STALE_TIME } from '@/constants/queriesStaleTime';
+import { getPopularSearchTermsOptions } from '@/api/gemini/getPopularSearchTermsOptions';
+import { MIN_SEARCH_LENGTH } from '@/constants/minSearchLength';
 
 export const MainSearchBar = () => {
   const router = useRouter();
@@ -33,7 +35,7 @@ export const MainSearchBar = () => {
   const { debouncedValue, isDebouncing } = useDebounce(inputValue, 2000);
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const queryOptions = searchPopularTermsOptions(debouncedValue);
+  const queryOptions = getPopularSearchTermsOptions(debouncedValue);
 
   const {
     data: popularResults,
@@ -41,8 +43,8 @@ export const MainSearchBar = () => {
     isFetching,
   } = useQuery({
     ...queryOptions,
-    enabled: debouncedValue.length === 0 || debouncedValue.length > 2,
-    staleTime: AI_REQUEST_STALE_TIME,
+    enabled:
+      debouncedValue.length === 0 || debouncedValue.length > MIN_SEARCH_LENGTH,
   });
 
   useEffect(() => {
@@ -95,6 +97,8 @@ export const MainSearchBar = () => {
     handleClose();
   };
 
+  const { isMobile } = useDeviceSize();
+
   return (
     <>
       {isFocused && <Overlay data-testid="overlay" onClick={handleClose} />}
@@ -119,61 +123,74 @@ export const MainSearchBar = () => {
           </IconButtonRight>
         </>
       )}
-      <MainSearchBarContainer
-        isFocused={isFocused}
-        data-testid="search-container"
-      >
-        <SearchBar
-          value={inputValue}
-          onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-            setInputValue(e.target.value);
-          }}
-          placeholder="Search"
-          expandOnFocus
-          size="medium"
-          onKeyDown={handleKeyDown}
-          onFocus={handleFocus}
-          onBlur={handleBlur}
-          inputRef={inputRef}
-          data-testid="search-input"
-        />
-        {popularTerms.length > 0 && isFocused && (
-          <PopularTermsContainer
-            data-testid="popular-terms-container"
-            sx={{ position: 'relative' }}
-          >
-            {(isFetching || isDebouncing) && (
-              <LinearProgress
-                data-testid="loading-bar"
-                sx={{
-                  position: 'absolute',
-                  top: -20,
-                  left: '50%',
-                  transform: 'translateX(-50%)',
-                  width: '100%',
-                  maxWidth: 1040,
-                  zIndex: 1,
-                }}
-              />
-            )}
-            <Typography variant="h6">Popular Search Terms</Typography>
-            <List disablePadding>
-              {popularTerms.map((term, index) => (
-                <PopularTermItem
-                  key={index}
-                  onMouseDown={(e) => e.preventDefault()}
-                  onClick={() => handleTermClick(term)}
-                  data-testid={`popular-term-${index}`}
-                >
-                  <Typography variant="body1" fontWeight={500}>
-                    {term}
-                  </Typography>
-                </PopularTermItem>
-              ))}
-            </List>
-          </PopularTermsContainer>
-        )}
-      </MainSearchBarContainer>
+      {isMobile && !isFocused && (
+        <IconButton
+          onClick={handleFocus}
+          sx={{ paddingRight: '20px' }}
+          color="secondary"
+        >
+          <SearchIcon />
+        </IconButton>
+      )}
+      {(!isMobile || isFocused) && (
+        <MainSearchBarContainer
+          isFocused={isFocused}
+          data-testid="search-container"
+        >
+          <SearchBar
+            value={inputValue}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+              setInputValue(e.target.value);
+            }}
+            placeholder="Search"
+            expandOnFocus
+            size="medium"
+            onKeyDown={handleKeyDown}
+            onFocus={handleFocus}
+            onBlur={handleBlur}
+            inputRef={inputRef}
+            data-testid="search-input"
+            autoFocus={isMobile}
+          />
+          {popularTerms.length > 0 && isFocused && (
+            <PopularTermsContainer
+              data-testid="popular-terms-container"
+              sx={{ position: 'relative' }}
+            >
+              {(isFetching || isDebouncing) &&
+                inputValue.length > MIN_SEARCH_LENGTH && (
+                  <LinearProgress
+                    data-testid="loading-bar"
+                    sx={{
+                      position: 'absolute',
+                      top: -20,
+                      left: '50%',
+                      transform: 'translateX(-50%)',
+                      width: '100%',
+                      maxWidth: 1040,
+                      zIndex: 1,
+                    }}
+                  />
+                )}
+              <Typography variant="h6">Popular Search Terms</Typography>
+              <List disablePadding>
+                {popularTerms.map((term, index) => (
+                  <PopularTermItem
+                    key={index}
+                    onMouseDown={(e) => e.preventDefault()}
+                    onClick={() => handleTermClick(term)}
+                    data-testid={`popular-term-${index}`}
+                  >
+                    <Typography variant="body1" fontWeight={500}>
+                      {term}
+                    </Typography>
+                  </PopularTermItem>
+                ))}
+              </List>
+            </PopularTermsContainer>
+          )}
+        </MainSearchBarContainer>
+      )}
     </>
   );
 };
