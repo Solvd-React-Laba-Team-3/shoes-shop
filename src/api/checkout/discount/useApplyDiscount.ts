@@ -1,9 +1,24 @@
 import { useMutation } from '@tanstack/react-query';
-import { DiscountBody } from '@/types/api/DiscountBody';
 import { DiscountResponse } from '@/types/api/DiscountResponse';
-import { applyDiscount } from './applyDiscount';
 import { CartSchema } from '@/components/CartSummary/cart.schema';
 import { UseFormClearErrors, UseFormSetError } from 'react-hook-form';
+import { fetchApi } from '@/lib/utils';
+
+export interface DiscountBody {
+  code: string;
+  total: number;
+}
+
+export const applyDiscount = async (
+  body: DiscountBody
+): Promise<DiscountResponse> => {
+  return await fetchApi<DiscountResponse>({
+    endpoint: 'api/checkout/discount',
+    method: 'POST',
+    body,
+    apiRoute: true,
+  });
+};
 
 interface UseApplyDiscountProps {
   subtotal: number;

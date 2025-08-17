@@ -8,7 +8,7 @@ import { Box, LinearProgress } from '@mui/material';
 import { CartSummary } from '@/components/CartSummary';
 import { useCart } from '@/lib/hooks';
 import { useQuery } from '@tanstack/react-query';
-import { getShippingTaxOptions } from '@/api/checkout/shippingAndTax/shippingAndTaxOptions';
+import { getShippingTaxOptions } from '@/api/checkout/shippingAndTax/getShippingTaxOptions';
 
 export default function Checkout() {
   const [totalAmount, setTotalAmount] = useState<number>(0);

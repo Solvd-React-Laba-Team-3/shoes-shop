@@ -1,24 +1,23 @@
 import { OrderResponse } from '@/types/api/OrderResponse';
 import { queryOptions } from '@tanstack/react-query';
 import { getSession } from 'next-auth/react';
-
-export const GET_ORDERS_QUERY_KEY = 'orders';
+import { fetchApi } from '@/lib/utils';
 
 export const getOrdersOptions = () =>
   queryOptions({
-    queryKey: [GET_ORDERS_QUERY_KEY],
+    queryKey: ['orders'],
     queryFn: async (): Promise<OrderResponse[]> => {
       const session = await getSession();
       if (!session) {
         return [];
       }
-      const res = await fetch(`/api/orders?userId=${session.user.id}`, {
-        cache: 'no-store',
+
+      const { orders } = await fetchApi<{ orders: OrderResponse[] }>({
+        endpoint: `/api/orders?userId=${session.user.id}`,
+        method: 'GET',
+        apiRoute: true,
       });
-      if (!res.ok) {
-        return [];
-      }
-      const { orders } = await res.json();
+
       return orders;
     },
   });
