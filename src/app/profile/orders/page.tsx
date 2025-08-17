@@ -10,7 +10,7 @@ import Typography from '@mui/material/Typography';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { CartProduct } from '@/types/CartProduct';
 import { useQuery } from '@tanstack/react-query';
-import { getOrdersOptions } from '@/api/orders/orderOptions';
+import { getOrdersOptions } from '@/api/orders/getOrders';
 
 export default function Orders() {
   const {

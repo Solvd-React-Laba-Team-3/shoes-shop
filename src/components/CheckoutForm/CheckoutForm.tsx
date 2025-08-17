@@ -33,8 +33,7 @@ import { useRouter } from 'next/navigation';
 import { splitProducts } from '@/lib/utils/splitProducts/splitProducts';
 import { StyledInputLabel } from '../ProductForm/productForm.styles';
 import { CartProduct } from '@/types/CartProduct';
-import { useMutation } from '@tanstack/react-query';
-import { postPaymentFn } from '@/api/checkout/payment/paymentsOptions';
+import { useCreatePayment } from '@/api/checkout/payment/useCreatePayment';
 import { PaymentBody } from '@/types/api/PaymentBody';
 import { useCart } from '@/lib/hooks';
 
@@ -66,9 +65,7 @@ export const CheckoutForm: FC<CheckoutProps> = ({
   const router = useRouter();
   const [serverError, setServerError] = useState<string | null>(null);
   const [showCardFields, setShowCardFields] = useState(true);
-  const { mutateAsync: createPayment } = useMutation({
-    mutationFn: postPaymentFn,
-  });
+  const { mutateAsync: createPayment } = useCreatePayment();
   const methods = useForm<CheckoutSchema>({
     resolver: zodResolver(checkoutSchema),
     defaultValues: {
