@@ -1,55 +1,40 @@
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
-import {
-  Box,
-  Divider,
-  LinearProgress,
-  TextField,
-  Typography,
-} from '@mui/material';
+import { Box, Divider, Typography } from '@mui/material';
 import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
-import { Button } from '../ui';
+import { Button, LabeledTextfield } from '../ui';
 import { Accordion } from '../ui/Accordion/Accordion';
 import { cartSchema, CartSchema } from './cart.schema';
 import { useCart, useLocalStorage } from '@/lib/hooks';
 import { useApplyDiscount } from '@/api/discount/useApplyDiscount';
-import { useEffect } from 'react';
+import { FC, FormEvent, useState } from 'react';
+import { TAX_PERCENT } from '@/constants/taxPercent';
+import { SHIPPING_AMOUNT } from '@/constants/shippingAmount';
 
 interface CartSummaryProps {
-  isCheckout?: boolean;
-  onConfirmAndPay?: () => void;
+  checkout?: boolean;
   taxPercent?: number;
   shippingAmount?: number;
-  onCartSummaryChange?: (
-    total: number,
-    discountAmount: number,
-    discountCode?: string
-  ) => void;
+  onOrderComplete?: () => void;
 }
 
-export const CartSummary = ({
-  isCheckout = false,
-  onConfirmAndPay,
-  onCartSummaryChange,
-  taxPercent = 17,
-  shippingAmount = 20,
-}: CartSummaryProps) => {
+export const CartSummary: FC<CartSummaryProps> = ({
+  checkout = false,
+  taxPercent = TAX_PERCENT,
+  shippingAmount = SHIPPING_AMOUNT,
+  onOrderComplete,
+}) => {
   const router = useRouter();
   const { value: promoOpen, setValue: setPromoOpen } = useLocalStorage<boolean>(
     'promoOpen',
     false
   );
 
-  const {
-    subtotal,
-    discountAmount,
-    discountCode,
-    setDiscount,
-    clearDiscount,
-    isLoading,
-  } = useCart();
+  const { subtotal, discountAmount, discountCode, isLoading } = useCart();
+
+  const [isEditing, setIsEditing] = useState(false);
 
   const subtotalWithDiscount = subtotal - discountAmount;
   const taxAmount = (subtotalWithDiscount * taxPercent) / 100;
@@ -60,45 +45,30 @@ export const CartSummary = ({
     handleSubmit,
     setError,
     clearErrors,
+    watch,
     formState: { errors },
   } = useForm<CartSchema>({
     resolver: zodResolver(cartSchema),
-    defaultValues: { promoCode: '' },
+    defaultValues: { promoCode: discountCode ?? '' },
     shouldFocusError: true,
   });
 
-  const mutation = useApplyDiscount({
+  const { mutate: applyDiscount, isPending } = useApplyDiscount({
     subtotal,
-    taxPercent: (taxAmount / subtotalWithDiscount) * 100,
-    shippingAmount,
-    setDiscount,
-    clearDiscount,
     setError,
     clearErrors,
-    onCartSummaryChange,
   });
 
   const onApplyPromo = (data: CartSchema) => {
     const promoCode = data.promoCode.trim();
-    mutation.mutate({ code: promoCode, total: subtotal });
+    applyDiscount({ code: promoCode, total: subtotal });
+    setIsEditing(false);
   };
 
-  const handleCheckout = () => {
-    if (isCheckout && onConfirmAndPay) onConfirmAndPay();
-    else router.push('/checkout');
+  const handleCheckout = (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    router.push('/checkout');
   };
-
-  useEffect(() => {
-    if (!isLoading) {
-      onCartSummaryChange?.(finalTotal, discountAmount, discountCode);
-    }
-  }, [
-    finalTotal,
-    discountAmount,
-    discountCode,
-    isLoading,
-    onCartSummaryChange,
-  ]);
 
   return (
     <Box>
@@ -107,7 +77,7 @@ export const CartSummary = ({
         onChange={(_, isExpanded) => setPromoOpen(isExpanded)}
         label={
           <Typography sx={{ fontSize: '20px' }}>
-            Do you have a promocode?
+            Do you have a promo code?
           </Typography>
         }
       >
@@ -116,32 +86,44 @@ export const CartSummary = ({
           onSubmit={handleSubmit(onApplyPromo)}
           noValidate
           autoComplete="off"
+          sx={{ display: 'flex', gap: '10px' }}
         >
-          <TextField
+          <LabeledTextfield
             size="small"
             color="secondary"
-            placeholder={discountCode || 'Enter promo code'}
-            sx={{
-              width: '50%',
-              height: '40px',
-              marginRight: '10px',
-              '& .MuiInputBase-root': { fontSize: '16px' },
-            }}
+            placeholder="Enter promo code"
             {...register('promoCode', {
               onChange: (e) => (e.target.value = e.target.value.toUpperCase()),
             })}
             error={!!errors.promoCode}
-            helperText={errors.promoCode?.message}
+            errorMessage={errors.promoCode?.message}
+            disabled={isPending || (discountAmount > 0 && !isEditing)}
           />
-          <Button
-            variant="contained"
-            color="primary"
-            size="small"
-            type="submit"
-          >
-            {discountCode ? 'Change' : 'Apply'}
-          </Button>
-          {mutation.isPending && <LinearProgress sx={{ mt: 1 }} />}
+          {discountAmount > 0 && !isEditing ? (
+            <Button
+              variant="contained"
+              color="secondary"
+              size="small"
+              onClick={(e) => {
+                e.preventDefault();
+                setIsEditing(true);
+              }}
+              type="button"
+            >
+              Edit
+            </Button>
+          ) : (
+            <Button
+              variant="contained"
+              color="primary"
+              size="small"
+              type="submit"
+              loading={isPending}
+              disabled={subtotal === 0 || !watch('promoCode').trim()}
+            >
+              Apply
+            </Button>
+          )}
         </Box>
       </Accordion>
 
@@ -178,7 +160,7 @@ export const CartSummary = ({
         </Box>
       )}
 
-      {isCheckout && (
+      {checkout && (
         <>
           <Box
             sx={{
@@ -209,9 +191,7 @@ export const CartSummary = ({
               ${taxAmount.toFixed(2)}
             </Typography>
           </Box>
-
           <Divider sx={{ marginTop: '56px' }} />
-
           <Box
             sx={{
               display: 'flex',
@@ -230,9 +210,19 @@ export const CartSummary = ({
       )}
 
       <Divider sx={{ marginBottom: '113px' }} />
-      <Button onClick={handleCheckout} sx={{ width: '100%' }}>
-        {isCheckout ? 'Confirm & Pay' : 'Checkout'}
-      </Button>
+
+      <Box
+        component="form"
+        onSubmit={checkout ? onOrderComplete : handleCheckout}
+      >
+        <Button
+          disabled={isLoading || isPending || subtotal === 0}
+          type="submit"
+          sx={{ width: '100%' }}
+        >
+          {checkout ? 'Confirm & Pay' : 'Checkout'}
+        </Button>
+      </Box>
     </Box>
   );
 };

@@ -1,15 +1,31 @@
 import { fetchApi } from '@/lib/utils';
-import { PaymentBody } from '@/types/api/PaymentBody';
 import { useMutation } from '@tanstack/react-query';
 
-export const createPayment = async (body: PaymentBody) => {
-  return await fetchApi<{ clientSecret: string }>({
-    endpoint: '/api/checkout/payments',
+interface CreatePaymentResponse {
+  clientSecret: string;
+}
+
+interface CreatePaymentBody {
+  amount: number;
+  discountAmount?: number;
+  discountCode?: string;
+  shippingAmount: number;
+  taxPercent: number;
+  orderNumber: number;
+  productsMetadata: Record<string, string>;
+  name: string;
+  surname: string;
+  email: string;
+  paymentMethod: string;
+}
+
+export const createPayment = async (body: CreatePaymentBody) =>
+  await fetchApi<CreatePaymentResponse>({
+    endpoint: '/checkout/payments',
     method: 'POST',
     body,
     apiRoute: true,
   });
-};
 
 export const useCreatePayment = () =>
   useMutation({

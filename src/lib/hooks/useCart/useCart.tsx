@@ -95,26 +95,26 @@ export const useCart = () => {
     0
   );
 
-  let discountAmountValid = cartState.discountAmount ?? 0;
-  if (
-    cartState.discountType === 'fixed' &&
-    discountAmountValid > subtotal * 0.5
-  ) {
-    discountAmountValid = 0;
+  let discountAmount = cartState.discountAmount ?? 0;
+
+  if (cartState.discountType === 'fixed' && discountAmount > subtotal * 0.5) {
+    discountAmount = 0;
     if (cartState.discountCode || cartState.discountAmount) {
       clearDiscount();
     }
   }
 
-  const subtotalWithDiscount = subtotal - discountAmountValid;
+  const getTotal = (shippingAmount: number, taxPercent: number) => {
+    return (subtotal + shippingAmount) * (1 + taxPercent / 100);
+  };
 
   return {
     items,
     subtotal,
-    discountAmount: discountAmountValid,
+    getTotal,
+    discountAmount,
     discountCode: cartState.discountCode,
     discountType: cartState.discountType,
-    subtotalWithDiscount,
     addItem,
     updateQuantity,
     increaseQuantity,

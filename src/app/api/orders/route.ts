@@ -1,10 +1,8 @@
-import { OrderResponse } from '@/types/api/OrderResponse';
+import { Order } from '@/types/Order';
 import { NextResponse } from 'next/server';
 import Stripe from 'stripe';
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string, {
-  apiVersion: '2025-07-30.basil',
-});
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string);
 
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
@@ -76,7 +74,7 @@ export async function GET(req: Request) {
 
     const orders = ordersWithReceipts.filter(
       (order) => order !== null
-    ) as OrderResponse[];
+    ) as Order[];
 
     return NextResponse.json({ orders });
   } catch (err) {
