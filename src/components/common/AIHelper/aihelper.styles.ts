@@ -4,13 +4,16 @@ import Box from '@mui/material/Box';
 
 export const StyledContainer = styled(Paper, {
   shouldForwardProp: (prop) => prop !== 'collapsed',
-})<{ collapsed: boolean }>(({ collapsed }) => ({
+})<{ collapsed: boolean }>(({ theme, collapsed }) => ({
   position: 'fixed',
   bottom: 10,
   right: 10,
   zIndex: 700,
   padding: `14px 0px`,
-  width: '420px',
+  width: '80%',
+  [theme.breakpoints.up('sm')]: {
+    width: '420px',
+  },
   display: 'flex',
   flexDirection: 'column',
   gap: '12px',
@@ -47,6 +50,7 @@ export const StyledMessageWrapper = styled(Box)<{ sender: 'user' | 'model' }>(
     marginRight: sender === 'user' ? '16px' : 'auto',
     textAlign: sender === 'user' ? 'left' : 'left',
     height: 'fit-content',
+    ...theme.typography.caption,
 
     '& ul': {
       paddingLeft: '10px',
