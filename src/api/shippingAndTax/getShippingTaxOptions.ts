@@ -11,7 +11,7 @@ export const getShippingTaxOptions = (country: string) =>
     queryKey: ['shipping-tax', country],
     queryFn: async (): Promise<ShippingTaxData> => {
       return await fetchApi<ShippingTaxData>({
-        endpoint: `/api/checkout/shipping-and-tax?country=${country}`,
+        endpoint: `/checkout/shipping-and-tax?country=${country}`,
         method: 'GET',
         apiRoute: true,
       });

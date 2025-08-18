@@ -18,6 +18,7 @@ interface FetchOptions {
  * @param {('GET'|'POST'|'PUT'|'DELETE')} method - The HTTP method to use
  * @param {unknown} [body] - Optional request body that will be JSON stringified
  * @param {string} [token] - Optional token to be used for authentication
+ * @param {boolean} [apiRoute] - Optional flag to use the API route instead of the public API URL
  *
  * @returns {Promise<T | StrapiError>} A promise that resolves to either:
  *  - The successful response data of type T
@@ -41,7 +42,7 @@ export const fetchApi = async <T>({
   };
 
   const queryString = toQueryString(queryParams);
-  const baseUrl = apiRoute ? '' : process.env.NEXT_PUBLIC_API_URL;
+  const baseUrl = apiRoute ? '/api' : process.env.NEXT_PUBLIC_API_URL;
 
   const response = await fetch(`${baseUrl}${endpoint}${queryString}`, {
     method,
