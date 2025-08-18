@@ -28,7 +28,10 @@ export default function SignIn() {
   const router = useRouter();
   const [error, setError] = useState<string | null>(null);
   const [isRememberMe, setIsRememberMe] = useState(false);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isGoogleLoading, setIsGoogleLoading] = useState<boolean>(false);
+  const [isFacebookLoading, setIsFacebookLoading] = useState<boolean>(false);
+  const [isGitHubLoading, setIsGitHubLoading] = useState<boolean>(false);
+
   const {
     register,
     handleSubmit,
@@ -45,15 +48,43 @@ export default function SignIn() {
 
   const loginWithGoogle = async () => {
     try {
-      setIsLoading(true);
+      setIsGoogleLoading(true);
       await signIn('google', {
         callbackUrl: 'http://localhost:3000/profile/products',
       });
     } catch (err) {
-      setIsLoading(false);
+      setIsGoogleLoading(false);
       console.log(err);
     } finally {
-      setIsLoading(false);
+      setIsGoogleLoading(false);
+    }
+  };
+
+  const loginWithFacebook = async () => {
+    try {
+      setIsFacebookLoading(true);
+      await signIn('facebook', {
+        callbackUrl: 'http://localhost:3000/profile/products',
+      });
+    } catch (err) {
+      setIsFacebookLoading(false);
+      console.log(err);
+    } finally {
+      setIsFacebookLoading(false);
+    }
+  };
+
+  const loginWithGitHub = async () => {
+    try {
+      setIsGitHubLoading(true);
+      await signIn('facebook', {
+        callbackUrl: 'http://localhost:3000/profile/products',
+      });
+    } catch (err) {
+      setIsGitHubLoading(false);
+      console.log(err);
+    } finally {
+      setIsGitHubLoading(false);
     }
   };
 
@@ -122,12 +153,12 @@ export default function SignIn() {
             </Divider>
 
             <Button
-              disabled={isLoading}
+              disabled={isGoogleLoading}
               onClick={loginWithGoogle}
               variant="outlined"
               size="large"
             >
-              {isLoading && <Loading />}
+              {isGoogleLoading && <Loading />}
               <svg
                 style={{ marginRight: '8px' }}
                 xmlns="http://www.w3.org/2000/svg"
@@ -158,12 +189,12 @@ export default function SignIn() {
             </Button>
 
             <Button
-              disabled={isLoading}
-              onClick={loginWithGoogle}
+              disabled={isFacebookLoading}
+              onClick={loginWithFacebook}
               variant="outlined"
               size="large"
             >
-              {isLoading && <Loading />}
+              {isFacebookLoading && <Loading />}
               <svg
                 style={{ marginRight: '8px' }}
                 xmlns="http://www.w3.org/2000/svg"
@@ -187,12 +218,12 @@ export default function SignIn() {
 
             <Button
               style={{ marginRight: '8px' }}
-              disabled={isLoading}
-              onClick={loginWithGoogle}
+              disabled={isGitHubLoading}
+              onClick={loginWithGitHub}
               variant="outlined"
               size="large"
             >
-              {isLoading && <Loading />}
+              {isGitHubLoading && <Loading />}
               <svg
                 style={{ marginRight: '8px' }}
                 xmlns="http://www.w3.org/2000/svg"
