@@ -77,7 +77,7 @@ export default function SignIn() {
   const loginWithGitHub = async () => {
     try {
       setIsGitHubLoading(true);
-      await signIn('facebook', {
+      await signIn('github', {
         callbackUrl: 'http://localhost:3000/profile/products',
       });
     } catch (err) {
