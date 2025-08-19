@@ -51,7 +51,7 @@ export default function Cart() {
               flexShrink: 1,
               '@media (max-width:600px)': {
                 width: '100%',
-                maxWidth: '800px',
+                maxWidth: '500px',
               },
             }}
           >
