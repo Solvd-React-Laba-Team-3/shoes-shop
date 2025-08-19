@@ -17,20 +17,31 @@ export default function Cart() {
         <CartFallback />
       ) : (
         <Box
-          sx={{
+          sx={(theme) => ({
             display: 'flex',
             flexDirection: { xs: 'column', md: 'row' },
             justifyContent: { md: 'space-between' },
             alignItems: { xs: 'stretch', md: 'flex-start' },
             gap: { xs: 3, md: 6 },
-            padding: { xs: '20px', md: '60px' },
-            '@media (max-width: 1280px)': {
-              padding: '60px 30px',
+            paddingTop: '80px',
+            '@media screen and (min-width: 1200px) and (max-width: 1650px)': {
+              padding: '60px 85px',
+            },
+            '@media (max-width: 1200px)': {
+              padding: '50px 100px',
               gap: '40px',
             },
+            '@media (max-width: 1024px)': {
+              flexDirection: 'column',
+            },
+
+            [theme.breakpoints.down('sm')]: {
+              padding: '20px 30px',
+            },
             maxWidth: '1600px',
+
             margin: '0 auto',
-          }}
+          })}
         >
           <Stack
             sx={{
@@ -39,7 +50,7 @@ export default function Cart() {
 
               flexShrink: 1,
               '@media (max-width:600px)': {
-                minWidth: '400px',
+                minWidth: '700px',
               },
             }}
           >
@@ -52,11 +63,7 @@ export default function Cart() {
               Cart
             </Typography>
             <Box>
-              <Stack
-                spacing={4}
-                alignItems="stretch"
-                sx={{ flexDirection: 'column' }}
-              >
+              <Stack spacing={{ xs: 0, md: 4 }} alignItems="stretch">
                 {items.length > 0 ? (
                   items.map((item) => (
                     <CartItem
@@ -81,14 +88,10 @@ export default function Cart() {
 
           <Stack
             sx={{
-              flex: 1,
-              minWidth: { md: '300px' },
-              maxWidth: { md: '350px' },
-              flexShrink: 1,
-              alignSelf: { xs: 'stretch', md: 'flex-start' },
-
-              '@media (max-width:600px)': {
-                minWidth: '300px',
+              flex: '0 0 auto',
+              '@media (max-width: 1024px)': {
+                minWidth: '800px',
+                maxWidth: '800px',
               },
             }}
           >
@@ -101,7 +104,14 @@ export default function Cart() {
               Summary
             </Typography>
             <Box>
-              <Stack direction="column">
+              <Stack
+                direction="column"
+                sx={{
+                  '@media (max-width: 768px)': {
+                    maxWidth: '700px',
+                  },
+                }}
+              >
                 <CartSummary isCheckout={false} />
               </Stack>
             </Box>

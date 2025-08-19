@@ -43,17 +43,19 @@ export const CartItem: FC<CartProduct> = ({
             flexDirection: { sm: 'row' },
             alignItems: 'flex-end',
             gap: { xs: 1.5, sm: 3, md: 4 },
-            width: 'auto',
-
+            maxWidth: '963px',
             '@media (min-width:900px) and (max-width:970px)': {
               maxWidth: '510px',
             },
-
+            '@media (max-width: 1024px)': {
+              gap: '200px',
+            },
             '@media (min-width:1200px) and (max-width:1237px)': {
               maxWidth: '760px',
             },
             [theme.breakpoints.down('sm')]: {
               flexDirection: 'row',
+              minWidth: '530px',
             },
           })}
         >
@@ -73,7 +75,6 @@ export const CartItem: FC<CartProduct> = ({
                 height: 'auto',
                 flexShrink: 0,
                 marginRight: '46px',
-
                 '@media (max-width: 1100px)': {
                   marginRight: '10px',
                 },
@@ -230,7 +231,14 @@ export const CartItem: FC<CartProduct> = ({
           </Stack>
         </Stack>
 
-        <Divider sx={{ margin: '60px 0' }} />
+        <Divider
+          sx={(theme) => ({
+            margin: '60px 0',
+            [theme.breakpoints.down('sm')]: {
+              margin: '20px 0',
+            },
+          })}
+        />
       </Box>
 
       <DeleteConfirmationModal

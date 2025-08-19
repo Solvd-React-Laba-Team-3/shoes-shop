@@ -1,7 +1,7 @@
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Box, Divider, Typography, useMediaQuery } from '@mui/material';
+import { Box, Divider, Typography } from '@mui/material';
 import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { Button, LabeledTextfield } from '../ui';
@@ -42,8 +42,11 @@ export const CartSummary: FC<CartSummaryProps> = ({
 
   const {
     register,
+
     handleSubmit,
+
     setError,
+
     clearErrors,
     watch,
     formState: { errors },
@@ -53,12 +56,11 @@ export const CartSummary: FC<CartSummaryProps> = ({
     shouldFocusError: true,
   });
 
-  const isSmall = useMediaQuery('(max-width:400px)');
-  const isMedium = useMediaQuery('(min-width:400px) and (max-width:1280px)');
-
   const { mutate: applyDiscount, isPending } = useApplyDiscount({
     subtotal,
+
     setError,
+
     clearErrors,
   });
 
@@ -89,11 +91,7 @@ export const CartSummary: FC<CartSummaryProps> = ({
           onSubmit={handleSubmit(onApplyPromo)}
           noValidate
           autoComplete="off"
-          sx={{
-            display: 'flex',
-            flexDirection: { xs: 'column', sm: 'row' },
-            gap: { xs: 2, sm: '10px' },
-          }}
+          sx={{ display: 'flex', gap: '10px' }}
         >
           <LabeledTextfield
             size="small"
@@ -169,6 +167,7 @@ export const CartSummary: FC<CartSummaryProps> = ({
         <Box
           sx={{
             display: 'flex',
+
             justifyContent: 'space-between',
             flexWrap: 'wrap',
             mt: 2,
@@ -235,7 +234,6 @@ export const CartSummary: FC<CartSummaryProps> = ({
         onSubmit={checkout ? onOrderComplete : handleCheckout}
       >
         <Button
-          size={isSmall ? 'small' : isMedium ? 'medium' : 'large'}
           disabled={isLoading || isPending || subtotal === 0}
           type="submit"
           sx={{ width: '100%' }}
