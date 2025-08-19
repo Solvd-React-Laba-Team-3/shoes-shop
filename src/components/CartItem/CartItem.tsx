@@ -47,15 +47,11 @@ export const CartItem: FC<CartProduct> = ({
             '@media (min-width:900px) and (max-width:970px)': {
               maxWidth: '510px',
             },
-            '@media (max-width: 1024px)': {
-              gap: '200px',
-            },
             '@media (min-width:1200px) and (max-width:1237px)': {
               maxWidth: '760px',
             },
             [theme.breakpoints.down('sm')]: {
               flexDirection: 'row',
-              minWidth: '530px',
             },
           })}
         >

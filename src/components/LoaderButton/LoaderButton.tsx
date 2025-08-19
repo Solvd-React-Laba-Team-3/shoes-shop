@@ -26,7 +26,7 @@ export const LoaderButton: FC<LoaderButtonProps> = ({
           marginLeft: '10px',
         },
         '@media (max-width: 420px)': {
-          width: '90%',
+          width: '100%',
           mt: '20px',
         },
       }}
