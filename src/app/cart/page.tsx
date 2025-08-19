@@ -112,7 +112,7 @@ export default function Cart() {
                   },
                 }}
               >
-                <CartSummary isCheckout={false} />
+                <CartSummary checkout={false} />
               </Stack>
             </Box>
           </Stack>
