@@ -17,26 +17,29 @@ import { cartSchema, CartSchema } from './cart.schema';
 import { useCart } from '@/lib/hooks';
 import { useApplyDiscount } from '@/api/discount/useApplyDiscount';
 import { useLocalStorage } from '@/lib/hooks/useLocalStorage';
+import { TAX_PERCENT } from '@/constants/taxPercent';
+import { SHIPPING_AMOUNT } from '@/constants/shippingAmount';
 
 interface CartSummaryProps {
   checkout?: boolean;
-  onConfirmAndPay?: () => void;
   taxPercent?: number;
   shippingAmount?: number;
+  onOrderComplete?: () => void;
 }
 
 export const CartSummary = ({
   checkout = false,
-  onConfirmAndPay,
-  taxPercent = 17,
-  shippingAmount = 20,
+  taxPercent = TAX_PERCENT,
+  shippingAmount = SHIPPING_AMOUNT,
+  onOrderComplete,
 }: CartSummaryProps) => {
   const router = useRouter();
-  const { subtotal, discountAmount, discountCode, isLoading } = useCart();
   const { value: promoOpen, setValue: setPromoOpen } = useLocalStorage<boolean>(
     'promoOpen',
     false
   );
+
+  const { subtotal, discountAmount, discountCode, isLoading } = useCart();
 
   const [isEditing, setIsEditing] = useState(false);
 
@@ -69,18 +72,13 @@ export const CartSummary = ({
     setIsEditing(false);
   };
 
-  const handleCheckout = (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    if (checkout && onConfirmAndPay) {
-      onConfirmAndPay();
-    } else {
-      router.push('/checkout');
-    }
-  };
-
-  // Responsividad
   const isSmall = useMediaQuery('(max-width:400px)');
   const isMedium = useMediaQuery('(min-width:400px) and (max-width:1280px)');
+
+  const handleCheckout = (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    router.push('/checkout');
+  };
 
   return (
     <Box>
@@ -249,7 +247,10 @@ export const CartSummary = ({
       </Box>
 
       <Divider sx={{ mb: { xs: 4, md: '22px' } }} />
-      <Box component="form" onSubmit={handleCheckout}>
+      <Box
+        component="form"
+        onSubmit={checkout ? onOrderComplete : handleCheckout}
+      >
         <Button
           disabled={isLoading || isPending || subtotal === 0}
           type="submit"
