@@ -1,17 +1,11 @@
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
-import {
-  Box,
-  Divider,
-  TextField,
-  Typography,
-  useMediaQuery,
-} from '@mui/material';
+import { Box, Divider, Typography, useMediaQuery } from '@mui/material';
 import { useRouter } from 'next/navigation';
 import { FormEvent, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { Button } from '../ui';
+import { Button, LabeledTextfield } from '../ui';
 import { Accordion } from '../ui/Accordion/Accordion';
 import { cartSchema, CartSchema } from './cart.schema';
 import { useCart } from '@/lib/hooks';
@@ -86,7 +80,7 @@ export const CartSummary = ({
         expanded={promoOpen}
         onChange={(_, isExpanded) => setPromoOpen(isExpanded)}
         label={
-          <Typography sx={{ fontSize: '20px' }}>
+          <Typography sx={{ fontSize: '20px', fontWeight: 400 }}>
             Do you have a promo code?
           </Typography>
         }
@@ -102,7 +96,7 @@ export const CartSummary = ({
             gap: { xs: 2, sm: '10px' },
           }}
         >
-          <TextField
+          <LabeledTextfield
             size="small"
             color="secondary"
             placeholder="Enter promo code"
@@ -119,7 +113,7 @@ export const CartSummary = ({
               },
             })}
             error={!!errors.promoCode}
-            helperText={errors.promoCode?.message}
+            errorMessage={errors.promoCode?.message}
           />
 
           {discountAmount > 0 && !isEditing ? (
@@ -155,7 +149,7 @@ export const CartSummary = ({
           display: 'flex',
           justifyContent: 'space-between',
           flexWrap: 'wrap',
-          margin: '38px 0 20px',
+          margin: '18px 0 20px',
         }}
       >
         <Typography variant="h3" sx={{ fontWeight: 400 }}>
