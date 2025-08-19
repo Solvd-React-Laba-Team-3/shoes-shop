@@ -1,6 +1,6 @@
 'use client';
 
-import { FormErrorMessage, LabeledTextfield, Link } from '@/components/ui';
+import { LabeledTextfield, Link } from '@/components/ui';
 import { Box, Typography } from '@mui/material';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -13,10 +13,9 @@ import {
   resetPasswordSchema,
 } from './reset-password.schema';
 import { LoaderButton } from '@/components/LoaderButton';
-import { ReactElement } from 'react';
 import recoveryImage from '../../../../public/recovery.jpg';
 
-export default function ResetPassword(): ReactElement | null {
+export default function ResetPassword() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const code = searchParams.get('code');
@@ -85,18 +84,15 @@ export default function ResetPassword(): ReactElement | null {
           maxWidth={400}
           onSubmit={handleSubmit(onSubmit)}
         >
-          <Box>
-            <LabeledTextfield
-              id="password"
-              placeholder="at least 6 characters"
-              required
-              type="password"
-              label="Password"
-              error={!!errors.password}
-              {...register('password')}
-            />
-            <FormErrorMessage message={errors.password?.message} />
-          </Box>
+          <LabeledTextfield
+            id="password"
+            placeholder="at least 6 characters"
+            required
+            type="password"
+            label="Password"
+            errorMessage={errors.password?.message}
+            {...register('password')}
+          />
 
           <Box>
             <LabeledTextfield
@@ -107,11 +103,10 @@ export default function ResetPassword(): ReactElement | null {
               label="Confirm password"
               error={!!errors.confirmPassword}
               {...register('confirmPassword')}
-            />
-            <FormErrorMessage
-              message={
-                errors.confirmPassword?.message ||
-                (isError ? 'Failed to reset password. Please try again.' : null)
+              errorMessage={
+                errors.confirmPassword?.message || isError
+                  ? 'Failed to reset password. Please try again.'
+                  : null
               }
             />
 

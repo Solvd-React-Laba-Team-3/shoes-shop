@@ -1,5 +1,5 @@
-import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { fetchApi, formatProductAttributes } from '@/lib/utils';
+import { useMutation } from '@tanstack/react-query';
+import { fetchApi, formatProductAttributes, getQueryClient } from '@/lib/utils';
 import { CreateProductRequest } from './useCreateProduct';
 import { Product } from '@/types/Product';
 import { StrapiSingleData } from '@/types/api/StrapiSingleData';
@@ -33,7 +33,7 @@ const updateProduct = async ({
 };
 
 export const useUpdateProduct = () => {
-  const queryClient = useQueryClient();
+  const queryClient = getQueryClient();
   const { data: session } = useSession();
 
   return useMutation<Product, Error, Omit<UpdateProductRequest, 'token'>>({

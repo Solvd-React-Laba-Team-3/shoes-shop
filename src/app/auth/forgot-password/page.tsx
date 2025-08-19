@@ -1,6 +1,6 @@
 'use client';
 
-import { FormErrorMessage, LabeledTextfield } from '@/components/ui';
+import { LabeledTextfield } from '@/components/ui';
 import { Box, Typography } from '@mui/material';
 import Image from 'next/image';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -83,16 +83,14 @@ export default function ForgotPassword() {
               placeholder="Enter your email"
               required
               {...register('email')}
-              error={!!errors.email}
-            />
-            <FormErrorMessage
-              message={
+              errorMessage={
                 errors.email?.message ||
                 (isError
                   ? 'Failed to send reset instructions. Please try again.'
                   : null)
               }
             />
+
             {isSuccess && (
               <Typography variant="subtitle2" color="success">
                 A reset link has been sent to your email. Redirecting to

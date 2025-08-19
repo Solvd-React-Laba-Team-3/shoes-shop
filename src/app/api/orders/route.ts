@@ -1,10 +1,8 @@
-import { OrderHistory } from '@/types/OrderHistory';
+import { Order } from '@/types/Order';
 import { NextResponse } from 'next/server';
 import Stripe from 'stripe';
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string, {
-  apiVersion: '2025-07-30.basil',
-});
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string);
 
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
@@ -48,6 +46,7 @@ export async function GET(req: Request) {
         return {
           userId: Number(intent.metadata.userId),
           orderNumber: Number(intent.metadata.orderNumber),
+          date: new Date(intent.created * 1000).toISOString(),
           summary: intent.amount / 100,
           discountAmount: intent.metadata.discountAmount
             ? Number(intent.metadata.discountAmount)
@@ -75,7 +74,7 @@ export async function GET(req: Request) {
 
     const orders = ordersWithReceipts.filter(
       (order) => order !== null
-    ) as OrderHistory[];
+    ) as Order[];
 
     return NextResponse.json({ orders });
   } catch (err) {

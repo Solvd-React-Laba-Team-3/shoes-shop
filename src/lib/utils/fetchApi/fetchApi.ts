@@ -7,6 +7,7 @@ interface FetchOptions {
   token?: string;
   body?: unknown;
   queryParams?: QueryParam;
+  apiRoute?: boolean;
 }
 
 /**
@@ -17,6 +18,7 @@ interface FetchOptions {
  * @param {('GET'|'POST'|'PUT'|'DELETE')} method - The HTTP method to use
  * @param {unknown} [body] - Optional request body that will be JSON stringified
  * @param {string} [token] - Optional token to be used for authentication
+ * @param {boolean} [apiRoute] - Optional flag to use the API route instead of the public API URL
  *
  * @returns {Promise<T | StrapiError>} A promise that resolves to either:
  *  - The successful response data of type T
@@ -29,6 +31,7 @@ export const fetchApi = async <T>({
   body,
   token,
   queryParams,
+  apiRoute = false,
 }: FetchOptions): Promise<T> => {
   const isFormData = body instanceof FormData;
 
@@ -39,18 +42,17 @@ export const fetchApi = async <T>({
   };
 
   const queryString = toQueryString(queryParams);
-  const response = await fetch(
-    `${process.env.NEXT_PUBLIC_API_URL}${endpoint}${queryString}`,
-    {
-      method,
-      headers,
-      body: isFormData
-        ? (body as FormData)
-        : body
-          ? JSON.stringify(body)
-          : undefined,
-    }
-  );
+  const baseUrl = apiRoute ? '/api' : process.env.NEXT_PUBLIC_API_URL;
+
+  const response = await fetch(`${baseUrl}${endpoint}${queryString}`, {
+    method,
+    headers,
+    body: isFormData
+      ? (body as FormData)
+      : body
+        ? JSON.stringify(body)
+        : undefined,
+  });
 
   const data = await response.json();
 

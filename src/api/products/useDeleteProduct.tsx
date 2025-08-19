@@ -1,5 +1,5 @@
-import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { fetchApi } from '@/lib/utils';
+import { useMutation } from '@tanstack/react-query';
+import { fetchApi, getQueryClient } from '@/lib/utils';
 import { useSession } from 'next-auth/react';
 
 export type DeleteProductRequest = {
@@ -16,7 +16,7 @@ const deleteProduct = async ({ token, id }: DeleteProductRequest) => {
 };
 
 export const useDeleteProduct = () => {
-  const queryClient = useQueryClient();
+  const queryClient = getQueryClient();
   const { data: session } = useSession();
 
   return useMutation<void, Error, Omit<DeleteProductRequest, 'token'>>({

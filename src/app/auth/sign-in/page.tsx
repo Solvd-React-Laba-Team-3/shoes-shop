@@ -1,11 +1,6 @@
 'use client';
 
-import {
-  Checkbox,
-  FormErrorMessage,
-  LabeledTextfield,
-  Link,
-} from '@/components/ui';
+import { Checkbox, LabeledTextfield, Link } from '@/components/ui';
 import { Box, Typography } from '@mui/material';
 import Image from 'next/image';
 import { useForm } from 'react-hook-form';
@@ -97,30 +92,24 @@ export default function SignIn() {
           maxWidth={400}
           onSubmit={handleSubmit(onSubmit)}
         >
-          <Box>
-            <LabeledTextfield
-              id="email"
-              label="Email"
-              required
-              placeholder="example@mail.com"
-              error={!!errors.email || !!error}
-              {...register('email')}
-            />
-            <FormErrorMessage message={errors.email?.message} />
-          </Box>
+          <LabeledTextfield
+            id="email"
+            label="Email"
+            required
+            placeholder="example@mail.com"
+            {...register('email')}
+            errorMessage={errors.email?.message}
+          />
 
-          <Box>
-            <LabeledTextfield
-              id="password"
-              label="Password"
-              required
-              type="password"
-              placeholder="at least 6 characters"
-              error={!!errors.password || !!error}
-              {...register('password')}
-            />
-            <FormErrorMessage message={errors.password?.message || error} />
-          </Box>
+          <LabeledTextfield
+            id="password"
+            label="Password"
+            required
+            type="password"
+            placeholder="at least 6 characters"
+            {...register('password')}
+            errorMessage={errors.password?.message || error}
+          />
 
           <Box
             sx={{
