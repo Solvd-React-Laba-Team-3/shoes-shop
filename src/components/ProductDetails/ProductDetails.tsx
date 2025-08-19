@@ -3,12 +3,12 @@
 import { getProductOptions } from '@/api/products/getProductOptions';
 import { Box, NoSsr, Stack, styled, Typography } from '@mui/material';
 import { useQuery } from '@tanstack/react-query';
-import { FC, useState } from 'react';
+import { FC, useEffect, useState } from 'react';
 import { Button } from '../ui';
 import { SizeSelector } from '../SizeSelector';
 import { ProductSlider } from '../ProductSlider';
 import { notFound } from 'next/navigation';
-import { useWishlist, useCart } from '@/lib/hooks';
+import { useWishlist, useCart, useRecentlyViewed } from '@/lib/hooks';
 
 const ProductWrap = styled(Box)(({ theme }) => ({
   display: 'flex',
@@ -55,11 +55,16 @@ export const ProductDetails: FC<ProductDetailsProps> = ({ productId }) => {
     isLoading: isCartLoading,
   } = useCart();
 
+  const { addItem: addRecentlyViewed } = useRecentlyViewed();
+
   const isInCart = cart.some(
     (item) => item.id === productId && item.size === selectedSize
   );
 
   const isInWishlist = (id: number) => wishlist.includes(id);
+  useEffect(() => {
+    if (product) addRecentlyViewed(product.id);
+  }, [product]);
 
   if (isError || !product) return notFound();
 
@@ -90,14 +95,14 @@ export const ProductDetails: FC<ProductDetailsProps> = ({ productId }) => {
           }}
         >
           <Stack direction="row" alignItems={'end'}>
-            <Typography variant="h2" width={'100%'}>
+            <Typography variant="h2" component={'h1'} width={'100%'}>
               {product.name}
             </Typography>
-            <Typography variant="h5" margin={'0 0 5px 15px'}>
+            <Typography variant="h5" component={'span'} margin={'0 0 5px 15px'}>
               ${product.price}
             </Typography>
           </Stack>
-          <Typography variant="h4" color="secondary.dark">
+          <Typography variant="h5" component={'span'} color="secondary.dark">
             {product.color?.name}
           </Typography>
         </Stack>
@@ -150,27 +155,25 @@ export const ProductDetails: FC<ProductDetailsProps> = ({ productId }) => {
             {isInCart && selectedSize ? 'Remove from Bag' : 'Add to Bag'}
           </Button>
         </Stack>
-        <Stack direction={'column'} spacing={'15px'}>
-          <Stack direction={'column'} spacing={'10px'}>
-            <Typography variant="h6" color="text.secondary">
-              Description
-            </Typography>
-            <Typography variant="body2" color="text.secondary">
-              {product.description}
-            </Typography>
-          </Stack>
-          <Stack direction={'row'} spacing={'8px'} alignItems={'center'}>
-            <Typography variant="subtitle1" color="text.secondary">
-              Owner:
-            </Typography>
-            <Typography
-              variant="body2"
-              color="text.secondary"
-              textTransform={'capitalize'}
-            >
-              {product.teamName}
-            </Typography>
-          </Stack>
+        <Stack direction={'column'} spacing={'10px'} marginBottom={'15px'}>
+          <Typography variant="h6" component={'h2'} color="text.secondary">
+            Description
+          </Typography>
+          <Typography variant="body2" color="text.secondary">
+            {product.description}
+          </Typography>
+        </Stack>
+        <Stack direction={'row'} spacing={'8px'} alignItems={'center'}>
+          <Typography variant="subtitle1" color="text.secondary">
+            Owner:
+          </Typography>
+          <Typography
+            variant="body2"
+            color="text.secondary"
+            textTransform={'capitalize'}
+          >
+            {product.teamName}
+          </Typography>
         </Stack>
       </Box>
     </ProductWrap>

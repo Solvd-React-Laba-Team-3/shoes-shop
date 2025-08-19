@@ -1,11 +1,6 @@
 'use client';
 
-import {
-  FormErrorMessage,
-  LabeledTextfield,
-  Link,
-  ReviewPanel,
-} from '@/components/ui';
+import { LabeledTextfield, Link, ReviewPanel } from '@/components/ui';
 import { Box, Typography } from '@mui/material';
 import Image from 'next/image';
 import { useForm } from 'react-hook-form';
@@ -98,57 +93,43 @@ export default function SignUp() {
             },
           })}
         >
-          <Box>
-            <LabeledTextfield
-              id="name"
-              label="Name"
-              required
-              placeholder="Hayman Andrews"
-              {...register('name')}
-              error={!!errors.name}
-            />
-            <FormErrorMessage message={errors.name?.message} />
-          </Box>
+          <LabeledTextfield
+            id="name"
+            label="Name"
+            required
+            placeholder="Hayman Andrews"
+            {...register('name')}
+            errorMessage={errors.name?.message}
+          />
 
-          <Box>
-            <LabeledTextfield
-              id="email"
-              label="Email"
-              required
-              placeholder="example@mail.com"
-              {...register('email')}
-              error={!!errors.email}
-            />
-            <FormErrorMessage message={errors.email?.message} />
-          </Box>
+          <LabeledTextfield
+            id="email"
+            label="Email"
+            required
+            placeholder="example@mail.com"
+            {...register('email')}
+            errorMessage={errors.email?.message}
+          />
 
-          <Box>
-            <LabeledTextfield
-              id="password"
-              label="Password"
-              required
-              type="password"
-              placeholder="at least 6 characters"
-              {...register('password')}
-              error={!!errors.password}
-            />
-            <FormErrorMessage message={errors.password?.message} />
-          </Box>
+          <LabeledTextfield
+            id="password"
+            label="Password"
+            required
+            type="password"
+            placeholder="at least 6 characters"
+            {...register('password')}
+            errorMessage={errors.password?.message}
+          />
 
-          <Box>
-            <LabeledTextfield
-              id="confirmPassword"
-              label="Confirm password"
-              required
-              type="password"
-              placeholder="at least 6 characters"
-              {...register('confirmPassword')}
-              error={!!errors.confirmPassword}
-            />
-            <FormErrorMessage
-              message={errors.confirmPassword?.message || error?.message}
-            />
-          </Box>
+          <LabeledTextfield
+            id="confirmPassword"
+            label="Confirm password"
+            required
+            type="password"
+            placeholder="at least 6 characters"
+            {...register('confirmPassword')}
+            errorMessage={errors.confirmPassword?.message || error?.message}
+          />
 
           <LoaderButton
             isSubmitting={isPending}

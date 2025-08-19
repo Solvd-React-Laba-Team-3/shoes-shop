@@ -1,8 +1,9 @@
 import { CartProduct } from './CartProduct';
 
-export interface OrderHistory {
+export interface Order {
   userId: number;
   orderNumber: number;
+  date: string;
   summary: number;
   discountAmount?: number;
   discountCode?: string;

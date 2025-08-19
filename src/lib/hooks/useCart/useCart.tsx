@@ -3,12 +3,21 @@ import { Product } from '@/types/Product';
 import { useLocalStorage } from '../useLocalStorage/useLocalStorage';
 import productImagePlaceholder from '../../../../public/product-placeholder.png';
 
+interface CartState {
+  products: CartProduct[];
+  discountCode?: string;
+  discountAmount?: number;
+  discountType?: 'fixed' | 'percent';
+}
+
 export const useCart = () => {
   const {
-    value: items,
-    setValue: setItems,
+    value: cartState,
+    setValue: setCartState,
     isLoading,
-  } = useLocalStorage<CartProduct[]>('cart-products', []);
+  } = useLocalStorage<CartState>('cart-state', { products: [] });
+
+  const items = cartState.products;
 
   const addItem = (product: Product, size: number) => {
     const newProduct: CartProduct = {
@@ -21,9 +30,7 @@ export const useCart = () => {
       gender: product.gender.name,
       color: product.color.name,
     };
-
-    const updatedItems = [...items, newProduct];
-    setItems(updatedItems);
+    setCartState({ ...cartState, products: [...items, newProduct] });
   };
 
   const updateQuantity = (id: number, size: number, quantity: number) => {
@@ -31,19 +38,17 @@ export const useCart = () => {
       removeItem(id, size);
       return;
     }
-
     const updatedItems = items.map((item) =>
       item.id === id && item.size === size ? { ...item, quantity } : item
     );
-
-    setItems(updatedItems);
+    setCartState({ ...cartState, products: updatedItems });
   };
 
   const removeItem = (productId: number, size: number) => {
     const removedItems = items.filter(
       (item) => item.id !== productId || item.size !== size
     );
-    setItems(removedItems);
+    setCartState({ ...cartState, products: removedItems });
   };
 
   const increaseQuantity = (id: number, size: number, quantity: number) => {
@@ -54,20 +59,70 @@ export const useCart = () => {
     updateQuantity(id, size, quantity - 1);
   };
 
-  const subtotal = isLoading
-    ? 0
-    : items.reduce((acc, item) => {
-        return acc + item.price * item.quantity;
-      }, 0);
+  const setDiscount = (
+    code?: string,
+    amount?: number,
+    type?: 'fixed' | 'percent'
+  ) => {
+    setCartState({
+      ...cartState,
+      discountCode: code,
+      discountAmount: amount,
+      discountType: type,
+    });
+  };
+
+  const clearDiscount = () => {
+    setCartState({
+      ...cartState,
+      discountCode: undefined,
+      discountAmount: undefined,
+      discountType: undefined,
+    });
+  };
+
+  const clearCart = () => {
+    setCartState({
+      products: [],
+      discountCode: undefined,
+      discountAmount: undefined,
+      discountType: undefined,
+    });
+  };
+
+  const subtotal = items.reduce(
+    (acc, item) => acc + item.price * item.quantity,
+    0
+  );
+
+  let discountAmount = cartState.discountAmount ?? 0;
+
+  if (cartState.discountType === 'fixed' && discountAmount > subtotal * 0.5) {
+    discountAmount = 0;
+    if (cartState.discountCode || cartState.discountAmount) {
+      clearDiscount();
+    }
+  }
+
+  const getTotal = (shippingAmount: number, taxPercent: number) => {
+    return (subtotal + shippingAmount) * (1 + taxPercent / 100);
+  };
 
   return {
     items,
+    subtotal,
+    getTotal,
+    discountAmount,
+    discountCode: cartState.discountCode,
+    discountType: cartState.discountType,
     addItem,
     updateQuantity,
-    subtotal,
     increaseQuantity,
     decreaseQuantity,
     removeItem,
+    setDiscount,
+    clearDiscount,
+    clearCart,
     isLoading,
   };
 };

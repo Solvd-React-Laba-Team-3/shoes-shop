@@ -1,85 +1,134 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useState } from 'react';
 import { CheckoutForm } from '@/components/CheckoutForm';
 import { Header } from '@/components/common/Header';
-import { getSession } from 'next-auth/react';
-import StripeProvider from '@/providers/StripeProvider';
-import {
-  Accordion,
-  AccordionDetails,
-  AccordionSummary,
-  Box,
-  Typography,
-} from '@mui/material';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import { OrderHistory } from '@/types/OrderHistory';
-import { CartProduct } from '@/types/CartProduct';
+import { Box, LinearProgress } from '@mui/material';
 import { CartSummary } from '@/components/CartSummary';
 import { useCart } from '@/lib/hooks';
+import { useQuery } from '@tanstack/react-query';
+import { getShippingTaxOptions } from '@/api/shippingAndTax/getShippingTaxOptions';
+import { FormProvider, useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { checkoutSchema, CheckoutSchema } from './checkout.schema';
+import { splitProducts } from '@/lib/utils';
+import { useCreatePayment } from '@/api/payment/useCreatePayment';
+import { CardElement, useElements, useStripe } from '@stripe/react-stripe-js';
+import { useRouter } from 'next/navigation';
+import { StripeCardElement } from '@stripe/stripe-js';
+import { SHIPPING_AMOUNT } from '@/constants/shippingAmount';
+import { TAX_PERCENT } from '@/constants/taxPercent';
 
 export default function Checkout() {
-  const [orders, setOrders] = useState<OrderHistory[]>([]);
-  const [shippingAmount, setShippingAmount] = useState<number>(20);
-  const [taxPercent, setTaxPercent] = useState<number>(17);
-  const [totalAmount, setTotalAmount] = useState<number>(0);
-  const [discountAmount, setDiscountAmount] = useState<number>(0);
-  const [discountCode, setDiscountCode] = useState<string | undefined>(
+  const stripe = useStripe();
+  const elements = useElements();
+  const router = useRouter();
+
+  const {
+    items: products,
+    discountCode,
+    clearCart,
+    clearDiscount,
+    getTotal,
+    discountAmount,
+  } = useCart();
+
+  const methods = useForm<CheckoutSchema>({
+    resolver: zodResolver(checkoutSchema),
+    defaultValues: {
+      name: '',
+      surname: '',
+      email: '',
+      phone: '',
+      country: '',
+      city: '',
+      state: '',
+      zipCode: '',
+      address: '',
+      paymentMethod: 'card',
+      discountCode: discountCode ?? '',
+    },
+    shouldFocusError: true,
+  });
+
+  const { reset, handleSubmit, watch } = methods;
+
+  const { data: shippingTax, isFetching } = useQuery(
+    getShippingTaxOptions(watch('country'))
+  );
+  const { mutateAsync: createPayment, isError } = useCreatePayment();
+
+  const shippingAmount = shippingTax?.shippingAmount ?? SHIPPING_AMOUNT;
+  const taxPercent = shippingTax?.taxPercent ?? TAX_PERCENT;
+
+  const [isProcessing, setIsProcessing] = useState(false);
+  const [cardError, setCardError] = useState<string | null | undefined>(
     undefined
   );
-  const { items: products } = useCart();
-  const checkoutFormSubmitRef = useRef<() => void>(() => {});
 
-  const onConfirmAndPay = () => {
-    checkoutFormSubmitRef.current();
-  };
-
-  const handleCartSummaryChange = (
-    newTotalAmount: number,
-    newDiscountAmount: number,
-    newDiscountCode?: string
-  ) => {
-    setTotalAmount(newTotalAmount);
-    setDiscountAmount(newDiscountAmount);
-    setDiscountCode(newDiscountCode);
-  };
-
-  const handleCountryChange = async (country: string) => {
-    if (country) {
-      try {
-        const res = await fetch(`/api/shipping-and-tax?country=${country}`);
-        if (res.ok) {
-          const data = await res.json();
-          setShippingAmount(data.shippingAmount);
-          setTaxPercent(data.taxPercent);
-        } else {
-          setShippingAmount(20);
-          setTaxPercent(17);
-        }
-      } catch {
-        setShippingAmount(20);
-        setTaxPercent(17);
+  const handleOrderComplete = handleSubmit(async (data: CheckoutSchema) => {
+    if (!stripe || !elements || cardError !== null) {
+      if (cardError === undefined) {
+        setCardError('Card number is required');
       }
-    } else {
-      setShippingAmount(20);
-      setTaxPercent(17);
+      return;
     }
-  };
 
-  useEffect(() => {
-    const fetchOrders = async () => {
-      const session = await getSession();
-      if (session) {
-        const res = await fetch(`/api/orders?userId=${session.user.id}`, {
-          cache: 'no-store',
-        });
-        const { orders } = await res.json();
-        setOrders(orders);
-      }
+    const orderNumber = Date.now();
+
+    const productsMetadata = splitProducts(products).reduce(
+      (acc, chunk, i) => {
+        acc[`products${i + 1}`] = chunk;
+        return acc;
+      },
+      {} as Record<string, string>
+    );
+
+    const finalizeOrder = () => {
+      reset();
+      clearCart();
+      clearDiscount();
+      setIsProcessing(false);
+      router.push(`/order/?order=${encodeURIComponent(orderNumber)}`);
     };
 
-    fetchOrders();
-  }, []);
+    try {
+      setIsProcessing(true);
+
+      const paymentData = {
+        ...data,
+        amount: getTotal(shippingAmount, taxPercent),
+        discountAmount,
+        discountCode,
+        shippingAmount,
+        taxPercent,
+        orderNumber,
+        productsMetadata,
+      };
+
+      const { clientSecret } = await createPayment(paymentData);
+
+      const cardEl = elements.getElement(CardElement);
+
+      const { paymentIntent } = await stripe.confirmCardPayment(clientSecret, {
+        payment_method: {
+          card: cardEl as StripeCardElement,
+          billing_details: {
+            name: `${data.name} ${data.surname}`,
+            email: data.email,
+          },
+        },
+      });
+
+      if (paymentIntent?.status === 'succeeded') {
+        elements?.getElement(CardElement)?.clear();
+      }
+    } catch (error) {
+      console.error(error);
+    } finally {
+      finalizeOrder();
+    }
+  });
 
   return (
     <>
@@ -92,124 +141,24 @@ export default function Checkout() {
           marginTop: '50px',
         }}
       >
-        <StripeProvider>
+        <FormProvider {...methods}>
           <CheckoutForm
-            totalAmount={totalAmount}
-            products={products}
-            shippingAmount={shippingAmount}
-            taxPercent={taxPercent}
-            onCountryChange={handleCountryChange}
-            discountCode={discountCode}
-            discountAmount={discountAmount}
-            onFormSubmitRef={checkoutFormSubmitRef}
+            error={isError}
+            cardError={cardError}
+            setCardError={setCardError}
           />
-        </StripeProvider>
-        <Box sx={{ width: 600 }}>
-          <CartSummary
-            isCheckout
-            taxPercent={taxPercent}
-            shippingAmount={shippingAmount}
-            onConfirmAndPay={onConfirmAndPay}
-            onCartSummaryChange={handleCartSummaryChange}
-          />
-          <Typography variant="h6" mb={2} mt={5}>
-            Your orders
-          </Typography>
-          {orders.length === 0 ? (
-            <Typography>You don&apos;t have orders created yet.</Typography>
-          ) : (
-            orders.map((order) => (
-              <Accordion key={order.orderNumber}>
-                <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                  <Typography>
-                    Order #{order.orderNumber} - ${order.summary}
-                  </Typography>
-                </AccordionSummary>
-                <AccordionDetails>
-                  <Typography variant="body2">
-                    <strong>Status:</strong> {order.status}
-                  </Typography>
-                  <Typography variant="body2">
-                    <strong>Payment Method:</strong> {order.paymentMethod}
-                  </Typography>
-                  <Typography variant="body2">
-                    <strong>Contact:</strong> {order.contactFullName}
-                  </Typography>
-                  <Typography variant="body2">
-                    <strong>Email:</strong> {order.contactEmail}
-                  </Typography>
-                  <Typography variant="body2">
-                    <strong>Phone:</strong> {order.contactPhone}
-                  </Typography>
-                  <Typography variant="body2">
-                    <strong>Send to:</strong> {order.delivery}
-                  </Typography>
-                  <Typography variant="body2" mt={1}>
-                    <strong>Total:</strong> ${order.summary}
-                  </Typography>
-                  {order.discountAmount && (
-                    <Typography variant="body2">
-                      <strong>Discount:</strong> -${order.discountAmount} ({' '}
-                      {order.discountCode})
-                    </Typography>
-                  )}
-                  <Typography variant="body2">
-                    <strong>Shipping:</strong> ${order.shippingAmount}
-                  </Typography>
-                  <Typography variant="body2">
-                    <strong>TAX: </strong> {order.taxPercent}%
-                  </Typography>
-                  {order.receipt_url && (
-                    <Typography variant="body2">
-                      <a
-                        href={order.receipt_url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
-                        Open receipt
-                      </a>
-                    </Typography>
-                  )}
-                  <Typography variant="body2" mt={1}>
-                    <strong>Products:</strong>
-                  </Typography>
-                  <Box
-                    sx={{
-                      display: 'flex',
-                      flexDirection: 'column',
-                      gap: 2,
-                      mt: 1,
-                    }}
-                  >
-                    {order.products.map((product: CartProduct, idx: number) => (
-                      <Box
-                        key={idx}
-                        sx={{ display: 'flex', alignItems: 'center', gap: 2 }}
-                      >
-                        <img
-                          src={product.image ?? '/placeholder.jpg'}
-                          alt={product.name}
-                          width={50}
-                          height={50}
-                          style={{ objectFit: 'cover', borderRadius: 8 }}
-                        />
-                        <Box>
-                          <Typography variant="body2">
-                            <strong>{product.name}</strong> x {product.quantity}
-                          </Typography>
-                          <Typography variant="body2">
-                            ${product.price} - Size {product.size}, Color{' '}
-                            {product.color}
-                          </Typography>
-                        </Box>
-                      </Box>
-                    ))}
-                  </Box>
-                </AccordionDetails>
-              </Accordion>
-            ))
-          )}
-        </Box>
+          <Box sx={{ width: 600 }}>
+            <CartSummary
+              checkout
+              taxPercent={taxPercent}
+              shippingAmount={shippingAmount}
+              onOrderComplete={handleOrderComplete}
+            />
+            {(isProcessing || isFetching) && (
+              <LinearProgress sx={{ marginTop: 2 }} />
+            )}
+          </Box>
+        </FormProvider>
       </Box>
     </>
   );

@@ -1,5 +1,5 @@
 import { StrapiError } from '@/types/api/StrapiError';
-import { MockResponse } from '../../types/mockResponse';
+import { Response } from '../../types/Response';
 
 /**
  * Helper function to create a mock error response
@@ -12,7 +12,7 @@ export const createErrorResponse = (
   status: number = 400,
   message: string = 'Bad Request',
   details: Record<string, unknown> = {}
-): MockResponse<StrapiError> => ({
+): Response<StrapiError> => ({
   json: () =>
     Promise.resolve({
       error: {

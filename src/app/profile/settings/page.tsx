@@ -16,6 +16,7 @@ import { useChangePassword } from '@/api/profile/useChangePassword';
 
 export default function Settings() {
   const { data: session } = useSession();
+
   const inputRef = useRef<HTMLInputElement>(null);
   const [file, setFile] = useState<File | null>(null);
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
@@ -201,8 +202,8 @@ export default function Settings() {
         onSubmit={handleSubmit(onSubmit)}
         sx={{
           display: 'grid',
-          gridTemplateColumns: '350px 350px',
-          gap: '100px',
+          gridTemplateColumns: { md: '350px 350px', xs: '1fr' },
+          gap: { md: '100px', xs: '20px' },
         }}
       >
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
