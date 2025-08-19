@@ -7,6 +7,7 @@ import { getUserProfile } from '@/api/profile/getUserProfile';
 import GoogleProvider from 'next-auth/providers/google';
 import FacebookProvider from 'next-auth/providers/facebook';
 import GitHubProvider from 'next-auth/providers/github';
+import { githubCallback } from '@/api/profile/getUserGuthubProfile';
 
 declare module 'next-auth' {
   interface Session {
@@ -70,7 +71,20 @@ export const authOptions: AuthOptions = {
   ],
 
   callbacks: {
-    async jwt({ token, user, trigger }) {
+    async jwt({ token, user, trigger, account }) {
+      // when user signs in with github
+      if (account?.provider === 'github') {
+        try {
+          const githubUser = await githubCallback(token.user.accessToken);
+
+          token.user = {
+            ...token.user,
+            ...githubUser,
+          };
+        } catch (err) {
+          console.error('GitHub backend sync failed:', err);
+        }
+      }
       if (user) {
         token.user = {
           ...user,
