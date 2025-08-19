@@ -132,15 +132,6 @@ export default function SignIn() {
               <Link href="/auth/sign-up" size="small">
                 Sign up
               </Link>
-
-              {/* <Button
-              disabled={isLoading}
-              onClick={loginWithGoogle}
-              variant="outlined"
-            >
-              {isLoading && <Loading />}
-              Login with google
-            </Button> */}
             </Box>
             <Divider
               sx={{
