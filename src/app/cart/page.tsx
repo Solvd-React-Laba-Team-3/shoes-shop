@@ -50,7 +50,8 @@ export default function Cart() {
 
               flexShrink: 1,
               '@media (max-width:600px)': {
-                minWidth: '700px',
+                width: '100%',
+                maxWidth: '800px',
               },
             }}
           >
@@ -90,7 +91,7 @@ export default function Cart() {
             sx={{
               flex: '0 0 auto',
               '@media (max-width: 1024px)': {
-                minWidth: '800px',
+                width: '100%',
                 maxWidth: '800px',
               },
             }}
