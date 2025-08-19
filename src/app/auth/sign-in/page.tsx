@@ -22,7 +22,7 @@ import {
 } from '@/constants/sessionMaxAge';
 import { LoaderButton } from '@/components/LoaderButton';
 import loginImage from '../../../../public/login.jpg';
-import Loading from '@/components/LoadingProgress/LoadingProgress';
+import { Loading } from '@/components/LoadingProgress/LoadingProgress';
 
 export default function SignIn() {
   const router = useRouter();

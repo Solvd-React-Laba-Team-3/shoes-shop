@@ -31,7 +31,7 @@ function LoadingProgress(props: CircularProgressProps & { value: number }) {
   );
 }
 
-export default function Loading() {
+export function Loading() {
   const [progress, setProgress] = React.useState(10);
 
   React.useEffect(() => {
