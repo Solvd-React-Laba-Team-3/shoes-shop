@@ -201,35 +201,29 @@ export const ProductForm: FC<ProductFormProps> = ({
               gap: '16px',
             }}
           >
-            <Box>
-              <LabeledTextfield
-                label="Product name"
-                placeholder="Nike Air Max 90"
-                {...register('name')}
-                error={!!errors.name}
-              />
-              <FormErrorMessage message={errors.name?.message} />
-            </Box>
+            <LabeledTextfield
+              label="Product name"
+              placeholder="Nike Air Max 90"
+              {...register('name')}
+              errorMessage={errors.name?.message}
+            />
             <Controller
               name="price"
               control={control}
               render={({ field }) => (
-                <Box>
-                  <LabeledTextfield
-                    label="Price"
-                    type="number"
-                    placeholder="160"
-                    startAdornment={'$'}
-                    {...field}
-                    error={!!errors.price}
-                    onChange={(e) => {
-                      const numValue = Number(e.target.value);
-                      if (isNaN(numValue)) return;
-                      field.onChange(numValue);
-                    }}
-                  />
-                  <FormErrorMessage message={errors.price?.message} />
-                </Box>
+                <LabeledTextfield
+                  label="Price"
+                  type="number"
+                  placeholder="160"
+                  startAdornment={'$'}
+                  errorMessage={errors.price?.message}
+                  {...field}
+                  onChange={(e) => {
+                    const numValue = Number(e.target.value);
+                    if (isNaN(numValue)) return;
+                    field.onChange(numValue);
+                  }}
+                />
               )}
             />
             <Controller
