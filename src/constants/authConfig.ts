@@ -4,6 +4,10 @@ import { User as IUser } from '@/types/User';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import { SESSION_MAX_AGE } from './sessionMaxAge';
 import { getUserProfile } from '@/api/profile/getUserProfile';
+import GoogleProvider from 'next-auth/providers/google';
+import FacebookProvider from 'next-auth/providers/facebook';
+import GitHubProvider from 'next-auth/providers/github';
+import { githubCallback } from '@/api/profile/getUserGuthubProfile';
 
 declare module 'next-auth' {
   interface Session {
@@ -28,6 +32,18 @@ export const authOptions: AuthOptions = {
     newUser: '/auth/sign-up',
   },
   providers: [
+    GoogleProvider({
+      clientId: process.env.GOOGLE_CLIENT_ID!,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+    }),
+    FacebookProvider({
+      clientId: process.env.FACEBOOK_CLIENT_ID!,
+      clientSecret: process.env.FACEBOOK_CLIENT_SECRET!,
+    }),
+    GitHubProvider({
+      clientId: process.env.GITHUB_ID!,
+      clientSecret: process.env.GITHUB_SECRET!,
+    }),
     CredentialsProvider({
       name: 'Credentials',
       credentials: {
@@ -55,7 +71,20 @@ export const authOptions: AuthOptions = {
   ],
 
   callbacks: {
-    async jwt({ token, user, trigger }) {
+    async jwt({ token, user, trigger, account }) {
+      // when user signs in with github
+      if (account?.provider === 'github') {
+        try {
+          const githubUser = await githubCallback(token.user.accessToken);
+
+          token.user = {
+            ...token.user,
+            ...githubUser,
+          };
+        } catch (err) {
+          console.error('GitHub backend sync failed:', err);
+        }
+      }
       if (user) {
         token.user = {
           ...user,
