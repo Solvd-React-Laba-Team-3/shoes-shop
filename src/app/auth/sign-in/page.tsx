@@ -120,7 +120,6 @@ export default function SignIn() {
               '@media (max-width: 420px)': {
                 flexDirection: 'column',
                 alignItems: 'center',
-                gap: 1,
               },
             }}
           >
@@ -136,7 +135,6 @@ export default function SignIn() {
                 sx={{
                   display: 'flex',
                   alignItems: 'center',
-
                   gap: 1,
                 }}
               >
