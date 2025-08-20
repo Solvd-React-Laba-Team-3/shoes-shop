@@ -15,7 +15,7 @@ export const checkoutSchema = z.object({
   zipCode: z.string().regex(ZIP_REGEX, { message: 'Invalid zip code' }),
   address: z.string().min(1, { message: 'Address is required' }),
   discountCode: z.string().optional().or(z.literal('')),
-  paymentMethod: z.enum(['card', 'googlePay', 'applePay']),
+  paymentMethod: z.enum(['card', 'googlePay', 'applePay', 'link']),
 });
 
 export type CheckoutSchema = z.infer<typeof checkoutSchema>;
