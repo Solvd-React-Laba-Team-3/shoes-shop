@@ -1,10 +1,8 @@
-import { OrderResponse } from '@/types/api/OrderResponse';
+import { Order } from '@/types/Order';
 import { NextResponse } from 'next/server';
 import Stripe from 'stripe';
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string, {
-  apiVersion: '2025-07-30.basil',
-});
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string);
 
 function parseProducts(metadata: Record<string, string>) {
   return Array.from({ length: 50 }, (_, i) => {
@@ -85,7 +83,7 @@ export async function GET(req: Request) {
             receipt_url: receiptUrl,
             paymentMethod,
             decline_reason: declineReason,
-          } as OrderResponse;
+          } as Order;
         })
       )
     )
@@ -96,7 +94,7 @@ export async function GET(req: Request) {
           order!.status === 'canceled' ||
           (order!.status === 'requires_payment_method' &&
             order!.decline_reason === null)
-      ) as OrderResponse[];
+      ) as Order[];
 
     return NextResponse.json({ orders });
   } catch (err) {

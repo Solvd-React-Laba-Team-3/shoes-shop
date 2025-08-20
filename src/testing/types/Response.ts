@@ -1,4 +1,4 @@
-export interface MockResponse<T> {
+export interface Response<T> {
   json: () => Promise<T>;
   ok?: boolean;
   status?: number;

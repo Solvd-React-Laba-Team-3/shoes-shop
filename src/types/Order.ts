@@ -1,6 +1,6 @@
-import { CartProduct } from '../CartProduct';
+import { CartProduct } from './CartProduct';
 
-export interface OrderResponse {
+export interface Order {
   userId: number;
   orderNumber: number;
   date: string;

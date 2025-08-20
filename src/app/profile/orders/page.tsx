@@ -15,13 +15,13 @@ import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
 import { CartProduct } from '@/types/CartProduct';
 import { useQuery } from '@tanstack/react-query';
-import { getOrdersOptions } from '@/api/orders/orderOptions';
+import { getOrdersOptions } from '@/api/orders/getOrdersOptions';
 import {
   Download,
   KeyboardArrowDown,
   KeyboardArrowUp,
 } from '@mui/icons-material';
-import { OrderResponse } from '@/types/api/OrderResponse';
+import { Order } from '@/types/Order';
 import { theme } from '@/providers/ThemeProvider';
 import { formatDate } from '@/lib/utils/formatDate/formatDate';
 import { useState } from 'react';
@@ -132,7 +132,7 @@ export default function Orders() {
       </Typography>
 
       <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-        {orders.map((order: OrderResponse, index: number) => (
+        {orders.map((order: Order, index: number) => (
           <Card
             key={`${order.orderNumber}-${index}`}
             sx={{
