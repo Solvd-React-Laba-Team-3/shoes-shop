@@ -18,6 +18,7 @@ import { useRouter } from 'next/navigation';
 import { PaymentRequest, StripeCardElement } from '@stripe/stripe-js';
 import { SHIPPING_AMOUNT } from '@/constants/shippingAmount';
 import { TAX_PERCENT } from '@/constants/taxPercent';
+import { PaymentMethod } from '@/components/CheckoutForm';
 
 export default function Checkout() {
   const stripe = useStripe();
@@ -69,6 +70,8 @@ export default function Checkout() {
   const [paymentRequest, setPaymentRequest] = useState<PaymentRequest | null>(
     null
   );
+  const [availablePaymentMethod, setAvailablePaymentMethod] =
+    useState<PaymentMethod>('card');
 
   const handleOrderComplete = handleSubmit(async (data: CheckoutSchema) => {
     if (!stripe || !elements || cardError !== null) {
@@ -134,7 +137,6 @@ export default function Checkout() {
     }
   });
 
-  // For Google Pay and Apple Pay payments
   useEffect(() => {
     if (!stripe) return;
 
@@ -144,7 +146,7 @@ export default function Checkout() {
         currency: 'usd',
         total: {
           label: 'Total',
-          amount: Math.round(total),
+          amount: total * 100,
         },
         requestPayerName: true,
         requestPayerEmail: true,
@@ -154,6 +156,21 @@ export default function Checkout() {
 
       if (result) {
         setPaymentRequest(request);
+
+        if (result.googlePay) {
+          setAvailablePaymentMethod('googlePay');
+          return;
+        }
+
+        if (result.applePay) {
+          setAvailablePaymentMethod('applePay');
+          return;
+        }
+
+        if (result.link) {
+          setAvailablePaymentMethod('link');
+          return;
+        }
       }
     };
 
@@ -177,6 +194,7 @@ export default function Checkout() {
             error={isError}
             cardError={cardError}
             setCardError={setCardError}
+            availablePaymentMethod={availablePaymentMethod}
           />
           <Box sx={{ width: 600 }}>
             <CartSummary
