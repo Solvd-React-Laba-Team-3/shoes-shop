@@ -3,7 +3,7 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Box, Divider, Typography, useMediaQuery } from '@mui/material';
 import { useRouter } from 'next/navigation';
-import { FormEvent, useState } from 'react';
+import { FC, FormEvent, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { Button, LabeledTextfield } from '../ui';
 import { Accordion } from '../ui/Accordion/Accordion';
@@ -21,7 +21,7 @@ interface CartSummaryProps {
   onOrderComplete?: () => void;
 }
 
-export const CartSummary = ({
+export const CartSummary: FC<CartSummaryProps> = ({
   checkout = false,
   taxPercent = TAX_PERCENT,
   shippingAmount = SHIPPING_AMOUNT,
@@ -39,7 +39,7 @@ export const CartSummary = ({
 
   const subtotalWithDiscount = subtotal - discountAmount;
   const taxAmount = (subtotalWithDiscount * taxPercent) / 100;
-  const finalTotal = subtotalWithDiscount + taxAmount + shippingAmount;
+  const finalTotal = subtotalWithDiscount + shippingAmount + taxAmount;
 
   const {
     register,
