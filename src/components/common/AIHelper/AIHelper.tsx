@@ -129,7 +129,6 @@ export const AIHelper = () => {
                 }
               }}
               placeholder="Type your prompt here..."
-              autoFocus
               minRows={4}
               maxRows={4}
               spellCheck={false}
