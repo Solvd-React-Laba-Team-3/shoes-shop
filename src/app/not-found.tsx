@@ -109,10 +109,10 @@ export default function NotFound() {
 
         <Box sx={{ flex: 1 }}>
           <Image
-            src="/page-404-image.png"
+            src="/404.png"
             width={1000}
             height={1000}
-            alt="page 404 - image"
+            alt="404 banner"
             style={{ width: '100%', height: '100%', objectFit: 'cover' }}
           />
         </Box>
