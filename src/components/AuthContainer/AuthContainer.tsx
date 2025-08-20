@@ -18,55 +18,42 @@ export const AuthContainer = ({
 }: AuthContainerProp) => (
   <Box
     sx={(theme) => ({
-      margin: '10% auto',
+      margin: '20% auto',
       position: 'relative',
       display: 'flex',
       flexDirection: 'column',
       alignItems: 'flex-start',
       gap: '48px',
+      justifyContent: 'center',
       [theme.breakpoints.down('lg')]: {
         padding: '20px',
         alignItems: 'center',
       },
-      '@media (max-width: 420px)': {
-        margin: '20% auto',
-      },
     })}
   >
     <Box
-      sx={{
+      sx={(theme) => ({
         display: 'flex',
         flexDirection: 'column',
         gap: '16px',
-        '@media (max-width: 420px)': {
+        [theme.breakpoints.down('lg')]: {
           textAlign: 'center',
         },
-      }}
+      })}
     >
-      <Typography
-        variant="h2"
-        sx={(theme) => ({
-          [theme.breakpoints.down('sm')]: {
-            fontSize: '30px',
-          },
-        })}
-      >
-        {title}
-      </Typography>
+      <Typography variant="h2">{title}</Typography>
 
       {description && (
         <Typography
           variant="caption"
           component="p"
           color="textSecondary"
-          sx={(theme) => ({
-            [theme.breakpoints.down('sm')]: {
-              fontSize: '12px',
-            },
+          sx={{
+            width: '100%',
             '@media (max-width: 420px)': {
               width: '250px',
             },
-          })}
+          }}
         >
           {description}
         </Typography>
