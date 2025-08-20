@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { CheckoutForm } from '@/components/CheckoutForm';
 import { Header } from '@/components/common/Header';
 import { Box, LinearProgress } from '@mui/material';
@@ -15,7 +15,7 @@ import { splitProducts } from '@/lib/utils';
 import { useCreatePayment } from '@/api/payment/useCreatePayment';
 import { CardElement, useElements, useStripe } from '@stripe/react-stripe-js';
 import { useRouter } from 'next/navigation';
-import { StripeCardElement } from '@stripe/stripe-js';
+import { PaymentRequest, StripeCardElement } from '@stripe/stripe-js';
 import { SHIPPING_AMOUNT } from '@/constants/shippingAmount';
 import { TAX_PERCENT } from '@/constants/taxPercent';
 
@@ -60,10 +60,14 @@ export default function Checkout() {
 
   const shippingAmount = shippingTax?.shippingAmount ?? SHIPPING_AMOUNT;
   const taxPercent = shippingTax?.taxPercent ?? TAX_PERCENT;
+  const total = getTotal(shippingAmount, taxPercent);
 
   const [isProcessing, setIsProcessing] = useState(false);
   const [cardError, setCardError] = useState<string | null | undefined>(
     undefined
+  );
+  const [paymentRequest, setPaymentRequest] = useState<PaymentRequest | null>(
+    null
   );
 
   const handleOrderComplete = handleSubmit(async (data: CheckoutSchema) => {
@@ -97,7 +101,7 @@ export default function Checkout() {
 
       const paymentData = {
         ...data,
-        amount: getTotal(shippingAmount, taxPercent),
+        amount: total,
         discountAmount,
         discountCode,
         shippingAmount,
@@ -130,6 +134,32 @@ export default function Checkout() {
     }
   });
 
+  // For Google Pay and Apple Pay payments
+  useEffect(() => {
+    if (!stripe) return;
+
+    const initPaymentRequest = async () => {
+      const request = stripe.paymentRequest({
+        country: 'US',
+        currency: 'usd',
+        total: {
+          label: 'Total',
+          amount: total,
+        },
+        requestPayerName: true,
+        requestPayerEmail: true,
+      });
+
+      const result = await request.canMakePayment();
+
+      if (result) {
+        setPaymentRequest(request);
+      }
+    };
+
+    initPaymentRequest();
+  }, [stripe, total]);
+
   return (
     <>
       <Header />
@@ -143,6 +173,7 @@ export default function Checkout() {
       >
         <FormProvider {...methods}>
           <CheckoutForm
+            paymentRequest={paymentRequest}
             error={isError}
             cardError={cardError}
             setCardError={setCardError}
