@@ -14,7 +14,7 @@ import {
 import { theme } from '@/providers/ThemeProvider';
 import PaymentIcon from '@mui/icons-material/Payment';
 import GoogleIcon from '@mui/icons-material/Google';
-import MoneyIcon from '@mui/icons-material/AttachMoney';
+import AppleIcon from '@mui/icons-material/Apple';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import {
@@ -39,7 +39,7 @@ interface CheckoutProps {
 const paymentMethods = [
   { value: 'card', label: 'Card', icon: PaymentIcon },
   { value: 'googlePay', label: 'Google Pay', icon: GoogleIcon },
-  { value: 'cashApp', label: 'Cash App Pay', icon: MoneyIcon },
+  { value: 'applePay', label: 'Apple Pay', icon: AppleIcon },
 ];
 
 export const CheckoutForm: FC<CheckoutProps> = ({
@@ -110,13 +110,13 @@ export const CheckoutForm: FC<CheckoutProps> = ({
         return paymentRequest ? (
           <PaymentRequestButtonElement options={{ paymentRequest }} />
         ) : (
-          'Google Pay is not supported'
+          <FormErrorMessage message="Google Pay is not supported" />
         );
-      case 'cashApp':
+      case 'applePay':
         return paymentRequest ? (
           <PaymentRequestButtonElement options={{ paymentRequest }} />
         ) : (
-          'Apple Pay is not supported'
+          <FormErrorMessage message="Apple Pay is not supported" />
         );
       default:
         return null;
@@ -287,9 +287,8 @@ export const CheckoutForm: FC<CheckoutProps> = ({
                 }
               }}
               sx={{
-                flexGrow: 1,
                 display: 'flex',
-                justifyContent: 'space-between',
+                gap: '12px',
               }}
             >
               {paymentMethods.map(({ value, label, icon: Icon }) => (
@@ -317,7 +316,7 @@ export const CheckoutForm: FC<CheckoutProps> = ({
           </Box>
         )}
       />
-      {renderPaymentMethod()}
+      {showCardFields && renderPaymentMethod()}
       <FormErrorMessage message={cardError} />
       {error && <FormErrorMessage message="Payment failed" />}
       <Divider sx={{ mt: 6, mb: 2 }} />
