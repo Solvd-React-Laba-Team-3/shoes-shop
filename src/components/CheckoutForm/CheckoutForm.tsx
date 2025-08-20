@@ -15,18 +15,22 @@ import { theme } from '@/providers/ThemeProvider';
 import PaymentIcon from '@mui/icons-material/Payment';
 import GoogleIcon from '@mui/icons-material/Google';
 import MoneyIcon from '@mui/icons-material/AttachMoney';
-import ScheduleIcon from '@mui/icons-material/Schedule';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
-import { CardElement } from '@stripe/react-stripe-js';
+import {
+  CardElement,
+  PaymentRequestButtonElement,
+} from '@stripe/react-stripe-js';
 import { StyledInputLabel } from '../ProductForm/productForm.styles';
 import { shippingCountries } from '@/constants/shippingCountries';
 import {
   StyledChevronButton,
   StyledPaymentMethod,
 } from './checkoutForm.styles';
+import { PaymentRequest } from '@stripe/stripe-js';
 
 interface CheckoutProps {
+  paymentRequest: PaymentRequest | null;
   error: boolean;
   cardError: string | null | undefined;
   setCardError: (error: string | null | undefined) => void;
@@ -36,10 +40,10 @@ const paymentMethods = [
   { value: 'card', label: 'Card', icon: PaymentIcon },
   { value: 'googlePay', label: 'Google Pay', icon: GoogleIcon },
   { value: 'cashApp', label: 'Cash App Pay', icon: MoneyIcon },
-  { value: 'afterPay', label: 'After Payment', icon: ScheduleIcon },
 ];
 
 export const CheckoutForm: FC<CheckoutProps> = ({
+  paymentRequest,
   error,
   cardError,
   setCardError,
@@ -56,6 +60,68 @@ export const CheckoutForm: FC<CheckoutProps> = ({
     control,
     name: 'paymentMethod',
   });
+
+  const renderPaymentMethod = () => {
+    switch (paymentMethod) {
+      case 'card':
+        return (
+          <Box sx={{ mt: 2 }}>
+            <Box
+              sx={{
+                border: `1px solid ${theme.palette.secondary.dark}`,
+                borderRadius: '8px',
+                p: 2,
+                maxWidth: '100%',
+                height: '56px',
+              }}
+            >
+              <CardElement
+                onChange={(e) => {
+                  if (e.error) {
+                    setCardError(e.error.message);
+                  } else if (!e.complete || e.empty) {
+                    setCardError('Card number is required');
+                  } else {
+                    setCardError(null);
+                  }
+                }}
+                options={{
+                  hidePostalCode: true,
+                  style: {
+                    base: {
+                      fontSize: '16px',
+                      color: '#424770',
+                      fontFamily: 'Work Sans',
+                      '::placeholder': {
+                        color: theme.palette.secondary.light,
+                      },
+                    },
+                    invalid: {
+                      color: 'error.main',
+                    },
+                  },
+                }}
+              />
+            </Box>
+          </Box>
+        );
+
+      case 'googlePay':
+        return paymentRequest ? (
+          <PaymentRequestButtonElement options={{ paymentRequest }} />
+        ) : (
+          'Google Pay is not supported'
+        );
+      case 'cashApp':
+        return paymentRequest ? (
+          <PaymentRequestButtonElement options={{ paymentRequest }} />
+        ) : (
+          'Apple Pay is not supported'
+        );
+      default:
+        return null;
+    }
+  };
 
   return (
     <Box sx={{ maxWidth: 800 }}>
@@ -251,48 +317,7 @@ export const CheckoutForm: FC<CheckoutProps> = ({
           </Box>
         )}
       />
-
-      {paymentMethod === 'card' && showCardFields && (
-        <Box sx={{ mt: 2 }}>
-          <Box
-            sx={{
-              border: `1px solid ${theme.palette.secondary.dark}`,
-              borderRadius: '8px',
-              p: 2,
-              maxWidth: '100%',
-              height: '56px',
-            }}
-          >
-            <CardElement
-              onChange={(e) => {
-                if (e.error) {
-                  setCardError(e.error.message);
-                } else if (!e.complete || e.empty) {
-                  setCardError('Card number is required');
-                } else {
-                  setCardError(null);
-                }
-              }}
-              options={{
-                hidePostalCode: true,
-                style: {
-                  base: {
-                    fontSize: '16px',
-                    color: '#424770',
-                    fontFamily: 'Work Sans',
-                    '::placeholder': {
-                      color: theme.palette.secondary.light,
-                    },
-                  },
-                  invalid: {
-                    color: 'error.main',
-                  },
-                },
-              }}
-            />
-          </Box>
-        </Box>
-      )}
+      {renderPaymentMethod()}
       <FormErrorMessage message={cardError} />
       {error && <FormErrorMessage message="Payment failed" />}
       <Divider sx={{ mt: 6, mb: 2 }} />
