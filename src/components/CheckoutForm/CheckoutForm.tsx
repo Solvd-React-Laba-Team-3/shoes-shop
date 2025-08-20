@@ -300,6 +300,7 @@ export const CheckoutForm: FC<CheckoutProps> = ({
                 flexGrow: 1,
                 display: 'flex',
                 justifyContent: 'space-between',
+                gap: '10px',
               }}
             >
               {paymentMethods.map(({ value, label, icon: Icon }) => (
