@@ -72,6 +72,8 @@ export const authOptions: AuthOptions = {
 
   callbacks: {
     async jwt({ token, user, trigger, account }) {
+      console.log('JWT', { token, user, account });
+
       // when user signs in with github
       if (account?.provider === 'github') {
         try {
@@ -92,6 +94,36 @@ export const authOptions: AuthOptions = {
         };
       }
 
+      if (user && account?.provider === 'google') {
+        try {
+          const res = await fetch(
+            `${process.env.NEXT_PUBLIC_API_URL}/google-custom`,
+            {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                email: user.email,
+                name: user.name || 'User',
+              }),
+            }
+          );
+          if (!res.ok) {
+            console.error('Strapi returned error', res.status);
+            throw new Error('Strapi login failed');
+          }
+          const data = await res.json();
+          console.log('Strapi response', data);
+          token.user = {
+            ...user,
+            id: user.sub,
+            name: user.name || 'User',
+            accessToken: data.jwt || '',
+          };
+        } catch (err) {
+          console.error('JWT fetch error', err);
+          throw err;
+        }
+      }
       if (trigger === 'update') {
         const updatedUser = await getUserProfile(token.user.accessToken);
 
