@@ -124,7 +124,7 @@ export const AIHelper = () => {
               value={prompt}
               onChange={(e) => setPrompt(e.target.value)}
               onKeyDown={(e) => {
-                if (e.key === 'Enter' && e.ctrlKey) {
+                if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) {
                   handleSend();
                 }
               }}
