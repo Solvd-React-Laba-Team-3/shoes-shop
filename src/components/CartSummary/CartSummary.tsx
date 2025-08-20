@@ -32,13 +32,14 @@ export const CartSummary: FC<CartSummaryProps> = ({
     false
   );
 
-  const { subtotal, discountAmount, discountCode, isLoading } = useCart();
+  const { subtotal, discountAmount, discountCode, isLoading, getTotal } =
+    useCart();
 
   const [isEditing, setIsEditing] = useState(false);
 
   const subtotalWithDiscount = subtotal - discountAmount;
   const taxAmount = (subtotalWithDiscount * taxPercent) / 100;
-  const finalTotal = subtotalWithDiscount + shippingAmount + taxAmount;
+  const total = getTotal(shippingAmount, taxPercent);
 
   const {
     register,
@@ -203,7 +204,7 @@ export const CartSummary: FC<CartSummaryProps> = ({
               Total
             </Typography>
             <Typography variant="h3" sx={{ fontWeight: 600 }}>
-              ${finalTotal.toFixed(2)}
+              ${total}
             </Typography>
           </Box>
         </>

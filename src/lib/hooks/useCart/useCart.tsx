@@ -105,7 +105,12 @@ export const useCart = () => {
   }
 
   const getTotal = (shippingAmount: number, taxPercent: number) => {
-    return (subtotal + shippingAmount) * (1 + taxPercent / 100);
+    return Number(
+      (
+        (subtotal + shippingAmount - discountAmount) *
+        (1 + taxPercent / 100)
+      ).toFixed(2)
+    );
   };
 
   return {
