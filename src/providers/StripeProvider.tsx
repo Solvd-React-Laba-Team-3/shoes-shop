@@ -2,12 +2,12 @@
 
 import { Elements } from '@stripe/react-stripe-js';
 import { loadStripe } from '@stripe/stripe-js';
-import { ReactNode } from 'react';
+import { FC, PropsWithChildren } from 'react';
 
-const stripePromise = loadStripe(
-  process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!
+const stripe = loadStripe(
+  process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY as string
 );
 
-export default function StripeProvider({ children }: { children: ReactNode }) {
-  return <Elements stripe={stripePromise}>{children}</Elements>;
-}
+export const StripeProvider: FC<PropsWithChildren> = ({ children }) => {
+  return <Elements stripe={stripe}>{children}</Elements>;
+};

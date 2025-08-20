@@ -52,10 +52,10 @@ export default function MyProducts() {
         <Box
           sx={{
             display: 'flex',
-            gap: '26px',
+            gap: { xs: '12px', md: '26px' },
             alignItems: 'center',
             position: 'absolute',
-            left: '58px',
+            left: { md: '58px' },
             bottom: '-90px',
           }}
         >
@@ -68,8 +68,10 @@ export default function MyProducts() {
               height: '120px',
             }}
           />
-          <Box>
-            <Typography variant="h6">{session?.user?.username}</Typography>
+          <Box paddingTop="10px">
+            <Typography variant="h6" whiteSpace="pre-wrap" lineHeight="1.2">
+              {session?.user?.username}
+            </Typography>
             <Typography variant="caption">
               {`Joined in ${new Date(
                 session?.user?.createdAt || ''

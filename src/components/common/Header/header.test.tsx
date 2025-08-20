@@ -63,9 +63,7 @@ describe('Header', () => {
       expect(screen.getByAltText('logo')).toBeInTheDocument();
       expect(screen.getByText('Products')).toBeInTheDocument();
       expect(screen.getByTestId('main-search-bar')).toBeInTheDocument();
-      expect(
-        screen.getByTestId('ShoppingBasketOutlinedIcon')
-      ).toBeInTheDocument();
+      expect(screen.getByTestId('LocalMallOutlinedIcon')).toBeInTheDocument();
       expect(
         screen.getByRole('button', { name: 'Sign in' })
       ).toBeInTheDocument();
@@ -98,7 +96,7 @@ describe('Header', () => {
       renderHeaderWithTheme();
 
       const cartButton = screen
-        .getByTestId('ShoppingBasketOutlinedIcon')
+        .getByTestId('LocalMallOutlinedIcon')
         .closest('button');
       fireEvent.click(cartButton!);
 
@@ -149,7 +147,7 @@ describe('Header', () => {
       renderHeaderWithTheme();
 
       const cartButton = screen
-        .getByTestId('ShoppingBasketOutlinedIcon')
+        .getByTestId('LocalMallOutlinedIcon')
         .closest('button');
       fireEvent.click(cartButton!);
 

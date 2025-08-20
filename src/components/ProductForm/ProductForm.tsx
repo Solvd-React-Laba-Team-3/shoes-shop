@@ -10,25 +10,32 @@ import {
   ToggleButton,
   MenuItem,
   Button,
-  IconButton,
   FormErrorMessage,
 } from '@/components/ui';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useSuspenseQueries } from '@tanstack/react-query';
+import { useQuery, useSuspenseQueries } from '@tanstack/react-query';
 import { Controller, useForm } from 'react-hook-form';
-import { StyledInputLabel, StyledTextArea } from './productForm.styles';
+import {
+  StyledInputLabel,
+  StyledTextArea,
+  StyledToggleButton,
+  StyledAutocompleteButton,
+} from './productForm.styles';
 import { productSchema } from './productForm.schema';
 import { ProductFormData } from './productForm.schema';
-import { FC } from 'react';
+import { FC, useState } from 'react';
 import { Size } from '@/types/Size';
 import LinearProgress from '@mui/material/LinearProgress';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
-import AutoFixHighIcon from '@mui/icons-material/AutoFixHighOutlined';
 import { ProductFormDropzone } from '../ProductFormDropzone';
 import { PRODUCT_IMAGES_LIMIT } from '@/constants/productImagesLimit';
 import { TempImage } from '@/types/TempImage';
+import Image from 'next/image';
+import suggestionCollapsedIcon from '../../../public/suggestion-collapsed-icon.png';
+import suggestionIcon from '../../../public/suggestion-icon.png';
+import { getDescriptionSuggestionOptions } from '@/api/gemini/getDescriptionSuggestionOptions';
 
 interface ProductFormProps {
   editingProduct?: Partial<ProductFormData>;
@@ -72,6 +79,8 @@ export const ProductForm: FC<ProductFormProps> = ({
     formState: { isSubmitting },
     formState: { errors },
     setError,
+    watch,
+    setValue,
   } = useForm<ProductFormData>({
     resolver: zodResolver(productSchema),
     defaultValues: {
@@ -87,7 +96,28 @@ export const ProductForm: FC<ProductFormProps> = ({
     shouldFocusError: true,
   });
 
-  const onFormSubmit = (data: ProductFormData) => {
+  const [isCollapsed, setIsCollapsed] = useState(true);
+
+  const { refetch: fetchDescriptionSuggestion, isFetching } = useQuery(
+    getDescriptionSuggestionOptions(
+      watch('name'),
+      watch('description'),
+      watch('gender'),
+      watch('brand')
+    )
+  );
+
+  const handleDescriptionSuggestion = async () => {
+    try {
+      const { data: descriptionSuggestion } =
+        await fetchDescriptionSuggestion();
+      if (descriptionSuggestion) setValue('description', descriptionSuggestion);
+    } finally {
+      setIsCollapsed(true);
+    }
+  };
+
+  const handleFormSubmit = (data: ProductFormData) => {
     if (images.length > PRODUCT_IMAGES_LIMIT) {
       setError('root', {
         message: `You can only upload up to ${PRODUCT_IMAGES_LIMIT} images`,
@@ -131,7 +161,7 @@ export const ProductForm: FC<ProductFormProps> = ({
         component="form"
         noValidate
         autoComplete="off"
-        onSubmit={handleSubmit(onFormSubmit)}
+        onSubmit={handleSubmit(handleFormSubmit)}
       >
         <Box
           sx={{
@@ -171,35 +201,29 @@ export const ProductForm: FC<ProductFormProps> = ({
               gap: '16px',
             }}
           >
-            <Box>
-              <LabeledTextfield
-                label="Product name"
-                placeholder="Nike Air Max 90"
-                {...register('name')}
-                error={!!errors.name}
-              />
-              <FormErrorMessage message={errors.name?.message} />
-            </Box>
+            <LabeledTextfield
+              label="Product name"
+              placeholder="Nike Air Max 90"
+              {...register('name')}
+              errorMessage={errors.name?.message}
+            />
             <Controller
               name="price"
               control={control}
               render={({ field }) => (
-                <Box>
-                  <LabeledTextfield
-                    label="Price"
-                    type="number"
-                    placeholder="160"
-                    startAdornment={'$'}
-                    {...field}
-                    error={!!errors.price}
-                    onChange={(e) => {
-                      const numValue = Number(e.target.value);
-                      if (isNaN(numValue)) return;
-                      field.onChange(numValue);
-                    }}
-                  />
-                  <FormErrorMessage message={errors.price?.message} />
-                </Box>
+                <LabeledTextfield
+                  label="Price"
+                  type="number"
+                  placeholder="160"
+                  startAdornment={'$'}
+                  errorMessage={errors.price?.message}
+                  {...field}
+                  onChange={(e) => {
+                    const numValue = Number(e.target.value);
+                    if (isNaN(numValue)) return;
+                    field.onChange(numValue);
+                  }}
+                />
               )}
             />
             <Controller
@@ -357,17 +381,34 @@ export const ProductForm: FC<ProductFormProps> = ({
                             : `1px solid ${theme.palette.divider}`,
                       }}
                     />
-                    <IconButton
-                      sx={{
-                        position: 'absolute',
-                        bottom: '12px',
-                        right: '12px',
-                        color: (theme) => theme.palette.grey[600],
-                      }}
-                      onClick={() => console.log('AI autosuggestion...')}
+                    {isCollapsed && (
+                      <StyledToggleButton
+                        value={isCollapsed}
+                        onClick={() => setIsCollapsed(false)}
+                      >
+                        <Image
+                          src={suggestionCollapsedIcon}
+                          alt="Suggestion collapsed"
+                          width={26}
+                          height={20}
+                        />
+                      </StyledToggleButton>
+                    )}
+
+                    <StyledAutocompleteButton
+                      size="small"
+                      isCollapsed={isCollapsed}
+                      onClick={handleDescriptionSuggestion}
+                      loading={isFetching}
                     >
-                      <AutoFixHighIcon />
-                    </IconButton>
+                      Use AI suggestion
+                      <Image
+                        src={suggestionIcon}
+                        alt="Suggestion icon"
+                        width={20}
+                        height={14}
+                      />
+                    </StyledAutocompleteButton>
                   </Box>
                   <FormErrorMessage message={errors.description?.message} />
                 </Box>

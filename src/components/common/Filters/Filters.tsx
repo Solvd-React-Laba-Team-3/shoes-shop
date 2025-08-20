@@ -1,6 +1,6 @@
 'use client';
 
-import { useDebounce, useSearchParams } from '@/lib/hooks';
+import { useDebounce, useDeviceSize, useSearchParams } from '@/lib/hooks';
 import {
   Box,
   Divider,
@@ -11,8 +11,16 @@ import {
   styled,
   TextField,
   Typography,
+  useTheme,
 } from '@mui/material';
-import { Accordion, Checkbox, SearchBar } from '@/components/ui';
+import CloseIcon from '@mui/icons-material/Close';
+import {
+  Accordion,
+  Button,
+  Checkbox,
+  IconButton,
+  SearchBar,
+} from '@/components/ui';
 import { useSuspenseQueries } from '@tanstack/react-query';
 import { getGendersOptions } from '@/api/gender/getGendersOptions';
 import { getSizesOptions } from '@/api/size/getSizesOptions';
@@ -20,6 +28,7 @@ import { getColorsOptions } from '@/api/color/getColorsOptions';
 import { getBrandsOptions } from '@/api/brand/getBrandsOptions';
 import { FC, useCallback, useMemo, useState } from 'react';
 import { parseQueryString, toQueryString } from '@/lib/utils';
+import { HEADER_HEIGHT } from '@/constants/headerHeight';
 
 type FilterType = number | number[] | string | Record<string, number | object>;
 
@@ -29,6 +38,7 @@ const StyledFormLabel = styled(FormLabel)(({ theme }) => ({
   fontWeight: 400,
   lineHeight: '24px',
   cursor: 'pointer',
+  paddingLeft: '8px',
 }));
 
 const StyledPricesContainer = styled(FormLabel)(() => ({
@@ -75,6 +85,10 @@ export const Filters: FC<DrawerProps> = ({ ...props }) => {
     },
     [searchParams]
   );
+
+  const clearFilters = useCallback(() => {
+    searchParams.delete('filters');
+  }, [searchParams]);
 
   const priceInput = useMemo<[number, number]>(
     () => [
@@ -124,35 +138,98 @@ export const Filters: FC<DrawerProps> = ({ ...props }) => {
       getColorsOptions(),
     ],
   });
+
+  const { isMobile } = useDeviceSize();
+
   return (
     <Drawer
-      variant="persistent"
-      anchor="left"
+      variant={isMobile ? 'temporary' : 'persistent'}
+      anchor={isMobile ? 'right' : 'left'}
       sx={{
         width: props.open ? '320px' : '0px',
         transition: 'width 0.2s ease-in-out',
         zIndex: 800,
 
         '& .MuiDrawer-paper': {
-          position: 'relative',
           border: 'none',
           paddingBottom: '200px',
+          top: { xs: 0, md: HEADER_HEIGHT },
+        },
+        '& .MuiPaper-root': {
+          position: { md: 'sticky' },
+        },
+
+        [useTheme().breakpoints.up('md')]: {
+          position: 'relative',
         },
       }}
       {...props}
     >
-      <Box sx={{ width: '100%', padding: '40px' }}>
-        {search && <Typography variant="caption">Shoes/{search}</Typography>}
-        <Typography variant="h4">{search ?? 'Catalog'}</Typography>
-      </Box>
-      <Box display="flex" flexDirection="column" gap="28px">
-        <Divider />
+      {isMobile ? (
+        <>
+          <Box
+            sx={{
+              display: 'flex',
+              justifyContent: 'flex-end',
+              paddingBottom: '8px',
+              paddingTop: '12px',
+            }}
+          >
+            <IconButton
+              sx={{
+                cursor: 'pointer',
+                zIndex: 1000,
+                color: 'text.secondary',
+              }}
+              onClick={(e) => props.onClose?.(e, 'backdropClick')}
+            >
+              <CloseIcon />
+            </IconButton>
+          </Box>
+          <Box
+            display="flex"
+            padding="0 20px 0 40px"
+            alignItems="center"
+            justifyContent="space-between"
+          >
+            <Typography>Filters</Typography>
+            <Button
+              variant="text"
+              onClick={clearFilters}
+              sx={{
+                width: '18px',
+                '&:hover': {
+                  backgroundColor: 'transparent',
+                },
+              }}
+            >
+              Clear
+            </Button>
+          </Box>
+        </>
+      ) : (
+        <Box sx={{ width: '100%', padding: '24px 48px' }}>
+          {search && <Typography variant="caption">Shoes/{search}</Typography>}
+          <Typography variant="h4">{search ?? 'Catalog'}</Typography>
+        </Box>
+      )}
+      <Box
+        display="flex"
+        flexDirection="column"
+        sx={{ gap: { xs: '12px', md: '28px' } }}
+        width="320px"
+      >
+        <Divider sx={{ display: { xs: 'none', md: 'block' } }} />
         <Box paddingLeft="40px">
           <Accordion label="Gender" defaultExpanded>
-            <Box display="flex" flexDirection="column" gap="20px">
+            <Box
+              display="flex"
+              flexDirection="column"
+              sx={{ gap: { xs: '12px', md: '20px' } }}
+            >
               {genders.map((gender) => (
                 <Box
-                  sx={{ display: 'flex', gap: '8px', alignItems: 'center' }}
+                  sx={{ display: 'flex', alignItems: 'center' }}
                   key={gender.id}
                 >
                   <Checkbox
@@ -174,7 +251,11 @@ export const Filters: FC<DrawerProps> = ({ ...props }) => {
         <Divider />
         <Box paddingLeft="40px">
           <Accordion label="Brand" defaultExpanded>
-            <Box display="flex" flexDirection="column" gap="20px">
+            <Box
+              display="flex"
+              flexDirection="column"
+              sx={{ width: '92%', gap: { xs: '12px', md: '28px' } }}
+            >
               <SearchBar
                 type="search"
                 value={searchBrands}
@@ -183,7 +264,7 @@ export const Filters: FC<DrawerProps> = ({ ...props }) => {
               />
               {brands.map((brand) => (
                 <Box
-                  sx={{ display: 'flex', gap: '8px', alignItems: 'center' }}
+                  sx={{ display: 'flex', alignItems: 'center' }}
                   key={brand.id}
                 >
                   <Checkbox
@@ -297,10 +378,14 @@ export const Filters: FC<DrawerProps> = ({ ...props }) => {
         <Divider />
         <Box paddingLeft="40px">
           <Accordion label="Color" defaultExpanded>
-            <Box display="flex" flexDirection="column" gap="20px">
+            <Box
+              display="flex"
+              flexDirection="column"
+              sx={{ gap: { xs: '12px', md: '20px' } }}
+            >
               {colors?.map((color) => (
                 <Box
-                  sx={{ display: 'flex', gap: '8px', alignItems: 'center' }}
+                  sx={{ display: 'flex', alignItems: 'center' }}
                   key={color.id}
                 >
                   <Checkbox
@@ -322,10 +407,14 @@ export const Filters: FC<DrawerProps> = ({ ...props }) => {
         <Divider />
         <Box paddingLeft="40px">
           <Accordion label="Size" defaultExpanded>
-            <Box display="flex" flexDirection="column" gap="20px">
+            <Box
+              display="flex"
+              flexDirection="column"
+              sx={{ gap: { xs: '12px', md: '20px' } }}
+            >
               {sizes?.map((size) => (
                 <Box
-                  sx={{ display: 'flex', gap: '8px', alignItems: 'center' }}
+                  sx={{ display: 'flex', alignItems: 'center' }}
                   key={size.id}
                 >
                   <Checkbox

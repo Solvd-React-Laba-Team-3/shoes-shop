@@ -95,14 +95,14 @@ export const ProductDetails: FC<ProductDetailsProps> = ({ productId }) => {
           }}
         >
           <Stack direction="row" alignItems={'end'}>
-            <Typography variant="h2" width={'100%'}>
+            <Typography variant="h2" component={'h1'} width={'100%'}>
               {product.name}
             </Typography>
-            <Typography variant="h5" margin={'0 0 5px 15px'}>
+            <Typography variant="h5" component={'span'} margin={'0 0 5px 15px'}>
               ${product.price}
             </Typography>
           </Stack>
-          <Typography variant="h4" color="secondary.dark">
+          <Typography variant="h5" component={'span'} color="secondary.dark">
             {product.color?.name}
           </Typography>
         </Stack>
@@ -155,27 +155,25 @@ export const ProductDetails: FC<ProductDetailsProps> = ({ productId }) => {
             {isInCart && selectedSize ? 'Remove from Bag' : 'Add to Bag'}
           </Button>
         </Stack>
-        <Stack direction={'column'} spacing={'15px'}>
-          <Stack direction={'column'} spacing={'10px'}>
-            <Typography variant="h6" color="text.secondary">
-              Description
-            </Typography>
-            <Typography variant="body2" color="text.secondary">
-              {product.description}
-            </Typography>
-          </Stack>
-          <Stack direction={'row'} spacing={'8px'} alignItems={'center'}>
-            <Typography variant="subtitle1" color="text.secondary">
-              Owner:
-            </Typography>
-            <Typography
-              variant="body2"
-              color="text.secondary"
-              textTransform={'capitalize'}
-            >
-              {product.teamName}
-            </Typography>
-          </Stack>
+        <Stack direction={'column'} spacing={'10px'} marginBottom={'15px'}>
+          <Typography variant="h6" component={'h2'} color="text.secondary">
+            Description
+          </Typography>
+          <Typography variant="body2" color="text.secondary">
+            {product.description}
+          </Typography>
+        </Stack>
+        <Stack direction={'row'} spacing={'8px'} alignItems={'center'}>
+          <Typography variant="subtitle1" color="text.secondary">
+            Owner:
+          </Typography>
+          <Typography
+            variant="body2"
+            color="text.secondary"
+            textTransform={'capitalize'}
+          >
+            {product.teamName}
+          </Typography>
         </Stack>
       </Box>
     </ProductWrap>
