@@ -144,7 +144,7 @@ export default function Checkout() {
         currency: 'usd',
         total: {
           label: 'Total',
-          amount: total,
+          amount: Math.round(total),
         },
         requestPayerName: true,
         requestPayerEmail: true,
