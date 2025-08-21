@@ -157,7 +157,12 @@ export const ProductForm: FC<ProductFormProps> = ({
         />
       )}
       <Box
-        sx={{ display: 'flex', flexDirection: 'column', gap: { md: '40px' } }}
+        sx={{
+          display: 'flex',
+          flexDirection: 'column',
+          gap: { md: '40px' },
+          width: { sm: 'calc(100vw - 24px)', md: 'unset' },
+        }}
         component="form"
         noValidate
         autoComplete="off"
@@ -247,7 +252,7 @@ export const ProductForm: FC<ProductFormProps> = ({
                   sx={{
                     display: 'flex',
                     flexDirection: 'column',
-                    maxWidth: '436px',
+                    maxWidth: { xs: '100%', md: '436px' },
                     gap: '2px',
                   }}
                 >
@@ -287,7 +292,8 @@ export const ProductForm: FC<ProductFormProps> = ({
                 render={({ field }) => (
                   <Box
                     sx={{
-                      width: '210px',
+                      width: { md: '210px' },
+                      flexGrow: '1',
                       display: 'flex',
                       flexDirection: 'column',
                       gap: '2px',
@@ -332,7 +338,8 @@ export const ProductForm: FC<ProductFormProps> = ({
                 render={({ field }) => (
                   <Box
                     sx={{
-                      width: '210px',
+                      width: { md: '210px' },
+                      flexGrow: '1',
                       display: 'flex',
                       flexDirection: 'column',
                       gap: '2px',
@@ -441,7 +448,7 @@ export const ProductForm: FC<ProductFormProps> = ({
                     <ToggleButtonGroup
                       size="small"
                       sx={{
-                        maxWidth: '436px',
+                        maxWidth: { xs: '100%', md: '436px' },
                         flexWrap: 'wrap',
                         gap: '12px',
                         mt: '8px',
@@ -455,7 +462,9 @@ export const ProductForm: FC<ProductFormProps> = ({
                         return (
                           <Box
                             key={size.id}
-                            sx={{ mr: index < arr.length - 1 ? 0.39 : 0 }}
+                            sx={{
+                              mr: { md: index < arr.length - 1 ? 0.39 : 0 },
+                            }}
                           >
                             <ToggleButton
                               value={size.id}
@@ -486,7 +495,12 @@ export const ProductForm: FC<ProductFormProps> = ({
               }}
             />
           </Box>
-          <Box sx={{ width: { xs: 'min(100%, 320px)', md: '692px' } }}>
+          <Box
+            sx={{
+              width: { xs: 'min(100%, 320px)', md: '692px' },
+              alignSelf: { xs: 'center', sm: 'unset' },
+            }}
+          >
             <ProductFormDropzone
               images={images}
               onRemoveImage={onRemoveImage}

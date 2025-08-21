@@ -112,7 +112,11 @@ export const EditProductModal: FC<EditPageProps> = ({
       sx={{
         '& .MuiDialog-paper': {
           minWidth: { xs: '90%', md: '1487px' },
-          padding: { xs: '16px 12px', md: '53px 40px 40px 85px' },
+          padding: {
+            xs: '12px 16px',
+            sm: '12px 24px',
+            md: '53px 40px 40px 85px',
+          },
         },
       }}
     >

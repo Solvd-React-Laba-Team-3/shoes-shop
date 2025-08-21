@@ -142,7 +142,13 @@ export const ProductActionMenu: FC<ProductActionMenuProps> = ({ product }) => {
         }}
       >
         {menuItems.map((item) => (
-          <MenuItem key={item.label} onClick={item.action}>
+          <MenuItem
+            key={item.label}
+            onClick={item.action}
+            sx={{
+              minHeight: '32px',
+            }}
+          >
             <ListItemText primary={item.label} />
           </MenuItem>
         ))}
