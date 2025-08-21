@@ -13,7 +13,7 @@ const mockRouter = {
 
 jest.mock('next/navigation', () => ({
   useRouter: () => mockRouter,
-  useSearchParams: () => new URLSearchParams(), // 👈 mockeamos esto
+  useSearchParams: () => new URLSearchParams(),
 }));
 
 jest.mock('@/components/ui', () => {
