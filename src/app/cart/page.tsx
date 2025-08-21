@@ -37,6 +37,7 @@ export default function Cart() {
 
             [theme.breakpoints.down('sm')]: {
               padding: '20px 30px',
+              gap: 0,
             },
             maxWidth: '1600px',
 
