@@ -141,7 +141,7 @@ export const ProductsContainer: FC<ProductsContainerProps> = ({
       {products.length || isFetching ? (
         <>
           <ProductList products={data.pages.flatMap((page) => page.products)} />
-          <div ref={ref}></div>
+          <div ref={ref} id={'intersection-element'}></div>
         </>
       ) : (
         <StyledNoProductsWrapper>
