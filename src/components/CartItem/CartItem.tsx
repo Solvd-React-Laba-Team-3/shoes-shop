@@ -5,7 +5,7 @@ import { FC, useState } from 'react';
 import { Button } from '../ui';
 import { CartProduct } from '@/types/CartProduct';
 import { useCart } from '@/lib/hooks';
-import { DeleteConfirmationModal } from '../common/DeleteConfirmationModal';
+import { ConfirmActionModal } from '../common/ConfirmActionModal';
 import { useRouter } from 'next/navigation';
 
 export const CartItem: FC<CartProduct> = ({
@@ -144,13 +144,13 @@ export const CartItem: FC<CartProduct> = ({
 
         <Divider sx={{ margin: '60px 0' }} />
       </Stack>
-      <DeleteConfirmationModal
+      <ConfirmActionModal
         title="Are you sure you want to remove this product from the cart?"
         description="Confirm to continue or cancel."
         open={removeModalOpen}
         onClose={() => setRemoveModalOpen(false)}
-        onDelete={handleRemoveItem}
-        deleteText="Remove"
+        onConfirm={handleRemoveItem}
+        confirmText="Remove"
       />
     </>
   );

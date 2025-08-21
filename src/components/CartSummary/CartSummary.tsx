@@ -12,6 +12,8 @@ import { useApplyDiscount } from '@/api/discount/useApplyDiscount';
 import { FC, FormEvent, useState } from 'react';
 import { TAX_PERCENT } from '@/constants/taxPercent';
 import { SHIPPING_AMOUNT } from '@/constants/shippingAmount';
+import { useSession } from 'next-auth/react';
+import { ConfirmActionModal } from '../common/ConfirmActionModal';
 
 interface CartSummaryProps {
   checkout?: boolean;
@@ -27,6 +29,7 @@ export const CartSummary: FC<CartSummaryProps> = ({
   onOrderComplete,
 }) => {
   const router = useRouter();
+  const { data: session } = useSession();
   const { value: promoOpen, setValue: setPromoOpen } = useLocalStorage<boolean>(
     'promoOpen',
     false
@@ -35,6 +38,7 @@ export const CartSummary: FC<CartSummaryProps> = ({
   const { subtotal, discountAmount, discountCode, isLoading } = useCart();
 
   const [isEditing, setIsEditing] = useState(false);
+  const [showLoginConfirm, setShowLoginConfirm] = useState(false);
 
   const subtotalWithDiscount = subtotal - discountAmount;
   const taxAmount = (subtotalWithDiscount * taxPercent) / 100;
@@ -67,6 +71,12 @@ export const CartSummary: FC<CartSummaryProps> = ({
 
   const handleCheckout = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
+    if (!session) {
+      setShowLoginConfirm(true);
+      return;
+    }
+
     router.push('/checkout');
   };
 
@@ -223,6 +233,16 @@ export const CartSummary: FC<CartSummaryProps> = ({
           {checkout ? 'Confirm & Pay' : 'Checkout'}
         </Button>
       </Box>
+
+      <ConfirmActionModal
+        open={showLoginConfirm}
+        title="Login required"
+        description="You need to sign in to complete your purchase. Do you want to go to the login page now?"
+        onClose={() => setShowLoginConfirm(false)}
+        onConfirm={() => router.push('/auth/sign-in?next=checkout')}
+        cancelText="Stay here"
+        confirmText="Go to login"
+      />
     </Box>
   );
 };
