@@ -28,7 +28,7 @@ import {
   KeyboardArrowUp,
   LocalShippingTwoTone,
   PaymentsTwoTone,
-  RecentActorsTwoTone,
+  PersonSearchTwoTone,
   Sync,
 } from '@mui/icons-material';
 import { Order } from '@/types/Order';
@@ -362,7 +362,11 @@ export default function Orders() {
                         </Box>
 
                         <Box sx={{ minWidth: 0 }}>
-                          <Tooltip title={order.delivery}>
+                          <Tooltip
+                            title={order.delivery}
+                            enterTouchDelay={0}
+                            leaveTouchDelay={3000}
+                          >
                             <Box
                               component="span"
                               sx={{
@@ -409,11 +413,13 @@ export default function Orders() {
                           Contacts:
                         </Box>
                         <Box sx={{ display: { xs: 'flex', lg: 'none' } }}>
-                          <RecentActorsTwoTone />:
+                          <PersonSearchTwoTone />:
                         </Box>
                         <Box sx={{ minWidth: 0 }}>
                           <Tooltip
                             title={`${order.contactFullName}, ${order.contactPhone}, ${order.contactEmail}`}
+                            enterTouchDelay={0}
+                            leaveTouchDelay={3000}
                           >
                             <Box
                               component="span"
@@ -465,7 +471,11 @@ export default function Orders() {
                           <PaymentsTwoTone />:
                         </Box>
                         <Box sx={{ minWidth: 0 }}>
-                          <Tooltip title={order.paymentMethod}>
+                          <Tooltip
+                            title={order.paymentMethod}
+                            enterTouchDelay={0}
+                            leaveTouchDelay={3000}
+                          >
                             <Box
                               component="span"
                               sx={{
