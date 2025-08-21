@@ -58,9 +58,6 @@ export default function SignUp() {
               display: 'flex',
               alignItems: 'center',
               gap: 1,
-              '@media (max-width: 420px)': {
-                display: 'block',
-              },
             }}
           >
             <Typography variant="subtitle2" color="textSecondary">
