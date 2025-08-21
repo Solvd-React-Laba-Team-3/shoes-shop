@@ -1,4 +1,17 @@
-export const formatDate = (isoDateString: string): string => {
+/**
+ * Formats an ISO date string into a human-readable date string.
+ *
+ * @param isoDateString - The ISO date string to format.
+ * @param format - The desired output format. Can be:
+ *   - 'dd.mm.yyyy': Returns the date in the format 'day.month.year' (e.g., '05.06.2024').
+ *   - 'dayMonthNameYear': Returns the date in the format 'day MonthName year' (e.g., '05 June 2024').
+ *   Defaults to 'dd.mm.yyyy'.
+ * @returns The formatted date string, or an empty string if the input is invalid.
+ */
+export const formatDate = (
+  isoDateString: string,
+  format: 'dd.mm.yyyy' | 'dayMonthNameYear' = 'dd.mm.yyyy'
+): string => {
   if (!isoDateString || typeof isoDateString !== 'string') {
     return '';
   }
@@ -12,5 +25,14 @@ export const formatDate = (isoDateString: string): string => {
   const month = String(date.getMonth() + 1).padStart(2, '0');
   const year = date.getFullYear();
 
-  return `${day}.${month}.${year}`;
+  if (format === 'dd.mm.yyyy') {
+    return `${day}.${month}.${year}`;
+  }
+
+  if (format === 'dayMonthNameYear') {
+    const monthName = date.toLocaleString('en-US', { month: 'long' });
+    return `${day} ${monthName} ${year}`;
+  }
+
+  return '';
 };
