@@ -153,11 +153,15 @@ export const CartItem: FC<CartProduct> = ({
               display="flex"
               alignItems="center"
               gap={2}
-              sx={{
+              sx={(theme) => ({
                 '@media (max-width: 1100px)': {
                   gap: 0,
                 },
-              }}
+                '@media (min-width: 600px) and (max-width: 740px)': {
+                  margin: '-30px 0',
+                },
+                [theme.breakpoints.down('sm')]: { margin: '-45px 0' },
+              })}
             >
               <ButtonGroup
                 size="small"
@@ -231,7 +235,7 @@ export const CartItem: FC<CartProduct> = ({
           sx={(theme) => ({
             margin: '60px 0',
             [theme.breakpoints.down('sm')]: {
-              margin: '20px 0',
+              margin: '50px 0 20px 0',
             },
           })}
         />
