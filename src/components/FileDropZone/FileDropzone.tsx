@@ -16,6 +16,9 @@ const StyledDropzone = styled(Box)(({ theme }) => ({
   justifyContent: 'center',
   cursor: 'pointer',
   padding: '20px',
+  [theme.breakpoints.down('md')]: {
+    width: 'min(100%, 320px)',
+  },
 }));
 
 export const FileDropzone: FC<FileDropzoneProps> = ({ onFilesDropped }) => {
