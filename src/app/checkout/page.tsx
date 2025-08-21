@@ -29,7 +29,6 @@ export default function Checkout() {
     items: products,
     discountCode,
     clearCart,
-    clearDiscount,
     getTotal,
     discountAmount,
   } = useCart();
@@ -43,7 +42,6 @@ export default function Checkout() {
       phone: '',
       country: '',
       city: '',
-      state: '',
       zipCode: '',
       address: '',
       paymentMethod: 'card',
@@ -73,6 +71,13 @@ export default function Checkout() {
   const [availablePaymentMethod, setAvailablePaymentMethod] =
     useState<PaymentMethod>('card');
 
+  const finalizeOrder = (orderNumber: number) => {
+    reset();
+    clearCart();
+    setIsProcessing(false);
+    router.push(`/order/?order=${encodeURIComponent(orderNumber)}`);
+  };
+
   const handleOrderComplete = handleSubmit(async (data: CheckoutSchema) => {
     if (!stripe || !elements || cardError !== null) {
       if (cardError === undefined) {
@@ -90,14 +95,6 @@ export default function Checkout() {
       },
       {} as Record<string, string>
     );
-
-    const finalizeOrder = () => {
-      reset();
-      clearCart();
-      clearDiscount();
-      setIsProcessing(false);
-      router.push(`/order/?order=${encodeURIComponent(orderNumber)}`);
-    };
 
     try {
       setIsProcessing(true);
@@ -133,7 +130,7 @@ export default function Checkout() {
     } catch (error) {
       console.error(error);
     } finally {
-      finalizeOrder();
+      finalizeOrder(orderNumber);
     }
   });
 
@@ -176,6 +173,33 @@ export default function Checkout() {
 
     initPaymentRequest();
   }, [stripe, total]);
+
+  paymentRequest?.on('paymentmethod', async (e) => {
+    if (!stripe) return;
+
+    const orderNumber = Date.now();
+
+    try {
+      setIsProcessing(true);
+
+      const paymentData = {
+        paymentMethod: e.paymentMethod.id,
+      };
+
+      const { clientSecret } = await createPayment(paymentData);
+      await stripe.confirmPayment({
+        clientSecret,
+        confirmParams: {
+          payment_method: e.paymentMethod.id,
+          return_url: `${window.location.origin}/order/?order=${encodeURIComponent(orderNumber)}`,
+        },
+      });
+    } catch (error) {
+      console.error(error);
+    } finally {
+      finalizeOrder(orderNumber);
+    }
+  });
 
   return (
     <>

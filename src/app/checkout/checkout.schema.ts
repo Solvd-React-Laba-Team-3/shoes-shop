@@ -11,7 +11,6 @@ export const checkoutSchema = z.object({
     .regex(PHONE_REGEX, 'Invalid phone number (e.g. (123) 456-7890)'),
   country: z.string().min(1, { message: 'Country is required' }),
   city: z.string().min(1, { message: 'City is required' }),
-  state: z.string().min(1, { message: 'State is required' }),
   zipCode: z.string().regex(ZIP_REGEX, { message: 'Invalid zip code' }),
   address: z.string().min(1, { message: 'Address is required' }),
   discountCode: z.string().optional().or(z.literal('')),

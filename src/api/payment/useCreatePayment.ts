@@ -6,16 +6,16 @@ interface CreatePaymentResponse {
 }
 
 interface CreatePaymentBody {
-  amount: number;
+  amount?: number;
   discountAmount?: number;
   discountCode?: string;
-  shippingAmount: number;
-  taxPercent: number;
-  orderNumber: number;
-  productsMetadata: Record<string, string>;
-  name: string;
-  surname: string;
-  email: string;
+  shippingAmount?: number;
+  taxPercent?: number;
+  orderNumber?: number;
+  productsMetadata?: Record<string, string>;
+  name?: string;
+  surname?: string;
+  email?: string;
   paymentMethod: string;
 }
 
