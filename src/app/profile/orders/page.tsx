@@ -10,6 +10,8 @@ import {
   Collapse,
   Link,
   Skeleton,
+  useMediaQuery,
+  useTheme,
 } from '@mui/material';
 import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
@@ -17,63 +19,79 @@ import { CartProduct } from '@/types/CartProduct';
 import { useQuery } from '@tanstack/react-query';
 import { getOrdersOptions } from '@/api/orders/getOrdersOptions';
 import {
+  Check,
+  Close,
   Download,
   KeyboardArrowDown,
   KeyboardArrowUp,
+  Sync,
 } from '@mui/icons-material';
 import { Order } from '@/types/Order';
-import { theme } from '@/providers/ThemeProvider';
 import { formatDate } from '@/lib/utils/formatDate/formatDate';
 import { useState } from 'react';
 import { IconButton } from '@/components/ui';
+import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 
 interface StatusChipProps {
   status: string;
   declineReason?: string | null;
 }
 
-const getStatusColor = (status: string) => {
+const getStatusStyles = (status: string) => {
   switch (status.toLowerCase()) {
     case 'succeeded':
-      return { backgroundColor: '#317431ff', color: '#ffffffff' };
+      return {
+        color: '#317431ff',
+        icon: <Check style={{ color: '#317431ff' }} />,
+      };
     case 'requires_payment_method':
-      return { backgroundColor: '#303030ff', color: '#ffffffff' };
+      return {
+        color: '#303030ff',
+        icon: <Sync style={{ color: '#303030ff' }} />,
+      };
     case 'canceled':
-      return { backgroundColor: '#c62828', color: '#ffffffff' };
+      return {
+        color: '#c62828',
+        icon: <Close style={{ color: '#c62828' }} />,
+      };
     default:
-      return { backgroundColor: '#f5f5f5', color: '#424242' };
+      return {
+        color: '#f5f5f5',
+        icon: <InfoOutlinedIcon style={{ color: '#f5f5f5' }} />,
+      };
   }
 };
 
-const getStatusLabel = (status: string, declineReason: string | null) => {
-  const declineMessages: { [key: string]: string } = {
-    generic_decline: 'Generic decline',
-    insufficient_funds: 'Insufficient funds',
-    card_declined: 'Card declined',
-    stolen_card: 'Card stolen',
-    lost_card: 'Card lost',
-    incorrect_number: 'Incorrect card number',
-    expired_card: 'Card expired',
-  };
-
-  if (status.toLowerCase() === 'requires_payment_method') {
-    if (declineReason) {
-      return declineMessages[declineReason] || `Rejected (${declineReason})`;
-    }
-    return 'Incomplete';
+const getStatusLabel = (status: string) => {
+  switch (status.toLowerCase()) {
+    case 'succeeded':
+      return 'Received';
+    case 'requires_payment_method':
+      return 'In Progress';
+    case 'canceled':
+      return 'Cancelled';
+    default:
+      return 'Incomplete';
   }
-
-  return status;
 };
 
-const StatusChip = ({ status, declineReason }: StatusChipProps) => {
+const StatusChip = ({ status }: StatusChipProps) => {
+  const theme = useTheme();
+  const statusInfo = getStatusStyles(status);
+
   return (
     <Chip
-      label={getStatusLabel(status, declineReason || null)}
+      icon={statusInfo.icon}
+      label={getStatusLabel(status)}
       sx={{
-        ...getStatusColor(status),
+        backgroundColor: 'inherit',
+        color: statusInfo.color,
         ...theme.typography.caption,
         textTransform: 'capitalize',
+        fontWeight: 500,
+        '.MuiChip-label': {
+          display: { xs: 'none', lg: 'block' },
+        },
       }}
     />
   );
@@ -86,13 +104,15 @@ export default function Orders() {
     isError,
   } = useQuery(getOrdersOptions());
 
-  console.log('Orders:', orders);
-
   const [expanded, setExpanded] = useState<number | null>(null);
 
   const handleExpandClick = (index: number) => {
     setExpanded(expanded === index ? null : index);
   };
+
+  const theme = useTheme();
+  const isBetweenMdAndLg = useMediaQuery(theme.breakpoints.between('sm', 'lg'));
+  const isBetweenXsAndSm = useMediaQuery(theme.breakpoints.between('xs', 'sm'));
 
   if (isLoading) {
     return (
@@ -126,7 +146,7 @@ export default function Orders() {
   }
 
   return (
-    <Box sx={{ maxWidth: 1480, p: 3, pb: 10 }}>
+    <Box sx={{ maxWidth: 1480, pb: 10 }}>
       <Typography variant="h5" sx={{ mb: 3 }}>
         Order History
       </Typography>
@@ -144,7 +164,7 @@ export default function Orders() {
               sx={{
                 backgroundColor: theme.palette.grey[100],
                 borderBottom: '1px solid ' + theme.palette.grey[300],
-                p: 2,
+                py: 2,
               }}
             >
               <Box
@@ -154,14 +174,27 @@ export default function Orders() {
                   alignItems: 'center',
                   flexWrap: 'wrap',
                   gap: 2,
-                  padding: '0 24px',
+                  paddingLeft: '24px',
                 }}
               >
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                <Box
+                  sx={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: 2,
+                    width: { md: '200px' },
+                  }}
+                >
                   <Typography variant="caption">
                     <strong>N°{order.orderNumber}</strong>
                   </Typography>
-                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+                  <Box
+                    sx={{
+                      display: { xs: 'none', sm: 'flex' },
+                      alignItems: 'center',
+                      gap: 0.5,
+                    }}
+                  >
                     <Typography
                       variant="caption"
                       sx={{ color: theme.palette.grey[600], fontWeight: 400 }}
@@ -171,7 +204,12 @@ export default function Orders() {
                   </Box>
                 </Box>
 
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+                <Box
+                  sx={{
+                    display: { xs: 'none', lg: 'flex' },
+                    justifyContent: 'center',
+                  }}
+                >
                   <Typography
                     variant="caption"
                     sx={{ color: theme.palette.grey[600], fontWeight: 400 }}
@@ -194,15 +232,19 @@ export default function Orders() {
                   sx={{
                     display: 'flex',
                     alignItems: 'center',
-                    gap: 2,
                     justifyContent: 'space-between',
+                    width: { lg: '320px' },
                   }}
                 >
                   <Typography
                     variant="caption"
-                    sx={{ color: theme.palette.grey[600], fontWeight: 400 }}
+                    sx={{
+                      color: theme.palette.grey[600],
+                      fontWeight: 400,
+                      flex: 1,
+                    }}
                   >
-                    Summary:{' '}
+                    {!isBetweenMdAndLg && !isBetweenXsAndSm ? 'Summary: ' : ''}
                     <Typography
                       component="span"
                       variant="caption"
@@ -330,14 +372,42 @@ export default function Orders() {
                     borderBottom: '1px solid ' + theme.palette.grey[300],
                   }}
                 >
+                  <Box
+                    sx={{
+                      display: { xs: 'none', md: 'flex', lg: 'none' },
+                      justifyContent: 'space-between',
+                      py: 1,
+                      px: 2,
+                      gap: 3,
+                      borderBottom: `1px solid ${theme.palette.grey[300]}`,
+                    }}
+                  >
+                    <Typography variant="h5" sx={{ flex: 0.75 }}>
+                      Product
+                    </Typography>
+                    <Typography
+                      variant="h5"
+                      sx={{ flex: 0.15, textAlign: 'right' }}
+                    >
+                      Qty.
+                    </Typography>
+                    <Typography
+                      variant="h5"
+                      sx={{ flex: 0.15, mr: 2, textAlign: 'right' }}
+                    >
+                      Price
+                    </Typography>
+                  </Box>
                   {order.products.map((product: CartProduct, idx: number) => (
                     <Box
                       key={idx}
                       sx={{
                         display: 'flex',
                         alignItems: 'center',
-                        gap: 2,
+                        justifyContent: 'space-between',
+                        flexWrap: { xs: 'wrap', lg: 'nowrap' },
                         p: 2,
+                        gap: 3,
                         backgroundColor: 'inherit',
                         borderRadius: 1,
                       }}
@@ -347,20 +417,26 @@ export default function Orders() {
                           display: 'flex',
                           alignItems: 'center',
                           gap: 2,
-                          flex: 1,
+                          flex: { xs: 1, sm: 0.7, lg: 1.25 },
                         }}
                       >
                         <Avatar
                           src={product.image}
                           alt={product.name}
                           variant="rounded"
-                          sx={{ width: 80, height: 80 }}
+                          sx={{
+                            width: { xs: 110, default: 80 },
+                            height: { xs: 110, default: 80 },
+                          }}
                         />
-                        <Box>
+                        <Box sx={{ display: 'flex', flexDirection: 'column' }}>
                           <Typography variant="h5">{product.name}</Typography>
                           <Typography
                             variant="subtitle2"
-                            sx={{ color: theme.palette.grey[600] }}
+                            sx={{
+                              display: { xs: 'none', sm: 'block' },
+                              color: theme.palette.grey[600],
+                            }}
                           >
                             {product.gender == 'Men'
                               ? "Men's Shoes"
@@ -375,6 +451,7 @@ export default function Orders() {
                           >
                             Size:{' '}
                             <Typography
+                              component="span"
                               variant="caption"
                               sx={{
                                 fontWeight: 500,
@@ -384,49 +461,103 @@ export default function Orders() {
                               {product.size} UK
                             </Typography>
                           </Typography>
+
+                          <Box
+                            sx={{
+                              display: { xs: 'flex', sm: 'none' },
+                              flexDirection: 'column',
+                            }}
+                          >
+                            <Typography
+                              variant="caption"
+                              sx={{
+                                fontWeight: 500,
+                                color: theme.palette.grey[600],
+                              }}
+                            >
+                              Price:{' '}
+                              <Typography
+                                component="span"
+                                variant="caption"
+                                sx={{
+                                  fontWeight: 500,
+                                  color: theme.palette.secondary.main,
+                                }}
+                              >
+                                {product.price}$
+                              </Typography>
+                            </Typography>
+
+                            <Typography
+                              variant="caption"
+                              sx={{
+                                fontWeight: 500,
+                                color: theme.palette.grey[600],
+                              }}
+                            >
+                              Quantity:{' '}
+                              <Typography
+                                component="span"
+                                variant="caption"
+                                sx={{
+                                  fontWeight: 500,
+                                  color: theme.palette.secondary.main,
+                                }}
+                              >
+                                {product.quantity}
+                              </Typography>
+                            </Typography>
+                          </Box>
                         </Box>
                       </Box>
-
-                      <Box
-                        sx={{ minWidth: 500, maxWidth: 500, textAlign: 'left' }}
-                      >
-                        <Typography
-                          variant="subtitle2"
-                          sx={{ color: theme.palette.grey[600] }}
-                        >
-                          Quantity:{' '}
-                          <Typography
-                            component="span"
-                            variant="subtitle2"
-                            sx={{ color: theme.palette.secondary.main }}
+                      {!isBetweenXsAndSm && (
+                        <>
+                          <Box
+                            sx={{
+                              flex: { xs: 0.15, lg: 1 },
+                              textAlign: { xs: 'left', lg: 'center' },
+                            }}
                           >
-                            {product.quantity}
-                          </Typography>
-                        </Typography>
-                      </Box>
-
-                      <Box
-                        sx={{
-                          minWidth: 100,
-                          maxWidth: 100,
-                          textAlign: 'right',
-                          mr: 2,
-                        }}
-                      >
-                        <Typography
-                          variant="subtitle2"
-                          sx={{ color: theme.palette.grey[600] }}
-                        >
-                          Price:{' '}
-                          <Typography
-                            component="span"
-                            variant="subtitle1"
-                            sx={{ color: theme.palette.secondary.main }}
+                            <Typography
+                              variant="subtitle2"
+                              sx={{
+                                color: theme.palette.grey[600],
+                                textAlign: 'right',
+                              }}
+                            >
+                              {!isBetweenMdAndLg ? 'Quantity: ' : ''}
+                              <Typography
+                                component="span"
+                                variant="subtitle1"
+                                sx={{ color: theme.palette.secondary.main }}
+                              >
+                                {product.quantity}
+                              </Typography>
+                            </Typography>
+                          </Box>
+                          <Box
+                            sx={{
+                              flex: { xs: 0.15, lg: 1 },
+                              textAlign: 'right',
+                              mr: 2,
+                            }}
                           >
-                            {product.price}$
-                          </Typography>
-                        </Typography>
-                      </Box>
+                            <Typography
+                              variant="subtitle2"
+                              sx={{ color: theme.palette.grey[600] }}
+                            >
+                              {!isBetweenMdAndLg ? 'Price: ' : ''}
+                              <Typography
+                                component="span"
+                                variant="subtitle1"
+                                sx={{ color: theme.palette.secondary.main }}
+                              >
+                                {product.price}$
+                              </Typography>
+                            </Typography>
+                          </Box>
+                        </>
+                      )}
                     </Box>
                   ))}
                 </Box>
@@ -469,7 +600,7 @@ export default function Orders() {
                           variant="subtitle2"
                           sx={{ color: theme.palette.primary.main }}
                         >
-                          PDF invoice download
+                          PDF {!isBetweenXsAndSm && 'invoice download'}
                         </Typography>
                       </Link>
                     )}
