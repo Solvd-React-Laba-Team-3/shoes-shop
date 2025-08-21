@@ -24,6 +24,7 @@ export const AuthContainer = ({
       flexDirection: 'column',
       alignItems: 'flex-start',
       gap: '48px',
+      width: '100%',
       justifyContent: 'center',
       [theme.breakpoints.down('lg')]: {
         padding: '20px',
@@ -66,6 +67,7 @@ export const AuthContainer = ({
         gap: '24px',
         alignItems: 'center',
         justifyContent: 'center',
+        width: '100%',
       }}
     >
       {children}
