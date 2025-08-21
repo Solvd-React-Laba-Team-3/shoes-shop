@@ -7,6 +7,7 @@ import Typography from '@mui/material/Typography';
 import { FC } from 'react';
 import CloseIcon from '@mui/icons-material/Close';
 import { styled } from '@mui/material/styles';
+import { Box } from '@mui/material';
 
 interface DeleteConfirmationModalProps {
   open: boolean;
@@ -22,9 +23,10 @@ const StyledDialog = styled(Dialog)({
   '& .MuiDialog-paper': {
     position: 'relative',
     flexDirection: 'column',
-    gap: '36px',
-    minWidth: '650px',
-    padding: '32px',
+    gap: { xs: '0', md: '36px' },
+    width: { md: '650px' },
+
+    padding: { xs: '16px', md: '32px' },
   },
 });
 
@@ -50,7 +52,9 @@ export const DeleteConfirmationModal: FC<DeleteConfirmationModalProps> = ({
       >
         <CloseIcon />
       </IconButton>
-      <DialogTitle variant="h2">{title}</DialogTitle>
+      <Box sx={{ maxWidth: 'calc(100% - 26px)' }}>
+        <DialogTitle variant="h2">{title}</DialogTitle>
+      </Box>
       <DialogContent>
         <Typography variant="caption">{description}</Typography>
       </DialogContent>
