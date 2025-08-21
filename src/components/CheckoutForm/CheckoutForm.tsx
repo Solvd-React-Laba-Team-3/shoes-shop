@@ -194,7 +194,7 @@ export const CheckoutForm: FC<CheckoutProps> = ({
       <Box
         sx={{
           display: 'grid',
-          gridTemplateColumns: 'repeat(4, 1fr)',
+          gridTemplateColumns: 'repeat(3, 1fr)',
           gap: '24px',
         }}
       >
