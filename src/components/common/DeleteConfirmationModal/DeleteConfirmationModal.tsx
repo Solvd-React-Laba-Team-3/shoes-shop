@@ -25,7 +25,6 @@ const StyledDialog = styled(Dialog)({
     flexDirection: 'column',
     gap: { xs: '0', md: '36px' },
     width: { md: '650px' },
-
     padding: { xs: '16px', md: '32px' },
   },
 });
