@@ -93,7 +93,7 @@ export const CartSummary: FC<CartSummaryProps> = ({
           sx={{
             display: 'flex',
             flexDirection: { xs: 'column', sm: 'row' },
-            gap: { xs: 2, sm: '10px' },
+            gap: { xs: 2, sm: '0' },
           }}
         >
           <LabeledTextfield
@@ -104,6 +104,7 @@ export const CartSummary: FC<CartSummaryProps> = ({
               height: '40px',
               '& .MuiInputBase-root': {
                 fontSize: '16px',
+                margin: { sm: '0' },
               },
             }}
             {...register('promoCode', {
