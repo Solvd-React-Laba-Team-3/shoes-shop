@@ -157,7 +157,7 @@ export const ProductForm: FC<ProductFormProps> = ({
         />
       )}
       <Box
-        sx={{ display: 'flex', flexDirection: 'column', gap: '40px' }}
+        sx={{ display: 'flex', flexDirection: 'column', gap: { md: '40px' } }}
         component="form"
         noValidate
         autoComplete="off"
@@ -166,10 +166,17 @@ export const ProductForm: FC<ProductFormProps> = ({
         <Box
           sx={{
             display: 'flex',
+            flexDirection: { xs: 'column', md: 'row' },
             justifyContent: 'space-between',
           }}
         >
-          <Box sx={{ display: 'flex', flexDirection: 'column', gap: '35px' }}>
+          <Box
+            sx={{
+              display: 'flex',
+              flexDirection: 'column',
+              gap: { xs: '12px', md: '35px' },
+            }}
+          >
             <Typography variant="h2">{title}</Typography>
             <Typography variant="caption" sx={{ maxWidth: '890px' }}>
               {description}
@@ -177,7 +184,7 @@ export const ProductForm: FC<ProductFormProps> = ({
           </Box>
           <Box
             sx={{
-              display: 'flex',
+              display: { xs: 'none', md: 'flex' },
               flexDirection: 'column',
               gap: '8px',
               alignItems: 'flex-end',
@@ -193,7 +200,13 @@ export const ProductForm: FC<ProductFormProps> = ({
             <FormErrorMessage message={errors.root?.message} />
           </Box>
         </Box>
-        <Box sx={{ display: 'flex', gap: '234px' }}>
+        <Box
+          sx={{
+            display: 'flex',
+            gap: { xs: '16px', md: '234px' },
+            flexDirection: { xs: 'column', md: 'row' },
+          }}
+        >
           <Box
             sx={{
               display: 'flex',
@@ -234,6 +247,7 @@ export const ProductForm: FC<ProductFormProps> = ({
                   sx={{
                     display: 'flex',
                     flexDirection: 'column',
+                    maxWidth: '436px',
                     gap: '2px',
                   }}
                 >
@@ -472,12 +486,26 @@ export const ProductForm: FC<ProductFormProps> = ({
               }}
             />
           </Box>
-          <Box sx={{ width: '692px' }}>
+          <Box sx={{ width: { xs: 'min(100%, 320px)', md: '692px' } }}>
             <ProductFormDropzone
               images={images}
               onRemoveImage={onRemoveImage}
               handleFilesDropped={handleFilesDropped}
             />
+          </Box>
+          <Box
+            sx={{
+              display: { xs: 'flex', md: 'none' },
+              flexDirection: 'column',
+              gap: '8px',
+              alignItems: 'flex-end',
+              marginTop: '16px',
+            }}
+          >
+            <Button type="submit" fullWidth loading={isSubmitting || isPending}>
+              Save
+            </Button>
+            <FormErrorMessage message={errors.root?.message} />
           </Box>
         </Box>
       </Box>
