@@ -117,10 +117,6 @@ export default function SignIn() {
               flexDirection: 'row',
               alignItems: 'center',
               justifyContent: 'space-between',
-              '@media (max-width: 420px)': {
-                flexDirection: 'column',
-                alignItems: 'center',
-              },
             }}
           >
             <Box

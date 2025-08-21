@@ -94,6 +94,11 @@ export const CartItem: FC<CartProduct> = ({
                 '& .MuiTypography-root': {
                   minWidth: 'max-content',
                   whiteSpace: 'nowrap',
+                  '@media (max-width: 380px)': {
+                    whiteSpace: 'break-spaces',
+                    minWidth: 'fit-content',
+                    fontSize: '12px',
+                  },
                 },
               }}
             >
@@ -102,12 +107,8 @@ export const CartItem: FC<CartProduct> = ({
                   variant="h3"
                   sx={{
                     alignItems: 'center',
-                    fontSize: {
-                      xs: '1rem',
-                      sm: '1.25rem',
-                      md: '1.5rem',
-                      lg: '1.75rem',
-                      xl: '2rem',
+                    '@media (max-width: 380px)': {
+                      maxWidth: '10%',
                     },
                   }}
                 >
@@ -115,16 +116,15 @@ export const CartItem: FC<CartProduct> = ({
                 </Typography>
               </Stack>
 
+              <Typography variant="h6">{gender}&apos;s Shoes</Typography>
+              <Typography variant="subtitle1">Size: {size}</Typography>
               <Typography
-                variant="h6"
+                variant="h4"
+                color="primary.main"
                 sx={(theme) => ({
-                  [theme.breakpoints.down('sm')]: { fontSize: '8px' },
+                  [theme.breakpoints.down('sm')]: { display: 'none' },
                 })}
               >
-                {gender}&apos;s Shoes
-              </Typography>
-              <Typography variant="subtitle1">Size: {size}</Typography>
-              <Typography variant="h4" color="primary.main">
                 In Stock
               </Typography>
             </Stack>
@@ -142,9 +142,11 @@ export const CartItem: FC<CartProduct> = ({
           >
             <Typography
               variant="h3"
-              sx={(theme) => ({
-                [theme.breakpoints.down('sm')]: { fontSize: '12px' },
-              })}
+              sx={{
+                '@media (max-width: 380px)': {
+                  fontSize: '12px',
+                },
+              }}
             >
               ${updatedPrice}
             </Typography>
@@ -157,10 +159,13 @@ export const CartItem: FC<CartProduct> = ({
                 '@media (max-width: 1100px)': {
                   gap: 0,
                 },
-                '@media (min-width: 600px) and (max-width: 740px)': {
-                  margin: '-30px 0',
+                '@media (max-width: 420px)': {
+                  maxWidth: '50%',
                 },
-                [theme.breakpoints.down('sm')]: { margin: '-45px 0' },
+                // '@media (min-width: 600px) and (max-width: 740px)': {
+                //   margin: '-30px 0',
+                // },
+                [theme.breakpoints.down('sm')]: { margin: '-20px 0' },
               })}
             >
               <ButtonGroup
@@ -176,6 +181,10 @@ export const CartItem: FC<CartProduct> = ({
                     minWidth: 0,
                     padding: 0,
                     fontSize: '18px',
+                    '@media (max-width: 420px)': {
+                      width: '15px',
+                      height: '15px',
+                    },
                   },
                 }}
               >
@@ -218,12 +227,21 @@ export const CartItem: FC<CartProduct> = ({
                   '@media (max-width: 1280px)': {
                     borderLeft: 'none',
                   },
+                  '@media (max-width: 420px)': {
+                    fontSize: '12px',
+                  },
                 })}
                 onClick={() => setRemoveModalOpen(true)}
               >
                 <DeleteIcon
                   aria-label="delete item"
-                  sx={{ color: (theme) => theme.palette.grey[400] }}
+                  sx={{
+                    color: (theme) => theme.palette.grey[400],
+                    '@media (max-width: 420px)': {
+                      width: '12px',
+                      height: '12px',
+                    },
+                  }}
                 />
                 Delete
               </Button>
@@ -234,9 +252,7 @@ export const CartItem: FC<CartProduct> = ({
         <Divider
           sx={(theme) => ({
             margin: '60px 0',
-            [theme.breakpoints.down('sm')]: {
-              margin: '50px 0 20px 0',
-            },
+            [theme.breakpoints.down('sm')]: { margin: '30px 0' },
           })}
         />
       </Box>
