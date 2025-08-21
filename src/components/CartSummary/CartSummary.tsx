@@ -92,11 +92,8 @@ export const CartSummary: FC<CartSummaryProps> = ({
           autoComplete="off"
           sx={{
             display: 'flex',
-            flexDirection: 'column',
-            gap: { xs: 2, sm: '0' },
-            '@media (max-width: 420px)': {
-              flexDirection: 'row',
-            },
+            flexDirection: 'row',
+            gap: '10px',
           }}
         >
           <LabeledTextfield
