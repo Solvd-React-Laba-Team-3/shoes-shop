@@ -249,12 +249,6 @@ export const CheckoutForm: FC<CheckoutProps> = ({
           {...register('city')}
         />
         <LabeledTextfield
-          label="State"
-          placeholder="New York"
-          errorMessage={errors.state?.message}
-          {...register('state')}
-        />
-        <LabeledTextfield
           label="Zip Code"
           placeholder="3490583"
           errorMessage={errors.zipCode?.message}
