@@ -14,6 +14,7 @@ import { Button } from '@/components/ui';
 import { useRouter } from 'next/navigation';
 import { styled } from '@mui/material/styles';
 import LocalMallIcon from '@mui/icons-material/LocalMall';
+import { useIntersectionObserver } from '@/lib/hooks/useIntersectionObserver';
 
 interface ProductsContainerProps {
   isFiltersOpen: boolean;
@@ -59,9 +60,18 @@ export const ProductsContainer: FC<ProductsContainerProps> = ({
     [filters, search]
   );
 
-  const { data, isFetching } = useSuspenseInfiniteQuery(
-    getProductsOptions(queryParams)
-  );
+  const { data, isFetching, fetchNextPage, hasNextPage, isFetchingNextPage } =
+    useSuspenseInfiniteQuery(getProductsOptions(queryParams));
+
+  const { ref } = useIntersectionObserver({
+    threshold: 0,
+    rootMargin: '600px',
+    onChange: (isIntersecting) => {
+      if (isIntersecting && hasNextPage && !isFetchingNextPage) {
+        fetchNextPage();
+      }
+    },
+  });
 
   const products = data.pages.flatMap((page) => page.products);
 
@@ -129,7 +139,10 @@ export const ProductsContainer: FC<ProductsContainerProps> = ({
       </Box>
 
       {products.length || isFetching ? (
-        <ProductList products={data.pages.flatMap((page) => page.products)} />
+        <>
+          <ProductList products={data.pages.flatMap((page) => page.products)} />
+          <div ref={ref}></div>
+        </>
       ) : (
         <StyledNoProductsWrapper>
           <Box
