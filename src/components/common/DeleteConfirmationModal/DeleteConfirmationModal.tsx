@@ -19,15 +19,23 @@ interface DeleteConfirmationModalProps {
   deleteText?: string;
 }
 
-const StyledDialog = styled(Dialog)({
+const StyledDialog = styled(Dialog)(({ theme }) => ({
   '& .MuiDialog-paper': {
     position: 'relative',
     flexDirection: 'column',
-    gap: { xs: '0', md: '36px' },
-    width: { md: '650px' },
-    padding: { xs: '16px', md: '32px' },
+    gap: '36px',
+    width: '650px',
+    padding: '32px',
+    [theme.breakpoints.down('md')]: {
+      gap: '0',
+      width: 'unset',
+      padding: '12px 24px',
+    },
+    [theme.breakpoints.down('sm')]: {
+      padding: '12px',
+    },
   },
-});
+}));
 
 export const DeleteConfirmationModal: FC<DeleteConfirmationModalProps> = ({
   open,
