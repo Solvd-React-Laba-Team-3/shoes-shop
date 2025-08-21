@@ -71,43 +71,46 @@ export const CheckoutForm: FC<CheckoutProps> = ({
     switch (paymentMethod) {
       case 'card':
         return (
-          <Box
-            sx={{
-              border: `1px solid ${theme.palette.secondary.dark}`,
-              borderRadius: '8px',
-              p: 2,
-              maxWidth: '100%',
-              height: '56px',
-            }}
-          >
-            <CardElement
-              onChange={(e) => {
-                if (e.error) {
-                  setCardError(e.error.message);
-                } else if (!e.complete || e.empty) {
-                  setCardError('Card number is required');
-                } else {
-                  setCardError(null);
-                }
+          <>
+            <Box
+              sx={{
+                border: `1px solid ${theme.palette.secondary.dark}`,
+                borderRadius: '8px',
+                p: 2,
+                maxWidth: '100%',
+                height: '56px',
               }}
-              options={{
-                hidePostalCode: true,
-                style: {
-                  base: {
-                    fontSize: '16px',
-                    color: '#424770',
-                    fontFamily: 'Work Sans',
-                    '::placeholder': {
-                      color: theme.palette.secondary.light,
+            >
+              <CardElement
+                onChange={(e) => {
+                  if (e.error) {
+                    setCardError(e.error.message);
+                  } else if (!e.complete || e.empty) {
+                    setCardError('Card number is required');
+                  } else {
+                    setCardError(null);
+                  }
+                }}
+                options={{
+                  hidePostalCode: true,
+                  style: {
+                    base: {
+                      fontSize: '16px',
+                      color: '#424770',
+                      fontFamily: 'Work Sans',
+                      '::placeholder': {
+                        color: theme.palette.secondary.light,
+                      },
+                    },
+                    invalid: {
+                      color: 'error.main',
                     },
                   },
-                  invalid: {
-                    color: 'error.main',
-                  },
-                },
-              }}
-            />
-          </Box>
+                }}
+              />
+            </Box>
+            <FormErrorMessage message={cardError} />
+          </>
         );
 
       case 'googlePay':
@@ -323,7 +326,6 @@ export const CheckoutForm: FC<CheckoutProps> = ({
         )}
       />
       {showCardFields && <Box sx={{ mt: 2 }}>{renderPaymentMethod()}</Box>}
-      <FormErrorMessage message={cardError} />
       {error && <FormErrorMessage message="Payment failed" />}
       <Divider sx={{ mt: 6, mb: 2 }} />
     </Box>
