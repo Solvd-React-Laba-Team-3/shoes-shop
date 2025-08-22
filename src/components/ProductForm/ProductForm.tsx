@@ -160,7 +160,7 @@ export const ProductForm: FC<ProductFormProps> = ({
         sx={{
           display: 'flex',
           flexDirection: 'column',
-          gap: { md: '40px' },
+          gap: { xs: '12px', md: '40px' },
           width: { sm: 'calc(100vw - 24px)', md: 'unset' },
         }}
         component="form"
@@ -208,8 +208,8 @@ export const ProductForm: FC<ProductFormProps> = ({
         <Box
           sx={{
             display: 'flex',
-            gap: { xs: '16px', md: '234px' },
-            flexDirection: { xs: 'column', md: 'row' },
+            gap: { xs: '16px', lg: '200px' },
+            flexDirection: { xs: 'column', xl: 'row' },
           }}
         >
           <Box
@@ -252,7 +252,7 @@ export const ProductForm: FC<ProductFormProps> = ({
                   sx={{
                     display: 'flex',
                     flexDirection: 'column',
-                    maxWidth: { xs: '100%', md: '436px' },
+                    flexGrow: '1',
                     gap: '2px',
                   }}
                 >
@@ -448,24 +448,21 @@ export const ProductForm: FC<ProductFormProps> = ({
                     <ToggleButtonGroup
                       size="small"
                       sx={{
-                        maxWidth: { xs: '100%', md: '436px' },
-                        flexWrap: 'wrap',
+                        maxWidth: { xs: '100%', xl: '436px' },
+                        display: 'grid',
+                        gridTemplateColumns:
+                          'repeat(auto-fit, minmax(85px, 1fr))',
                         gap: '12px',
                         mt: '8px',
                       }}
                     >
-                      {sizes.map((size, index, arr) => {
+                      {sizes.map((size) => {
                         const isSelected = (field.value || []).some(
                           (selectedSize) => selectedSize === size.id
                         );
 
                         return (
-                          <Box
-                            key={size.id}
-                            sx={{
-                              mr: { md: index < arr.length - 1 ? 0.39 : 0 },
-                            }}
-                          >
+                          <Box key={size.id}>
                             <ToggleButton
                               value={size.id}
                               selected={isSelected}
@@ -474,6 +471,7 @@ export const ProductForm: FC<ProductFormProps> = ({
                                 height: 48,
                                 width: 74,
                                 minWidth: 74,
+                                border: '1px solid secondary.dark',
                               }}
                               onClick={() =>
                                 handleToggleSize(

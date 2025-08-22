@@ -28,7 +28,12 @@ export const ProductFormDropzone: FC<ProductFormDropzoneProps> = ({
       <Box
         sx={{
           display: 'grid',
-          gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr' },
+          gridTemplateColumns: {
+            xs: '1fr',
+            sm: '1fr 1fr',
+            lg: '1fr 1fr 1fr',
+            xl: '1fr 1fr',
+          },
           gap: '52px',
           flex: 1,
         }}
