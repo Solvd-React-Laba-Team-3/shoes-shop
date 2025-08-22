@@ -22,9 +22,9 @@ interface CartSummaryProps {
   taxPercent?: number;
   shippingAmount?: number;
   onOrderComplete?: () => void;
-  paymentRequest: PaymentRequest | null;
-  paymentMethod: PaymentMethod;
-  availablePaymentMethod: PaymentMethod;
+  paymentRequest?: PaymentRequest | null;
+  paymentMethod?: PaymentMethod;
+  availablePaymentMethod?: PaymentMethod;
   validateForm?: () => Promise<CheckoutSchema | null>;
 }
 

@@ -11,6 +11,7 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { CartProduct } from '@/types/CartProduct';
 import { useQuery } from '@tanstack/react-query';
 import { getOrdersOptions } from '@/api/orders/getOrdersOptions';
+import Image from 'next/image';
 
 export default function Orders() {
   const {
@@ -99,7 +100,7 @@ export default function Orders() {
                     key={idx}
                     sx={{ display: 'flex', alignItems: 'center', gap: 2 }}
                   >
-                    <img
+                    <Image
                       src={product.image ?? '/placeholder.jpg'}
                       alt={product.name}
                       width={50}
