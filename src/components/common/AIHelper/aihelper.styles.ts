@@ -7,20 +7,26 @@ export const StyledContainer = styled(Paper, {
 })<{ collapsed: boolean }>(({ theme, collapsed }) => ({
   position: 'fixed',
   bottom: 10,
-  right: 10,
   zIndex: 700,
-  padding: `14px 0px`,
-  width: '80%',
+  padding: collapsed ? '0' : '14px 0px',
+  width: collapsed ? 'auto' : '70%',
+  maxHeight: collapsed ? '50px' : 'auto',
+  borderRadius: collapsed ? '50%' : '16px',
+  left: 10,
   [theme.breakpoints.up('sm')]: {
     width: '420px',
+    padding: `14px 0px`,
+    left: 'auto',
+    right: 10,
+    transition: 'height 0.2s ease-in-out',
+    borderRadius: '16px',
   },
   display: 'flex',
   flexDirection: 'column',
+  justifyContent: 'center',
   gap: '12px',
-  borderRadius: '16px',
   backgroundColor: '#fff',
   height: collapsed ? '65px' : '500px',
-  transition: 'height 0.3s ease-in-out',
 }));
 
 export const StyledChatContainer = styled(Box)(({ theme }) => ({
