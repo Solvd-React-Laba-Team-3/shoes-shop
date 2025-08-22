@@ -4,20 +4,28 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { Box, Divider, Typography } from '@mui/material';
 import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
-import { Button, LabeledTextfield } from '../ui';
+import { Button, FormErrorMessage, LabeledTextfield } from '../ui';
 import { Accordion } from '../ui/Accordion/Accordion';
 import { cartSchema, CartSchema } from './cart.schema';
 import { useCart, useLocalStorage } from '@/lib/hooks';
 import { useApplyDiscount } from '@/api/discount/useApplyDiscount';
-import { FC, FormEvent, useState } from 'react';
+import { FC, FormEvent, useState, MouseEvent } from 'react';
 import { TAX_PERCENT } from '@/constants/taxPercent';
 import { SHIPPING_AMOUNT } from '@/constants/shippingAmount';
+import { PaymentRequestButtonElement } from '@stripe/react-stripe-js';
+import { PaymentMethod } from '../CheckoutForm';
+import { PaymentRequest } from '@stripe/stripe-js';
+import { CheckoutSchema } from '@/app/checkout/checkout.schema';
 
 interface CartSummaryProps {
   checkout?: boolean;
   taxPercent?: number;
   shippingAmount?: number;
   onOrderComplete?: () => void;
+  paymentRequest: PaymentRequest | null;
+  paymentMethod: PaymentMethod;
+  availablePaymentMethod: PaymentMethod;
+  validateForm?: () => Promise<CheckoutSchema | null>;
 }
 
 export const CartSummary: FC<CartSummaryProps> = ({
@@ -25,6 +33,10 @@ export const CartSummary: FC<CartSummaryProps> = ({
   taxPercent = TAX_PERCENT,
   shippingAmount = SHIPPING_AMOUNT,
   onOrderComplete,
+  paymentRequest,
+  paymentMethod,
+  availablePaymentMethod,
+  validateForm,
 }) => {
   const router = useRouter();
   const { value: promoOpen, setValue: setPromoOpen } = useLocalStorage<boolean>(
@@ -69,6 +81,71 @@ export const CartSummary: FC<CartSummaryProps> = ({
   const handleCheckout = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     router.push('/checkout');
+  };
+
+  const PaymentButton: FC = () => {
+    const handleClick = async (e: MouseEvent<HTMLElement>) => {
+      if (!checkout) return;
+
+      const isValid = await validateForm?.();
+
+      if (!isValid) {
+        e.preventDefault();
+        e.stopPropagation();
+        return;
+      }
+    };
+
+    return (
+      <Box onClick={handleClick}>
+        <PaymentRequestButtonElement
+          options={{
+            paymentRequest: paymentRequest!,
+            style: {
+              paymentRequestButton: {
+                type: 'order',
+              },
+            },
+          }}
+        />
+      </Box>
+    );
+  };
+
+  const renderPaymentButton = () => {
+    switch (paymentMethod) {
+      case 'card':
+        return (
+          <Button
+            disabled={isLoading || isPending || subtotal === 0}
+            type="submit"
+            sx={{ width: '100%' }}
+          >
+            {checkout ? 'Confirm & Pay' : 'Checkout'}
+          </Button>
+        );
+
+      case 'googlePay':
+        return availablePaymentMethod === 'googlePay' && paymentRequest ? (
+          <PaymentButton />
+        ) : (
+          <FormErrorMessage message="Google Pay is not supported" />
+        );
+      case 'applePay':
+        return availablePaymentMethod === 'applePay' && paymentRequest ? (
+          <PaymentButton />
+        ) : (
+          <FormErrorMessage message="Apple Pay is not supported" />
+        );
+      case 'link':
+        return availablePaymentMethod === 'link' && paymentRequest ? (
+          <PaymentButton />
+        ) : (
+          <FormErrorMessage message="Link is not supported" />
+        );
+      default:
+        return null;
+    }
   };
 
   return (
@@ -210,19 +287,13 @@ export const CartSummary: FC<CartSummaryProps> = ({
         </>
       )}
 
-      <Divider sx={{ marginBottom: '113px' }} />
+      <Divider sx={{ marginBottom: '43px' }} />
 
       <Box
         component="form"
         onSubmit={checkout ? onOrderComplete : handleCheckout}
       >
-        <Button
-          disabled={isLoading || isPending || subtotal === 0}
-          type="submit"
-          sx={{ width: '100%' }}
-        >
-          {checkout ? 'Confirm & Pay' : 'Checkout'}
-        </Button>
+        {renderPaymentButton()}
       </Box>
     </Box>
   );

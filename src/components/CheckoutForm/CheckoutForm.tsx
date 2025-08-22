@@ -2,7 +2,7 @@
 
 import { Controller, useFormContext, useWatch } from 'react-hook-form';
 import { CheckoutSchema } from '../../app/checkout/checkout.schema';
-import { FC, useState } from 'react';
+import { FC } from 'react';
 import { Box, Typography, ToggleButtonGroup, Divider } from '@mui/material';
 import {
   FormErrorMessage,
@@ -15,29 +15,18 @@ import { theme } from '@/providers/ThemeProvider';
 import PaymentIcon from '@mui/icons-material/Payment';
 import GoogleIcon from '@mui/icons-material/Google';
 import AppleIcon from '@mui/icons-material/Apple';
-import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
-import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
-import {
-  CardElement,
-  PaymentRequestButtonElement,
-} from '@stripe/react-stripe-js';
+import { CardElement } from '@stripe/react-stripe-js';
 import { StyledInputLabel } from '../ProductForm/productForm.styles';
 import { shippingCountries } from '@/constants/shippingCountries';
-import {
-  StyledChevronButton,
-  StyledPaymentMethod,
-} from './checkoutForm.styles';
-import { PaymentRequest } from '@stripe/stripe-js';
+import { StyledPaymentMethod } from './checkoutForm.styles';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 
 export type PaymentMethod = 'card' | 'googlePay' | 'applePay' | 'link';
 
 interface CheckoutProps {
-  paymentRequest: PaymentRequest | null;
   error: boolean;
   cardError: string | null | undefined;
   setCardError: (error: string | null | undefined) => void;
-  availablePaymentMethod: PaymentMethod;
 }
 
 const paymentMethods = [
@@ -48,14 +37,10 @@ const paymentMethods = [
 ];
 
 export const CheckoutForm: FC<CheckoutProps> = ({
-  paymentRequest,
   error,
   cardError,
   setCardError,
-  availablePaymentMethod,
 }) => {
-  const [showCardFields, setShowCardFields] = useState(true);
-
   const {
     register,
     control,
@@ -66,75 +51,6 @@ export const CheckoutForm: FC<CheckoutProps> = ({
     control,
     name: 'paymentMethod',
   });
-
-  const renderPaymentMethod = () => {
-    switch (paymentMethod) {
-      case 'card':
-        return (
-          <>
-            <Box
-              sx={{
-                border: `1px solid ${theme.palette.secondary.dark}`,
-                borderRadius: '8px',
-                p: 2,
-                maxWidth: '100%',
-                height: '56px',
-              }}
-            >
-              <CardElement
-                onChange={(e) => {
-                  if (e.error) {
-                    setCardError(e.error.message);
-                  } else if (!e.complete || e.empty) {
-                    setCardError('Card number is required');
-                  } else {
-                    setCardError(null);
-                  }
-                }}
-                options={{
-                  hidePostalCode: true,
-                  style: {
-                    base: {
-                      fontSize: '16px',
-                      color: '#424770',
-                      fontFamily: 'Work Sans',
-                      '::placeholder': {
-                        color: theme.palette.secondary.light,
-                      },
-                    },
-                    invalid: {
-                      color: 'error.main',
-                    },
-                  },
-                }}
-              />
-            </Box>
-            <FormErrorMessage message={cardError} />
-          </>
-        );
-
-      case 'googlePay':
-        return availablePaymentMethod === 'googlePay' && paymentRequest ? (
-          <PaymentRequestButtonElement options={{ paymentRequest }} />
-        ) : (
-          <FormErrorMessage message="Google Pay is not supported" />
-        );
-      case 'applePay':
-        return availablePaymentMethod === 'applePay' && paymentRequest ? (
-          <PaymentRequestButtonElement options={{ paymentRequest }} />
-        ) : (
-          <FormErrorMessage message="Apple Pay is not supported" />
-        );
-      case 'link':
-        return availablePaymentMethod === 'link' && paymentRequest ? (
-          <PaymentRequestButtonElement options={{ paymentRequest }} />
-        ) : (
-          <FormErrorMessage message="Link is not supported" />
-        );
-      default:
-        return null;
-    }
-  };
 
   return (
     <Box sx={{ maxWidth: 800 }}>
@@ -301,31 +217,58 @@ export const CheckoutForm: FC<CheckoutProps> = ({
               }}
             >
               {paymentMethods.map(({ value, label, icon: Icon }) => (
-                <StyledPaymentMethod
-                  key={value}
-                  value={value}
-                  onClick={() => setShowCardFields(true)}
-                >
+                <StyledPaymentMethod key={value} value={value}>
                   <Icon />
                   {label}
                 </StyledPaymentMethod>
               ))}
             </ToggleButtonGroup>
-            <StyledChevronButton
-              variant="outlined"
-              disableRipple
-              onClick={() => setShowCardFields((prev) => !prev)}
-            >
-              {showCardFields ? (
-                <KeyboardArrowDownIcon />
-              ) : (
-                <KeyboardArrowUpIcon />
-              )}
-            </StyledChevronButton>
           </Box>
         )}
       />
-      {showCardFields && <Box sx={{ mt: 2 }}>{renderPaymentMethod()}</Box>}
+      {paymentMethod === 'card' && (
+        <>
+          <Box
+            sx={{
+              border: `1px solid ${theme.palette.secondary.dark}`,
+              borderRadius: '8px',
+              p: 2,
+              width: '100%',
+              height: '56px',
+              mt: 2,
+            }}
+          >
+            <CardElement
+              onChange={(e) => {
+                if (e.error) {
+                  setCardError(e.error.message);
+                } else if (!e.complete || e.empty) {
+                  setCardError('Card number is required');
+                } else {
+                  setCardError(null);
+                }
+              }}
+              options={{
+                hidePostalCode: true,
+                style: {
+                  base: {
+                    fontSize: '16px',
+                    color: '#424770',
+                    fontFamily: 'Work Sans',
+                    '::placeholder': {
+                      color: theme.palette.secondary.light,
+                    },
+                  },
+                  invalid: {
+                    color: 'error.main',
+                  },
+                },
+              }}
+            />
+          </Box>
+          <FormErrorMessage message={cardError} />
+        </>
+      )}
       {error && <FormErrorMessage message="Payment failed" />}
       <Divider sx={{ mt: 6, mb: 2 }} />
     </Box>
