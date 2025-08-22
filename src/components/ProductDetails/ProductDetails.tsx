@@ -64,7 +64,7 @@ export const ProductDetails: FC<ProductDetailsProps> = ({ productId }) => {
   const isInWishlist = (id: number) => wishlist.includes(id);
   useEffect(() => {
     if (product) addRecentlyViewed(product.id);
-  }, [product]);
+  }, [product, addRecentlyViewed]);
 
   if (isError || !product) return notFound();
 
