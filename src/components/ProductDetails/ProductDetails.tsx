@@ -62,9 +62,11 @@ export const ProductDetails: FC<ProductDetailsProps> = ({ productId }) => {
   );
 
   const isInWishlist = (id: number) => wishlist.includes(id);
+
   useEffect(() => {
     if (product) addRecentlyViewed(product.id);
-  }, [product, addRecentlyViewed]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [product]);
 
   if (isError || !product) return notFound();
 

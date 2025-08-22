@@ -13,9 +13,9 @@ interface CreatePaymentBody {
   taxPercent: number;
   orderNumber: number;
   productsMetadata: Record<string, string>;
-  name?: string;
-  surname?: string;
-  email?: string;
+  name: string;
+  surname: string;
+  email: string;
   paymentMethod: string;
 }
 

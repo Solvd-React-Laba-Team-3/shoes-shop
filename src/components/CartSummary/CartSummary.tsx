@@ -9,13 +9,12 @@ import { Accordion } from '../ui/Accordion/Accordion';
 import { cartSchema, CartSchema } from './cart.schema';
 import { useCart, useLocalStorage } from '@/lib/hooks';
 import { useApplyDiscount } from '@/api/discount/useApplyDiscount';
-import { FC, FormEvent, useState, MouseEvent } from 'react';
+import { FC, FormEvent, useState } from 'react';
 import { TAX_PERCENT } from '@/constants/taxPercent';
 import { SHIPPING_AMOUNT } from '@/constants/shippingAmount';
 import { PaymentRequestButtonElement } from '@stripe/react-stripe-js';
 import { PaymentMethod } from '../CheckoutForm';
 import { PaymentRequest } from '@stripe/stripe-js';
-import { CheckoutSchema } from '@/app/checkout/checkout.schema';
 
 interface CartSummaryProps {
   checkout?: boolean;
@@ -25,7 +24,6 @@ interface CartSummaryProps {
   paymentRequest?: PaymentRequest | null;
   paymentMethod?: PaymentMethod;
   availablePaymentMethod?: PaymentMethod;
-  validateForm?: () => Promise<CheckoutSchema | null>;
 }
 
 export const CartSummary: FC<CartSummaryProps> = ({
@@ -36,7 +34,6 @@ export const CartSummary: FC<CartSummaryProps> = ({
   paymentRequest,
   paymentMethod,
   availablePaymentMethod,
-  validateForm,
 }) => {
   const router = useRouter();
   const { value: promoOpen, setValue: setPromoOpen } = useLocalStorage<boolean>(
@@ -83,63 +80,69 @@ export const CartSummary: FC<CartSummaryProps> = ({
     router.push('/checkout');
   };
 
-  const PaymentButton: FC = () => {
-    const handleClick = async (e: MouseEvent<HTMLElement>) => {
-      if (!checkout) return;
-
-      const isValid = await validateForm?.();
-
-      if (!isValid) {
-        e.preventDefault();
-        e.stopPropagation();
-        return;
-      }
-    };
-
-    return (
-      <Box onClick={handleClick}>
-        <PaymentRequestButtonElement
-          options={{
-            paymentRequest: paymentRequest!,
-            style: {
-              paymentRequestButton: {
-                type: 'order',
-              },
-            },
-          }}
-        />
-      </Box>
-    );
-  };
-
   const renderPaymentButton = () => {
+    if (!checkout) {
+      return (
+        <Button
+          disabled={isLoading || isPending || subtotal === 0}
+          type="submit"
+          sx={{ width: '100%' }}
+        >
+          Checkout
+        </Button>
+      );
+    }
+
     switch (paymentMethod) {
       case 'card':
         return (
-          <Button
-            disabled={isLoading || isPending || subtotal === 0}
-            type="submit"
-            sx={{ width: '100%' }}
-          >
-            {checkout ? 'Confirm & Pay' : 'Checkout'}
+          <Button type="submit" sx={{ width: '100%' }}>
+            Confirm & Pay
           </Button>
         );
 
       case 'googlePay':
         return availablePaymentMethod === 'googlePay' && paymentRequest ? (
-          <PaymentButton />
+          <PaymentRequestButtonElement
+            options={{
+              paymentRequest: paymentRequest!,
+              style: {
+                paymentRequestButton: {
+                  type: 'check-out',
+                },
+              },
+            }}
+          />
         ) : (
           <FormErrorMessage message="Google Pay is not supported" />
         );
       case 'applePay':
         return availablePaymentMethod === 'applePay' && paymentRequest ? (
-          <PaymentButton />
+          <PaymentRequestButtonElement
+            options={{
+              paymentRequest: paymentRequest!,
+              style: {
+                paymentRequestButton: {
+                  type: 'check-out',
+                },
+              },
+            }}
+          />
         ) : (
           <FormErrorMessage message="Apple Pay is not supported" />
         );
       case 'link':
         return availablePaymentMethod === 'link' && paymentRequest ? (
-          <PaymentButton />
+          <PaymentRequestButtonElement
+            options={{
+              paymentRequest: paymentRequest!,
+              style: {
+                paymentRequestButton: {
+                  type: 'check-out',
+                },
+              },
+            }}
+          />
         ) : (
           <FormErrorMessage message="Link is not supported" />
         );
