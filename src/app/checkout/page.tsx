@@ -171,8 +171,6 @@ export default function Checkout() {
   useEffect(() => {
     if (!stripe) return;
 
-    let active = true;
-
     const initPaymentRequest = async () => {
       const request = stripe.paymentRequest({
         country: 'US',
@@ -186,8 +184,6 @@ export default function Checkout() {
       });
 
       const result = await request.canMakePayment();
-
-      if (!active) return;
 
       if (result) {
         setPaymentRequest(request);
@@ -211,10 +207,6 @@ export default function Checkout() {
     };
 
     initPaymentRequest();
-
-    return () => {
-      active = false;
-    };
   }, [stripe, total]);
 
   useEffect(() => {
@@ -273,17 +265,16 @@ export default function Checkout() {
         } else {
           setIsProcessing(false);
         }
-      } catch (err) {
-        console.error(err);
-        try {
-          event.complete('fail');
-        } catch {}
+      } catch (error) {
+        console.error(error);
+        event.complete('fail');
         setCardError('Payment failed');
         setIsProcessing(false);
       }
     };
 
     paymentRequest.on('paymentmethod', onPaymentMethod);
+
     return () => {
       paymentRequest.off('paymentmethod', onPaymentMethod);
     };
