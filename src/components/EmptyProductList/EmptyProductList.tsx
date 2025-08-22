@@ -7,13 +7,16 @@ interface EmptyProductListProps extends PropsWithChildren {
   caption: string;
 }
 
-const StyledNoProductsWrapper = styled(Box)(() => ({
+const StyledNoProductsWrapper = styled(Box)(({ theme }) => ({
   display: 'flex',
   justifyContent: 'center',
   flexDirection: 'column',
   alignItems: 'center',
   gap: '30px',
   height: 'calc(100vh - 300px)',
+  [theme.breakpoints.down('md')]: {
+    height: '300px',
+  },
 }));
 
 export const EmptyProductList: FC<EmptyProductListProps> = ({
