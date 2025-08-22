@@ -69,7 +69,7 @@ export default function Cart() {
                 {items.length > 0 ? (
                   items.map((item) => (
                     <CartItem
-                      key={item.id}
+                      key={`${item.id}-${item.size}`}
                       {...item}
                       gender={item.gender}
                       image={item.image}
