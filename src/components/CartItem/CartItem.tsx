@@ -117,7 +117,20 @@ export const CartItem: FC<CartProduct> = ({
               </Stack>
 
               <Typography variant="h6">{gender}&apos;s Shoes</Typography>
-              <Typography variant="subtitle1">Size: {size}</Typography>
+              <Typography
+                variant="subtitle1"
+                sx={{
+                  '@media (max-width: 380px)': {
+                    '&.MuiTypography-root': {
+                      minWidth: 'max-content',
+                      whiteSpace: 'nowrap',
+                      fontSize: '12px',
+                    },
+                  },
+                }}
+              >
+                Size: {size}
+              </Typography>
               <Typography
                 variant="h4"
                 color="primary.main"
