@@ -23,6 +23,7 @@ import {
 import { SHIPPING_AMOUNT } from '@/constants/shippingAmount';
 import { TAX_PERCENT } from '@/constants/taxPercent';
 import { PaymentMethod } from '@/components/CheckoutForm';
+import type { PaymentIntent } from '@stripe/stripe-js';
 
 export default function Checkout() {
   const stripe = useStripe();
@@ -233,8 +234,8 @@ export default function Checkout() {
           clientSecret,
           confirmParams: {
             payment_method: event.paymentMethod.id,
-            return_url: `${window.location.origin}/order?order=${orderNumber}`,
           },
+          redirect: 'if_required',
         });
 
         if ('error' in confirmResult && confirmResult.error) {
@@ -249,9 +250,7 @@ export default function Checkout() {
         if (
           'paymentIntent' in confirmResult &&
           confirmResult.paymentIntent &&
-          (
-            confirmResult.paymentIntent as import('@stripe/stripe-js').PaymentIntent
-          ).status === 'succeeded'
+          (confirmResult.paymentIntent as PaymentIntent).status === 'succeeded'
         ) {
           finalizeOrder(orderNumber);
         } else {
