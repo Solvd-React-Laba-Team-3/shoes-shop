@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState, useCallback } from 'react';
 import { CheckoutForm } from '@/components/CheckoutForm';
 import { Header } from '@/components/common/Header';
 import { Box, LinearProgress } from '@mui/material';
@@ -55,10 +55,13 @@ export default function Checkout() {
     shouldFocusError: true,
   });
 
-  const { reset, handleSubmit, watch, getValues } = methods;
+  const { reset, handleSubmit, watch, getValues, trigger } = methods;
+
+  const paymentMethod = watch('paymentMethod');
+  const country = watch('country');
 
   const { data: shippingTax, isFetching } = useQuery(
-    getShippingTaxOptions(watch('country'))
+    getShippingTaxOptions(country)
   );
   const { mutateAsync: createPayment, isError } = useCreatePayment();
 
@@ -86,26 +89,24 @@ export default function Checkout() {
     );
   }, [products]);
 
-  const finalizeOrder = (orderNumber: number) => {
-    reset();
-    clearCart();
-    setIsProcessing(false);
-    router.push(`/order/?order=${encodeURIComponent(orderNumber)}`);
-  };
+  const finalizeOrder = useCallback(
+    (orderNumber: number) => {
+      reset();
+      clearCart();
+      setIsProcessing(false);
+      router.push(`/order/?order=${encodeURIComponent(orderNumber)}`);
+    },
+    [reset, clearCart, router]
+  );
 
-  const buildPaymentPayload = (orderNumber: number) => {
-    const data = getValues();
-    return {
-      ...data,
-      amount: total,
-      discountAmount,
-      discountCode,
-      shippingAmount,
-      taxPercent,
-      orderNumber,
-      productsMetadata,
-    };
-  };
+  const validateForm = useCallback(async (): Promise<CheckoutSchema | null> => {
+    const isValid = await trigger();
+    if (!isValid) {
+      return null;
+    } else {
+      return getValues();
+    }
+  }, [trigger, getValues]);
 
   const handleOrderComplete = handleSubmit(async (data: CheckoutSchema) => {
     if (!stripe || !elements || cardError !== null) {
@@ -209,6 +210,7 @@ export default function Checkout() {
     };
 
     initPaymentRequest();
+
     return () => {
       active = false;
     };
@@ -219,16 +221,30 @@ export default function Checkout() {
 
     const onPaymentMethod = async (event: PaymentRequestPaymentMethodEvent) => {
       const orderNumber = Date.now();
+
       try {
         setIsProcessing(true);
 
-        const payload = {
-          ...buildPaymentPayload(orderNumber),
-          paymentMethod: availablePaymentMethod,
-          paymentMethodId: event.paymentMethod.id,
+        const data = await validateForm();
+
+        if (!data) {
+          event.complete('fail');
+          setIsProcessing(false);
+          return;
+        }
+
+        const paymentData = {
+          ...data,
+          amount: total,
+          discountAmount,
+          discountCode,
+          shippingAmount,
+          taxPercent,
+          orderNumber,
+          productsMetadata,
         };
 
-        const { clientSecret } = await createPayment(payload);
+        const { clientSecret } = await createPayment(paymentData);
 
         const confirmResult = await stripe.confirmPayment({
           clientSecret,
@@ -279,6 +295,9 @@ export default function Checkout() {
     total,
     productsMetadata,
     discountAmount,
+    availablePaymentMethod,
+    validateForm,
+    finalizeOrder,
     discountCode,
   ]);
   return (
@@ -294,18 +313,20 @@ export default function Checkout() {
       >
         <FormProvider {...methods}>
           <CheckoutForm
-            paymentRequest={paymentRequest}
             error={isError}
             cardError={cardError}
             setCardError={setCardError}
-            availablePaymentMethod={availablePaymentMethod}
           />
           <Box sx={{ width: 600 }}>
             <CartSummary
+              paymentMethod={paymentMethod}
+              paymentRequest={paymentRequest}
+              availablePaymentMethod={availablePaymentMethod}
               checkout
               taxPercent={taxPercent}
               shippingAmount={shippingAmount}
               onOrderComplete={handleOrderComplete}
+              validateForm={validateForm}
             />
             {(isProcessing || isFetching) && (
               <LinearProgress sx={{ marginTop: 2 }} />
