@@ -81,7 +81,7 @@ export const CartItem: FC<CartProduct> = ({
                 width={223}
                 height={214}
                 alt="product image"
-                style={{ cursor: 'pointer', maxWidth: '100%', height: 'auto' }}
+                style={{ cursor: 'pointer', width: '100%' }}
                 onClick={() => router.push(`/products/${id}`)}
               />
             </Box>
