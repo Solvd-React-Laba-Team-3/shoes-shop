@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { CheckoutForm } from '@/components/CheckoutForm';
 import { Header } from '@/components/common/Header';
 import { Box, LinearProgress } from '@mui/material';
@@ -15,7 +15,11 @@ import { splitProducts } from '@/lib/utils';
 import { useCreatePayment } from '@/api/payment/useCreatePayment';
 import { CardElement, useElements, useStripe } from '@stripe/react-stripe-js';
 import { useRouter } from 'next/navigation';
-import { PaymentRequest, StripeCardElement } from '@stripe/stripe-js';
+import {
+  PaymentRequest,
+  PaymentRequestPaymentMethodEvent,
+  StripeCardElement,
+} from '@stripe/stripe-js';
 import { SHIPPING_AMOUNT } from '@/constants/shippingAmount';
 import { TAX_PERCENT } from '@/constants/taxPercent';
 import { PaymentMethod } from '@/components/CheckoutForm';
@@ -50,7 +54,7 @@ export default function Checkout() {
     shouldFocusError: true,
   });
 
-  const { reset, handleSubmit, watch } = methods;
+  const { reset, handleSubmit, watch, getValues } = methods;
 
   const { data: shippingTax, isFetching } = useQuery(
     getShippingTaxOptions(watch('country'))
@@ -71,11 +75,35 @@ export default function Checkout() {
   const [availablePaymentMethod, setAvailablePaymentMethod] =
     useState<PaymentMethod>('card');
 
+  const productsMetadata = useMemo(() => {
+    return splitProducts(products).reduce(
+      (acc, chunk, i) => {
+        acc[`products${i + 1}`] = chunk;
+        return acc;
+      },
+      {} as Record<string, string>
+    );
+  }, [products]);
+
   const finalizeOrder = (orderNumber: number) => {
     reset();
     clearCart();
     setIsProcessing(false);
     router.push(`/order/?order=${encodeURIComponent(orderNumber)}`);
+  };
+
+  const buildPaymentPayload = (orderNumber: number) => {
+    const data = getValues();
+    return {
+      ...data,
+      amount: total,
+      discountAmount,
+      discountCode,
+      shippingAmount,
+      taxPercent,
+      orderNumber,
+      productsMetadata,
+    };
   };
 
   const handleOrderComplete = handleSubmit(async (data: CheckoutSchema) => {
@@ -87,14 +115,6 @@ export default function Checkout() {
     }
 
     const orderNumber = Date.now();
-
-    const productsMetadata = splitProducts(products).reduce(
-      (acc, chunk, i) => {
-        acc[`products${i + 1}`] = chunk;
-        return acc;
-      },
-      {} as Record<string, string>
-    );
 
     try {
       setIsProcessing(true);
@@ -114,28 +134,41 @@ export default function Checkout() {
 
       const cardEl = elements.getElement(CardElement);
 
-      const { paymentIntent } = await stripe.confirmCardPayment(clientSecret, {
-        payment_method: {
-          card: cardEl as StripeCardElement,
-          billing_details: {
-            name: `${data.name} ${data.surname}`,
-            email: data.email,
+      const { paymentIntent, error } = await stripe.confirmCardPayment(
+        clientSecret,
+        {
+          payment_method: {
+            card: cardEl as StripeCardElement,
+            billing_details: {
+              name: `${data.name} ${data.surname}`,
+              email: data.email,
+            },
           },
-        },
-      });
+        }
+      );
+
+      if (error) {
+        setCardError(error.message ?? 'Payment failed');
+        setIsProcessing(false);
+        return;
+      }
 
       if (paymentIntent?.status === 'succeeded') {
         elements?.getElement(CardElement)?.clear();
+        finalizeOrder(orderNumber);
+      } else {
+        setIsProcessing(false);
       }
     } catch (error) {
       console.error(error);
-    } finally {
-      finalizeOrder(orderNumber);
+      setIsProcessing(false);
     }
   });
 
   useEffect(() => {
     if (!stripe) return;
+
+    let active = true;
 
     const initPaymentRequest = async () => {
       const request = stripe.paymentRequest({
@@ -143,13 +176,15 @@ export default function Checkout() {
         currency: 'usd',
         total: {
           label: 'Total',
-          amount: total * 100,
+          amount: Math.round(total * 100),
         },
         requestPayerName: true,
         requestPayerEmail: true,
       });
 
       const result = await request.canMakePayment();
+
+      if (!active) return;
 
       if (result) {
         setPaymentRequest(request);
@@ -158,49 +193,95 @@ export default function Checkout() {
           setAvailablePaymentMethod('googlePay');
           return;
         }
-
         if (result.applePay) {
           setAvailablePaymentMethod('applePay');
           return;
         }
-
         if (result.link) {
           setAvailablePaymentMethod('link');
           return;
         }
+      } else {
+        setPaymentRequest(null);
+        setAvailablePaymentMethod('card');
       }
     };
 
     initPaymentRequest();
+    return () => {
+      active = false;
+    };
   }, [stripe, total]);
 
-  paymentRequest?.on('paymentmethod', async (e) => {
-    if (!stripe) return;
+  useEffect(() => {
+    if (!stripe || !paymentRequest) return;
 
-    const orderNumber = Date.now();
+    const onPaymentMethod = async (event: PaymentRequestPaymentMethodEvent) => {
+      const orderNumber = Date.now();
+      try {
+        setIsProcessing(true);
 
-    try {
-      setIsProcessing(true);
+        const payload = {
+          ...buildPaymentPayload(orderNumber),
+          paymentMethod: availablePaymentMethod,
+          paymentMethodId: event.paymentMethod.id,
+        };
 
-      const paymentData = {
-        paymentMethod: e.paymentMethod.id,
-      };
+        const { clientSecret } = await createPayment(payload);
 
-      const { clientSecret } = await createPayment(paymentData);
-      await stripe.confirmPayment({
-        clientSecret,
-        confirmParams: {
-          payment_method: e.paymentMethod.id,
-          return_url: `${window.location.origin}/order/?order=${encodeURIComponent(orderNumber)}`,
-        },
-      });
-    } catch (error) {
-      console.error(error);
-    } finally {
-      finalizeOrder(orderNumber);
-    }
-  });
+        const confirmResult = await stripe.confirmPayment({
+          clientSecret,
+          confirmParams: {
+            payment_method: event.paymentMethod.id,
+            return_url: `${window.location.origin}/order?order=${orderNumber}`,
+          },
+        });
 
+        if ('error' in confirmResult && confirmResult.error) {
+          event.complete('fail');
+          setCardError(confirmResult.error.message ?? 'Payment failed');
+          setIsProcessing(false);
+          return;
+        }
+
+        event.complete('success');
+
+        if (
+          'paymentIntent' in confirmResult &&
+          confirmResult.paymentIntent &&
+          (
+            confirmResult.paymentIntent as import('@stripe/stripe-js').PaymentIntent
+          ).status === 'succeeded'
+        ) {
+          finalizeOrder(orderNumber);
+        } else {
+          setIsProcessing(false);
+        }
+      } catch (err) {
+        console.error(err);
+        try {
+          event.complete('fail');
+        } catch {}
+        setCardError('Payment failed');
+        setIsProcessing(false);
+      }
+    };
+
+    paymentRequest.on('paymentmethod', onPaymentMethod);
+    return () => {
+      paymentRequest.off('paymentmethod', onPaymentMethod);
+    };
+  }, [
+    stripe,
+    paymentRequest,
+    createPayment,
+    shippingAmount,
+    taxPercent,
+    total,
+    productsMetadata,
+    discountAmount,
+    discountCode,
+  ]);
   return (
     <>
       <Header />
