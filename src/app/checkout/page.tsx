@@ -172,42 +172,51 @@ export default function Checkout() {
     if (!stripe) return;
 
     const initPaymentRequest = async () => {
-      const request = stripe.paymentRequest({
-        country: 'US',
-        currency: 'usd',
-        total: {
-          label: 'Total',
-          amount: Math.round(total * 100),
-        },
-        requestPayerName: true,
-        requestPayerEmail: true,
-      });
-
-      const result = await request.canMakePayment();
-
-      if (result) {
-        setPaymentRequest(request);
-
-        if (result.googlePay) {
-          setAvailablePaymentMethod('googlePay');
-          return;
-        }
-        if (result.applePay) {
-          setAvailablePaymentMethod('applePay');
-          return;
-        }
-        if (result.link) {
-          setAvailablePaymentMethod('link');
-          return;
-        }
+      if (paymentRequest) {
+        paymentRequest.update({
+          total: {
+            label: 'Total',
+            amount: Math.round(total * 100),
+          },
+        });
       } else {
-        setPaymentRequest(null);
-        setAvailablePaymentMethod('card');
+        const request = stripe.paymentRequest({
+          country: 'US',
+          currency: 'usd',
+          total: {
+            label: 'Total',
+            amount: Math.round(total * 100),
+          },
+          requestPayerName: true,
+          requestPayerEmail: true,
+        });
+
+        const result = await request.canMakePayment();
+
+        if (result) {
+          setPaymentRequest(request);
+
+          if (result.googlePay) {
+            setAvailablePaymentMethod('googlePay');
+            return;
+          }
+          if (result.applePay) {
+            setAvailablePaymentMethod('applePay');
+            return;
+          }
+          if (result.link) {
+            setAvailablePaymentMethod('link');
+            return;
+          }
+        } else {
+          setPaymentRequest(null);
+          setAvailablePaymentMethod('card');
+        }
       }
     };
 
     initPaymentRequest();
-  }, [stripe, total]);
+  }, [stripe, total, paymentRequest]);
 
   useEffect(() => {
     if (!stripe || !paymentRequest) return;
