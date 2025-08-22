@@ -101,6 +101,7 @@ export default function Checkout() {
 
   const validateForm = useCallback(async (): Promise<CheckoutSchema | null> => {
     const isValid = await trigger();
+
     if (!isValid) {
       return null;
     } else {
@@ -326,7 +327,6 @@ export default function Checkout() {
               taxPercent={taxPercent}
               shippingAmount={shippingAmount}
               onOrderComplete={handleOrderComplete}
-              validateForm={validateForm}
             />
             {(isProcessing || isFetching) && (
               <LinearProgress sx={{ marginTop: 2 }} />
