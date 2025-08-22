@@ -31,6 +31,7 @@ export const authOptions: AuthOptions = {
     signIn: '/auth/sign-in',
     newUser: '/auth/sign-up',
   },
+
   providers: [
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID!,
@@ -50,7 +51,6 @@ export const authOptions: AuthOptions = {
         identifier: {},
         password: {},
       },
-
       async authorize(credentials) {
         if (!credentials?.identifier || !credentials?.password) return null;
 
@@ -72,65 +72,57 @@ export const authOptions: AuthOptions = {
 
   callbacks: {
     async jwt({ token, user, trigger, account }) {
-      console.log('JWT', { token, user, account });
-
-      // when user signs in with github
-      if (account?.provider === 'github') {
-        try {
-          const githubUser = await githubCallback(token.user.accessToken);
-
-          token.user = {
-            ...token.user,
-            ...githubUser,
-          };
-        } catch (err) {
-          console.error('GitHub backend sync failed:', err);
-        }
-      }
       if (user) {
         token.user = {
           ...user,
           id: Number(user.id),
+          accessToken: user.accessToken,
         };
       }
 
-      // if (user && account?.provider === 'google') {
-      //   try {
-      //     const res = await fetch(
-      //       `${process.env.NEXT_PUBLIC_API_URL}/google-custom`,
-      //       {
-      //         method: 'POST',
-      //         headers: { 'Content-Type': 'application/json' },
-      //         body: JSON.stringify({
-      //           email: user.email,
-      //           name: user.name || 'User',
-      //         }),
-      //       }
-      //     );
-      //     if (!res.ok) {
-      //       console.error('Strapi returned error', res.status);
-      //       throw new Error('Strapi login failed');
-      //     }
-      //     const data = await res.json();
-      //     console.log('Strapi response', data);
-      //     token.user = {
-      //       ...user,
-      //       id: user.sub,
-      //       name: user.name || 'User',
-      //       accessToken: data.jwt || '',
-      //     };
-      //   } catch (err) {
-      //     console.error('JWT fetch error', err);
-      //     throw err;
-      //   }
-      // }
+      if (account?.provider === 'github' && token.user.accessToken) {
+        try {
+          const githubUser = await githubCallback(token.user.accessToken);
+          token.user = { ...token.user, ...githubUser };
+        } catch (err) {
+          console.error('GitHub backend sync failed:', err);
+        }
+      }
+
+      if (account?.provider === 'google' && user?.email) {
+        try {
+          const res = await fetch(
+            `${process.env.NEXT_PUBLIC_API_URL}/google-custom`,
+            {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                email: user.email,
+                name: user.name || 'User',
+              }),
+            }
+          );
+
+          if (!res.ok)
+            throw new Error(`Strapi Google login failed: ${res.status}`);
+          const data = await res.json();
+          token.user = {
+            ...token.user,
+            id: token.user.id,
+            accessToken: data.jwt || '',
+            name: data.user?.username || user.name || 'User',
+          };
+        } catch (err) {
+          console.error('Google JWT fetch error', err);
+        }
+      }
+
       if (trigger === 'update') {
         const updatedUser = await getUserProfile(token.user.accessToken);
-
         token.user = {
           ...updatedUser,
-          accessToken: token.user.accessToken,
           id: Number(token.user.id),
+          accessToken: token.user.accessToken,
         };
       }
 
@@ -144,7 +136,6 @@ export const authOptions: AuthOptions = {
           id: Number(token.user.id),
         };
       }
-
       return session;
     },
   },
