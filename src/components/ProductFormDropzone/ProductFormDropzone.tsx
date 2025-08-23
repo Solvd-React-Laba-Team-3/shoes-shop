@@ -34,7 +34,7 @@ export const ProductFormDropzone: FC<ProductFormDropzoneProps> = ({
             lg: '1fr 1fr 1fr',
             xl: '1fr 1fr',
           },
-          gap: '52px',
+          gap: { xs: '20px', md: '52px' },
           flex: 1,
         }}
       >

@@ -161,7 +161,7 @@ export const ProductForm: FC<ProductFormProps> = ({
           display: 'flex',
           flexDirection: 'column',
           gap: { xs: '12px', md: '40px' },
-          width: { sm: 'calc(100vw - 24px)', md: 'unset' },
+          width: 'unset',
         }}
         component="form"
         noValidate
