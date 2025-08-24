@@ -51,11 +51,8 @@ describe('<ProductsContainer />', () => {
       removeItem: jest.fn(),
       isLoading: false,
     });
-
     mockedUseIntersectionObserver.mockReturnValue({
-      ref: jest.fn(),
-      isIntersecting: false,
-      entry: undefined,
+      ref: document.createElement('div'),
     });
   });
 
