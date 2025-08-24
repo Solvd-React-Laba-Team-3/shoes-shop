@@ -84,6 +84,7 @@ export const Header = () => {
               onClick={() => router.push('/cart')}
               color="secondary"
               sx={{ padding: 0 }}
+              title="Go to Cart"
             >
               <LocalMallOutlinedIcon fontSize="medium" />
             </IconButton>
