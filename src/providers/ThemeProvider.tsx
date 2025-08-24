@@ -7,10 +7,12 @@ import {
 } from '@mui/material/styles';
 import { palette } from '@/styles/palette';
 import { typography } from '@/styles/typography';
+import { breakpoints } from '@/styles/breakpoints';
 
 export const theme = createTheme({
   palette,
   typography,
+  breakpoints,
   shape: {
     borderRadius: '8px',
   },
