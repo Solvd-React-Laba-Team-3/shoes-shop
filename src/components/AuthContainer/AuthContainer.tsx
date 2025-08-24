@@ -39,9 +39,6 @@ export const AuthContainer = ({
         gap: '16px',
         width: '100%',
         textAlign: 'center',
-        // [theme.breakpoints.down('lg')]: {
-        //   textAlign: 'center',
-        // },
       }}
     >
       <Typography variant="h2">{title}</Typography>
@@ -53,9 +50,6 @@ export const AuthContainer = ({
           color="textSecondary"
           sx={{
             width: '100%',
-            '@media (max-width: 420px)': {
-              width: '250px',
-            },
           }}
         >
           {description}

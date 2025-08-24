@@ -24,14 +24,29 @@ export default function Cart() {
             alignItems: { xs: 'stretch', md: 'flex-start' },
             gap: { xs: 3, md: 6 },
             paddingTop: '80px',
-            '@media screen and (min-width: 1200px) and (max-width: 1650px)': {
+            // '@media screen and (min-width: 1200px) and (max-width: 1650px)': {
+            //   padding: '60px 85px',
+            // },
+
+            [theme.breakpoints.between(1200, 1650)]: {
               padding: '60px 85px',
             },
-            '@media (max-width: 1200px)': {
+
+            // '@media (max-width: 1200px)': {
+            //   padding: '50px 100px',
+            //   gap: '40px',
+            // },
+
+            [theme.breakpoints.down(1200)]: {
               padding: '50px 100px',
               gap: '40px',
             },
-            '@media (max-width: 1024px)': {
+
+            // '@media (max-width: 1024px)': {
+            //   flexDirection: 'column',
+            // },
+
+            [theme.breakpoints.down(1025)]: {
               flexDirection: 'column',
             },
 
@@ -45,16 +60,20 @@ export default function Cart() {
           })}
         >
           <Stack
-            sx={{
+            sx={(theme) => ({
               flex: 2,
               minWidth: 0,
 
               flexShrink: 1,
-              '@media (max-width:600px)': {
+              // '@media (max-width:600px)': {
+              //   width: '100%',
+              //   maxWidth: '500px',
+              // },
+              [theme.breakpoints.down('sm')]: {
                 width: '100%',
                 maxWidth: '500px',
               },
-            }}
+            })}
           >
             <Typography
               variant="h2"
