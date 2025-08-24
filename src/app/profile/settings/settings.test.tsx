@@ -219,6 +219,8 @@ describe('Settings Page', () => {
 
     render(<Settings />);
 
-    expect(screen.getByText('Saving...')).toBeInTheDocument();
+    const saveButton = screen.getByText('Save changes');
+    expect(saveButton).toBeDisabled();
+    expect(saveButton.closest('button')).toHaveClass('MuiButton-loading');
   });
 });

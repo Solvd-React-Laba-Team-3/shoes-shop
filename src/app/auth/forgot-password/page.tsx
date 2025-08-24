@@ -1,6 +1,6 @@
 'use client';
 
-import { LabeledTextfield } from '@/components/ui';
+import { Button, LabeledTextfield } from '@/components/ui';
 import { Box, Typography } from '@mui/material';
 import Image from 'next/image';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -11,7 +11,6 @@ import {
   ForgotPasswordSchema,
   forgotPasswordSchema,
 } from './forgot-password.schema';
-import { LoaderButton } from '@/components/LoaderButton';
 import { Link } from '@/components/ui';
 import { useRouter } from 'next/navigation';
 import recoveryImage from '../../../../public/recovery.jpg';
@@ -58,8 +57,8 @@ export default function ForgotPassword() {
             <Typography variant="subtitle2" color="textSecondary">
               Back to
             </Typography>
-            <Link href="/auth/sign-in" size="small">
-              log in
+            <Link href="/auth/sign-in" active>
+              Log in
             </Link>
           </Box>
         }
@@ -72,7 +71,6 @@ export default function ForgotPassword() {
           flexDirection="column"
           gap={1.5}
           width="100%"
-          maxWidth={400}
           onSubmit={handleSubmit(onSubmit)}
         >
           <Box>
@@ -99,15 +97,24 @@ export default function ForgotPassword() {
             )}
           </Box>
 
-          <LoaderButton
-            isSubmitting={isPending || isSuccess}
-            text="Forgot password"
-            loadingText="Submitting..."
-          />
+          <Button
+            loading={isPending || isSuccess}
+            type="submit"
+            size="large"
+            sx={{ width: '100%' }}
+          >
+            Forgot password
+          </Button>
         </Box>
       </AuthContainer>
 
-      <Box sx={{ height: '100vh', position: 'relative' }}>
+      <Box
+        sx={{
+          height: '100vh',
+          position: 'relative',
+          display: { xs: 'none', lg: 'block' },
+        }}
+      >
         <Image src={recoveryImage} alt="forgot password" fill sizes="50vw" />
       </Box>
     </>
