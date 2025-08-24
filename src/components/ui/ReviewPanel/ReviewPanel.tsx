@@ -25,7 +25,7 @@ const StyledPaper = styled(Paper)(({ theme }) => ({
   [theme.breakpoints.down('xl')]: {
     width: '540px',
   },
-  '@media (min-width:1535px) and (max-width:1664px)': {
+  [theme.breakpoints.between(1536, 1667)]: {
     width: '560px',
   },
   [theme.breakpoints.down('lg')]: {
