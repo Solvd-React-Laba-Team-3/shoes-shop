@@ -67,9 +67,10 @@ describe('Cart', () => {
         </QueryClientProvider>
       </SessionProvider>
     );
-
-    const increaseButton = screen.getByRole('button', { name: '+' });
-    fireEvent.click(increaseButton);
+    const increaseButton = screen
+      .getAllByRole('button')
+      .find((button) => button.querySelector('[data-testid="AddIcon"]'));
+    fireEvent.click(increaseButton!);
     expect(increaseQuantityMock).toHaveBeenCalledWith(1, 42, 2);
   });
 
@@ -87,8 +88,10 @@ describe('Cart', () => {
       </SessionProvider>
     );
 
-    const decreaseButton = screen.getByRole('button', { name: '-' });
-    fireEvent.click(decreaseButton);
+    const decreaseButton = screen
+      .getAllByRole('button')
+      .find((button) => button.querySelector('[data-testid="RemoveIcon"]'));
+    fireEvent.click(decreaseButton!);
     expect(decreaseQuantityMock).toHaveBeenCalledWith(1, 42, 2);
   });
 });

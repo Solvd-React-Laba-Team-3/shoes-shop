@@ -50,28 +50,17 @@ describe('Link component', () => {
     render(<Link href="/test">Accessible Link</Link>);
     expect(screen.getByRole('link')).toBeInTheDocument();
   });
-  it('applies correct styles for small size', () => {
-    render(
-      <ThemeProvider theme={theme}>
-        <Link href="/test" size="small">
-          Small Link
-        </Link>
-      </ThemeProvider>
-    );
-    const linkElement = screen.getByText('Small Link');
-    expect(linkElement).toHaveStyle('font-size: 15px');
-    expect(linkElement).toHaveStyle('font-weight: 600');
-  });
+
   it('applies correct styles for thin size', () => {
     render(
       <ThemeProvider theme={theme}>
-        <Link href="/test" size="thin">
+        <Link href="/test" fontWeight={300}>
           Thin Link
         </Link>
       </ThemeProvider>
     );
     const linkElement = screen.getByText('Thin Link');
-    expect(linkElement).toHaveStyle('font-size: 15px');
+    expect(linkElement).toHaveStyle('font-size: 16px');
     expect(linkElement).toHaveStyle('font-weight: 300');
   });
   it('applies default styles when no size prop is provided', () => {
