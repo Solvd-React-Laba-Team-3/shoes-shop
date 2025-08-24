@@ -1,5 +1,5 @@
 import { RECENTLY_VIEWED_LIMIT } from '@/constants/recentlyViewedLimit';
-import { useLocalStorage } from '../useLocalStorage';
+import { useLocalStorage } from '../useLocalStorage/useLocalStorage';
 
 export const useRecentlyViewed = () => {
   const {

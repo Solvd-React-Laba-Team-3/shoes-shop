@@ -3,15 +3,14 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Box, Divider, Typography } from '@mui/material';
 import { useRouter } from 'next/navigation';
+import { FC, FormEvent, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { Button, FormErrorMessage, LabeledTextfield } from '../ui';
 import { Accordion } from '../ui/Accordion/Accordion';
 import { cartSchema, CartSchema } from './cart.schema';
-import { useCart, useLocalStorage } from '@/lib/hooks';
+import { useCart } from '@/lib/hooks';
 import { useApplyDiscount } from '@/api/discount/useApplyDiscount';
-import { FC, FormEvent, useState } from 'react';
-import { TAX_PERCENT } from '@/constants/taxPercent';
-import { SHIPPING_AMOUNT } from '@/constants/shippingAmount';
+import { useLocalStorage } from '@/lib/hooks';
 import { PaymentRequestButtonElement } from '@stripe/react-stripe-js';
 import { PaymentMethod } from '../CheckoutForm';
 import { PaymentRequest } from '@stripe/stripe-js';
@@ -28,8 +27,8 @@ interface CartSummaryProps {
 
 export const CartSummary: FC<CartSummaryProps> = ({
   checkout = false,
-  taxPercent = TAX_PERCENT,
-  shippingAmount = SHIPPING_AMOUNT,
+  taxPercent = 0,
+  shippingAmount = 0,
   onOrderComplete,
   paymentRequest,
   paymentMethod,
@@ -86,6 +85,7 @@ export const CartSummary: FC<CartSummaryProps> = ({
         <Button
           disabled={isLoading || isPending || subtotal === 0}
           type="submit"
+          size="large"
           sx={{ width: '100%' }}
         >
           Checkout
@@ -167,7 +167,7 @@ export const CartSummary: FC<CartSummaryProps> = ({
         expanded={promoOpen}
         onChange={(_, isExpanded) => setPromoOpen(isExpanded)}
         label={
-          <Typography sx={{ fontSize: '20px' }}>
+          <Typography sx={{ fontSize: '20px', fontWeight: 400 }}>
             Do you have a promo code?
           </Typography>
         }
@@ -177,19 +177,32 @@ export const CartSummary: FC<CartSummaryProps> = ({
           onSubmit={handleSubmit(onApplyPromo)}
           noValidate
           autoComplete="off"
-          sx={{ display: 'flex', gap: '10px' }}
+          sx={{
+            display: 'flex',
+            flexDirection: 'row',
+            gap: '10px',
+          }}
         >
           <LabeledTextfield
             size="small"
             color="secondary"
             placeholder="Enter promo code"
+            sx={{
+              height: '40px',
+              '& .MuiInputBase-root': {
+                margin: { sm: '0' },
+              },
+            }}
             {...register('promoCode', {
-              onChange: (e) => (e.target.value = e.target.value.toUpperCase()),
+              onChange: (e) => {
+                const upperValue = e.target.value.toUpperCase();
+                e.target.value = upperValue;
+              },
             })}
             error={!!errors.promoCode}
             errorMessage={errors.promoCode?.message}
-            disabled={isPending || (discountAmount > 0 && !isEditing)}
           />
+
           {discountAmount > 0 && !isEditing ? (
             <Button
               variant="contained"
@@ -222,7 +235,7 @@ export const CartSummary: FC<CartSummaryProps> = ({
         sx={{
           display: 'flex',
           justifyContent: 'space-between',
-          margin: '38px 0 20px',
+          margin: '18px 0 20px',
         }}
       >
         <Typography variant="h3" sx={{ fontWeight: 400 }}>
@@ -251,57 +264,52 @@ export const CartSummary: FC<CartSummaryProps> = ({
         </Box>
       )}
 
-      {checkout && (
-        <>
-          <Box
-            sx={{
-              display: 'flex',
-              justifyContent: 'space-between',
-              margin: '20px 0',
-            }}
-          >
-            <Typography variant="h3" sx={{ fontWeight: 400 }}>
-              Shipping
-            </Typography>
-            <Typography variant="h3" sx={{ fontWeight: 400 }}>
-              ${shippingAmount.toFixed(2)}
-            </Typography>
-          </Box>
+      <Box
+        sx={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          margin: '20px 0',
+        }}
+      >
+        <Typography variant="h3" sx={{ fontWeight: 400 }}>
+          Shipping
+        </Typography>
+        <Typography variant="h3" sx={{ fontWeight: 400 }}>
+          {checkout ? `$${shippingAmount.toFixed(2)}` : '-'}
+        </Typography>
+      </Box>
 
-          <Box
-            sx={{
-              display: 'flex',
-              justifyContent: 'space-between',
-              margin: '20px 0',
-            }}
-          >
-            <Typography variant="h3" sx={{ fontWeight: 400 }}>
-              Tax ({taxPercent}%)
-            </Typography>
-            <Typography variant="h3" sx={{ fontWeight: 400 }}>
-              ${taxAmount.toFixed(2)}
-            </Typography>
-          </Box>
-          <Divider sx={{ marginTop: '56px' }} />
-          <Box
-            sx={{
-              display: 'flex',
-              justifyContent: 'space-between',
-              margin: '20px 0',
-            }}
-          >
-            <Typography variant="h3" sx={{ fontWeight: 600 }}>
-              Total
-            </Typography>
-            <Typography variant="h3" sx={{ fontWeight: 600 }}>
-              ${total}
-            </Typography>
-          </Box>
-        </>
-      )}
+      <Box
+        sx={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          margin: '20px 0',
+        }}
+      >
+        <Typography variant="h3" sx={{ fontWeight: 400 }}>
+          Tax ({taxPercent}%)
+        </Typography>
+        <Typography variant="h3" sx={{ fontWeight: 400 }}>
+          ${taxAmount.toFixed(2)}
+        </Typography>
+      </Box>
+      <Divider sx={{ marginTop: '56px' }} />
+      <Box
+        sx={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          margin: '20px 0',
+        }}
+      >
+        <Typography variant="h3" sx={{ fontWeight: 600 }}>
+          Total
+        </Typography>
+        <Typography variant="h3" sx={{ fontWeight: 600 }}>
+          ${total}
+        </Typography>
+      </Box>
 
-      <Divider sx={{ marginBottom: '43px' }} />
-
+      <Divider sx={{ marginBottom: '113px' }} />
       <Box
         component="form"
         onSubmit={checkout ? onOrderComplete : handleCheckout}

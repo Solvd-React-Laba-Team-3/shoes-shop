@@ -8,7 +8,6 @@ import { Avatar, Box, FormLabel } from '@mui/material';
 import { signOut, useSession } from 'next-auth/react';
 import { Button, LabeledTextfield } from '@/components/ui';
 import WarningAmberIcon from '@mui/icons-material/WarningAmber';
-import { LoaderButton } from '@/components/LoaderButton';
 import { useEffect, useRef, useState } from 'react';
 import { useUpdateProfile } from '@/api/profile/useUpdateProfile';
 import { useUploadFile } from '@/api/uploadFile/useUploadFile';
@@ -359,14 +358,15 @@ export default function Settings() {
           )}
 
           <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
-            <LoaderButton
-              isSubmitting={
+            <Button
+              loading={
                 isUpdatingProfile || isUploadingFile || isChangingPassword
               }
-              text="Save changes"
-              loadingText="Saving..."
+              type="submit"
               size="small"
-            />
+            >
+              Save changes
+            </Button>
           </Box>
         </Box>
       </Box>

@@ -1,4 +1,4 @@
-import { useLocalStorage } from '../useLocalStorage';
+import { useLocalStorage } from '../useLocalStorage/useLocalStorage';
 
 export const useWishlist = () => {
   const {

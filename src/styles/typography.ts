@@ -14,7 +14,7 @@ export const typography = {
     fontSize: 45,
     fontWeight: 500,
     [breakpoints.down('md')]: { fontSize: 28 },
-    [breakpoints.down('sm')]: { fontSize: 24 },
+    [breakpoints.down('sm')]: { fontSize: 26 },
   },
   h3: {
     fontSize: 30,
