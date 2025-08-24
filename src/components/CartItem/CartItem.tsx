@@ -1,12 +1,44 @@
 import DeleteIcon from '@mui/icons-material/Delete';
-import { Box, ButtonGroup, Divider, Stack, Typography } from '@mui/material';
+import {
+  Box,
+  ButtonGroup,
+  Divider,
+  Stack,
+  styled,
+  Typography,
+} from '@mui/material';
 import Image from 'next/image';
 import { FC, useState } from 'react';
-import { Button } from '../ui';
+import { Button, IconButton } from '../ui';
 import { CartProduct } from '@/types/CartProduct';
 import { useCart } from '@/lib/hooks';
 import { DeleteConfirmationModal } from '../common/DeleteConfirmationModal';
 import { useRouter } from 'next/navigation';
+import IncreaseIcon from '@mui/icons-material/Add';
+import DecreaseIcon from '@mui/icons-material/Remove';
+
+const StyledDeleteButton = styled(Button)(({ theme }) => ({
+  background: 'transparent',
+  color: theme.palette.grey[400],
+  gap: 1,
+  padding: 0,
+  borderRadius: 0,
+  width: '120px',
+  borderLeft: `1px solid ${theme.palette.divider}`,
+}));
+
+const StyledImageWrapper = styled(Box)(({ theme }) => ({
+  position: 'relative',
+  aspectRatio: '1 / 1',
+  flexShrink: 0,
+  marginRight: '46px',
+  width: '300px',
+  height: '300px',
+  [theme.breakpoints.down('sm')]: {
+    width: '200px',
+    height: '200px',
+  },
+}));
 
 export const CartItem: FC<CartProduct> = ({
   image,
@@ -30,86 +62,44 @@ export const CartItem: FC<CartProduct> = ({
 
   return (
     <>
-      <Box
-        sx={(theme) => ({
-          [theme.breakpoints.down('xl')]: {
-            mx: '20px',
-          },
-        })}
-      >
+      <Box>
         <Stack
-          sx={(theme) => ({
+          direction="row"
+          sx={{
             marginRight: { xs: 0, md: 4 },
-            flexDirection: { sm: 'row' },
             alignItems: 'flex-end',
             gap: { xs: 1.5, sm: 3, md: 4 },
-            maxWidth: '963px',
-            '@media (min-width:900px) and (max-width:970px)': {
-              maxWidth: '510px',
-            },
-            '@media (min-width:1200px) and (max-width:1237px)': {
-              maxWidth: '760px',
-            },
-            [theme.breakpoints.down('sm')]: {
-              flexDirection: 'row',
-            },
-          })}
+          }}
         >
           <Stack
-            direction="row"
             sx={{
               flexShrink: 1,
               minWidth: 0,
               gap: { xs: 1.5, sm: 3, md: 4 },
               alignItems: 'flex-start',
+              flexDirection: { xs: 'column', md: 'row' },
             }}
           >
-            <Box
-              sx={{
-                aspectRatio: '1 / 1',
-                width: { xs: 120, sm: 160, lg: 223 },
-                height: 'auto',
-                flexShrink: 0,
-                marginRight: '46px',
-                '@media (max-width: 1100px)': {
-                  marginRight: '10px',
-                },
-              }}
-            >
+            <StyledImageWrapper>
               <Image
                 src={image}
-                width={223}
-                height={214}
+                fill
+                sizes="(max-width: 600px) 200px, 300px"
                 alt="product image"
-                style={{ cursor: 'pointer', width: '100%' }}
+                style={{
+                  cursor: 'pointer',
+                  objectFit: 'cover',
+                }}
                 onClick={() => router.push(`/products/${id}`)}
               />
-            </Box>
+            </StyledImageWrapper>
 
-            <Stack
-              spacing={0.5}
-              sx={{
-                flex: 1,
-                minWidth: 0,
-                '& .MuiTypography-root': {
-                  minWidth: 'max-content',
-                  whiteSpace: 'nowrap',
-                  '@media (max-width: 380px)': {
-                    whiteSpace: 'break-spaces',
-                    minWidth: 'fit-content',
-                    fontSize: '12px',
-                  },
-                },
-              }}
-            >
+            <Stack>
               <Stack direction="row">
                 <Typography
                   variant="h3"
                   sx={{
-                    alignItems: 'center',
-                    '@media (max-width: 380px)': {
-                      maxWidth: '10%',
-                    },
+                    whiteSpace: { xs: 'nowrap', md: 'normal', lg: 'nowrap' },
                   }}
                 >
                   {name}
@@ -117,27 +107,8 @@ export const CartItem: FC<CartProduct> = ({
               </Stack>
 
               <Typography variant="h6">{gender}&apos;s Shoes</Typography>
-              <Typography
-                variant="subtitle1"
-                sx={{
-                  '@media (max-width: 380px)': {
-                    '&.MuiTypography-root': {
-                      minWidth: 'max-content',
-                      whiteSpace: 'nowrap',
-                      fontSize: '12px',
-                    },
-                  },
-                }}
-              >
-                Size: {size}
-              </Typography>
-              <Typography
-                variant="h4"
-                color="primary.main"
-                sx={(theme) => ({
-                  [theme.breakpoints.down('sm')]: { display: 'none' },
-                })}
-              >
+              <Typography variant="subtitle1">Size: {size}</Typography>
+              <Typography variant="h4" color="primary.main">
                 In Stock
               </Typography>
             </Stack>
@@ -153,121 +124,64 @@ export const CartItem: FC<CartProduct> = ({
               minHeight: '100%',
             }}
           >
-            <Typography
-              variant="h3"
-              sx={{
-                '@media (max-width: 380px)': {
-                  fontSize: '12px',
-                },
-              }}
-            >
-              ${updatedPrice}
-            </Typography>
-
-            <Box
-              display="flex"
-              alignItems="center"
-              gap={2}
-              sx={(theme) => ({
-                '@media (max-width: 1100px)': {
-                  gap: 0,
-                },
-                '@media (max-width: 420px)': {
-                  maxWidth: '50%',
-                },
-                // '@media (min-width: 600px) and (max-width: 740px)': {
-                //   margin: '-30px 0',
-                // },
-                [theme.breakpoints.down('sm')]: { margin: '-20px 0' },
-              })}
-            >
+            <Typography variant="h3">${updatedPrice}</Typography>
+            <Box display="flex" alignItems="center" gap={2}>
               <ButtonGroup
                 size="small"
-                sx={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '10px',
-                  '& .MuiButton-root': {
-                    width: 30,
-                    height: 30,
-                    borderRadius: '50%',
-                    minWidth: 0,
-                    padding: 0,
-                    fontSize: '18px',
-                    '@media (max-width: 420px)': {
-                      width: '15px',
-                      height: '15px',
-                    },
-                  },
-                }}
+                sx={{ gap: '10px', alignItems: 'center' }}
               >
-                <Button
-                  sx={{ backgroundColor: '#E8E8E8', color: '#CECECE' }}
+                <IconButton
+                  size="small"
+                  sx={(theme) => ({
+                    width: '20px',
+                    height: '20px',
+                    backgroundColor: theme.palette.grey[100],
+                    color: theme.palette.text.secondary,
+                  })}
                   onClick={() => decreaseQuantity(id, size, quantity)}
                 >
-                  -
-                </Button>
+                  <DecreaseIcon fontSize="small" />
+                </IconButton>
                 <Typography variant="body1">{quantity}</Typography>
-                <Button
-                  sx={{ backgroundColor: '#FFD7D6', color: '#FE645E' }}
+                <IconButton
+                  size="small"
+                  sx={(theme) => ({
+                    width: '20px',
+                    height: '20px',
+                    backgroundColor: theme.palette.primary.main,
+                    color: theme.palette.primary.contrastText,
+                  })}
                   onClick={() => increaseQuantity(id, size, quantity)}
                 >
-                  +
-                </Button>
+                  <IncreaseIcon fontSize="small" />
+                </IconButton>
               </ButtonGroup>
-
               <Typography
                 variant="body2"
-                sx={(theme) => ({
+                sx={{
                   color: 'text.secondary',
-                  fontSize: '16px',
-                  [theme.breakpoints.down('lg')]: { display: 'none' },
-                })}
+                  display: { xs: 'none', sm: 'block' },
+                }}
               >
                 Quantity
               </Typography>
-
-              <Button
+              <StyledDeleteButton
                 size="small"
-                sx={(theme) => ({
-                  background: 'transparent',
-                  color: theme.palette.grey[400],
-                  fontSize: '24px',
-                  gap: 1,
-                  padding: 0,
-                  borderRadius: 0,
-                  borderLeft: `1px solid ${theme.palette.divider}`,
-                  '@media (max-width: 1280px)': {
-                    borderLeft: 'none',
-                  },
-                  '@media (max-width: 420px)': {
-                    fontSize: '12px',
-                  },
-                })}
                 onClick={() => setRemoveModalOpen(true)}
               >
                 <DeleteIcon
                   aria-label="delete item"
                   sx={{
                     color: (theme) => theme.palette.grey[400],
-                    '@media (max-width: 420px)': {
-                      width: '12px',
-                      height: '12px',
-                    },
                   }}
                 />
-                Delete
-              </Button>
+                <Typography variant="subtitle2">Delete</Typography>
+              </StyledDeleteButton>
             </Box>
           </Stack>
         </Stack>
 
-        <Divider
-          sx={(theme) => ({
-            margin: '60px 0',
-            [theme.breakpoints.down('sm')]: { margin: '30px 0' },
-          })}
-        />
+        <Divider sx={{ margin: '60px 0' }} />
       </Box>
 
       <DeleteConfirmationModal

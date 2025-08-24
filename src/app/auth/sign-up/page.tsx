@@ -1,6 +1,6 @@
 'use client';
 
-import { LabeledTextfield, Link, ReviewPanel } from '@/components/ui';
+import { Button, LabeledTextfield, Link, ReviewPanel } from '@/components/ui';
 import { Box, Typography } from '@mui/material';
 import Image from 'next/image';
 import { useForm } from 'react-hook-form';
@@ -9,7 +9,6 @@ import { useRegister } from '@/api/auth/useRegister';
 import { AuthContainer } from '@/components/AuthContainer';
 import { SignUpSchema, signUpSchema } from './sign-up.schema';
 import { useRouter } from 'next/navigation';
-import { LoaderButton } from '@/components/LoaderButton';
 import registerImage from '../../../../public/register.jpg';
 import { useTheme } from '@mui/material/styles';
 
@@ -63,7 +62,7 @@ export default function SignUp() {
             <Typography variant="subtitle2" color="textSecondary">
               Already have an account?
             </Typography>
-            <Link href="/auth/sign-in" size="small">
+            <Link href="/auth/sign-in" active>
               Sign in
             </Link>
           </Box>
@@ -77,7 +76,6 @@ export default function SignUp() {
           flexDirection="column"
           gap={1.5}
           width="100%"
-          maxWidth={400}
           onSubmit={handleSubmit(onSubmit)}
         >
           <LabeledTextfield
@@ -118,11 +116,14 @@ export default function SignUp() {
             errorMessage={errors.confirmPassword?.message || error?.message}
           />
 
-          <LoaderButton
-            isSubmitting={isPending}
-            text="Sign up"
-            loadingText="Submitting..."
-          />
+          <Button
+            loading={isPending}
+            type="submit"
+            size="large"
+            sx={{ width: '100%' }}
+          >
+            Sign up
+          </Button>
         </Box>
       </AuthContainer>
 

@@ -1,7 +1,7 @@
 'use client';
 
-import { Checkbox, LabeledTextfield, Link } from '@/components/ui';
-import { Box, FormControlLabel, Typography } from '@mui/material';
+import { Button, Checkbox, LabeledTextfield, Link } from '@/components/ui';
+import { Box, Typography } from '@mui/material';
 import Image from 'next/image';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -14,7 +14,6 @@ import {
   REMEMBER_ME_SESSION_MAX_AGE,
   SESSION_MAX_AGE,
 } from '@/constants/sessionMaxAge';
-import { LoaderButton } from '@/components/LoaderButton';
 import loginImage from '../../../../public/login.jpg';
 
 export default function SignIn() {
@@ -75,7 +74,7 @@ export default function SignIn() {
             <Typography variant="subtitle2" color="textSecondary">
               {"Don't have an account?"}
             </Typography>
-            <Link href="/auth/sign-up" size="small">
+            <Link href="/auth/sign-up" active>
               Sign up
             </Link>
           </Box>
@@ -87,9 +86,8 @@ export default function SignIn() {
           autoComplete="off"
           display="flex"
           flexDirection="column"
-          gap={1.5}
           width="100%"
-          maxWidth={400}
+          gap={1.5}
           onSubmit={handleSubmit(onSubmit)}
         >
           <LabeledTextfield
@@ -114,7 +112,6 @@ export default function SignIn() {
           <Box
             sx={{
               display: 'flex',
-              flexDirection: 'row',
               alignItems: 'center',
               justifyContent: 'space-between',
             }}
@@ -123,63 +120,41 @@ export default function SignIn() {
               sx={{
                 display: 'flex',
                 alignItems: 'center',
-                justifyContent: 'space-between',
-                flexDirection: 'row',
+                gap: 1,
               }}
             >
-              <Box
-                sx={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: 1,
-                }}
-              >
-                <FormControlLabel
-                  sx={{
-                    '& .MuiFormControlLabel-label': {
-                      fontSize: '15px',
-                    },
-                  }}
-                  control={
-                    <Checkbox
-                      checked={isRememberMe}
-                      onChange={() => setIsRememberMe(!isRememberMe)}
-                    />
-                  }
-                  label="Remember me"
-                />
-              </Box>
+              <Checkbox
+                size="large"
+                checked={isRememberMe}
+                onChange={() => setIsRememberMe(!isRememberMe)}
+              />
+              <Typography variant="subtitle2" color="secondary">
+                Remember me
+              </Typography>
             </Box>
 
-            <Link
-              size="thin"
-              href="/auth/forgot-password"
-              sx={{
-                display: 'block',
-                textAlign: 'center',
-                width: '100%',
-              }}
-            >
+            <Link href="/auth/forgot-password" active fontWeight={300}>
               Forgot password?
             </Link>
           </Box>
 
-          <LoaderButton
-            isSubmitting={isSubmitting}
-            text="Sign in"
-            loadingText="Signing in..."
-          />
+          <Button
+            loading={isSubmitting}
+            type="submit"
+            size="large"
+            sx={{ width: '100%' }}
+          >
+            Sign in
+          </Button>
         </Box>
       </AuthContainer>
 
       <Box
-        sx={(theme) => ({
+        sx={{
           height: '100vh',
           position: 'relative',
-          [theme.breakpoints.down('lg')]: {
-            display: 'none',
-          },
-        })}
+          display: { xs: 'none', lg: 'block' },
+        }}
       >
         <Image src={loginImage} alt="sign in" fill sizes="50vw" />
       </Box>

@@ -15,32 +15,26 @@ const StyledPaper = styled(Paper)(({ theme }) => ({
   backdropFilter: 'blur(20px)',
   borderRadius: '32px',
   padding: theme.spacing(4),
-  display: 'grid',
   justifyItems: 'start',
   width: '756px',
-  position: 'fixed',
-  right: '4%',
-  top: '36%',
+  position: 'absolute',
+  right: '5%',
+  bottom: '10%',
+  display: 'grid',
 
-  [theme.breakpoints.down('xl')]: {
-    width: '540px',
-  },
-  '@media (min-width:1535px) and (max-width:1664px)': {
-    width: '560px',
-  },
-  [theme.breakpoints.down('lg')]: {
+  [theme.breakpoints.down('xxl')]: {
     display: 'none',
   },
 }));
 
-type ReviewPanelProps = {
+interface ReviewPanelProps {
   quote: string;
   name: string;
   location: string;
   rating: number;
   onPrev?: () => void;
   onNext?: () => void;
-};
+}
 
 export const ReviewPanel: FC<ReviewPanelProps> = ({
   quote,

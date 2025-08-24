@@ -1,6 +1,6 @@
 'use client';
 
-import { LabeledTextfield, Link } from '@/components/ui';
+import { Button, LabeledTextfield, Link } from '@/components/ui';
 import { Box, Typography } from '@mui/material';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -12,7 +12,6 @@ import {
   ResetPasswordSchema,
   resetPasswordSchema,
 } from './reset-password.schema';
-import { LoaderButton } from '@/components/LoaderButton';
 import recoveryImage from '../../../../public/recovery.jpg';
 
 export default function ResetPassword() {
@@ -67,8 +66,8 @@ export default function ResetPassword() {
             <Typography variant="subtitle2" color="textSecondary">
               Back to
             </Typography>
-            <Link href="/auth/sign-in" size="small">
-              log in
+            <Link href="/auth/sign-in" active>
+              Log in
             </Link>
           </Box>
         }
@@ -81,7 +80,6 @@ export default function ResetPassword() {
           flexDirection="column"
           gap={1.5}
           width="100%"
-          maxWidth={400}
           onSubmit={handleSubmit(onSubmit)}
         >
           <LabeledTextfield
@@ -116,11 +114,14 @@ export default function ResetPassword() {
               </Typography>
             )}
           </Box>
-          <LoaderButton
-            isSubmitting={isSubmitting || isSuccess}
-            text="Reset Password"
-            loadingText="Submitting..."
-          />
+          <Button
+            loading={isSubmitting || isSuccess}
+            type="submit"
+            size="large"
+            sx={{ width: '100%' }}
+          >
+            Reset Password
+          </Button>
         </Box>
       </AuthContainer>
 

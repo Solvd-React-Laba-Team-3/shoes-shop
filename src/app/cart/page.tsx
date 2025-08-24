@@ -5,7 +5,22 @@ import { CartSummary } from '@/components/CartSummary';
 import { CartFallback } from '@/components/common/CartFallback';
 import { Header } from '@/components/common/Header';
 import { useCart } from '@/lib/hooks';
-import { Box, Stack, Typography } from '@mui/material';
+import { Box, Stack, styled, Typography } from '@mui/material';
+
+const StyledContainer = styled(Box)(({ theme }) => ({
+  display: 'flex',
+  padding: '60px 85px',
+  gap: '48px',
+  [theme.breakpoints.down('sm')]: {
+    padding: '20px 30px',
+    gap: '24px',
+  },
+  [theme.breakpoints.down('xl')]: {
+    flexDirection: 'column',
+  },
+  maxWidth: '1600px',
+  margin: '0 auto',
+}));
 
 export default function Cart() {
   const { items, isLoading } = useCart();
@@ -16,44 +31,13 @@ export default function Cart() {
       {isLoading ? (
         <CartFallback />
       ) : (
-        <Box
-          sx={(theme) => ({
-            display: 'flex',
-            flexDirection: { xs: 'column', md: 'row' },
-            justifyContent: { md: 'space-between' },
-            alignItems: { xs: 'stretch', md: 'flex-start' },
-            gap: { xs: 3, md: 6 },
-            paddingTop: '80px',
-            '@media screen and (min-width: 1200px) and (max-width: 1650px)': {
-              padding: '60px 85px',
-            },
-            '@media (max-width: 1200px)': {
-              padding: '50px 100px',
-              gap: '40px',
-            },
-            '@media (max-width: 1024px)': {
-              flexDirection: 'column',
-            },
-
-            [theme.breakpoints.down('sm')]: {
-              padding: '20px 30px',
-              gap: 0,
-            },
-            maxWidth: '1600px',
-
-            margin: '0 auto',
-          })}
-        >
+        <StyledContainer>
           <Stack
             sx={{
               flex: 2,
               minWidth: 0,
-
               flexShrink: 1,
-              '@media (max-width:600px)': {
-                width: '100%',
-                maxWidth: '500px',
-              },
+              width: { xs: '100%', xl: '700px' },
             }}
           >
             <Typography
@@ -64,37 +48,32 @@ export default function Cart() {
             >
               Cart
             </Typography>
-            <Box>
-              <Stack spacing={{ xs: 0, md: 4 }} alignItems="stretch">
-                {items.length > 0 ? (
-                  items.map((item) => (
-                    <CartItem
-                      key={`${item.id}-${item.size}`}
-                      {...item}
-                      gender={item.gender}
-                      image={item.image}
-                    />
-                  ))
-                ) : (
-                  <Typography
-                    variant="h6"
-                    color="text.secondary"
-                    sx={{ textAlign: { xs: 'center', md: 'left' } }}
-                  >
-                    Your cart is empty.
-                  </Typography>
-                )}
-              </Stack>
-            </Box>
+            <Stack alignItems="stretch" sx={{ gap: { xs: 1.5, sm: 3, md: 4 } }}>
+              {items.length > 0 ? (
+                items.map((item) => (
+                  <CartItem
+                    key={`${item.id}-${item.size}`}
+                    {...item}
+                    gender={item.gender}
+                    image={item.image}
+                  />
+                ))
+              ) : (
+                <Typography
+                  variant="h6"
+                  color="text.secondary"
+                  sx={{ textAlign: { xs: 'center', md: 'left' } }}
+                >
+                  Your cart is empty.
+                </Typography>
+              )}
+            </Stack>
           </Stack>
 
           <Stack
             sx={{
               flex: '0 0 auto',
-              '@media (max-width: 1024px)': {
-                width: '100%',
-                maxWidth: '800px',
-              },
+              width: { xs: '100%', xl: '400px' },
             }}
           >
             <Typography
@@ -105,20 +84,9 @@ export default function Cart() {
             >
               Summary
             </Typography>
-            <Box>
-              <Stack
-                direction="column"
-                sx={{
-                  '@media (max-width: 768px)': {
-                    maxWidth: '700px',
-                  },
-                }}
-              >
-                <CartSummary checkout={false} />
-              </Stack>
-            </Box>
+            <CartSummary checkout={false} />
           </Stack>
-        </Box>
+        </StyledContainer>
       )}
     </>
   );
