@@ -19,17 +19,21 @@ export const LoaderButton: FC<LoaderButtonProps> = ({
     <Button
       type="submit"
       size={size}
-      sx={{
+      sx={(theme) => ({
         mt: '56px',
         '& .MuiCircularProgress-root': {
           color: (theme) => theme.palette.common.white,
           marginLeft: '10px',
         },
-        '@media (max-width: 420px)': {
+        [theme.breakpoints.down(420)]: {
           width: '100%',
           mt: '20px',
         },
-      }}
+        // '@media (max-width: 420px)': {
+        //   width: '100%',
+        //   mt: '20px',
+        // },
+      })}
       disabled={isSubmitting}
     >
       {isSubmitting ? loadingText : text}
