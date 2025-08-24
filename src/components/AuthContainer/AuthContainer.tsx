@@ -33,14 +33,16 @@ export const AuthContainer = ({
     })}
   >
     <Box
-      sx={(theme) => ({
+      sx={{
         display: 'flex',
         flexDirection: 'column',
         gap: '16px',
-        [theme.breakpoints.down('lg')]: {
-          textAlign: 'center',
-        },
-      })}
+        width: '100%',
+        textAlign: 'center',
+        // [theme.breakpoints.down('lg')]: {
+        //   textAlign: 'center',
+        // },
+      }}
     >
       <Typography variant="h2">{title}</Typography>
 
