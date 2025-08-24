@@ -1,15 +1,18 @@
 import { renderHook, act } from '@testing-library/react';
 import { useRecentlyViewed } from './useRecentlyViewed';
-import { useLocalStorage } from '@/testing/mocks/useLocalStorage.mock';
 import { LocalStorageValues } from '@/testing/types/LocalStorageValues';
+import { useLocalStorage } from '@/testing/mocks/useLocalStorage.mock';
 
 jest.mock('@/constants/recentlyViewedLimit', () => ({
   RECENTLY_VIEWED_LIMIT: 5,
 }));
 
-jest.mock('../useLocalStorage', () => ({
-  useLocalStorage: jest.fn(),
-}));
+jest.mock('../useLocalStorage/useLocalStorage', () => {
+  const { useLocalStorage } = jest.requireActual(
+    '@/testing/mocks/useLocalStorage.mock'
+  );
+  return { useLocalStorage };
+});
 
 describe('useRecentlyViewed', () => {
   const setValue = jest.fn();

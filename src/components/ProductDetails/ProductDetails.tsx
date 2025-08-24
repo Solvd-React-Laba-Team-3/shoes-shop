@@ -13,23 +13,22 @@ import { useWishlist, useCart, useRecentlyViewed } from '@/lib/hooks';
 const ProductWrap = styled(Box)(({ theme }) => ({
   display: 'flex',
   justifyContent: 'center',
-  gap: theme.spacing(6),
-  [theme.breakpoints.up('xs')]: {
-    flexDirection: 'column',
-    padding: '0 0 36px 0',
-  },
-  [theme.breakpoints.up('md')]: {
-    padding: '50px 5%',
-  },
-  [theme.breakpoints.up('lg')]: {
-    flexDirection: 'row',
-    gap: '80px',
+  gap: '100px',
+  flexDirection: 'row',
+  padding: '100px 15%',
+  alignItems: 'flex-start',
+  [theme.breakpoints.down('xl')]: {
     padding: '50px 10%',
-    alignItems: 'flex-start',
+    gap: '80px',
   },
-  [theme.breakpoints.up('xl')]: {
-    padding: '100px 15%',
-    gap: '100px',
+  [theme.breakpoints.down('lg')]: {
+    padding: '50px 5%',
+    flexDirection: 'column',
+    gap: theme.spacing(6),
+    alignItems: 'stretch',
+  },
+  [theme.breakpoints.down('md')]: {
+    padding: '0 0 36px 0',
   },
 }));
 

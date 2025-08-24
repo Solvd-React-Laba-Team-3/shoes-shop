@@ -1,7 +1,7 @@
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Box, Divider, Typography, useMediaQuery } from '@mui/material';
+import { Box, Divider, Typography } from '@mui/material';
 import { useRouter } from 'next/navigation';
 import { FC, FormEvent, useState } from 'react';
 import { useForm } from 'react-hook-form';
@@ -10,7 +10,7 @@ import { Accordion } from '../ui/Accordion/Accordion';
 import { cartSchema, CartSchema } from './cart.schema';
 import { useCart } from '@/lib/hooks';
 import { useApplyDiscount } from '@/api/discount/useApplyDiscount';
-import { useLocalStorage } from '@/lib/hooks/useLocalStorage';
+import { useLocalStorage } from '@/lib/hooks';
 import { TAX_PERCENT } from '@/constants/taxPercent';
 import { SHIPPING_AMOUNT } from '@/constants/shippingAmount';
 
@@ -65,9 +65,6 @@ export const CartSummary: FC<CartSummaryProps> = ({
     applyDiscount({ code: promoCode, total: subtotal });
     setIsEditing(false);
   };
-
-  const isSmall = useMediaQuery('(max-width:400px)');
-  const isMedium = useMediaQuery('(min-width:400px) and (max-width:1280px)');
 
   const handleCheckout = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -249,7 +246,7 @@ export const CartSummary: FC<CartSummaryProps> = ({
         <Button
           disabled={isLoading || isPending || subtotal === 0}
           type="submit"
-          size={isSmall ? 'small' : isMedium ? 'medium' : 'large'}
+          size="large"
           sx={{ width: '100%' }}
         >
           {checkout ? 'Confirm & Pay' : 'Checkout'}
