@@ -79,16 +79,6 @@ export default function SignUp() {
           width="100%"
           maxWidth={400}
           onSubmit={handleSubmit(onSubmit)}
-          sx={(theme) => ({
-            [theme.breakpoints.down('sm')]: {
-              '& label': {
-                fontSize: '12px',
-              },
-              '& input': {
-                fontSize: '12px',
-              },
-            },
-          })}
         >
           <LabeledTextfield
             id="name"
@@ -142,7 +132,7 @@ export default function SignUp() {
           height: '100vh',
           width: '100%',
           [theme.breakpoints.down('lg')]: {
-            display: 'none',
+            display: { xs: 'none', lg: 'block' },
           },
         }}
       >
