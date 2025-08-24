@@ -1,7 +1,7 @@
 'use client';
 
 import { Checkbox, LabeledTextfield, Link } from '@/components/ui';
-import { Box, Typography } from '@mui/material';
+import { Box, FormControlLabel, Typography } from '@mui/material';
 import Image from 'next/image';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -134,14 +134,20 @@ export default function SignIn() {
                   gap: 1,
                 }}
               >
-                <Checkbox
-                  size="large"
-                  checked={isRememberMe}
-                  onChange={() => setIsRememberMe(!isRememberMe)}
+                <FormControlLabel
+                  sx={{
+                    '& .MuiFormControlLabel-label': {
+                      fontSize: '15px',
+                    },
+                  }}
+                  control={
+                    <Checkbox
+                      checked={isRememberMe}
+                      onChange={() => setIsRememberMe(!isRememberMe)}
+                    />
+                  }
+                  label="Remember me"
                 />
-                <Typography variant="subtitle2" color="secondary">
-                  Remember me
-                </Typography>
               </Box>
             </Box>
 
