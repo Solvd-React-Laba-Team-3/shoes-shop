@@ -11,7 +11,6 @@ import {
   styled,
   TextField,
   Typography,
-  useTheme,
 } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import {
@@ -31,6 +30,27 @@ import { parseQueryString, toQueryString } from '@/lib/utils';
 import { HEADER_HEIGHT } from '@/constants/headerHeight';
 
 type FilterType = number | number[] | string | Record<string, number | object>;
+
+const StyledDrawer = styled(Drawer)(({ theme, open }) => ({
+  width: open ? '320px' : '0px',
+  transition: 'width 0.2s ease-in-out',
+  zIndex: 800,
+  position: 'relative',
+
+  '& .MuiDrawer-paper': {
+    border: 'none',
+    paddingBottom: '50px',
+    top: HEADER_HEIGHT,
+    position: 'sticky',
+
+    [theme.breakpoints.down('md')]: {
+      top: 0,
+      height: '100vh',
+      position: 'fixed',
+      right: 0,
+    },
+  },
+}));
 
 const StyledFormLabel = styled(FormLabel)(({ theme }) => ({
   color: theme.palette.grey[400],
@@ -142,27 +162,9 @@ export const Filters: FC<DrawerProps> = ({ ...props }) => {
   const { isMobile } = useDeviceSize();
 
   return (
-    <Drawer
+    <StyledDrawer
       variant={isMobile ? 'temporary' : 'persistent'}
       anchor={isMobile ? 'right' : 'left'}
-      sx={{
-        width: props.open ? '320px' : '0px',
-        transition: 'width 0.2s ease-in-out',
-        zIndex: 800,
-
-        '& .MuiDrawer-paper': {
-          border: 'none',
-          paddingBottom: '200px',
-          top: { xs: 0, md: HEADER_HEIGHT },
-        },
-        '& .MuiPaper-root': {
-          position: { md: 'sticky' },
-        },
-
-        [useTheme().breakpoints.up('md')]: {
-          position: 'relative',
-        },
-      }}
       {...props}
     >
       {isMobile ? (
@@ -173,6 +175,9 @@ export const Filters: FC<DrawerProps> = ({ ...props }) => {
               justifyContent: 'flex-end',
               paddingBottom: '8px',
               paddingTop: '12px',
+              backgroundColor: 'background.paper',
+              zIndex: 10,
+              flexShrink: 0,
             }}
           >
             <IconButton
@@ -191,6 +196,12 @@ export const Filters: FC<DrawerProps> = ({ ...props }) => {
             padding="0 20px 0 40px"
             alignItems="center"
             justifyContent="space-between"
+            sx={{
+              backgroundColor: 'background.paper',
+              zIndex: 10,
+              paddingBottom: '12px',
+              flexShrink: 0,
+            }}
           >
             <Typography>Filters</Typography>
             <Button
@@ -216,7 +227,13 @@ export const Filters: FC<DrawerProps> = ({ ...props }) => {
       <Box
         display="flex"
         flexDirection="column"
-        sx={{ gap: { xs: '12px', md: '28px' } }}
+        sx={{
+          gap: { xs: '12px', md: '28px' },
+          overflow: { xs: 'auto', md: 'visible' },
+          flex: { xs: '1 1 auto', md: 'unset' },
+          paddingBottom: { xs: '20px', md: '0' },
+          minHeight: { xs: 0, md: 'auto' },
+        }}
         width="320px"
       >
         <Divider sx={{ display: { xs: 'none', md: 'block' } }} />
@@ -434,6 +451,6 @@ export const Filters: FC<DrawerProps> = ({ ...props }) => {
           </Accordion>
         </Box>
       </Box>
-    </Drawer>
+    </StyledDrawer>
   );
 };

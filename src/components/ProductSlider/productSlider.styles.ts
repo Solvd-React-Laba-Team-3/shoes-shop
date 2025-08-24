@@ -10,11 +10,9 @@ export const StyledSliderContainer = styled(Box)(({ theme }) => ({
   overflowY: 'visible',
   alignItems: 'stretch',
 
+  flexDirection: 'row',
   [theme.breakpoints.down('md')]: {
     flexDirection: 'column',
-  },
-  [theme.breakpoints.up('md')]: {
-    flexDirection: 'row',
   },
 
   '& .thumb-swiper .swiper-slide': {
@@ -74,28 +72,26 @@ export const StyledWrapper = styled(Box)(({ theme }) => ({
       pointerEvents: 'none',
     },
 
+  '& .main-nav-next': { right: 36, bottom: 24 },
+  '& .main-nav-prev': { right: 76, bottom: 24 },
   [theme.breakpoints.down('lg')]: {
     '& .main-nav-prev': { left: 8, top: '50%', transform: 'translateY(-50%)' },
     '& .main-nav-next': { right: 8, top: '50%', transform: 'translateY(-50%)' },
-  },
-  [theme.breakpoints.up('lg')]: {
-    '& .main-nav-next': { right: 36, bottom: 24 },
-    '& .main-nav-prev': { right: 76, bottom: 24 },
   },
 }));
 
 export const StyledThumbsWrapper = styled(Box)(({ theme }) => ({
   flex: '0 0 auto',
-  order: 2,
-  width: '100%',
   minHeight: 0,
+  order: 0,
+  width: 76,
+  minWidth: 76,
+  height: 'auto',
+  contain: 'layout size',
+  alignSelf: 'stretch',
 
-  [theme.breakpoints.up('md')]: {
-    order: 0,
-    width: 76,
-    minWidth: 76,
-    height: 'auto',
-    contain: 'layout size',
-    alignSelf: 'stretch',
+  [theme.breakpoints.down('md')]: {
+    order: 2,
+    width: '100%',
   },
 }));
