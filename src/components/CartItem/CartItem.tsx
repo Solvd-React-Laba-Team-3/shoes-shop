@@ -44,11 +44,13 @@ export const CartItem: FC<CartProduct> = ({
             alignItems: 'flex-end',
             gap: { xs: 1.5, sm: 3, md: 4 },
             maxWidth: '963px',
-            '@media (min-width:900px) and (max-width:970px)': {
+
+            [theme.breakpoints.between(900, 970)]: {
               maxWidth: '510px',
             },
-            '@media (min-width:1200px) and (max-width:1237px)': {
-              maxWidth: '760px',
+
+            [theme.breakpoints.between(1200, 1237)]: {
+              maxWidth: '510px',
             },
             [theme.breakpoints.down('sm')]: {
               flexDirection: 'row',
@@ -88,29 +90,29 @@ export const CartItem: FC<CartProduct> = ({
 
             <Stack
               spacing={0.5}
-              sx={{
+              sx={(theme) => ({
                 flex: 1,
                 minWidth: 0,
                 '& .MuiTypography-root': {
                   minWidth: 'max-content',
                   whiteSpace: 'nowrap',
-                  '@media (max-width: 380px)': {
+                  [theme.breakpoints.down(380)]: {
                     whiteSpace: 'break-spaces',
                     minWidth: 'fit-content',
                     fontSize: '12px',
                   },
                 },
-              }}
+              })}
             >
               <Stack direction="row">
                 <Typography
                   variant="h3"
-                  sx={{
+                  sx={(theme) => ({
                     alignItems: 'center',
-                    '@media (max-width: 380px)': {
+                    [theme.breakpoints.down(380)]: {
                       maxWidth: '10%',
                     },
-                  }}
+                  })}
                 >
                   {name}
                 </Typography>
@@ -119,15 +121,15 @@ export const CartItem: FC<CartProduct> = ({
               <Typography variant="h6">{gender}&apos;s Shoes</Typography>
               <Typography
                 variant="subtitle1"
-                sx={{
-                  '@media (max-width: 380px)': {
+                sx={(theme) => ({
+                  [theme.breakpoints.down(380)]: {
                     '&.MuiTypography-root': {
                       minWidth: 'max-content',
                       whiteSpace: 'nowrap',
                       fontSize: '12px',
                     },
                   },
-                }}
+                })}
               >
                 Size: {size}
               </Typography>
@@ -155,11 +157,11 @@ export const CartItem: FC<CartProduct> = ({
           >
             <Typography
               variant="h3"
-              sx={{
-                '@media (max-width: 380px)': {
+              sx={(theme) => ({
+                [theme.breakpoints.down(380)]: {
                   fontSize: '12px',
                 },
-              }}
+              })}
             >
               ${updatedPrice}
             </Typography>
@@ -169,21 +171,19 @@ export const CartItem: FC<CartProduct> = ({
               alignItems="center"
               gap={2}
               sx={(theme) => ({
-                '@media (max-width: 1100px)': {
+                [theme.breakpoints.down(1100)]: {
                   gap: 0,
                 },
-                '@media (max-width: 420px)': {
+                [theme.breakpoints.down(420)]: {
                   maxWidth: '50%',
                 },
-                // '@media (min-width: 600px) and (max-width: 740px)': {
-                //   margin: '-30px 0',
-                // },
-                [theme.breakpoints.down('sm')]: { margin: '-20px 0' },
+                [theme.breakpoints.down('sm')]: { margin: '-20px -15px' },
+                [theme.breakpoints.down(376)]: { margin: '-20px 10px' },
               })}
             >
               <ButtonGroup
                 size="small"
-                sx={{
+                sx={(theme) => ({
                   display: 'flex',
                   alignItems: 'center',
                   gap: '10px',
@@ -194,12 +194,12 @@ export const CartItem: FC<CartProduct> = ({
                     minWidth: 0,
                     padding: 0,
                     fontSize: '18px',
-                    '@media (max-width: 420px)': {
+                    [theme.breakpoints.down(420)]: {
                       width: '15px',
                       height: '15px',
                     },
                   },
-                }}
+                })}
               >
                 <Button
                   sx={{ backgroundColor: '#E8E8E8', color: '#CECECE' }}
@@ -237,24 +237,23 @@ export const CartItem: FC<CartProduct> = ({
                   padding: 0,
                   borderRadius: 0,
                   borderLeft: `1px solid ${theme.palette.divider}`,
-                  '@media (max-width: 1280px)': {
+                  [theme.breakpoints.down(1280)]: {
                     borderLeft: 'none',
                   },
-                  '@media (max-width: 420px)': {
-                    fontSize: '12px',
+                  [theme.breakpoints.down(426)]: {
+                    fontSize: '15px',
                   },
                 })}
                 onClick={() => setRemoveModalOpen(true)}
               >
                 <DeleteIcon
                   aria-label="delete item"
-                  sx={{
+                  sx={(theme) => ({
                     color: (theme) => theme.palette.grey[400],
-                    '@media (max-width: 420px)': {
+                    [theme.breakpoints.down(420)]: {
                       width: '12px',
-                      height: '12px',
                     },
-                  }}
+                  })}
                 />
                 Delete
               </Button>
