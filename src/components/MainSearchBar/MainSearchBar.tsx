@@ -34,6 +34,8 @@ export const MainSearchBar = () => {
   const { debouncedValue, isDebouncing } = useDebounce(inputValue, 2000);
   const inputRef = useRef<HTMLInputElement>(null);
 
+  const [isMounted, setIsMounted] = useState(false);
+
   const queryOptions = getPopularSearchTermsOptions(debouncedValue);
 
   const {
@@ -98,6 +100,12 @@ export const MainSearchBar = () => {
 
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
+  if (!isMounted) return null;
 
   return (
     <>
