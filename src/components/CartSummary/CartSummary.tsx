@@ -251,6 +251,7 @@ export const CartSummary: FC<CartSummaryProps> = ({
           sx={{
             display: 'flex',
             justifyContent: 'space-between',
+            flexWrap: 'wrap',
             margin: '20px 0',
             color: 'green',
           }}
