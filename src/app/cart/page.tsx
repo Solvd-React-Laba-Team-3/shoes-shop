@@ -6,9 +6,15 @@ import { CartFallback } from '@/components/common/CartFallback';
 import { Header } from '@/components/common/Header';
 import { useCart } from '@/lib/hooks';
 import { Box, Stack, Typography } from '@mui/material';
+import { useDeviceSize } from '@/lib/hooks';
 
 export default function Cart() {
   const { items, isLoading } = useCart();
+  const { isMobile, isInitialized } = useDeviceSize();
+
+  if (!isInitialized) {
+    return null;
+  }
 
   return (
     <>
@@ -19,10 +25,11 @@ export default function Cart() {
         <Box
           sx={(theme) => ({
             display: 'flex',
-            flexDirection: { xs: 'column', md: 'row' },
+            // flexDirection: { xs: 'column', md: 'row' },
+            flexDirection: isMobile ? 'column' : 'row',
             justifyContent: { md: 'space-between' },
-            alignItems: { xs: 'stretch', md: 'flex-start' },
-            gap: { xs: 3, md: 6 },
+            alignItems: isMobile ? 'stretch' : 'flex-start',
+            gap: isMobile ? 3 : 6,
             paddingTop: '80px',
 
             [theme.breakpoints.between(1200, 1650)]: {
@@ -64,7 +71,7 @@ export default function Cart() {
             <Typography
               variant="h2"
               sx={{
-                mb: { xs: 2, sm: 3, md: 4 },
+                mb: isMobile ? 2 : 4,
               }}
             >
               Cart
@@ -84,7 +91,7 @@ export default function Cart() {
                   <Typography
                     variant="h6"
                     color="text.secondary"
-                    sx={{ textAlign: { xs: 'center', md: 'left' } }}
+                    sx={{ textAlign: isMobile ? 'center' : 'left' }}
                   >
                     Your cart is empty.
                   </Typography>
