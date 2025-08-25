@@ -413,6 +413,7 @@ export const ProductForm: FC<ProductFormProps> = ({
                       <StyledToggleButton
                         value={isCollapsed}
                         onClick={() => setIsCollapsed(false)}
+                        data-testid="AI-suggestion-button"
                       >
                         <Image
                           src={suggestionCollapsedIcon}
