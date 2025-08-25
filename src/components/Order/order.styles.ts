@@ -80,17 +80,17 @@ interface StyledDownloadButtonProps extends ButtonProps {
   isDownloading: boolean;
 }
 
-export const StyledDownloadButton = styled(Button)<StyledDownloadButtonProps>(
-  ({ isDownloading }) => ({
-    display: 'inline-flex',
-    alignItems: 'center',
-    gap: 1,
-    fontWeight: 500,
-    opacity: isDownloading ? 0.6 : 1,
-    cursor: isDownloading ? 'not-allowed' : 'pointer',
+export const StyledDownloadButton = styled(Button, {
+  shouldForwardProp: (prop) => prop !== 'isDownloading',
+})<StyledDownloadButtonProps>(({ isDownloading }) => ({
+  display: 'inline-flex',
+  alignItems: 'center',
+  gap: 1,
+  fontWeight: 500,
+  opacity: isDownloading ? 0.6 : 1,
+  cursor: isDownloading ? 'not-allowed' : 'pointer',
 
-    '&:hover': {
-      textDecoration: 'underline',
-    },
-  })
-);
+  '&:hover': {
+    textDecoration: 'underline',
+  },
+}));
