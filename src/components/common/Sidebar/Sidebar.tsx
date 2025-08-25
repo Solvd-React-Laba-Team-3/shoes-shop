@@ -16,7 +16,7 @@ import { usePathname } from 'next/navigation';
 import { HEADER_HEIGHT } from '@/constants/headerHeight';
 import Drawer, { DrawerProps } from '@mui/material/Drawer';
 import { FC } from 'react';
-import { useDeviceSize } from '@/lib/hooks';
+import { useMediaQuery, useTheme } from '@mui/material';
 
 export const Sidebar: FC<DrawerProps> = ({ open = false, ...props }) => {
   const pathname = usePathname();
@@ -50,7 +50,8 @@ export const Sidebar: FC<DrawerProps> = ({ open = false, ...props }) => {
     },
   ];
 
-  const { isMobile } = useDeviceSize();
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
 
   return (
     <Drawer
