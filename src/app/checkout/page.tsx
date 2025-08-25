@@ -1,6 +1,8 @@
 'use client';
 
-import { useEffect, useMemo, useState, useCallback } from 'react';
+import { useCallback, useMemo, useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { useSession } from 'next-auth/react';
 import { CheckoutForm } from '@/components/CheckoutForm';
 import { Header } from '@/components/common/Header';
 import { Box, LinearProgress } from '@mui/material';
@@ -14,7 +16,6 @@ import { checkoutSchema, CheckoutSchema } from './checkout.schema';
 import { splitProducts } from '@/lib/utils';
 import { useCreatePayment } from '@/api/payment/useCreatePayment';
 import { CardElement, useElements, useStripe } from '@stripe/react-stripe-js';
-import { useRouter } from 'next/navigation';
 import {
   PaymentRequest,
   PaymentRequestPaymentMethodEvent,
@@ -29,6 +30,14 @@ export default function Checkout() {
   const stripe = useStripe();
   const elements = useElements();
   const router = useRouter();
+  const { data: session, status } = useSession();
+
+  useEffect(() => {
+    if (status === 'loading') return;
+    if (!session) {
+      router.push('/auth/sign-in?next=checkout');
+    }
+  }, [session, status, router]);
 
   const {
     items: products,
@@ -41,10 +50,10 @@ export default function Checkout() {
   const methods = useForm<CheckoutSchema>({
     resolver: zodResolver(checkoutSchema),
     defaultValues: {
-      name: '',
-      surname: '',
-      email: '',
-      phone: '',
+      name: session?.user?.firstName ?? '',
+      surname: session?.user?.lastName ?? '',
+      email: session?.user?.email ?? '',
+      phone: session?.user?.phoneNumber ?? '',
       country: '',
       city: '',
       zipCode: '',

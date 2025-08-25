@@ -12,15 +12,7 @@ import { Button } from '@/components/ui';
 import { styled } from '@mui/material/styles';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import { Product } from '@/types/Product';
-
-const StyledNoProductsWrapper = styled(Box)(() => ({
-  display: 'flex',
-  justifyContent: 'center',
-  flexDirection: 'column',
-  alignItems: 'center',
-  gap: '30px',
-  height: '100%',
-}));
+import { EmptyProductList } from '@/components/EmptyProductList';
 
 const StyledVisibilityIcon = styled(VisibilityIcon)(({ theme }) => ({
   color: theme.palette.grey[600],
@@ -60,27 +52,14 @@ export default function RecentlyViewed() {
       <ProductList products={sortedProducts} variant="catalog" />
     </Box>
   ) : (
-    <StyledNoProductsWrapper>
-      <Box
-        sx={{
-          display: 'flex',
-          flexDirection: 'column',
-          gap: '10px',
-          alignItems: 'center',
-        }}
-      >
-        <StyledVisibilityIcon />
-        <Typography variant="h6">
-          {"You haven't look at any products yet"}
-        </Typography>
-        <Typography variant="caption">
-          Start searching for shoes in our catalog
-        </Typography>
-      </Box>
-
+    <EmptyProductList
+      icon={<StyledVisibilityIcon />}
+      message="You haven't look at any products yet"
+      caption="Start searching for shoes in our catalog"
+    >
       <Button size="small" onClick={() => router.push('/')}>
         Go to Catalog
       </Button>
-    </StyledNoProductsWrapper>
+    </EmptyProductList>
   );
 }

@@ -14,6 +14,8 @@ import { useLocalStorage } from '@/lib/hooks';
 import { PaymentRequestButtonElement } from '@stripe/react-stripe-js';
 import { PaymentMethod } from '../CheckoutForm';
 import { PaymentRequest } from '@stripe/stripe-js';
+import { useSession } from 'next-auth/react';
+import { ConfirmActionModal } from '../common/ConfirmActionModal';
 
 interface CartSummaryProps {
   checkout?: boolean;
@@ -35,6 +37,7 @@ export const CartSummary: FC<CartSummaryProps> = ({
   availablePaymentMethod,
 }) => {
   const router = useRouter();
+  const { data: session } = useSession();
   const { value: promoOpen, setValue: setPromoOpen } = useLocalStorage<boolean>(
     'promoOpen',
     false
@@ -43,6 +46,7 @@ export const CartSummary: FC<CartSummaryProps> = ({
   const { subtotal, discountAmount, discountCode, isLoading, getTotal } =
     useCart();
 
+  const [showLoginConfirm, setShowLoginConfirm] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
 
   const subtotalWithDiscount = subtotal - discountAmount;
@@ -76,6 +80,12 @@ export const CartSummary: FC<CartSummaryProps> = ({
 
   const handleCheckout = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
+    if (!session) {
+      setShowLoginConfirm(true);
+      return;
+    }
+
     router.push('/checkout');
   };
 
@@ -317,6 +327,16 @@ export const CartSummary: FC<CartSummaryProps> = ({
       >
         {renderPaymentButton()}
       </Box>
+
+      <ConfirmActionModal
+        open={showLoginConfirm}
+        title="Login required"
+        description="You need to sign in to complete your purchase. Do you want to go to the login page now?"
+        onClose={() => setShowLoginConfirm(false)}
+        onConfirm={() => router.push('/auth/sign-in?next=checkout')}
+        cancelText="Stay here"
+        confirmText="Go to login"
+      />
     </Box>
   );
 };
