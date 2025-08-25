@@ -11,15 +11,7 @@ import FavoriteIcon from '@mui/icons-material/FavoriteBorderOutlined';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui';
 import { styled } from '@mui/material/styles';
-
-const StyledNoProductsWrapper = styled(Box)(() => ({
-  display: 'flex',
-  justifyContent: 'center',
-  flexDirection: 'column',
-  alignItems: 'center',
-  gap: '30px',
-  height: '100%',
-}));
+import { EmptyProductList } from '@/components/EmptyProductList';
 
 const StyledFavoriteIcon = styled(FavoriteIcon)(({ theme }) => ({
   color: theme.palette.grey[600],
@@ -55,27 +47,14 @@ export default function Wishlist() {
       <ProductList products={products} variant="wishlist" />
     </Box>
   ) : (
-    <StyledNoProductsWrapper>
-      <Box
-        sx={{
-          display: 'flex',
-          flexDirection: 'column',
-          gap: '10px',
-          alignItems: 'center',
-        }}
-      >
-        <StyledFavoriteIcon />
-        <Typography variant="h6">
-          {"You don't have any products in your wishlist yet"}
-        </Typography>
-        <Typography variant="caption">
-          Start adding products to your wishlist
-        </Typography>
-      </Box>
-
+    <EmptyProductList
+      icon={<StyledFavoriteIcon />}
+      message="You don't have any products in your wishlist yet"
+      caption="Start adding products to your wishlist"
+    >
       <Button size="small" onClick={() => router.push('/')}>
         Go to Catalog
       </Button>
-    </StyledNoProductsWrapper>
+    </EmptyProductList>
   );
 }

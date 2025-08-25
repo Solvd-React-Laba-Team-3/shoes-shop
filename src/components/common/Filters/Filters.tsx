@@ -52,7 +52,7 @@ export const Filters: FC<DrawerProps> = ({ ...props }) => {
 
   const search = searchParams.get('search');
   const [searchBrands, setSearchBrands] = useState('');
-  const debouncedSearchBrands = useDebounce(searchBrands, 500);
+  const debouncedBrandsSearch = useDebounce(searchBrands, 500);
 
   const [
     { data: genders },
@@ -63,9 +63,15 @@ export const Filters: FC<DrawerProps> = ({ ...props }) => {
     queries: [
       getGendersOptions(),
       getSizesOptions(),
-      getBrandsOptions({
-        filters: { name: { $containsi: debouncedSearchBrands.debouncedValue } },
-      }),
+      getBrandsOptions(
+        debouncedBrandsSearch.debouncedValue
+          ? {
+              filters: {
+                name: { $containsi: debouncedBrandsSearch.debouncedValue },
+              },
+            }
+          : {}
+      ),
       getColorsOptions(),
     ],
   });

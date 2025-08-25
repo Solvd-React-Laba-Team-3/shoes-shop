@@ -19,11 +19,7 @@ export default async function ProfileLayout({
       <Box
         sx={{
           display: { md: 'grid', xs: 'flex' },
-          gridTemplateColumns: {
-            xs: '320px 1fr',
-            md: '260px 1fr',
-            lg: '320px 1fr',
-          },
+          gridTemplateColumns: '300px 1fr',
         }}
         component="main"
       >

@@ -11,13 +11,16 @@ interface FormErrorMessageProps {
 }
 
 const StyledFormLabel = styled(FormLabel)<FormErrorMessageProps>(
-  ({ message }) => ({
+  ({ message, theme }) => ({
     fontSize: '13px',
     display: 'flex',
     alignItems: 'center',
     gap: '6px',
     marginTop: '8px',
     opacity: message ? 1 : 0,
+    [theme.breakpoints.down('md')]: {
+      marginTop: '4px',
+    },
   })
 );
 

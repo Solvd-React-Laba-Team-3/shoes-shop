@@ -135,7 +135,7 @@ describe('ProductForm', () => {
       const onSubmit = jest.fn();
       renderProductForm({ onSubmit });
 
-      const submitButton = screen.getByText('Save');
+      const submitButton = screen.getAllByText('Save')[0];
       fireEvent.click(submitButton);
 
       await waitFor(() => {
