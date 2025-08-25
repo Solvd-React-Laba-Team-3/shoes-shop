@@ -28,16 +28,27 @@ export const ProductFormDropzone: FC<ProductFormDropzoneProps> = ({
       <Box
         sx={{
           display: 'grid',
-          gridTemplateColumns: '1fr 1fr',
-          gap: '52px',
+          gridTemplateColumns: {
+            sm: 'min-content',
+            lg: '1fr 1fr ',
+            xl: '1fr 1fr',
+          },
+          gap: { xs: '20px', md: '52px' },
           flex: 1,
         }}
       >
         <FileDropzone onFilesDropped={handleFilesDropped} />
 
         {images.map((image, index) => (
-          <Box key={index} sx={{ position: 'relative' }}>
-            <Image src={image.url} alt="Product" width={320} height={380} />
+          <Box
+            key={index}
+            sx={{
+              position: 'relative',
+              width: { xs: '100%', md: 'unset' },
+              zIndex: 1,
+            }}
+          >
+            <Image src={image.url} alt="Product" width={300} height={380} />
             <Fab
               size="small"
               color="error"

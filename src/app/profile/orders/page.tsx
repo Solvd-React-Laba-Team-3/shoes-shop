@@ -86,7 +86,7 @@ export default function Orders() {
         {!hasNextPage && orders.length > 0 && (
           <Box sx={{ display: 'flex', justifyContent: 'center', py: 2 }}>
             <Typography variant="body2" color="text.secondary">
-              No more orders to load
+              No more orders to load..
             </Typography>
           </Box>
         )}
