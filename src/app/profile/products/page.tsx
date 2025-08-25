@@ -13,6 +13,7 @@ import { ProductList } from '@/components/ProductList';
 import profileBanner from '../../../../public/profile-banner.png';
 import { useSuspenseQuery } from '@tanstack/react-query';
 import { getUserProductsOptions } from '@/api/products/getUserProductsOptions';
+import { EmptyProductList } from '@/components/EmptyProductList';
 
 const StyledBusinessCenterIcon = styled(BusinessCenterIcon)(({ theme }) => ({
   color: theme.palette.grey[600],
@@ -21,15 +22,6 @@ const StyledBusinessCenterIcon = styled(BusinessCenterIcon)(({ theme }) => ({
   borderRadius: '50%',
   width: '72px',
   height: '72px',
-}));
-
-const StyledNoProductsWrapper = styled(Box)(() => ({
-  display: 'flex',
-  justifyContent: 'center',
-  flexDirection: 'column',
-  alignItems: 'center',
-  gap: '30px',
-  height: 'calc(100vh - 800px)',
 }));
 
 export default function MyProducts() {
@@ -94,31 +86,18 @@ export default function MyProducts() {
           {products?.length ? (
             <ProductList products={products} variant="actionMenu" />
           ) : (
-            <StyledNoProductsWrapper>
-              <Box
-                sx={{
-                  display: 'flex',
-                  flexDirection: 'column',
-                  gap: '10px',
-                  alignItems: 'center',
-                }}
-              >
-                <StyledBusinessCenterIcon />
-                <Typography variant="h6">
-                  {"You don't have any products yet"}
-                </Typography>
-                <Typography variant="caption">
-                  Start adding products to your profile
-                </Typography>
-              </Box>
-
+            <EmptyProductList
+              icon={<StyledBusinessCenterIcon />}
+              message="You don't have any products yet"
+              caption="Start adding products to your profile"
+            >
               <Button
                 size="small"
                 onClick={() => router.push('/profile/products/create')}
               >
                 Add Product
               </Button>
-            </StyledNoProductsWrapper>
+            </EmptyProductList>
           )}
         </Box>
       </Box>

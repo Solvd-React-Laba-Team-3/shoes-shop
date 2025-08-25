@@ -1,7 +1,7 @@
 'use client';
 
 import { getProductsOptions } from '@/api/products/getProductsOptions';
-import { useDeviceSize, useSearchParams } from '@/lib/hooks';
+import { useSearchParams } from '@/lib/hooks';
 import { parseQueryString } from '@/lib/utils';
 import { useSuspenseInfiniteQuery } from '@tanstack/react-query';
 import React, { FC, useMemo } from 'react';
@@ -15,6 +15,7 @@ import { useRouter } from 'next/navigation';
 import { styled } from '@mui/material/styles';
 import LocalMallIcon from '@mui/icons-material/LocalMall';
 import { useIntersectionObserver } from '@/lib/hooks';
+import { EmptyProductList } from '../EmptyProductList';
 
 interface ProductsContainerProps {
   isFiltersOpen: boolean;
@@ -30,15 +31,6 @@ const StyledLocalMallIcon = styled(LocalMallIcon)(({ theme }) => ({
   height: '72px',
 }));
 
-const StyledNoProductsWrapper = styled(Box)(() => ({
-  display: 'flex',
-  justifyContent: 'center',
-  flexDirection: 'column',
-  alignItems: 'center',
-  gap: '30px',
-  height: 'calc(100vh - 300px)',
-}));
-
 export const ProductsContainer: FC<ProductsContainerProps> = ({
   isFiltersOpen,
   onFiltersToggle,
@@ -48,17 +40,18 @@ export const ProductsContainer: FC<ProductsContainerProps> = ({
   const filters = parseQueryString(searchParams.get('filters') ?? '');
   const search = searchParams.get('search');
 
-  const queryParams = useMemo(
-    () => ({
-      filters: {
-        ...filters.filters,
-        name: {
-          $contains: search,
+  const queryParams = useMemo(() => {
+    if (search) {
+      return {
+        filters: {
+          ...filters.filters,
+          name: {
+            $contains: search,
+          },
         },
-      },
-    }),
-    [filters, search]
-  );
+      };
+    }
+  }, [filters, search]);
 
   const { data, isFetching, fetchNextPage, hasNextPage, isFetchingNextPage } =
     useSuspenseInfiniteQuery(getProductsOptions(queryParams));
@@ -78,8 +71,6 @@ export const ProductsContainer: FC<ProductsContainerProps> = ({
   const handleClearFilters = () => {
     router.replace('/');
   };
-
-  const { isMobile } = useDeviceSize();
 
   return (
     <Box
@@ -102,8 +93,8 @@ export const ProductsContainer: FC<ProductsContainerProps> = ({
           <Typography variant="h4">
             {search ? 'Search Results' : 'Catalog'}
           </Typography>
-          {isMobile && search && (
-            <Box>
+          {search && (
+            <Box sx={{ display: { xs: 'block', md: 'none' } }}>
               <Divider sx={{ margin: '8px 0' }} />
               <Typography variant="caption">Shoes/{search}</Typography>
               <Typography variant="h4">{search}</Typography>
@@ -144,24 +135,11 @@ export const ProductsContainer: FC<ProductsContainerProps> = ({
           <Box ref={ref} />
         </>
       ) : (
-        <StyledNoProductsWrapper>
-          <Box
-            sx={{
-              display: 'flex',
-              flexDirection: 'column',
-              gap: '10px',
-              alignItems: 'center',
-            }}
-          >
-            <StyledLocalMallIcon />
-            <Typography variant="h6">
-              There are no products match search
-            </Typography>
-            <Typography variant="caption">
-              Try to change search query
-            </Typography>
-          </Box>
-        </StyledNoProductsWrapper>
+        <EmptyProductList
+          icon={<StyledLocalMallIcon />}
+          message="There are no products match search"
+          caption="Try to change search query"
+        />
       )}
     </Box>
   );
