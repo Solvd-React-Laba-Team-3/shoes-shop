@@ -1,4 +1,4 @@
-import { Order } from '@/types/Order';
+import type { Order } from '@/types/Order';
 import { NextResponse } from 'next/server';
 import Stripe from 'stripe';
 
@@ -32,7 +32,11 @@ async function getChargeDetails(latestChargeId?: string) {
 }
 
 export async function GET(req: Request) {
-  const userId = new URL(req.url).searchParams.get('userId');
+  const url = new URL(req.url);
+  const userId = url.searchParams.get('userId');
+  const page = Number.parseInt(url.searchParams.get('page') || '1');
+  const limit = Number.parseInt(url.searchParams.get('limit') || '10');
+
   if (!userId) {
     return NextResponse.json({ error: 'Missing userId' }, { status: 400 });
   }
@@ -43,7 +47,7 @@ export async function GET(req: Request) {
       limit: 100,
     });
 
-    const orders = (
+    const allOrders = (
       await Promise.all(
         searchResults.data.map(async (intent) => {
           const products = parseProducts(intent.metadata);
@@ -97,7 +101,22 @@ export async function GET(req: Request) {
             order!.decline_reason === null)
       ) as Order[];
 
-    return NextResponse.json({ orders });
+    const sortedOrders = allOrders.sort(
+      (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
+    );
+    const startIndex = (page - 1) * limit;
+    const endIndex = startIndex + limit;
+    const paginatedOrders = sortedOrders.slice(startIndex, endIndex);
+
+    return NextResponse.json({
+      orders: paginatedOrders,
+      pagination: {
+        page,
+        limit,
+        total: sortedOrders.length,
+        hasMore: endIndex < sortedOrders.length,
+      },
+    });
   } catch (err) {
     console.error(err);
     return NextResponse.json(
