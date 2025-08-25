@@ -518,7 +518,7 @@ export const Order: FC<OrderProps> = ({ order }) => {
                 }}
               >
                 {order.receipt_url && (
-                  <Box sx={{ position: 'relative' }}>
+                  <>
                     <Link
                       onClick={(e) => {
                         e.preventDefault();
@@ -542,11 +542,9 @@ export const Order: FC<OrderProps> = ({ order }) => {
                       </Typography>
                     </Link>
                     {isPdfLoading && (
-                      <LinearProgress
-                        sx={{ width: '100%', mt: 0, position: 'absolute' }}
-                      />
+                      <LinearProgress sx={{ width: '100%', mt: 0 }} />
                     )}
-                  </Box>
+                  </>
                 )}
               </Box>
 
