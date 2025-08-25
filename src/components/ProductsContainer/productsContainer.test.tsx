@@ -1,6 +1,11 @@
 import { render, screen } from '@testing-library/react';
 import { ProductsContainer } from './ProductsContainer';
-import { useSearchParams, useWishlist, useDeviceSize } from '@/lib/hooks';
+import {
+  useSearchParams,
+  useWishlist,
+  useDeviceSize,
+  useIntersectionObserver,
+} from '@/lib/hooks';
 import { getProductsOptions } from '@/api/products/getProductsOptions';
 import { useSuspenseInfiniteQuery } from '@tanstack/react-query';
 
@@ -13,6 +18,7 @@ const mockedGetProductsOptions = getProductsOptions as jest.Mock;
 const mockedUseSuspenseInfiniteQuery = useSuspenseInfiniteQuery as jest.Mock;
 const mockedUseWishlist = useWishlist as jest.Mock;
 const mockedUseDeviceSize = useDeviceSize as jest.Mock;
+const mockedUseIntersectionObserver = useIntersectionObserver as jest.Mock;
 
 describe('<ProductsContainer />', () => {
   beforeEach(() => {
@@ -44,6 +50,12 @@ describe('<ProductsContainer />', () => {
       addItem: jest.fn(),
       removeItem: jest.fn(),
       isLoading: false,
+    });
+
+    mockedUseIntersectionObserver.mockReturnValue({
+      ref: jest.fn(),
+      isIntersecting: false,
+      entry: undefined,
     });
   });
 
