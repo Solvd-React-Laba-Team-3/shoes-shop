@@ -28,6 +28,7 @@ export default function OrdersSkeleton() {
                 maxHeight: { xs: '56px', sm: '88px' },
                 display: 'flex',
                 alignItems: 'center',
+                backgroundColor: (theme) => theme.palette.grey[100],
               }}
             >
               <Box
