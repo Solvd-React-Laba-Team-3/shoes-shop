@@ -213,8 +213,9 @@ export const ProductForm: FC<ProductFormProps> = ({
         <Box
           sx={{
             display: 'flex',
-            gap: { xs: '16px', lg: '200px' },
+            gap: { xs: '16px', xl: '100px', xxl: '200px' },
             flexDirection: { xs: 'column', xl: 'row' },
+            maxWidth: '1200px',
           }}
         >
           <Box
@@ -501,7 +502,7 @@ export const ProductForm: FC<ProductFormProps> = ({
           </Box>
           <Box
             sx={{
-              width: { xs: 'min(100%, 320px)', md: '692px' },
+              width: { xs: 'min(100%, 300px)', md: '692px' },
               alignSelf: { xs: 'center', sm: 'unset' },
             }}
           >
