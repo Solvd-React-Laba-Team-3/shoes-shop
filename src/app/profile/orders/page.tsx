@@ -1,13 +1,15 @@
 'use client';
 
 import {
+  Accordion,
+  AccordionDetails,
+  AccordionSummary,
   Alert,
   Avatar,
   Box,
   Card,
   CardContent,
   Chip,
-  Collapse,
   Link,
   Skeleton,
   Tooltip,
@@ -34,7 +36,6 @@ import {
 import { Order } from '@/types/Order';
 import { formatDate } from '@/lib/utils/';
 import { useState } from 'react';
-import { IconButton } from '@/components/ui';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 
 interface StatusChipProps {
@@ -97,6 +98,7 @@ const StatusChip = ({ status }: StatusChipProps) => {
         '.MuiChip-label': {
           display: { xs: 'none', lg: 'block' },
         },
+        marginRight: '20px',
       }}
     />
   );
@@ -109,11 +111,12 @@ export default function Orders() {
     isError,
   } = useQuery(getOrdersOptions());
 
-  const [expanded, setExpanded] = useState<number | null>(null);
+  const [expandedPanel, setExpandedPanel] = useState<string | false>(false);
 
-  const handleExpandClick = (index: number) => {
-    setExpanded(expanded === index ? null : index);
-  };
+  const handleChange =
+    (panel: string) => (event: React.SyntheticEvent, isExpanded: boolean) => {
+      setExpandedPanel(isExpanded ? panel : false);
+    };
 
   const theme = useTheme();
   const isBetweenMdAndLg = useMediaQuery(theme.breakpoints.between('sm', 'lg'));
@@ -121,7 +124,7 @@ export default function Orders() {
 
   if (isLoading) {
     return (
-      <Box sx={{ maxWidth: 1200, mx: 'auto', p: 3 }}>
+      <Box sx={{ maxWidth: 1200, minWidth: '100%', mx: 'auto', p: 3 }}>
         <Typography variant="h5" sx={{ mb: 3, fontWeight: 600 }}>
           Order History
         </Typography>
@@ -161,26 +164,40 @@ export default function Orders() {
       >
         {orders.map((order: Order, index: number) => (
           <Box key={`${order.orderNumber}-${index}`}>
-            <Box sx={{ mb: 1 }}>
-              <Typography
-                variant="caption"
-                sx={{
-                  color: theme.palette.grey[600],
-                  fontWeight: 400,
-                  display: { sm: 'none' },
-                }}
-              >
-                {formatDate(order.date, 'dayMonthNameYear')} -{' '}
-                {order.products.length} Products
-              </Typography>
-            </Box>
-            <Card
+            <Typography
+              variant="caption"
+              sx={{
+                color: theme.palette.grey[600],
+                fontWeight: 400,
+                display: { sm: 'none' },
+              }}
+            >
+              {formatDate(order.date, 'dayMonthNameYear')} -{' '}
+              {order.products.length} Products
+            </Typography>
+            <Accordion
+              expanded={expandedPanel === `panel${index}`}
+              onChange={handleChange(`panel${index}`)}
               sx={{
                 boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
                 border: '1px solid #e0e0e0',
+                '&:before': { display: 'none' },
               }}
             >
-              <Box
+              <AccordionSummary
+                expandIcon={
+                  expandedPanel === `panel${index}` ? (
+                    <KeyboardArrowUp
+                      sx={{ color: theme.palette.secondary.main }}
+                    />
+                  ) : (
+                    <KeyboardArrowDown
+                      sx={{ color: theme.palette.secondary.main }}
+                    />
+                  )
+                }
+                aria-controls={`panel${index}-content`}
+                id={`panel${index}-header`}
                 sx={{
                   backgroundColor: theme.palette.grey[100],
                   borderBottom: '1px solid ' + theme.palette.grey[300],
@@ -192,9 +209,8 @@ export default function Orders() {
                     display: 'flex',
                     justifyContent: 'space-between',
                     alignItems: 'center',
-                    flexWrap: 'wrap',
                     gap: 2,
-                    paddingLeft: '24px',
+                    width: '100%',
                   }}
                 >
                   <Box
@@ -223,7 +239,6 @@ export default function Orders() {
                       </Typography>
                     </Box>
                   </Box>
-
                   <Box
                     sx={{
                       display: { xs: 'none', sm: 'flex' },
@@ -253,7 +268,6 @@ export default function Orders() {
                       </Typography>
                     </Typography>
                   </Box>
-
                   <Box
                     sx={{
                       display: 'flex',
@@ -288,25 +302,10 @@ export default function Orders() {
                       status={order.status}
                       declineReason={order.decline_reason}
                     />
-                    <IconButton
-                      onClick={() => handleExpandClick(index)}
-                      aria-expanded={expanded === index}
-                      aria-label="show more"
-                    >
-                      {expanded === index ? (
-                        <KeyboardArrowUp
-                          sx={{ color: theme.palette.secondary.main }}
-                        />
-                      ) : (
-                        <KeyboardArrowDown
-                          sx={{ color: theme.palette.secondary.main }}
-                        />
-                      )}
-                    </IconButton>
                   </Box>
                 </Box>
-              </Box>
-              <Collapse in={expanded === index} timeout="auto" unmountOnExit>
+              </AccordionSummary>
+              <AccordionDetails sx={{ padding: 0 }}>
                 <CardContent
                   sx={{
                     backgroundColor: theme.palette.grey[100],
@@ -561,7 +560,10 @@ export default function Orders() {
                             }}
                           />
                           <Box
-                            sx={{ display: 'flex', flexDirection: 'column' }}
+                            sx={{
+                              display: 'flex',
+                              flexDirection: 'column',
+                            }}
                           >
                             <Typography variant="h5">{product.name}</Typography>
                             <Typography
@@ -662,7 +664,9 @@ export default function Orders() {
                                 <Typography
                                   component="span"
                                   variant="subtitle1"
-                                  sx={{ color: theme.palette.secondary.main }}
+                                  sx={{
+                                    color: theme.palette.secondary.main,
+                                  }}
                                 >
                                   {product.quantity}
                                 </Typography>
@@ -683,7 +687,9 @@ export default function Orders() {
                                 <Typography
                                   component="span"
                                   variant="subtitle1"
-                                  sx={{ color: theme.palette.secondary.main }}
+                                  sx={{
+                                    color: theme.palette.secondary.main,
+                                  }}
                                 >
                                   {product.price}$
                                 </Typography>
@@ -760,8 +766,8 @@ export default function Orders() {
                     </Box>
                   </Box>
                 </CardContent>
-              </Collapse>
-            </Card>
+              </AccordionDetails>
+            </Accordion>
           </Box>
         ))}
       </Box>
