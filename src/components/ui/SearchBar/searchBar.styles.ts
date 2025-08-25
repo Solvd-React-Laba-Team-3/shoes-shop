@@ -43,6 +43,13 @@ export const SearchContainer = styled(Box, {
         },
       },
     }),
+    [theme.breakpoints.down('lg')]: {
+      ...(expandOnFocus && {
+        '&:focus-within': {
+          margin: '0 80px 0 20px',
+        },
+      }),
+    },
     [theme.breakpoints.down('md')]: {
       ...(expandOnFocus && {
         paddingLeft: '0px',
