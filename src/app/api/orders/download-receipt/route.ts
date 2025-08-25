@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import Stripe from 'stripe';
-import puppeteer from 'puppeteer';
+import puppeteer from 'puppeteer-core';
+import chromium from '@sparticuz/chromium';
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string);
 
@@ -20,12 +21,17 @@ export async function GET(req: Request) {
     }
 
     const browser = await puppeteer.launch({
+      args: chromium.args,
+      defaultViewport: { width: 1280, height: 720 },
+      executablePath: await chromium.executablePath(),
       headless: true,
-      args: ['--no-sandbox', '--disable-setuid-sandbox'],
     });
 
     const page = await browser.newPage();
-    await page.goto(charge.receipt_url, { waitUntil: 'networkidle0' });
+    await page.goto(charge.receipt_url, {
+      waitUntil: 'networkidle0',
+      timeout: 30000,
+    });
 
     const pdfBuffer = await page.pdf({
       format: 'A4',
@@ -35,13 +41,14 @@ export async function GET(req: Request) {
 
     return new NextResponse(pdfBuffer, {
       headers: {
-        'Content-Disposition': `attachment; filename="${filename}"`,
+        'Content-Disposition': `attachment; filename="${decodeURIComponent(filename)}"`,
         'Content-Type': 'application/pdf',
       },
     });
-  } catch {
+  } catch (error) {
+    console.error('Receipt download error:', error);
     return NextResponse.json(
-      { error: 'Internal Server Error' },
+      { error: 'Failed to generate receipt' },
       { status: 500 }
     );
   }

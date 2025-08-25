@@ -12,34 +12,38 @@ const StyledWrapper = styled(Box)(({ theme }) => ({
   display: 'flex',
   justifyContent: 'center',
   alignItems: 'center',
-  position: 'absolute',
   height: '100%',
-  padding: '0 16px',
+  position: 'relative',
+  padding: 0,
 
-  [theme.breakpoints.up('sm')]: { padding: '0 5%' },
-  [theme.breakpoints.up('md')]: { padding: '0 10%' },
-  [theme.breakpoints.up('lg')]: {
-    position: 'relative',
-    padding: 0,
+  [theme.breakpoints.down('lg')]: {
+    padding: '0 32px',
+    position: 'absolute',
+    alignItems: 'flex-start',
+    top: '150px',
+  },
+
+  [theme.breakpoints.down('sm')]: {
+    padding: '0 16px',
+    alignItems: 'center',
+    top: 'auto',
   },
 }));
 
 const StyledTextContainer = styled(Stack)(({ theme }) => ({
-  width: '100%',
-  padding: '24px 16px',
   gap: 20,
   justifyContent: 'center',
-  backgroundColor: 'rgba(242,242,242, 0.5)',
-  backdropFilter: 'blur(10px)',
   borderRadius: 10,
+  width: '56%',
+  padding: 0,
+  backgroundColor: 'transparent',
+  backdropFilter: 'none',
 
-  [theme.breakpoints.up('sm')]: { padding: '32px 24px' },
-  [theme.breakpoints.up('md')]: { padding: '36px 28px' },
-  [theme.breakpoints.up('lg')]: {
-    width: '56%',
-    padding: 0,
-    backgroundColor: 'transparent',
-    backdropFilter: 'none',
+  [theme.breakpoints.down('lg')]: {
+    width: '100%',
+    padding: '24px 16px',
+    backgroundColor: 'rgba(242,242,242, 0.5)',
+    backdropFilter: 'blur(10px)',
   },
 }));
 
