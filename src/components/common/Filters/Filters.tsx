@@ -28,21 +28,22 @@ import { getBrandsOptions } from '@/api/brand/getBrandsOptions';
 import { FC, useCallback, useMemo, useState } from 'react';
 import { parseQueryString, toQueryString } from '@/lib/utils';
 import { HEADER_HEIGHT } from '@/constants/headerHeight';
+import { useHideOnScroll } from '@/lib/hooks/useHideOnScroll/useHideOnScroll';
 
 type FilterType = number | number[] | string | Record<string, number | object>;
 
 const StyledDrawer = styled(Drawer)(({ theme, open }) => ({
   width: open ? '320px' : '0px',
-  transition: 'width 0.2s ease-in-out',
+  transition: 'width 0.2s ease-in-out, transform 0.2s ease-in-out',
   zIndex: 800,
-  position: 'relative',
-
+  position: 'sticky',
+  maxHeight: '90vh',
+  height: 'max-content',
+  top: HEADER_HEIGHT,
   '& .MuiDrawer-paper': {
     border: 'none',
     paddingBottom: '50px',
-    top: HEADER_HEIGHT,
-    position: 'sticky',
-
+    position: 'relative',
     [theme.breakpoints.down('md')]: {
       top: 0,
       height: '100vh',
@@ -79,7 +80,7 @@ const normalizeToArray = (value: unknown): number[] => {
 
 export const Filters: FC<DrawerProps> = ({ ...props }) => {
   const searchParams = useSearchParams();
-
+  const hidden = useHideOnScroll();
   const currentFilters = useMemo(() => {
     const raw = searchParams.get('filters');
     const parsed = raw ? parseQueryString(raw) : {};
@@ -165,6 +166,9 @@ export const Filters: FC<DrawerProps> = ({ ...props }) => {
     <StyledDrawer
       variant={isMobile ? 'temporary' : 'persistent'}
       anchor={isMobile ? 'right' : 'left'}
+      sx={{
+        transform: hidden ? 'translateY(-100px)' : 'translateY(0)',
+      }}
       {...props}
     >
       {isMobile ? (

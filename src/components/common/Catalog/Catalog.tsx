@@ -19,14 +19,9 @@ export const Catalog = () => {
 
   return (
     <Box sx={{ display: 'flex' }}>
-      {isFiltersOpen && (
-        <Suspense fallback={!isMobile && <FiltersFallback />}>
-          <Filters
-            open={isFiltersOpen}
-            onClose={() => setIsFiltersOpen(false)}
-          />
-        </Suspense>
-      )}
+      <Suspense fallback={!isMobile && isFiltersOpen && <FiltersFallback />}>
+        <Filters open={isFiltersOpen} onClose={() => setIsFiltersOpen(false)} />
+      </Suspense>
       <Suspense fallback={<ProductListFallback />}>
         <ProductsContainer
           isFiltersOpen={isFiltersOpen}
