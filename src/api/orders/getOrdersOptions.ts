@@ -8,7 +8,7 @@ type OrderResponse = Record<'orders', Order[]>;
 export const getOrdersOptions = () =>
   queryOptions({
     queryKey: ['orders'],
-    queryFn: async (): Promise<Order[]> => {
+    queryFn: async () => {
       const session = await getSession();
 
       if (!session) {

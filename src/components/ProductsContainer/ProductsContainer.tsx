@@ -1,7 +1,7 @@
 'use client';
 
 import { getProductsOptions } from '@/api/products/getProductsOptions';
-import { useDeviceSize, useSearchParams } from '@/lib/hooks';
+import { useSearchParams } from '@/lib/hooks';
 import { parseQueryString } from '@/lib/utils';
 import { useSuspenseInfiniteQuery } from '@tanstack/react-query';
 import React, { FC, useMemo } from 'react';
@@ -79,8 +79,6 @@ export const ProductsContainer: FC<ProductsContainerProps> = ({
     router.replace('/');
   };
 
-  const { isMobile } = useDeviceSize();
-
   return (
     <Box
       sx={{
@@ -102,8 +100,8 @@ export const ProductsContainer: FC<ProductsContainerProps> = ({
           <Typography variant="h4">
             {search ? 'Search Results' : 'Catalog'}
           </Typography>
-          {isMobile && search && (
-            <Box>
+          {search && (
+            <Box sx={{ display: { xs: 'block', md: 'none' } }}>
               <Divider sx={{ margin: '8px 0' }} />
               <Typography variant="caption">Shoes/{search}</Typography>
               <Typography variant="h4">{search}</Typography>

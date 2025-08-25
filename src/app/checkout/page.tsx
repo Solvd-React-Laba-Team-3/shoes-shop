@@ -45,10 +45,10 @@ export default function Checkout() {
   const methods = useForm<CheckoutSchema>({
     resolver: zodResolver(checkoutSchema),
     defaultValues: {
-      name: '',
-      surname: '',
-      email: '',
-      phone: '',
+      name: session?.user?.firstName ?? '',
+      surname: session?.user?.lastName ?? '',
+      email: session?.user?.email ?? '',
+      phone: session?.user?.phoneNumber ?? '',
       country: '',
       city: '',
       state: '',
