@@ -71,6 +71,46 @@ const getStatus = (status: string, theme: Theme) => {
   }
 };
 
+const InfoItem: FC<{ icon: React.ReactNode; label: string; value: string }> = ({
+  icon,
+  label,
+  value,
+}) => (
+  <StyledLabelWrapper>
+    <Box component="span" sx={{ display: { xs: 'none', lg: 'inline' } }}>
+      {label}:
+    </Box>
+    <Box sx={{ display: { xs: 'flex', lg: 'none' } }}>{icon}:</Box>
+    <Tooltip title={value} enterTouchDelay={0} leaveTouchDelay={3000}>
+      <StyledTooltipContent>{value}</StyledTooltipContent>
+    </Tooltip>
+  </StyledLabelWrapper>
+);
+
+const LabelValue: FC<{
+  label?: string;
+  value: React.ReactNode;
+  valueColor?: string;
+  labelColor?: string;
+}> = ({ label, value, valueColor, labelColor }) => {
+  const theme = useTheme();
+  return (
+    <Typography
+      variant="subtitle2"
+      sx={{ color: labelColor ?? theme.palette.grey[600] }}
+    >
+      {label}
+      <Typography
+        component="span"
+        variant="subtitle1"
+        sx={{ color: valueColor ?? theme.palette.secondary.main }}
+      >
+        {value}
+      </Typography>
+    </Typography>
+  );
+};
+
 export const Order: FC<OrderProps> = ({ order }) => {
   const theme = useTheme();
   const isBetweenMdAndLg = useMediaQuery(theme.breakpoints.between('sm', 'lg'));
@@ -238,99 +278,23 @@ export const Order: FC<OrderProps> = ({ order }) => {
             }}
           >
             <StyledInfoGrid>
-              <Box
-                sx={{
-                  flex: { xs: '1 1 0%', lg: '1 1 30%' },
-                  minWidth: 0,
-                }}
-              >
-                <StyledLabelWrapper>
-                  <Box
-                    component="span"
-                    sx={{ display: { xs: 'none', lg: 'inline' } }}
-                  >
-                    Delivery:
-                  </Box>
-                  <Box sx={{ display: { xs: 'flex', lg: 'none' } }}>
-                    <LocalShippingTwoTone />:
-                  </Box>
+              <InfoItem
+                label="Delivery: "
+                icon={<LocalShippingTwoTone />}
+                value={order.delivery}
+              ></InfoItem>
 
-                  <Box sx={{ minWidth: 0 }}>
-                    <Tooltip
-                      title={order.delivery}
-                      enterTouchDelay={0}
-                      leaveTouchDelay={3000}
-                    >
-                      <StyledTooltipContent>
-                        {order.delivery}
-                      </StyledTooltipContent>
-                    </Tooltip>
-                  </Box>
-                </StyledLabelWrapper>
-              </Box>
-              <Box
-                sx={{
-                  flex: { xs: '1 1 0%', lg: '1 1 30%' },
-                  minWidth: 0,
-                }}
-              >
-                <StyledLabelWrapper>
-                  <Box
-                    component="span"
-                    sx={{ display: { xs: 'none', lg: 'inline' } }}
-                  >
-                    Contacts:
-                  </Box>
-                  <Box sx={{ display: { xs: 'flex', lg: 'none' } }}>
-                    <PersonSearchTwoTone />:
-                  </Box>
-                  <Box sx={{ minWidth: 0 }}>
-                    <Tooltip
-                      title={`${order.contactFullName}, ${order.contactPhone}, ${order.contactEmail}`}
-                      enterTouchDelay={0}
-                      leaveTouchDelay={3000}
-                    >
-                      <StyledTooltipContent>
-                        {order.contactFullName}, {order.contactPhone},{' '}
-                        {order.contactEmail}
-                      </StyledTooltipContent>
-                    </Tooltip>
-                  </Box>
-                </StyledLabelWrapper>
-              </Box>
-              <Box
-                sx={{
-                  flex: { xs: '1 1 0%', lg: '1 1 30%' },
-                  minWidth: 0,
-                }}
-              >
-                <StyledLabelWrapper>
-                  <Box
-                    component="span"
-                    sx={{ display: { xs: 'none', lg: 'inline' } }}
-                  >
-                    Payment:
-                  </Box>
-                  <Box sx={{ display: { xs: 'flex', lg: 'none' } }}>
-                    <PaymentsTwoTone />:
-                  </Box>
-                  <Box sx={{ minWidth: 0 }}>
-                    <Tooltip
-                      title={order.paymentMethod}
-                      enterTouchDelay={0}
-                      leaveTouchDelay={3000}
-                    >
-                      <StyledTooltipContent
-                        sx={{
-                          textTransform: 'capitalize',
-                        }}
-                      >
-                        {order.paymentMethod}
-                      </StyledTooltipContent>
-                    </Tooltip>
-                  </Box>
-                </StyledLabelWrapper>
-              </Box>
+              <InfoItem
+                label="Contacts: "
+                icon={<PersonSearchTwoTone />}
+                value={`${order.contactFullName}, ${order.contactPhone}, ${order.contactEmail}`}
+              />
+
+              <InfoItem
+                label="Payment: "
+                icon={<PaymentsTwoTone />}
+                value={order.paymentMethod}
+              ></InfoItem>
             </StyledInfoGrid>
             <Box
               sx={{
@@ -389,25 +353,12 @@ export const Order: FC<OrderProps> = ({ order }) => {
                           ? "Men's Shoes"
                           : "Women's Shoes"}
                       </Typography>
-                      <Typography
-                        variant="caption"
-                        sx={{
-                          fontWeight: 500,
-                          color: theme.palette.grey[600],
-                        }}
-                      >
-                        Size:{' '}
-                        <Typography
-                          component="span"
-                          variant="caption"
-                          sx={{
-                            fontWeight: 500,
-                            color: theme.palette.secondary.main,
-                          }}
-                        >
-                          {product.size} UK
-                        </Typography>
-                      </Typography>
+                      <LabelValue
+                        label="Size: "
+                        value={`${product.size} UK`}
+                        labelColor={theme.palette.grey[600]}
+                        valueColor={theme.palette.secondary.main}
+                      />
 
                       <Box
                         sx={{
@@ -435,25 +386,12 @@ export const Order: FC<OrderProps> = ({ order }) => {
                           </Typography>
                         </Typography>
 
-                        <Typography
-                          variant="caption"
-                          sx={{
-                            fontWeight: 500,
-                            color: theme.palette.grey[600],
-                          }}
-                        >
-                          Quantity:{' '}
-                          <Typography
-                            component="span"
-                            variant="caption"
-                            sx={{
-                              fontWeight: 500,
-                              color: theme.palette.secondary.main,
-                            }}
-                          >
-                            {product.quantity}
-                          </Typography>
-                        </Typography>
+                        <LabelValue
+                          label={!isBetweenMdAndLg ? 'Quantity: ' : ''}
+                          value={product.quantity}
+                          labelColor={theme.palette.grey[600]}
+                          valueColor={theme.palette.secondary.main}
+                        />
                       </Box>
                     </Box>
                   </Box>
@@ -489,19 +427,12 @@ export const Order: FC<OrderProps> = ({ order }) => {
                           mr: 2,
                         }}
                       >
-                        <Typography
-                          variant="subtitle2"
-                          sx={{ color: theme.palette.grey[600] }}
-                        >
-                          {!isBetweenMdAndLg ? 'Price: ' : ''}
-                          <Typography
-                            component="span"
-                            variant="subtitle1"
-                            sx={{ color: theme.palette.secondary.main }}
-                          >
-                            {product.price}$
-                          </Typography>
-                        </Typography>
+                        <LabelValue
+                          label={!isBetweenMdAndLg ? 'Price: ' : ''}
+                          value={`${product.price}$`}
+                          labelColor={theme.palette.grey[600]}
+                          valueColor={theme.palette.secondary.main}
+                        />
                       </Box>
                     </>
                   )}
@@ -518,7 +449,7 @@ export const Order: FC<OrderProps> = ({ order }) => {
                 }}
               >
                 {order.receipt_url && (
-                  <>
+                  <Box sx={{ position: 'relative' }}>
                     <Link
                       onClick={(e) => {
                         e.preventDefault();
@@ -542,27 +473,22 @@ export const Order: FC<OrderProps> = ({ order }) => {
                       </Typography>
                     </Link>
                     {isPdfLoading && (
-                      <LinearProgress sx={{ width: '100%', mt: 0 }} />
+                      <LinearProgress
+                        sx={{ width: '100%', mt: 0, position: 'absolute' }}
+                      />
                     )}
-                  </>
+                  </Box>
                 )}
               </Box>
 
-              <Box sx={{ textAlign: 'right' }}>
+              <Box sx={{ textAlign: 'left', mr: 2 }}>
                 {order.discountAmount && (
-                  <Typography
-                    variant="subtitle2"
-                    sx={{ color: theme.palette.grey[600] }}
-                  >
-                    Discount:{' '}
-                    <Typography
-                      variant="subtitle1"
-                      component="p"
-                      sx={{ display: 'inline', color: 'green' }}
-                    >
-                      {order.discountAmount}$
-                    </Typography>
-                  </Typography>
+                  <LabelValue
+                    label="Discount: "
+                    value={`${order.discountAmount}$`}
+                    labelColor={theme.palette.grey[600]}
+                    valueColor="green"
+                  />
                 )}
               </Box>
             </StyledToolsWrapper>
