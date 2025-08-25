@@ -18,4 +18,5 @@ export interface Order {
   receipt_url?: string;
   paymentMethod: string;
   decline_reason?: string;
+  latest_charge?: string;
 }

@@ -7,7 +7,6 @@ import {
   Card,
   CardContent,
   Link,
-  Skeleton,
   Tooltip,
   useMediaQuery,
   useTheme,
@@ -37,6 +36,8 @@ import {
   StyledOrderInfo,
   StyledToolsWrapper,
 } from './orders.styles';
+import OrdersSkeleton from './orders.skeleton';
+import { Order } from '@/types/Order';
 
 const getStatus = (status: string) => {
   switch (status.toLowerCase()) {
@@ -79,21 +80,7 @@ export default function Orders() {
   const isBetweenXsAndSm = useMediaQuery(theme.breakpoints.between('xs', 'sm'));
 
   if (isLoading) {
-    return (
-      <Box sx={{ mx: 'auto', p: 3 }}>
-        <Typography variant="h5" sx={{ mb: 3, fontWeight: 600 }}>
-          Order History
-        </Typography>
-        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-          {[1, 2, 3].map((i) => (
-            <Card key={i} sx={{ p: 3 }}>
-              <Skeleton variant="text" width="25%" height={24} sx={{ mb: 2 }} />
-              <Skeleton variant="rectangular" height={120} />
-            </Card>
-          ))}
-        </Box>
-      </Box>
-    );
+    return <OrdersSkeleton />;
   }
 
   if (isError) {
@@ -108,6 +95,26 @@ export default function Orders() {
       </Box>
     );
   }
+
+  const handleDownload = (order: Order) => {
+    if (!order.latest_charge) {
+      console.error('No charge ID available for this order.');
+      return;
+    }
+
+    const filename = `order-${order.orderNumber}.pdf`;
+    const encodedFilename = encodeURIComponent(filename);
+
+    const proxyUrl = `/api/download-receipt?chargeId=${order.latest_charge}&filename=${encodedFilename}`;
+
+    const link = document.createElement('a');
+    link.href = proxyUrl;
+    link.download = filename;
+    link.style.display = 'none';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
 
   return (
     <Box sx={{ pb: 10 }}>
@@ -132,7 +139,7 @@ export default function Orders() {
                     fontWeight: 400,
                   }}
                 >
-                  {formatDate(order.date, 'dayMonthNameYear')} -
+                  {formatDate(order.date, 'dayMonthNameYear')} -{' '}
                   {order.products.length} Products
                 </Typography>
               </Box>
@@ -216,7 +223,7 @@ export default function Orders() {
                               sx={{
                                 color: theme.palette.secondary.main,
                                 fontWeight: 500,
-                                marginLeft: '4px',
+                                paddingLeft: '4px',
                               }}
                             >
                               {order.products.length}
@@ -285,7 +292,7 @@ export default function Orders() {
                         <StyledLabelWrapper>
                           <Box
                             component="span"
-                            sx={{ display: { xs: 'none', lg: 'in-line' } }}
+                            sx={{ display: { xs: 'none', lg: 'inline' } }}
                           >
                             Delivery:
                           </Box>
@@ -397,7 +404,9 @@ export default function Orders() {
                         </Typography>
                       </StyledOrderInfo>
                       {order.products.map((product) => (
-                        <StyledProductWrapper key={product.id}>
+                        <StyledProductWrapper
+                          key={`${product.id}-${product.size}`}
+                        >
                           <Box
                             sx={{
                               display: 'flex',
@@ -564,9 +573,10 @@ export default function Orders() {
                       >
                         {order.receipt_url && (
                           <Link
-                            href={order.receipt_url}
-                            target="_blank"
-                            rel="noopener noreferrer"
+                            onClick={(e) => {
+                              e.preventDefault();
+                              handleDownload(order);
+                            }}
                             sx={{
                               display: 'inline-flex',
                               alignItems: 'center',
@@ -574,6 +584,7 @@ export default function Orders() {
                               textDecoration: 'underline',
                               fontWeight: 500,
                             }}
+                            href="#"
                           >
                             <Download
                               sx={{ fontSize: theme.typography.subtitle2 }}
