@@ -1,4 +1,5 @@
 'use client';
+
 import Box from '@mui/material/Box';
 import Avatar from '@mui/material/Avatar';
 import Typography from '@mui/material/Typography';
@@ -20,8 +21,8 @@ import { useAIHelperChat } from '@/lib/hooks';
 import { MessageFallback } from '../MessageFallback';
 
 export const AIHelper = () => {
-  const { chat, sendMessage, isPending } = useAIHelperChat();
-  const [isCollapsed, setIsCollapsed] = useState(false);
+  const { history, isCollapsed, sendMessage, isPending, toggleCollapsed } =
+    useAIHelperChat();
   const [prompt, setPrompt] = useState('');
   const [isLoading, setIsLoading] = useState(true);
   const chatContainerRef = useRef<HTMLDivElement | null>(null);
@@ -37,7 +38,7 @@ export const AIHelper = () => {
     if (!isLoading) {
       scrollChatToBottom();
     }
-  }, [chat, isLoading]);
+  }, [history, isLoading]);
 
   useEffect(() => {
     if (!isCollapsed && !isLoading) {
@@ -52,23 +53,22 @@ export const AIHelper = () => {
     return () => clearTimeout(timer);
   }, []);
 
-  const toggleCollapsed = () => {
-    setIsCollapsed(!isCollapsed);
-  };
-
   const handleSend = () => {
     sendMessage(prompt);
     setPrompt('');
   };
 
   return (
-    <StyledContainer elevation={3} collapsed={isCollapsed}>
+    <StyledContainer elevation={3} collapsed={isCollapsed || isLoading}>
       <Box
         sx={{
-          display: 'flex',
-          justifyContent: 'space-between',
+          display: {
+            xs: isCollapsed || isLoading ? 'none' : 'flex',
+            sm: 'flex',
+          },
           alignItems: 'center',
           padding: '0 16px',
+          justifyContent: 'space-between',
         }}
       >
         <Box
@@ -85,6 +85,17 @@ export const AIHelper = () => {
           {isCollapsed ? <ExpandMoreIcon /> : <ExpandLessIcon />}
         </IconButton>
       </Box>
+      <IconButton
+        onClick={toggleCollapsed}
+        sx={{
+          display: {
+            xs: isCollapsed || isLoading ? 'block' : 'none',
+            sm: 'none',
+          },
+        }}
+      >
+        <Avatar src="/ai-helper-avatar.png" />
+      </IconButton>
       {!isCollapsed && (
         <Box
           sx={{
@@ -94,34 +105,26 @@ export const AIHelper = () => {
           }}
         >
           <StyledChatContainer ref={chatContainerRef}>
-            {isLoading ? (
-              <>
-                <MessageFallback align="left" />
-                <MessageFallback align="right" />
-                <MessageFallback align="left" />
-              </>
-            ) : (
-              chat.map((message) => (
-                <StyledMessageWrapper
-                  key={message.content}
-                  sender={message.sender}
+            {history.map((message) => (
+              <StyledMessageWrapper
+                key={message.content}
+                sender={message.sender}
+              >
+                <ReactMarkdown
+                  components={{
+                    a({ href, children }) {
+                      return (
+                        <Link href={href} active>
+                          {children}
+                        </Link>
+                      );
+                    },
+                  }}
                 >
-                  <ReactMarkdown
-                    components={{
-                      a({ href, children }) {
-                        return (
-                          <Link href={href} active>
-                            {children}
-                          </Link>
-                        );
-                      },
-                    }}
-                  >
-                    {message.content}
-                  </ReactMarkdown>
-                </StyledMessageWrapper>
-              ))
-            )}
+                  {message.content}
+                </ReactMarkdown>
+              </StyledMessageWrapper>
+            ))}
             {isPending && <MessageFallback align="left" />}
           </StyledChatContainer>
           <Box
@@ -135,9 +138,15 @@ export const AIHelper = () => {
             <TextareaAutosize
               value={prompt}
               onChange={(e) => setPrompt(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' && e.shiftKey) {
+                  handleSend();
+                }
+              }}
               placeholder="Type your prompt here..."
               minRows={4}
               maxRows={4}
+              spellCheck={false}
               style={{
                 width: '100%',
                 border: 'none',
