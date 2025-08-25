@@ -21,11 +21,25 @@ export async function GET(req: Request) {
 
     const browser = await puppeteer.launch({
       headless: true,
-      args: ['--no-sandbox', '--disable-setuid-sandbox'],
+      args: [
+        '--no-sandbox',
+        '--disable-setuid-sandbox',
+        '--disable-dev-shm-usage',
+        '--disable-accelerated-2d-canvas',
+        '--no-first-run',
+        '--no-zygote',
+        '--single-process',
+        '--disable-gpu',
+        '--disable-web-security',
+        '--disable-features=VizDisplayCompositor',
+      ],
     });
 
     const page = await browser.newPage();
-    await page.goto(charge.receipt_url, { waitUntil: 'networkidle0' });
+    await page.goto(charge.receipt_url, {
+      waitUntil: 'networkidle0',
+      timeout: 30000,
+    });
 
     const pdfBuffer = await page.pdf({
       format: 'A4',
@@ -35,13 +49,14 @@ export async function GET(req: Request) {
 
     return new NextResponse(pdfBuffer, {
       headers: {
-        'Content-Disposition': `attachment; filename="${filename}"`,
+        'Content-Disposition': `attachment; filename="${decodeURIComponent(filename)}"`,
         'Content-Type': 'application/pdf',
       },
     });
-  } catch {
+  } catch (error) {
+    console.error('Receipt download error:', error);
     return NextResponse.json(
-      { error: 'Internal Server Error' },
+      { error: 'Failed to generate receipt' },
       { status: 500 }
     );
   }

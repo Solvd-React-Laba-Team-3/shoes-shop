@@ -1,0 +1,7 @@
+{
+  "functions": {
+    "src/app/api/orders/download-receipt/route.ts": {
+      "maxDuration": 60
+    }
+  }
+}
