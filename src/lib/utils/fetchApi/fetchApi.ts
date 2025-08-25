@@ -8,6 +8,7 @@ interface FetchOptions {
   body?: unknown;
   queryParams?: QueryParam;
   apiRoute?: boolean;
+  responseType?: 'json' | 'blob';
 }
 
 /**
@@ -19,6 +20,7 @@ interface FetchOptions {
  * @param {unknown} [body] - Optional request body that will be JSON stringified
  * @param {string} [token] - Optional token to be used for authentication
  * @param {boolean} [apiRoute] - Optional flag to use the API route instead of the public API URL
+ * @param {('json' | 'blob')} [responseType] - Optional response type to return
  *
  * @returns {Promise<T | StrapiError>} A promise that resolves to either:
  *  - The successful response data of type T
@@ -32,6 +34,7 @@ export const fetchApi = async <T>({
   token,
   queryParams,
   apiRoute = false,
+  responseType = 'json',
 }: FetchOptions): Promise<T> => {
   const isFormData = body instanceof FormData;
 
@@ -54,15 +57,19 @@ export const fetchApi = async <T>({
         : undefined,
   });
 
-  const data = await response.json();
-
   if (!response.ok) {
+    const data = await response.json();
+
     if (data.error) {
       throw new Error(data.error.message);
     }
-
     throw new Error(data.message);
   }
 
-  return data;
+  switch (responseType) {
+    case 'blob':
+      return (await response.blob()) as T;
+    case 'json':
+      return await response.json();
+  }
 };
