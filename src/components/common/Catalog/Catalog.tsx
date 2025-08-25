@@ -7,10 +7,8 @@ import { Suspense } from 'react';
 import { ProductListFallback } from '@/components/common/ProductListFallback';
 import { FiltersFallback } from '@/components/common/FiltersFallback';
 import { useState } from 'react';
-import { useDeviceSize } from '@/lib/hooks';
 
 export const Catalog = () => {
-  const { isMobile } = useDeviceSize();
   const [isFiltersOpen, setIsFiltersOpen] = useState(false);
 
   const handleFiltersToggle = () => {
@@ -20,7 +18,7 @@ export const Catalog = () => {
   return (
     <Box sx={{ display: 'flex' }}>
       {isFiltersOpen && (
-        <Suspense fallback={!isMobile && <FiltersFallback />}>
+        <Suspense fallback={<FiltersFallback />}>
           <Filters
             open={isFiltersOpen}
             onClose={() => setIsFiltersOpen(false)}

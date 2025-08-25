@@ -16,7 +16,7 @@ import { usePathname } from 'next/navigation';
 import { HEADER_HEIGHT } from '@/constants/headerHeight';
 import Drawer, { DrawerProps } from '@mui/material/Drawer';
 import { FC } from 'react';
-import { useDeviceSize } from '@/lib/hooks';
+import { useMediaQuery, useTheme } from '@mui/material';
 
 export const Sidebar: FC<DrawerProps> = ({ open = false, ...props }) => {
   const pathname = usePathname();
@@ -50,7 +50,8 @@ export const Sidebar: FC<DrawerProps> = ({ open = false, ...props }) => {
     },
   ];
 
-  const { isMobile } = useDeviceSize();
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
 
   return (
     <Drawer
@@ -58,7 +59,7 @@ export const Sidebar: FC<DrawerProps> = ({ open = false, ...props }) => {
       anchor={isMobile ? 'right' : 'left'}
       open={isMobile ? open : true}
       sx={{
-        minWidth: '320px',
+        width: { xs: '320px', md: '260px', lg: '320px' },
         zIndex: 100,
 
         '& .MuiDrawer-paper': {
@@ -81,7 +82,7 @@ export const Sidebar: FC<DrawerProps> = ({ open = false, ...props }) => {
             justifyContent: 'flex-end',
             paddingBottom: '8px',
             paddingTop: '12px',
-            width: '320px',
+            width: { xs: '320px', md: '260px', lg: '320px' },
           }}
         >
           <IconButton
@@ -104,7 +105,7 @@ export const Sidebar: FC<DrawerProps> = ({ open = false, ...props }) => {
               alignItems: 'center',
               gap: '16px',
               padding: '32px 40px',
-              width: '320px',
+              width: { xs: '320px', md: '260px', lg: '320px' },
               borderBottom: (theme) => `1px solid ${theme.palette.divider}`,
             }}
           >
@@ -114,15 +115,17 @@ export const Sidebar: FC<DrawerProps> = ({ open = false, ...props }) => {
               sx={{ width: '64px', height: '64px' }}
             />
             <Box sx={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-              <Typography
-                sx={{ fontSize: '12px', fontWeight: 500 }}
-                color="textDisabled"
-              >
+              <Typography variant="subtitle2" color="textDisabled">
                 Welcome
               </Typography>
               <Typography
                 variant="subtitle2"
-                sx={{ whiteSpace: { md: 'nowrap', xs: 'pre-wrap' } }}
+                sx={{
+                  display: 'flex',
+                  flexWrap: 'wrap',
+                  width: { xs: '140px', md: '140px', lg: '200px' },
+                  wordBreak: 'break-word',
+                }}
               >
                 {session?.user?.username}
               </Typography>

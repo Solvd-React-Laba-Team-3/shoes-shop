@@ -1,7 +1,7 @@
 'use client';
 
 import { getProductsOptions } from '@/api/products/getProductsOptions';
-import { useDeviceSize, useSearchParams } from '@/lib/hooks';
+import { useSearchParams } from '@/lib/hooks';
 import { parseQueryString } from '@/lib/utils';
 import { useSuspenseInfiniteQuery } from '@tanstack/react-query';
 import React, { FC, useMemo } from 'react';
@@ -40,17 +40,18 @@ export const ProductsContainer: FC<ProductsContainerProps> = ({
   const filters = parseQueryString(searchParams.get('filters') ?? '');
   const search = searchParams.get('search');
 
-  const queryParams = useMemo(
-    () => ({
-      filters: {
-        ...filters.filters,
-        name: {
-          $contains: search,
+  const queryParams = useMemo(() => {
+    if (search) {
+      return {
+        filters: {
+          ...filters.filters,
+          name: {
+            $contains: search,
+          },
         },
-      },
-    }),
-    [filters, search]
-  );
+      };
+    }
+  }, [filters, search]);
 
   const { data, isFetching, fetchNextPage, hasNextPage, isFetchingNextPage } =
     useSuspenseInfiniteQuery(getProductsOptions(queryParams));
@@ -70,8 +71,6 @@ export const ProductsContainer: FC<ProductsContainerProps> = ({
   const handleClearFilters = () => {
     router.replace('/');
   };
-
-  const { isMobile } = useDeviceSize();
 
   return (
     <Box
@@ -94,8 +93,8 @@ export const ProductsContainer: FC<ProductsContainerProps> = ({
           <Typography variant="h4">
             {search ? 'Search Results' : 'Catalog'}
           </Typography>
-          {isMobile && search && (
-            <Box>
+          {search && (
+            <Box sx={{ display: { xs: 'block', md: 'none' } }}>
               <Divider sx={{ margin: '8px 0' }} />
               <Typography variant="caption">Shoes/{search}</Typography>
               <Typography variant="h4">{search}</Typography>

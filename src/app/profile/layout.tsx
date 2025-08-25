@@ -28,7 +28,12 @@ export default async function ProfileLayout({
         </Box>
         <Box
           sx={{
-            padding: { md: '38px 53px', xs: '12px 16px', sm: '12px 24px' },
+            padding: {
+              md: '32px 24px',
+              lg: '38px 53px',
+              xs: '12px 16px',
+              sm: '12px 24px',
+            },
             width: '100%',
           }}
         >
