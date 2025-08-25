@@ -10,14 +10,12 @@ export const StyledContainer = styled(Paper, {
   zIndex: 700,
   padding: collapsed ? '0' : '14px 0px',
   width: collapsed ? 'auto' : '70%',
-  maxHeight: collapsed ? '50px' : 'auto',
+  height: collapsed ? 'auto' : '500px',
   borderRadius: collapsed ? '50%' : '16px',
-  left: 10,
+  right: 10,
   [theme.breakpoints.up('sm')]: {
     width: '420px',
     padding: `14px 0px`,
-    left: 'auto',
-    right: 10,
     transition: 'height 0.2s ease-in-out',
     borderRadius: '16px',
   },
@@ -26,7 +24,6 @@ export const StyledContainer = styled(Paper, {
   justifyContent: 'center',
   gap: '12px',
   backgroundColor: '#fff',
-  height: collapsed ? '65px' : '500px',
 }));
 
 export const StyledChatContainer = styled(Box)(({ theme }) => ({
