@@ -8,7 +8,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { signIn } from 'next-auth/react';
 import { signInSchema, SignInSchema } from './sign-in.schema';
 import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { useSearchParams, useRouter } from 'next/navigation';
 import { AuthContainer } from '@/components/AuthContainer';
 import {
   REMEMBER_ME_SESSION_MAX_AGE,
@@ -18,6 +18,8 @@ import loginImage from '../../../../public/login.jpg';
 
 export default function SignIn() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const nextParam = searchParams.get('next');
   const [error, setError] = useState<string | null>(null);
   const [isRememberMe, setIsRememberMe] = useState(false);
   const {
@@ -50,7 +52,11 @@ export default function SignIn() {
         return;
       }
 
-      router.replace('/profile/products');
+      if (nextParam === 'checkout') {
+        router.replace('/checkout');
+      } else {
+        router.replace('/profile/products');
+      }
     } catch {
       setError('An unexpected error occurred. Please try again.');
     }

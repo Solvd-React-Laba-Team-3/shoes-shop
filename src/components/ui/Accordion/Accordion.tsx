@@ -16,6 +16,7 @@ interface BaseAccordionProps extends AccordionProps {
 export const Accordion: FC<BaseAccordionProps> = ({
   label,
   children,
+  sx,
   ...props
 }) => {
   return (
@@ -25,6 +26,7 @@ export const Accordion: FC<BaseAccordionProps> = ({
       sx={{
         boxShadow: 'none',
         '&:before': { display: 'none' },
+        ...sx,
       }}
     >
       <AccordionSummary

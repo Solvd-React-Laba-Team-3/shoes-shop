@@ -10,7 +10,7 @@ import { useDeleteProduct } from '@/api/products/useDeleteProduct';
 import { useCreateProduct } from '@/api/products/useCreateProduct';
 import LinearProgress from '@mui/material/LinearProgress';
 import { useRouter } from 'next/navigation';
-import { DeleteConfirmationModal } from '../common/DeleteConfirmationModal';
+import { ConfirmActionModal } from '../common/ConfirmActionModal';
 
 interface ProductActionMenuProps {
   product: Product;
@@ -154,13 +154,12 @@ export const ProductActionMenu: FC<ProductActionMenuProps> = ({ product }) => {
           editingProduct={product}
         />
       )}
-      <DeleteConfirmationModal
+      <ConfirmActionModal
         open={isDeleteModalOpen}
         title="Are you sure to delete this product?"
-        description="Lorem ipsum dolor sit amet consectetur. Sed imperdiet tempor facilisi
-          massa aliquet sit habitant. Lorem ipsum dolor sit amet consectetur."
+        description="This will permanently delete this product from your profile."
         onClose={() => setIsDeleteModalOpen(false)}
-        onDelete={handleDeleteProduct}
+        onConfirm={handleDeleteProduct}
       />
     </>
   );
