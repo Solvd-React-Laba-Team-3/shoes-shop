@@ -110,7 +110,6 @@ export const EditProductModal: FC<EditPageProps> = ({
       open={open}
       onClose={onClose}
       sx={{
-        // minWidth: { xs: '90%' },
         '& .MuiDialog-paper': {
           width: { xs: '95%' },
           maxWidth: 'unset',
@@ -119,6 +118,7 @@ export const EditProductModal: FC<EditPageProps> = ({
             sm: '12px 24px',
             md: '53px 40px 40px 85px',
           },
+          margin: '10px',
         },
       }}
     >
