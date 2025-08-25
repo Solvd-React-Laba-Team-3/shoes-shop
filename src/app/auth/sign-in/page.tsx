@@ -1,6 +1,6 @@
 'use client';
 
-import { Checkbox, LabeledTextfield, Link } from '@/components/ui';
+import { Button, Checkbox, LabeledTextfield, Link } from '@/components/ui';
 import { Box, Typography } from '@mui/material';
 import Image from 'next/image';
 import { useForm } from 'react-hook-form';
@@ -8,17 +8,18 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { signIn } from 'next-auth/react';
 import { signInSchema, SignInSchema } from './sign-in.schema';
 import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { useSearchParams, useRouter } from 'next/navigation';
 import { AuthContainer } from '@/components/AuthContainer';
 import {
   REMEMBER_ME_SESSION_MAX_AGE,
   SESSION_MAX_AGE,
 } from '@/constants/sessionMaxAge';
-import { LoaderButton } from '@/components/LoaderButton';
 import loginImage from '../../../../public/login.jpg';
 
 export default function SignIn() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const nextParam = searchParams.get('next');
   const [error, setError] = useState<string | null>(null);
   const [isRememberMe, setIsRememberMe] = useState(false);
   const {
@@ -51,7 +52,11 @@ export default function SignIn() {
         return;
       }
 
-      router.replace('/profile/products');
+      if (nextParam === 'checkout') {
+        router.replace('/checkout');
+      } else {
+        router.replace('/profile/products');
+      }
     } catch {
       setError('An unexpected error occurred. Please try again.');
     }
@@ -75,7 +80,7 @@ export default function SignIn() {
             <Typography variant="subtitle2" color="textSecondary">
               {"Don't have an account?"}
             </Typography>
-            <Link href="/auth/sign-up" size="small">
+            <Link href="/auth/sign-up" active>
               Sign up
             </Link>
           </Box>
@@ -87,9 +92,8 @@ export default function SignIn() {
           autoComplete="off"
           display="flex"
           flexDirection="column"
-          gap={1.5}
           width="100%"
-          maxWidth={400}
+          gap={1.5}
           onSubmit={handleSubmit(onSubmit)}
         >
           <LabeledTextfield
@@ -118,7 +122,13 @@ export default function SignIn() {
               justifyContent: 'space-between',
             }}
           >
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+            <Box
+              sx={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: 1,
+              }}
+            >
               <Checkbox
                 size="large"
                 checked={isRememberMe}
@@ -129,16 +139,19 @@ export default function SignIn() {
               </Typography>
             </Box>
 
-            <Link size="thin" href="/auth/forgot-password">
+            <Link href="/auth/forgot-password" active fontWeight={300}>
               Forgot password?
             </Link>
           </Box>
 
-          <LoaderButton
-            isSubmitting={isSubmitting}
-            text="Sign in"
-            loadingText="Signing in..."
-          />
+          <Button
+            loading={isSubmitting}
+            type="submit"
+            size="large"
+            sx={{ width: '100%' }}
+          >
+            Sign in
+          </Button>
         </Box>
       </AuthContainer>
 
@@ -146,6 +159,7 @@ export default function SignIn() {
         sx={{
           height: '100vh',
           position: 'relative',
+          display: { xs: 'none', lg: 'block' },
         }}
       >
         <Image src={loginImage} alt="sign in" fill sizes="50vw" />

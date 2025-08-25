@@ -5,4 +5,5 @@ export { useAIHelperChat } from './useAIHelperChat/useAIHelperChat';
 export { useCart } from './useCart/useCart';
 export { useWishlist } from './useWishlist/useWishlist';
 export { useRecentlyViewed } from './useRecentlyViewed/useRecentlyViewed';
-export { useDeviceSize } from './useDeviceSize/useDeviceSize';
+export { useIntersectionObserver } from './useIntersectionObserver/useIntersectionObserver';
+export { useFilters } from './useFilters/useFilters';

@@ -3,15 +3,18 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Box, Divider, Typography } from '@mui/material';
 import { useRouter } from 'next/navigation';
+import { FC, FormEvent, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { Button, LabeledTextfield } from '../ui';
 import { Accordion } from '../ui/Accordion/Accordion';
 import { cartSchema, CartSchema } from './cart.schema';
-import { useCart, useLocalStorage } from '@/lib/hooks';
+import { useCart } from '@/lib/hooks';
 import { useApplyDiscount } from '@/api/discount/useApplyDiscount';
-import { FC, FormEvent, useState } from 'react';
+import { useLocalStorage } from '@/lib/hooks';
 import { TAX_PERCENT } from '@/constants/taxPercent';
 import { SHIPPING_AMOUNT } from '@/constants/shippingAmount';
+import { useSession } from 'next-auth/react';
+import { ConfirmActionModal } from '../common/ConfirmActionModal';
 
 interface CartSummaryProps {
   checkout?: boolean;
@@ -25,8 +28,9 @@ export const CartSummary: FC<CartSummaryProps> = ({
   taxPercent = TAX_PERCENT,
   shippingAmount = SHIPPING_AMOUNT,
   onOrderComplete,
-}) => {
+}: CartSummaryProps) => {
   const router = useRouter();
+  const { data: session } = useSession();
   const { value: promoOpen, setValue: setPromoOpen } = useLocalStorage<boolean>(
     'promoOpen',
     false
@@ -34,6 +38,7 @@ export const CartSummary: FC<CartSummaryProps> = ({
 
   const { subtotal, discountAmount, discountCode, isLoading } = useCart();
 
+  const [showLoginConfirm, setShowLoginConfirm] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
 
   const subtotalWithDiscount = subtotal - discountAmount;
@@ -67,6 +72,12 @@ export const CartSummary: FC<CartSummaryProps> = ({
 
   const handleCheckout = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
+    if (!session) {
+      setShowLoginConfirm(true);
+      return;
+    }
+
     router.push('/checkout');
   };
 
@@ -76,7 +87,7 @@ export const CartSummary: FC<CartSummaryProps> = ({
         expanded={promoOpen}
         onChange={(_, isExpanded) => setPromoOpen(isExpanded)}
         label={
-          <Typography sx={{ fontSize: '20px' }}>
+          <Typography sx={{ fontSize: '20px', fontWeight: 400 }}>
             Do you have a promo code?
           </Typography>
         }
@@ -86,19 +97,33 @@ export const CartSummary: FC<CartSummaryProps> = ({
           onSubmit={handleSubmit(onApplyPromo)}
           noValidate
           autoComplete="off"
-          sx={{ display: 'flex', gap: '10px' }}
+          sx={{
+            display: 'flex',
+            flexDirection: 'row',
+            gap: '10px',
+          }}
         >
           <LabeledTextfield
             size="small"
             color="secondary"
             placeholder="Enter promo code"
+            sx={{
+              height: '40px',
+              '& .MuiInputBase-root': {
+                fontSize: '16px',
+                margin: { sm: '0' },
+              },
+            }}
             {...register('promoCode', {
-              onChange: (e) => (e.target.value = e.target.value.toUpperCase()),
+              onChange: (e) => {
+                const upperValue = e.target.value.toUpperCase();
+                e.target.value = upperValue;
+              },
             })}
             error={!!errors.promoCode}
             errorMessage={errors.promoCode?.message}
-            disabled={isPending || (discountAmount > 0 && !isEditing)}
           />
+
           {discountAmount > 0 && !isEditing ? (
             <Button
               variant="contained"
@@ -131,7 +156,8 @@ export const CartSummary: FC<CartSummaryProps> = ({
         sx={{
           display: 'flex',
           justifyContent: 'space-between',
-          margin: '38px 0 20px',
+          flexWrap: 'wrap',
+          margin: '18px 0 20px',
         }}
       >
         <Typography variant="h3" sx={{ fontWeight: 400 }}>
@@ -147,6 +173,7 @@ export const CartSummary: FC<CartSummaryProps> = ({
           sx={{
             display: 'flex',
             justifyContent: 'space-between',
+            flexWrap: 'wrap',
             margin: '20px 0',
             color: 'green',
           }}
@@ -160,57 +187,68 @@ export const CartSummary: FC<CartSummaryProps> = ({
         </Box>
       )}
 
-      {checkout && (
-        <>
-          <Box
-            sx={{
-              display: 'flex',
-              justifyContent: 'space-between',
-              margin: '20px 0',
-            }}
-          >
-            <Typography variant="h3" sx={{ fontWeight: 400 }}>
-              Shipping
-            </Typography>
-            <Typography variant="h3" sx={{ fontWeight: 400 }}>
-              ${shippingAmount.toFixed(2)}
-            </Typography>
-          </Box>
+      <Box
+        sx={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          flexWrap: 'wrap',
+          margin: '20px 0',
+        }}
+      >
+        <Typography variant="h3" sx={{ fontWeight: 400 }}>
+          Shipping
+        </Typography>
+        <Typography variant="h3" sx={{ fontWeight: 400 }}>
+          {checkout ? `$${shippingAmount.toFixed(2)}` : '-'}
+        </Typography>
+      </Box>
 
-          <Box
-            sx={{
-              display: 'flex',
-              justifyContent: 'space-between',
-              margin: '20px 0',
-            }}
-          >
-            <Typography variant="h3" sx={{ fontWeight: 400 }}>
-              Tax ({taxPercent}%)
-            </Typography>
-            <Typography variant="h3" sx={{ fontWeight: 400 }}>
-              ${taxAmount.toFixed(2)}
-            </Typography>
-          </Box>
-          <Divider sx={{ marginTop: '56px' }} />
-          <Box
-            sx={{
-              display: 'flex',
-              justifyContent: 'space-between',
-              margin: '20px 0',
-            }}
-          >
-            <Typography variant="h3" sx={{ fontWeight: 600 }}>
-              Total
-            </Typography>
-            <Typography variant="h3" sx={{ fontWeight: 600 }}>
-              ${finalTotal.toFixed(2)}
-            </Typography>
-          </Box>
+      <Box
+        sx={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          flexWrap: 'wrap',
+          margin: '20px 0',
+        }}
+      >
+        <Typography variant="h3" sx={{ fontWeight: 400 }}>
+          Tax {checkout ? `(${taxPercent}%)` : ''}
+        </Typography>
+        <Typography variant="h3" sx={{ fontWeight: 400 }}>
+          {checkout ? `$${taxAmount.toFixed(2)}` : '-'}
+        </Typography>
+      </Box>
+
+      {!checkout && (
+        <>
+          <Divider />
+          <Typography variant="caption">
+            Shipping and tax will be calculated at checkout.
+          </Typography>
         </>
       )}
 
-      <Divider sx={{ marginBottom: '113px' }} />
+      <Box
+        sx={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          flexWrap: 'wrap',
+          margin: '20px 0',
+        }}
+      >
+        <Typography variant="h3" sx={{ fontWeight: 600 }}>
+          Total
+        </Typography>
+        <Typography variant="h3" sx={{ fontWeight: 600 }}>
+          {checkout
+            ? `$${finalTotal.toFixed(2)}`
+            : discountAmount > 0
+              ? `$${(subtotal - discountAmount).toFixed(2)}`
+              : `$${subtotal.toFixed(2)}`}
+        </Typography>
+      </Box>
 
+      <Divider sx={{ mb: { xs: 4, md: '22px' } }} />
       <Box
         component="form"
         onSubmit={checkout ? onOrderComplete : handleCheckout}
@@ -218,11 +256,22 @@ export const CartSummary: FC<CartSummaryProps> = ({
         <Button
           disabled={isLoading || isPending || subtotal === 0}
           type="submit"
+          size="large"
           sx={{ width: '100%' }}
         >
           {checkout ? 'Confirm & Pay' : 'Checkout'}
         </Button>
       </Box>
+
+      <ConfirmActionModal
+        open={showLoginConfirm}
+        title="Login required"
+        description="You need to sign in to complete your purchase. Do you want to go to the login page now?"
+        onClose={() => setShowLoginConfirm(false)}
+        onConfirm={() => router.push('/auth/sign-in?next=checkout')}
+        cancelText="Stay here"
+        confirmText="Go to login"
+      />
     </Box>
   );
 };
