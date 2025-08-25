@@ -2,9 +2,9 @@
 
 import { useQuery } from '@tanstack/react-query';
 import { getOrdersOptions } from '@/api/orders/getOrdersOptions';
-import OrdersSkeleton from './orders.skeleton';
 import { Order } from '@/components/Order';
 import { Box, Typography, Alert } from '@mui/material';
+import { OrdersFallback } from '@/components/common/OrdersFallback';
 
 export default function Orders() {
   const {
@@ -13,7 +13,6 @@ export default function Orders() {
     isError,
   } = useQuery(getOrdersOptions());
 
-  if (isLoading) return <OrdersSkeleton />;
   if (isError)
     return (
       <Box sx={{ mx: 'auto', p: 3 }}>
@@ -26,7 +25,9 @@ export default function Orders() {
       </Box>
     );
 
-  return (
+  return isLoading ? (
+    <OrdersFallback />
+  ) : (
     <Box sx={{ pb: 10 }}>
       <Typography variant="h5" sx={{ mb: 3 }}>
         Order History

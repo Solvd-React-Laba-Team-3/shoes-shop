@@ -33,7 +33,7 @@ export async function GET(req: Request) {
     });
     await browser.close();
 
-    return new NextResponse(new Uint8Array(pdfBuffer), {
+    return new NextResponse(pdfBuffer, {
       headers: {
         'Content-Disposition': `attachment; filename="${filename}"`,
         'Content-Type': 'application/pdf',

@@ -38,8 +38,8 @@ export const CartSummary: FC<CartSummaryProps> = ({
 
   const { subtotal, discountAmount, discountCode, isLoading } = useCart();
 
-  const [isEditing, setIsEditing] = useState(false);
   const [showLoginConfirm, setShowLoginConfirm] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
 
   const subtotalWithDiscount = subtotal - discountAmount;
   const taxAmount = (subtotalWithDiscount * taxPercent) / 100;
