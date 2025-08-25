@@ -15,6 +15,7 @@ import { useRouter } from 'next/navigation';
 import { styled } from '@mui/material/styles';
 import LocalMallIcon from '@mui/icons-material/LocalMall';
 import { useIntersectionObserver } from '@/lib/hooks';
+import { EmptyProductList } from '../EmptyProductList';
 
 interface ProductsContainerProps {
   isFiltersOpen: boolean;
@@ -28,15 +29,6 @@ const StyledLocalMallIcon = styled(LocalMallIcon)(({ theme }) => ({
   borderRadius: '50%',
   width: '72px',
   height: '72px',
-}));
-
-const StyledNoProductsWrapper = styled(Box)(() => ({
-  display: 'flex',
-  justifyContent: 'center',
-  flexDirection: 'column',
-  alignItems: 'center',
-  gap: '30px',
-  height: 'calc(100vh - 300px)',
 }));
 
 export const ProductsContainer: FC<ProductsContainerProps> = ({
@@ -143,24 +135,11 @@ export const ProductsContainer: FC<ProductsContainerProps> = ({
           <Box ref={ref} />
         </>
       ) : (
-        <StyledNoProductsWrapper>
-          <Box
-            sx={{
-              display: 'flex',
-              flexDirection: 'column',
-              gap: '10px',
-              alignItems: 'center',
-            }}
-          >
-            <StyledLocalMallIcon />
-            <Typography variant="h6">
-              There are no products match search
-            </Typography>
-            <Typography variant="caption">
-              Try to change search query
-            </Typography>
-          </Box>
-        </StyledNoProductsWrapper>
+        <EmptyProductList
+          icon={<StyledLocalMallIcon />}
+          message="There are no products match search"
+          caption="Try to change search query"
+        />
       )}
     </Box>
   );

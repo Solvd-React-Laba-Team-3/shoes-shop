@@ -9,6 +9,7 @@ import Typography from '@mui/material/Typography';
 import { FC } from 'react';
 import CloseIcon from '@mui/icons-material/Close';
 import { styled } from '@mui/material/styles';
+import { Box } from '@mui/material';
 
 interface ConfirmActionModalProps {
   open: boolean;
@@ -20,15 +21,23 @@ interface ConfirmActionModalProps {
   confirmText?: string;
 }
 
-const StyledDialog = styled(Dialog)({
+const StyledDialog = styled(Dialog)(({ theme }) => ({
   '& .MuiDialog-paper': {
     position: 'relative',
     flexDirection: 'column',
     gap: '36px',
-    minWidth: '650px',
+    width: '650px',
     padding: '32px',
+    [theme.breakpoints.down('md')]: {
+      gap: '0',
+      width: 'unset',
+      padding: '12px 24px',
+    },
+    [theme.breakpoints.down('sm')]: {
+      padding: '12px',
+    },
   },
-});
+}));
 
 export const ConfirmActionModal: FC<ConfirmActionModalProps> = ({
   open,
@@ -52,7 +61,9 @@ export const ConfirmActionModal: FC<ConfirmActionModalProps> = ({
       >
         <CloseIcon />
       </IconButton>
-      <DialogTitle variant="h2">{title}</DialogTitle>
+      <Box sx={{ maxWidth: 'calc(100% - 26px)' }}>
+        <DialogTitle variant="h2">{title}</DialogTitle>
+      </Box>
       <DialogContent>
         <Typography variant="caption">{description}</Typography>
       </DialogContent>
