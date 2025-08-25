@@ -27,7 +27,10 @@ export async function GET(req: Request) {
     const page = await browser.newPage();
     await page.goto(charge.receipt_url, { waitUntil: 'networkidle0' });
 
-    const pdfBuffer = await page.pdf({ format: 'A4' });
+    const pdfBuffer = await page.pdf({
+      format: 'A4',
+      printBackground: true,
+    });
     await browser.close();
 
     return new NextResponse(new Uint8Array(pdfBuffer), {
