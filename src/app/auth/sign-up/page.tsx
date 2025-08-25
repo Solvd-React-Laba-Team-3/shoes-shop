@@ -140,9 +140,9 @@ export default function SignUp() {
         <Image src={registerImage} alt="sign up" fill sizes="50vw" />
 
         <ReviewPanel
-          quote="Lorem Ipsum is a really great company because the team is passionate about the projects they produce, the people they work with, the quality of the work they do."
+          quote="Shoes Shop is a really great company because the team is passionate about the projects they produce, the people they work with, the quality of the work they do."
           name="John Stone"
-          location="Ukraine, Chernivtsi"
+          location="Ukraine, Kyiv"
           rating={5}
         />
       </Box>
