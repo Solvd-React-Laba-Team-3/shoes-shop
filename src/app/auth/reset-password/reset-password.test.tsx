@@ -6,16 +6,6 @@ import ResetPassword from './page';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import React from 'react';
 
-interface ResetPasswordData {
-  password: string;
-  passwordConfirmation: string;
-  code: string;
-}
-
-interface MutateOptions {
-  onSuccess: () => void;
-}
-
 jest.mock('next/navigation', () => ({
   useSearchParams: jest.fn(),
   useRouter: jest.fn(() => ({
@@ -25,18 +15,6 @@ jest.mock('next/navigation', () => ({
 
 jest.mock('@/api/auth/useResetPassword', () => ({
   useResetPassword: jest.fn(),
-}));
-
-jest.mock('@/components/LoaderButton', () => ({
-  LoaderButton: ({
-    text,
-    isSubmitting,
-    loadingText,
-  }: {
-    text: string;
-    isSubmitting: boolean;
-    loadingText: string;
-  }) => <button type="submit">{isSubmitting ? loadingText : text}</button>,
 }));
 
 jest.mock('@/components/ui', () => {
@@ -115,14 +93,20 @@ describe('ResetPassword', () => {
     });
   });
 
-  it('shows success message and redirects on successful submission', async () => {
+  it('shows success message when isSuccess is true', async () => {
     (useResetPassword as jest.Mock).mockImplementation(() => ({
-      mutate: (data: ResetPasswordData, options: MutateOptions) => {
-        options.onSuccess();
-      },
+      mutate: jest.fn(),
       isError: false,
       isSuccess: true,
     }));
+
+    renderWithQueryClient(<ResetPassword />);
+
+    expect(screen.getByText(/password reset successful/i)).toBeInTheDocument();
+  });
+
+  it('redirects after successful form submission', async () => {
+    jest.useFakeTimers();
 
     renderWithQueryClient(<ResetPassword />);
 
@@ -137,13 +121,18 @@ describe('ResetPassword', () => {
     const submitButton = screen.getByRole('button');
     fireEvent.click(submitButton);
 
-    expect(screen.getByText(/password reset successful/i)).toBeInTheDocument();
+    await waitFor(() => {
+      expect(mockResetPassword).toHaveBeenCalled();
+    });
 
-    await waitFor(
-      () => {
-        expect(mockReplace).toHaveBeenCalledWith('/auth/sign-in');
-      },
-      { timeout: 2500 }
-    );
+    const mutateCall = mockResetPassword.mock.calls[0];
+    const options = mutateCall[1];
+    options.onSuccess();
+
+    jest.advanceTimersByTime(2000);
+
+    expect(mockReplace).toHaveBeenCalledWith('/auth/sign-in');
+
+    jest.useRealTimers();
   });
 });

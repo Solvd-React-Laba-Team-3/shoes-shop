@@ -173,6 +173,8 @@ export const ProductForm: FC<ProductFormProps> = ({
             display: 'flex',
             flexDirection: { xs: 'column', md: 'row' },
             justifyContent: 'space-between',
+            alignItems: { xs: 'flex-start', md: 'center' },
+            gap: { xs: 2, md: 0 },
           }}
         >
           <Box
@@ -183,7 +185,10 @@ export const ProductForm: FC<ProductFormProps> = ({
             }}
           >
             <Typography variant="h2">{title}</Typography>
-            <Typography variant="caption" sx={{ maxWidth: '890px' }}>
+            <Typography
+              variant="caption"
+              sx={{ maxWidth: { xs: '100%', md: '890px' } }}
+            >
               {description}
             </Typography>
           </Box>
@@ -192,7 +197,7 @@ export const ProductForm: FC<ProductFormProps> = ({
               display: { xs: 'none', md: 'flex' },
               flexDirection: 'column',
               gap: '8px',
-              alignItems: 'flex-end',
+              alignItems: { xs: 'flex-start', md: 'flex-end' },
             }}
           >
             <Button
@@ -217,6 +222,7 @@ export const ProductForm: FC<ProductFormProps> = ({
               display: 'flex',
               flexDirection: 'column',
               gap: '16px',
+              flex: 1,
             }}
           >
             <LabeledTextfield

@@ -1,14 +1,12 @@
 'use client';
 
-import { useDebounce, useDeviceSize, useSearchParams } from '@/lib/hooks';
+import { useDebounce, useFilters, useSearchParams } from '@/lib/hooks';
 import {
   Box,
   Divider,
-  Drawer,
   DrawerProps,
-  FormLabel,
+  useMediaQuery,
   Slider,
-  styled,
   TextField,
   Typography,
   useTheme,
@@ -26,101 +24,34 @@ import { getGendersOptions } from '@/api/gender/getGendersOptions';
 import { getSizesOptions } from '@/api/size/getSizesOptions';
 import { getColorsOptions } from '@/api/color/getColorsOptions';
 import { getBrandsOptions } from '@/api/brand/getBrandsOptions';
-import { FC, useCallback, useMemo, useState } from 'react';
-import { parseQueryString, toQueryString } from '@/lib/utils';
-import { HEADER_HEIGHT } from '@/constants/headerHeight';
-
-type FilterType = number | number[] | string | Record<string, number | object>;
-
-const StyledFormLabel = styled(FormLabel)(({ theme }) => ({
-  color: theme.palette.grey[400],
-  fontSize: '16px',
-  fontWeight: 400,
-  lineHeight: '24px',
-  cursor: 'pointer',
-  paddingLeft: '8px',
-}));
-
-const StyledPricesContainer = styled(FormLabel)(() => ({
-  display: 'flex',
-  justifyContent: 'space-between',
-  alignItems: 'center',
-  mt: 2,
-  gap: '6px',
-  width: '100%',
-}));
-
-const normalizeToArray = (value: unknown): number[] => {
-  if (Array.isArray(value)) return Array.from(new Set(value.map(Number)));
-  if (value != null && value != undefined) return [Number(value)];
-
-  return [];
-};
+import { FC, useState } from 'react';
+import { normalizeToUniqueArray } from '@/lib/utils';
+import {
+  StyledDrawer,
+  StyledFormLabel,
+  StyledPricesContainer,
+  StyledCloseWrapper,
+} from './Filters.styles';
 
 export const Filters: FC<DrawerProps> = ({ ...props }) => {
+  const {
+    currentFilters,
+    updateFilters,
+    clearFilters,
+    toggleSelection,
+    priceInput,
+  } = useFilters();
   const searchParams = useSearchParams();
 
-  const currentFilters = useMemo(() => {
-    const raw = searchParams.get('filters');
-    const parsed = raw ? parseQueryString(raw) : {};
-    return parsed.filters ?? {};
-  }, [searchParams]);
-
-  const updateFilters = useCallback(
-    (key: string, value?: FilterType) => {
-      const raw = searchParams.get('filters');
-      const parsed = raw ? parseQueryString(raw) : {};
-      const current = parsed.filters ?? {};
-
-      const updated = {
-        ...current,
-        [key]: value,
-      };
-
-      if (value === undefined) {
-        delete updated[key];
-      }
-
-      searchParams.set('filters', toQueryString(updated, 'filters'));
-    },
-    [searchParams]
+  const selectedGenders = normalizeToUniqueArray(
+    currentFilters.gender?.id?.$in
   );
-
-  const clearFilters = useCallback(() => {
-    searchParams.delete('filters');
-  }, [searchParams]);
-
-  const priceInput = useMemo<[number, number]>(
-    () => [
-      currentFilters?.price?.$gte || 1,
-      currentFilters?.price?.$lte || 10000,
-    ],
-    [currentFilters?.price]
-  );
-
-  const toggleSelection = (key: string, checked: boolean, value?: number) => {
-    {
-      const existing = normalizeToArray(currentFilters[key]?.id?.$in);
-      const updated = checked
-        ? [...existing, value]
-        : existing.filter((id: number) => id !== value);
-
-      if (updated.length > 0) {
-        updateFilters(key, { id: { $in: updated } });
-        return;
-      }
-      updateFilters(key, undefined);
-    }
-  };
-
-  const selectedGenders = normalizeToArray(currentFilters.gender?.id?.$in);
-  const selectedBrands = normalizeToArray(currentFilters.brand?.id?.$in);
-  const selectedSizes = normalizeToArray(currentFilters.sizes?.id?.$in);
-  const selectedColors = normalizeToArray(currentFilters.color?.id?.$in);
+  const selectedBrands = normalizeToUniqueArray(currentFilters.brand?.id?.$in);
+  const selectedSizes = normalizeToUniqueArray(currentFilters.sizes?.id?.$in);
+  const selectedColors = normalizeToUniqueArray(currentFilters.color?.id?.$in);
 
   const search = searchParams.get('search');
   const [searchBrands, setSearchBrands] = useState('');
-
   const debouncedSearchBrands = useDebounce(searchBrands, 500);
 
   const [
@@ -139,42 +70,18 @@ export const Filters: FC<DrawerProps> = ({ ...props }) => {
     ],
   });
 
-  const { isMobile } = useDeviceSize();
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
 
   return (
-    <Drawer
+    <StyledDrawer
       variant={isMobile ? 'temporary' : 'persistent'}
       anchor={isMobile ? 'right' : 'left'}
-      sx={{
-        width: props.open ? '320px' : '0px',
-        transition: 'width 0.2s ease-in-out',
-        zIndex: 800,
-
-        '& .MuiDrawer-paper': {
-          border: 'none',
-          paddingBottom: '200px',
-          top: { xs: 0, md: HEADER_HEIGHT },
-        },
-        '& .MuiPaper-root': {
-          position: { md: 'sticky' },
-        },
-
-        [useTheme().breakpoints.up('md')]: {
-          position: 'relative',
-        },
-      }}
       {...props}
     >
       {isMobile ? (
         <>
-          <Box
-            sx={{
-              display: 'flex',
-              justifyContent: 'flex-end',
-              paddingBottom: '8px',
-              paddingTop: '12px',
-            }}
-          >
+          <StyledCloseWrapper>
             <IconButton
               sx={{
                 cursor: 'pointer',
@@ -185,12 +92,18 @@ export const Filters: FC<DrawerProps> = ({ ...props }) => {
             >
               <CloseIcon />
             </IconButton>
-          </Box>
+          </StyledCloseWrapper>
           <Box
             display="flex"
             padding="0 20px 0 40px"
             alignItems="center"
             justifyContent="space-between"
+            sx={{
+              backgroundColor: 'background.paper',
+              zIndex: 10,
+              paddingBottom: '12px',
+              flexShrink: 0,
+            }}
           >
             <Typography>Filters</Typography>
             <Button
@@ -216,7 +129,13 @@ export const Filters: FC<DrawerProps> = ({ ...props }) => {
       <Box
         display="flex"
         flexDirection="column"
-        sx={{ gap: { xs: '12px', md: '28px' } }}
+        sx={{
+          gap: { xs: '12px', md: '28px' },
+          overflow: { xs: 'auto', md: 'visible' },
+          flex: { xs: '1 1 auto', md: 'unset' },
+          paddingBottom: { xs: '20px', md: '0' },
+          minHeight: { xs: 0, md: 'auto' },
+        }}
         width="320px"
       >
         <Divider sx={{ display: { xs: 'none', md: 'block' } }} />
@@ -434,6 +353,6 @@ export const Filters: FC<DrawerProps> = ({ ...props }) => {
           </Accordion>
         </Box>
       </Box>
-    </Drawer>
+    </StyledDrawer>
   );
 };
