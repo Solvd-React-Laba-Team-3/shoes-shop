@@ -83,6 +83,7 @@ export async function GET(req: Request) {
             receipt_url: receiptUrl,
             paymentMethod,
             decline_reason: declineReason,
+            latest_charge: intent.latest_charge,
           } as Order;
         })
       )

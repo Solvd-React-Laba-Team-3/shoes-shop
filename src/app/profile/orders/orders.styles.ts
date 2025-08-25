@@ -45,24 +45,25 @@ interface StyledChipProps extends ChipProps {
   statusColor: string;
 }
 
-export const StyledChip = styled(Chip)<StyledChipProps>(
-  ({ theme, statusColor }) => ({
-    backgroundColor: 'inherit',
-    ...theme.typography.caption,
-    color: statusColor,
-    textTransform: 'capitalize',
-    fontWeight: 500,
-    '.MuiChip-label': {
-      [theme.breakpoints.down('lg')]: {
-        display: 'none',
-      },
+export const StyledChip = styled(Chip, {
+  shouldForwardProp: (prop) => prop !== 'statusColor',
+})<StyledChipProps>(({ theme, statusColor }) => ({
+  backgroundColor: 'inherit',
+  ...theme.typography.caption,
+  color: statusColor,
+  textTransform: 'capitalize',
+  fontWeight: 500,
+  '.MuiChip-label': {
+    [theme.breakpoints.down('lg')]: {
+      display: 'none',
     },
-  })
-);
+  },
+}));
 
 export const StyledInfoGrid = styled(Grid)(({ theme }) => ({
   borderBottom: '1px solid ' + theme.palette.grey[300],
-  justifyContent: 'center',
+  display: 'flex',
+  justifyContent: 'space-around',
   alignItems: 'center',
   gap: '40px',
   padding: '16px',
@@ -84,7 +85,11 @@ export const StyledOrderInfo = styled(Box)(({ theme }) => ({
   gap: '24px',
   borderBottom: `1px solid ${theme.palette.grey[300]}`,
 
-  [theme.breakpoints.down('lg')]: {
+  [theme.breakpoints.up('lg')]: {
+    display: 'none',
+  },
+
+  [theme.breakpoints.down('sm')]: {
     display: 'none',
   },
 }));
