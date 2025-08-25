@@ -48,17 +48,18 @@ export const ProductsContainer: FC<ProductsContainerProps> = ({
   const filters = parseQueryString(searchParams.get('filters') ?? '');
   const search = searchParams.get('search');
 
-  const queryParams = useMemo(
-    () => ({
-      filters: {
-        ...filters.filters,
-        name: {
-          $contains: search,
+  const queryParams = useMemo(() => {
+    if (search) {
+      return {
+        filters: {
+          ...filters.filters,
+          name: {
+            $contains: search,
+          },
         },
-      },
-    }),
-    [filters, search]
-  );
+      };
+    }
+  }, [filters, search]);
 
   const { data, isFetching, fetchNextPage, hasNextPage, isFetchingNextPage } =
     useSuspenseInfiniteQuery(getProductsOptions(queryParams));

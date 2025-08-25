@@ -12,10 +12,10 @@ import { FC, useState } from 'react';
 import { Button, IconButton } from '../ui';
 import { CartProduct } from '@/types/CartProduct';
 import { useCart } from '@/lib/hooks';
-import { ConfirmActionModal } from '../common/ConfirmActionModal';
 import { useRouter } from 'next/navigation';
 import IncreaseIcon from '@mui/icons-material/Add';
 import DecreaseIcon from '@mui/icons-material/Remove';
+import { ConfirmActionModal } from '../common/ConfirmActionModal';
 
 const StyledDeleteButton = styled(Button)(({ theme }) => ({
   background: 'transparent',
@@ -62,7 +62,7 @@ export const CartItem: FC<CartProduct> = ({
 
   return (
     <>
-      <Stack sx={{ marginRight: '100px !important' }}>
+      <Box>
         <Stack
           direction="row"
           sx={{
@@ -182,7 +182,8 @@ export const CartItem: FC<CartProduct> = ({
         </Stack>
 
         <Divider sx={{ margin: '60px 0' }} />
-      </Stack>
+      </Box>
+
       <ConfirmActionModal
         title="Are you sure you want to remove this product from the cart?"
         description="Confirm to continue or cancel."

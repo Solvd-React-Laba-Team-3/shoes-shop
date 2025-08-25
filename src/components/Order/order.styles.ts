@@ -1,30 +1,5 @@
-import { Box, Chip, ChipProps, Grid, styled } from '@mui/material';
-
-export const StyledLabelWrapper = styled(Box)(({ theme }) => ({
-  ...theme.typography.caption,
-  color: theme.palette.grey[600],
-  fontWeight: 400,
-  display: 'grid',
-  gridTemplateColumns: 'auto auto',
-  justifyContent: 'center',
-  columnGap: '4px',
-  alignItems: 'center',
-  minWidth: 0,
-
-  [theme.breakpoints.down('lg')]: {
-    justifyContent: 'flex-start',
-    gridTemplateColumns: 'auto 1fr',
-  },
-}));
-
-export const StyledTooltipContent = styled(Box)(({ theme }) => ({
-  color: theme.palette.secondary.main,
-  fontWeight: 400,
-  display: 'block',
-  whiteSpace: 'nowrap',
-  overflow: 'hidden',
-  textOverflow: 'ellipsis',
-}));
+import { Box, ButtonProps, Chip, ChipProps, Grid, styled } from '@mui/material';
+import { Button } from '../ui';
 
 export const StyledProductWrapper = styled(Box)(({ theme }) => ({
   display: 'flex',
@@ -79,14 +54,14 @@ export const StyledInfoGrid = styled(Grid)(({ theme }) => ({
 }));
 
 export const StyledOrderInfo = styled(Box)(({ theme }) => ({
-  display: 'flex',
   justifyContent: 'space-between',
   padding: '8px 16px',
   gap: '24px',
   borderBottom: `1px solid ${theme.palette.grey[300]}`,
+  display: 'none',
 
-  [theme.breakpoints.up('lg')]: {
-    display: 'none',
+  [theme.breakpoints.down('lg')]: {
+    display: 'flex',
   },
 
   [theme.breakpoints.down('sm')]: {
@@ -100,3 +75,22 @@ export const StyledToolsWrapper = styled(Box)(() => ({
   alignItems: 'center',
   padding: '0 16px',
 }));
+
+interface StyledDownloadButtonProps extends ButtonProps {
+  isDownloading: boolean;
+}
+
+export const StyledDownloadButton = styled(Button)<StyledDownloadButtonProps>(
+  ({ isDownloading }) => ({
+    display: 'inline-flex',
+    alignItems: 'center',
+    gap: 1,
+    fontWeight: 500,
+    opacity: isDownloading ? 0.6 : 1,
+    cursor: isDownloading ? 'not-allowed' : 'pointer',
+
+    '&:hover': {
+      textDecoration: 'underline',
+    },
+  })
+);

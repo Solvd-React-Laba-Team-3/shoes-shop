@@ -1,3 +1,5 @@
+'use client';
+
 import { Button, IconButton } from '@/components/ui';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';

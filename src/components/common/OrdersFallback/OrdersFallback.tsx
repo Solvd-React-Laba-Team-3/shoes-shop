@@ -1,6 +1,8 @@
+'use client';
+
 import { Box, Card, Skeleton, Typography } from '@mui/material';
 
-export default function OrdersSkeleton() {
+export const OrdersFallback = () => {
   return (
     <Box sx={{ mx: 'auto' }}>
       <Typography variant="h5" sx={{ mb: 4 }}>
@@ -95,4 +97,4 @@ export default function OrdersSkeleton() {
       </Box>
     </Box>
   );
-}
+};

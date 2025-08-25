@@ -4,20 +4,14 @@ import {
   Avatar,
   Box,
   LinearProgress,
-  Link,
-  Tooltip,
   useMediaQuery,
   useTheme,
-  Accordion,
-  AccordionSummary,
-  AccordionDetails,
 } from '@mui/material';
 import Typography from '@mui/material/Typography';
 import {
   Check,
   Close,
   Download,
-  ExpandMore,
   InventoryTwoTone,
   LocalShippingTwoTone,
   PaymentsTwoTone,
@@ -26,19 +20,21 @@ import {
 } from '@mui/icons-material';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import {
-  StyledLabelWrapper,
-  StyledTooltipContent,
   StyledProductWrapper,
   StyledChip,
   StyledToolsWrapper,
   StyledOrderInfo,
   StyledInfoGrid,
+  StyledDownloadButton,
 } from './order.styles';
 import { Order as OrderType } from '@/types/Order';
-import { useDownloadReceipt } from '@/api/receipts/getReceiptsOptions';
+import { useDownloadReceipt } from '@/api/receipts/useDownloadReceipt';
 import { formatDate } from '@/lib/utils/';
 import { FC } from 'react';
 import { Theme } from '@mui/material/styles';
+import { Tooltip, Accordion } from '../ui';
+import { ItemLabel } from '../ItemLabel';
+
 interface OrderProps {
   order: OrderType;
 }
@@ -72,64 +68,25 @@ const getStatus = (status: string, theme: Theme) => {
   }
 };
 
-const InfoItem: FC<{ icon: React.ReactNode; label: string; value: string }> = ({
-  icon,
-  label,
-  value,
-}) => (
-  <StyledLabelWrapper>
-    <Box component="span" sx={{ display: { xs: 'none', lg: 'inline' } }}>
-      {label}:
-    </Box>
-    <Box sx={{ display: { xs: 'flex', lg: 'none' } }}>{icon}:</Box>
-    <Tooltip title={value} enterTouchDelay={0} leaveTouchDelay={3000}>
-      <StyledTooltipContent>{value}</StyledTooltipContent>
-    </Tooltip>
-  </StyledLabelWrapper>
-);
-
-const LabelValue: FC<{
-  label?: string;
-  value: React.ReactNode;
-  valueColor?: string;
-  labelColor?: string;
-}> = ({ label, value, valueColor, labelColor }) => {
-  const theme = useTheme();
-  return (
-    <Typography
-      variant="subtitle2"
-      sx={{ color: labelColor ?? theme.palette.grey[600] }}
-    >
-      {label}
-      <Typography
-        component="span"
-        variant="subtitle1"
-        sx={{ color: valueColor ?? theme.palette.secondary.main }}
-      >
-        {value}
-      </Typography>
-    </Typography>
-  );
-};
-
 export const Order: FC<OrderProps> = ({ order }) => {
   const theme = useTheme();
   const isBetweenMdAndLg = useMediaQuery(theme.breakpoints.between('sm', 'lg'));
   const isBetweenXsAndSm = useMediaQuery(theme.breakpoints.between('xs', 'sm'));
-  const downloadReceiptMutation = useDownloadReceipt();
+  const { mutate: downloadReceipt, isPending: isDownloading } =
+    useDownloadReceipt();
 
-  const handleDownload = () => {
+  const statusInfo = getStatus(order.status, theme);
+
+  const handleDownloadReceipt = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+
     if (!order.latest_charge) return;
 
-    downloadReceiptMutation.mutate({
+    downloadReceipt({
       chargeId: order.latest_charge,
       orderNumber: String(order.orderNumber),
     });
   };
-
-  const isPdfLoading = downloadReceiptMutation.isPending;
-
-  const statusInfo = getStatus(order.status, theme);
 
   return (
     <Box key={`${order.orderNumber}`}>
@@ -152,8 +109,7 @@ export const Order: FC<OrderProps> = ({ order }) => {
           border: `1px solid ${theme.palette.divider}`,
           backgroundColor: theme.palette.grey[100],
         }}
-      >
-        <AccordionSummary expandIcon={<ExpandMore sx={{ color: 'black' }} />}>
+        label={
           <Box
             sx={{
               py: { xs: 0, sm: 2 },
@@ -266,8 +222,9 @@ export const Order: FC<OrderProps> = ({ order }) => {
               </Box>
             </Box>
           </Box>
-        </AccordionSummary>
-        <AccordionDetails
+        }
+      >
+        <Box
           sx={{
             width: '100%',
             padding: 0,
@@ -278,23 +235,24 @@ export const Order: FC<OrderProps> = ({ order }) => {
           }}
         >
           <StyledInfoGrid>
-            <InfoItem
+            <Tooltip
               label="Delivery: "
               icon={<LocalShippingTwoTone />}
-              value={order.delivery}
-            ></InfoItem>
-
-            <InfoItem
-              label="Contacts: "
-              icon={<PersonSearchTwoTone />}
-              value={`${order.contactFullName}, ${order.contactPhone}, ${order.contactEmail}`}
+              title={order.delivery}
             />
 
-            <InfoItem
+            <Tooltip
+              label="Contacts: "
+              icon={<PersonSearchTwoTone />}
+              title={`${order.contactFullName}, ${order.contactPhone}, ${order.contactEmail}`}
+            />
+
+            <Tooltip
               label="Payment: "
               icon={<PaymentsTwoTone />}
-              value={order.paymentMethod}
-            ></InfoItem>
+              sx={{ textTransform: 'capitalize' }}
+              title={order.paymentMethod}
+            />
           </StyledInfoGrid>
           <Box
             sx={{
@@ -350,9 +308,9 @@ export const Order: FC<OrderProps> = ({ order }) => {
                         ? "Men's Shoes"
                         : "Women's Shoes"}
                     </Typography>
-                    <LabelValue
+                    <ItemLabel
                       label="Size: "
-                      value={`${product.size} UK`}
+                      title={`${product.size} UK`}
                       labelColor={theme.palette.grey[600]}
                       valueColor={theme.palette.secondary.main}
                     />
@@ -383,9 +341,9 @@ export const Order: FC<OrderProps> = ({ order }) => {
                         </Typography>
                       </Typography>
 
-                      <LabelValue
+                      <ItemLabel
                         label={!isBetweenMdAndLg ? 'Quantity: ' : ''}
-                        value={product.quantity}
+                        title={product.quantity}
                         labelColor={theme.palette.grey[600]}
                         valueColor={theme.palette.secondary.main}
                       />
@@ -424,9 +382,9 @@ export const Order: FC<OrderProps> = ({ order }) => {
                         mr: 2,
                       }}
                     >
-                      <LabelValue
+                      <ItemLabel
                         label={!isBetweenMdAndLg ? 'Price: ' : ''}
-                        value={`${product.price}$`}
+                        title={`${product.price}$`}
                         labelColor={theme.palette.grey[600]}
                         valueColor={theme.palette.secondary.main}
                       />
@@ -447,29 +405,25 @@ export const Order: FC<OrderProps> = ({ order }) => {
             >
               {order.receipt_url && (
                 <Box sx={{ position: 'relative' }}>
-                  <Link
-                    onClick={(e) => {
-                      e.preventDefault();
-                      handleDownload();
-                    }}
-                    sx={{
-                      display: 'inline-flex',
-                      alignItems: 'center',
-                      gap: 1,
-                      textDecoration: 'underline',
-                      fontWeight: 500,
-                    }}
-                    href="#"
+                  <StyledDownloadButton
+                    variant="text"
+                    size="small"
+                    startIcon={
+                      <Download sx={{ fontSize: theme.typography.subtitle2 }} />
+                    }
+                    onClick={handleDownloadReceipt}
+                    isDownloading={isDownloading}
                   >
-                    <Download sx={{ fontSize: theme.typography.subtitle2 }} />
                     <Typography
                       variant="subtitle2"
                       sx={{ color: theme.palette.primary.main }}
                     >
-                      PDF {!isBetweenXsAndSm && 'invoice download'}
+                      {isDownloading
+                        ? 'Generating...'
+                        : `PDF ${!isBetweenXsAndSm ? 'invoice download' : ''}`}
                     </Typography>
-                  </Link>
-                  {isPdfLoading && (
+                  </StyledDownloadButton>
+                  {isDownloading && (
                     <LinearProgress
                       sx={{ width: '100%', mt: 0, position: 'absolute' }}
                     />
@@ -480,16 +434,16 @@ export const Order: FC<OrderProps> = ({ order }) => {
 
             <Box sx={{ textAlign: 'left', mr: 2 }}>
               {order.discountAmount && (
-                <LabelValue
+                <ItemLabel
                   label="Discount: "
-                  value={`${order.discountAmount}$`}
+                  title={`${order.discountAmount}$`}
                   labelColor={theme.palette.grey[600]}
                   valueColor="green"
                 />
               )}
             </Box>
           </StyledToolsWrapper>
-        </AccordionDetails>
+        </Box>
       </Accordion>
     </Box>
   );
