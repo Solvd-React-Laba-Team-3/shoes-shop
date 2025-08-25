@@ -1,3 +1,5 @@
+'use client';
+
 import { Button, IconButton } from '@/components/ui';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
@@ -8,14 +10,14 @@ import { FC } from 'react';
 import CloseIcon from '@mui/icons-material/Close';
 import { styled } from '@mui/material/styles';
 
-interface DeleteConfirmationModalProps {
+interface ConfirmActionModalProps {
   open: boolean;
   title: string;
   description: string;
   onClose: () => void;
-  onDelete: () => void;
+  onConfirm: () => void;
   cancelText?: string;
-  deleteText?: string;
+  confirmText?: string;
 }
 
 const StyledDialog = styled(Dialog)({
@@ -28,14 +30,14 @@ const StyledDialog = styled(Dialog)({
   },
 });
 
-export const DeleteConfirmationModal: FC<DeleteConfirmationModalProps> = ({
+export const ConfirmActionModal: FC<ConfirmActionModalProps> = ({
   open,
   title,
   description,
   onClose,
-  onDelete,
+  onConfirm,
   cancelText = 'Cancel',
-  deleteText = 'Delete',
+  confirmText = 'Confirm',
 }) => {
   return (
     <StyledDialog open={open} onClose={onClose}>
@@ -58,8 +60,8 @@ export const DeleteConfirmationModal: FC<DeleteConfirmationModalProps> = ({
         <Button variant="outlined" onClick={onClose}>
           {cancelText}
         </Button>
-        <Button variant="contained" onClick={onDelete}>
-          {deleteText}
+        <Button variant="contained" onClick={onConfirm}>
+          {confirmText}
         </Button>
       </DialogActions>
     </StyledDialog>

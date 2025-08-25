@@ -1,7 +1,7 @@
 'use client';
 
 import { getProductsOptions } from '@/api/products/getProductsOptions';
-import { useDeviceSize, useSearchParams } from '@/lib/hooks';
+import { useSearchParams } from '@/lib/hooks';
 import { parseQueryString } from '@/lib/utils';
 import { useSuspenseInfiniteQuery } from '@tanstack/react-query';
 import React, { FC, useMemo } from 'react';
@@ -14,6 +14,7 @@ import { Button } from '@/components/ui';
 import { useRouter } from 'next/navigation';
 import { styled } from '@mui/material/styles';
 import LocalMallIcon from '@mui/icons-material/LocalMall';
+import { useIntersectionObserver } from '@/lib/hooks';
 
 interface ProductsContainerProps {
   isFiltersOpen: boolean;
@@ -47,29 +48,37 @@ export const ProductsContainer: FC<ProductsContainerProps> = ({
   const filters = parseQueryString(searchParams.get('filters') ?? '');
   const search = searchParams.get('search');
 
-  const queryParams = useMemo(
-    () => ({
-      filters: {
-        ...filters.filters,
-        name: {
-          $contains: search,
+  const queryParams = useMemo(() => {
+    if (search) {
+      return {
+        filters: {
+          ...filters.filters,
+          name: {
+            $contains: search,
+          },
         },
-      },
-    }),
-    [filters, search]
-  );
+      };
+    }
+  }, [filters, search]);
 
-  const { data, isFetching } = useSuspenseInfiniteQuery(
-    getProductsOptions(queryParams)
-  );
+  const { data, isFetching, fetchNextPage, hasNextPage, isFetchingNextPage } =
+    useSuspenseInfiniteQuery(getProductsOptions(queryParams));
+
+  const { ref } = useIntersectionObserver({
+    threshold: 0,
+    rootMargin: '600px',
+    onChange: (isIntersecting) => {
+      if (isIntersecting && hasNextPage && !isFetchingNextPage) {
+        fetchNextPage();
+      }
+    },
+  });
 
   const products = data.pages.flatMap((page) => page.products);
 
   const handleClearFilters = () => {
     router.replace('/');
   };
-
-  const { isMobile } = useDeviceSize();
 
   return (
     <Box
@@ -92,8 +101,8 @@ export const ProductsContainer: FC<ProductsContainerProps> = ({
           <Typography variant="h4">
             {search ? 'Search Results' : 'Catalog'}
           </Typography>
-          {isMobile && search && (
-            <Box>
+          {search && (
+            <Box sx={{ display: { xs: 'block', md: 'none' } }}>
               <Divider sx={{ margin: '8px 0' }} />
               <Typography variant="caption">Shoes/{search}</Typography>
               <Typography variant="h4">{search}</Typography>
@@ -129,7 +138,10 @@ export const ProductsContainer: FC<ProductsContainerProps> = ({
       </Box>
 
       {products.length || isFetching ? (
-        <ProductList products={data.pages.flatMap((page) => page.products)} />
+        <>
+          <ProductList products={data.pages.flatMap((page) => page.products)} />
+          <Box ref={ref} />
+        </>
       ) : (
         <StyledNoProductsWrapper>
           <Box
