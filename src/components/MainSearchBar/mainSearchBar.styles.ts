@@ -33,7 +33,7 @@ export const IconButtonLeft = styled(Box)(({ theme }) => ({
   left: 40,
   top: 34,
   zIndex: 1100,
-  [theme.breakpoints.down('md')]: {
+  [theme.breakpoints.down('lg')]: {
     display: 'none',
   },
 }));
@@ -45,6 +45,9 @@ export const IconButtonRight = styled(Box)(({ theme }) => ({
   zIndex: 1100,
   [theme.breakpoints.down('md')]: {
     top: 40,
+  },
+  [theme.breakpoints.down('lg')]: {
+    top: 53,
   },
 }));
 
