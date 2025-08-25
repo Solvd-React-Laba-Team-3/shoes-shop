@@ -174,7 +174,6 @@ describe('CartSummary', () => {
 
     const expectedTotal = 100 + shippingAmount + (100 * taxPercent) / 100; // 100 + 10 + 10 = 120
 
-    // Use a function matcher to avoid issues with MUI Typography splitting text
     const totalText = screen.getByText((content, element) => {
       return (
         element?.tagName === 'H3' &&
