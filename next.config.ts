@@ -7,7 +7,7 @@ const nextConfig: NextConfig = {
   },
   transpilePackages: ['@mui/material', '@mui/system', '@mui/icons-material'],
   experimental: {
-    serverComponentsExternalPackages: ['puppeteer'],
+    serverComponentsExternalPackages: ['puppeteer-core', '@sparticuz/chromium'],
   },
 };
 
