@@ -90,7 +90,11 @@ export default function ForgotPassword() {
             />
 
             {isSuccess && (
-              <Typography variant="subtitle2" color="success">
+              <Typography
+                variant="subtitle2"
+                color="success"
+                data-testid="reset-success-message"
+              >
                 A reset link has been sent to your email. Redirecting to
                 login...
               </Typography>
