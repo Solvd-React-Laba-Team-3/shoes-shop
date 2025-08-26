@@ -7,13 +7,13 @@ describe('FormErrorMessage', () => {
     render(<FormErrorMessage message={testMessage} />);
 
     expect(screen.getByText(testMessage)).toBeInTheDocument();
-    expect(screen.getByTestId('WarningAmberIcon')).toBeInTheDocument();
+    expect(screen.getByTestId('WarningAmberIconRounded')).toBeInTheDocument();
   });
 
   it('should render with empty message but remain in DOM', () => {
     render(<FormErrorMessage />);
 
-    expect(screen.getByTestId('WarningAmberIcon')).toBeInTheDocument();
+    expect(screen.getByTestId('WarningAmberIconRounded')).toBeInTheDocument();
     expect(screen.getByTestId('form-error-message')).toBeInTheDocument();
   });
 
