@@ -11,6 +11,7 @@ export const StyledPaymentMethod = styled(ToggleButton)(({ theme }) => ({
   justifyContent: 'center',
   gap: '10px',
   paddingLeft: '24px',
+  border: `1px solid ${theme.palette.common.black}`,
   borderRadius: '12px',
   transition: 'transform 0.2s',
 
