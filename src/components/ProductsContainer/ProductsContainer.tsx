@@ -6,7 +6,7 @@ import { parseQueryString } from '@/lib/utils';
 import { useSuspenseInfiniteQuery } from '@tanstack/react-query';
 import React, { FC, useMemo } from 'react';
 import { ProductList } from '../ProductList';
-import { Box, Divider, Typography } from '@mui/material';
+import { Box, Typography } from '@mui/material';
 import FilterAltOffIcon from '@mui/icons-material/FilterAlt';
 import FilterAltIcon from '@mui/icons-material/FilterAltOff';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
@@ -86,7 +86,11 @@ export const ProductsContainer: FC<ProductsContainerProps> = ({
       sx={{
         display: 'flex',
         flexDirection: 'column',
-        padding: { xs: '12px  16px', sm: '12px 24px', md: '40px 60px' },
+        padding: {
+          xs: '12px  16px 80px',
+          sm: '12px 24px 80px',
+          md: '40px 60px',
+        },
         gap: { xs: ' 12px', md: '28px' },
         width: '100%',
       }}
@@ -98,15 +102,22 @@ export const ProductsContainer: FC<ProductsContainerProps> = ({
           alignItems: 'end',
         }}
       >
-        <Box display="flex" flexDirection="column" gap={1}>
-          <Typography variant="h4">
+        <Box
+          display="flex"
+          flexDirection="column"
+          gap={1}
+          height={'100%'}
+          justifyContent={'center'}
+        >
+          <Typography variant="h4" lineHeight={'40px'}>
             {search ? 'Search Results' : 'Catalog'}
           </Typography>
           {isMobile && search && (
             <Box>
-              <Divider sx={{ margin: '8px 0' }} />
               <Typography variant="caption">Shoes/{search}</Typography>
-              <Typography variant="h4">{search}</Typography>
+              <Typography variant="h4" lineHeight={'40px'}>
+                {search}
+              </Typography>
             </Box>
           )}
         </Box>
@@ -119,6 +130,7 @@ export const ProductsContainer: FC<ProductsContainerProps> = ({
             endIcon={<DeleteOutlineIcon />}
             onClick={handleClearFilters}
             sx={{
+              minWidth: '140px',
               display: { xs: 'none', md: 'flex' },
               color: 'text.secondary',
             }}
@@ -132,6 +144,9 @@ export const ProductsContainer: FC<ProductsContainerProps> = ({
             size="small"
             color="secondary"
             variant="text"
+            sx={{
+              minWidth: '140px',
+            }}
           >
             {isFiltersOpen ? 'Hide Filters' : 'Show Filters'}
           </Button>
