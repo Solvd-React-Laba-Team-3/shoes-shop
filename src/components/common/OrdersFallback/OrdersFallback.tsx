@@ -24,13 +24,13 @@ export const OrdersFallback = () => {
             />
             <Card
               sx={{
-                boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
-                border: (theme) => `1px solid ${theme.palette.divider}`,
+                borderRadius: (theme) => theme.shape.borderRadius,
                 minHeight: { xs: '56px', sm: '88px' },
                 maxHeight: { xs: '56px', sm: '88px' },
                 display: 'flex',
                 alignItems: 'center',
                 backgroundColor: (theme) => theme.palette.grey[100],
+                boxShadow: 'none',
               }}
             >
               <Box
