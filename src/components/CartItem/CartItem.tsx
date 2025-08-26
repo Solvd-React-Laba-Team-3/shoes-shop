@@ -168,14 +168,14 @@ export const CartItem: FC<CartProduct> = ({
               <StyledDeleteButton
                 size="small"
                 onClick={() => setRemoveModalOpen(true)}
+                startIcon={
+                  <DeleteIcon
+                    aria-label="delete item"
+                    sx={{ color: 'text.secondary', mt: '2px' }}
+                  />
+                }
               >
-                <DeleteIcon
-                  aria-label="delete item"
-                  sx={{
-                    color: (theme) => theme.palette.grey[400],
-                  }}
-                />
-                <Typography variant="subtitle2">Delete</Typography>
+                <Typography variant="subtitle1">Delete</Typography>
               </StyledDeleteButton>
             </Box>
           </Stack>

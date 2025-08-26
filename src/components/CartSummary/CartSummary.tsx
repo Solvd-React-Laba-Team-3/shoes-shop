@@ -5,7 +5,7 @@ import { Box, Divider, Typography } from '@mui/material';
 import { useRouter } from 'next/navigation';
 import { FC, FormEvent, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { Button, FormErrorMessage, LabeledTextfield } from '../ui';
+import { Button, LabeledTextfield } from '../ui';
 import { Accordion } from '../ui/Accordion/Accordion';
 import { cartSchema, CartSchema } from './cart.schema';
 import { useCart } from '@/lib/hooks';
@@ -24,7 +24,6 @@ interface CartSummaryProps {
   onOrderComplete?: () => void;
   paymentRequest?: PaymentRequest | null;
   paymentMethod?: PaymentMethod;
-  availablePaymentMethod?: PaymentMethod;
 }
 
 export const CartSummary: FC<CartSummaryProps> = ({
@@ -34,7 +33,6 @@ export const CartSummary: FC<CartSummaryProps> = ({
   onOrderComplete,
   paymentRequest,
   paymentMethod,
-  availablePaymentMethod,
 }) => {
   const router = useRouter();
   const { data: session } = useSession();
@@ -117,53 +115,53 @@ export const CartSummary: FC<CartSummaryProps> = ({
 
       case 'googlePay':
         if (!isLoading && !isPending) {
-          return availablePaymentMethod === 'googlePay' && paymentRequest ? (
-            <PaymentRequestButtonElement
-              options={{
-                paymentRequest: paymentRequest!,
-                style: {
-                  paymentRequestButton: {
-                    type: 'check-out',
+          return (
+            paymentRequest && (
+              <PaymentRequestButtonElement
+                options={{
+                  paymentRequest: paymentRequest,
+                  style: {
+                    paymentRequestButton: {
+                      type: 'check-out',
+                    },
                   },
-                },
-              }}
-            />
-          ) : (
-            <FormErrorMessage message="Google Pay is not supported" />
+                }}
+              />
+            )
           );
         }
       case 'applePay':
         if (!isLoading && !isPending) {
-          return availablePaymentMethod === 'applePay' && paymentRequest ? (
-            <PaymentRequestButtonElement
-              options={{
-                paymentRequest: paymentRequest!,
-                style: {
-                  paymentRequestButton: {
-                    type: 'check-out',
+          return (
+            paymentRequest && (
+              <PaymentRequestButtonElement
+                options={{
+                  paymentRequest: paymentRequest,
+                  style: {
+                    paymentRequestButton: {
+                      type: 'check-out',
+                    },
                   },
-                },
-              }}
-            />
-          ) : (
-            <FormErrorMessage message="Apple Pay is not supported" />
+                }}
+              />
+            )
           );
         }
       case 'link':
         if (!isLoading && !isPending) {
-          return availablePaymentMethod === 'link' && paymentRequest ? (
-            <PaymentRequestButtonElement
-              options={{
-                paymentRequest: paymentRequest!,
-                style: {
-                  paymentRequestButton: {
-                    type: 'check-out',
+          return (
+            paymentRequest && (
+              <PaymentRequestButtonElement
+                options={{
+                  paymentRequest: paymentRequest!,
+                  style: {
+                    paymentRequestButton: {
+                      type: 'check-out',
+                    },
                   },
-                },
-              }}
-            />
-          ) : (
-            <FormErrorMessage message="Link is not supported" />
+                }}
+              />
+            )
           );
         }
       default:
