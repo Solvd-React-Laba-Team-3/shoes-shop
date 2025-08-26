@@ -85,8 +85,9 @@ export default function Checkout() {
   const [paymentRequest, setPaymentRequest] = useState<PaymentRequest | null>(
     null
   );
-  const [availablePaymentMethod, setAvailablePaymentMethod] =
-    useState<PaymentMethod>('card');
+  const [availablePaymentMethods, setAvailablePaymentMethods] = useState<
+    PaymentMethod[]
+  >(['card']);
 
   const productsMetadata = useMemo(() => {
     return splitProducts(products).reduce(
@@ -206,26 +207,37 @@ export default function Checkout() {
           setPaymentRequest(request);
 
           if (result.googlePay) {
-            setAvailablePaymentMethod('googlePay');
+            const updatedMethods = [
+              ...availablePaymentMethods,
+              'googlePay' as const,
+            ];
+            setAvailablePaymentMethods(updatedMethods);
             return;
           }
           if (result.applePay) {
-            setAvailablePaymentMethod('applePay');
+            const updatedMethods = [
+              ...availablePaymentMethods,
+              'applePay' as const,
+            ];
+            setAvailablePaymentMethods(updatedMethods);
             return;
           }
           if (result.link) {
-            setAvailablePaymentMethod('link');
+            const updatedMethods = [
+              ...availablePaymentMethods,
+              'link' as const,
+            ];
+            setAvailablePaymentMethods(updatedMethods);
             return;
           }
         } else {
           setPaymentRequest(null);
-          setAvailablePaymentMethod('card');
         }
       }
     };
 
     initPaymentRequest();
-  }, [stripe, total, paymentRequest]);
+  }, [stripe, total, paymentRequest, availablePaymentMethods]);
 
   useEffect(() => {
     if (!stripe || !paymentRequest) return;
@@ -305,7 +317,7 @@ export default function Checkout() {
     total,
     productsMetadata,
     discountAmount,
-    availablePaymentMethod,
+    availablePaymentMethods,
     validateForm,
     finalizeOrder,
     discountCode,
@@ -326,12 +338,12 @@ export default function Checkout() {
             error={isError}
             cardError={cardError}
             setCardError={setCardError}
+            availablePaymentMethods={availablePaymentMethods}
           />
           <Box sx={{ width: 600 }}>
             <CartSummary
               paymentMethod={paymentMethod}
               paymentRequest={paymentRequest}
-              availablePaymentMethod={availablePaymentMethod}
               checkout
               taxPercent={taxPercent}
               shippingAmount={shippingAmount}

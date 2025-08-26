@@ -10,6 +10,7 @@ import {
   Link,
   MenuItem,
   Select,
+  Tooltip,
 } from '../ui';
 import { theme } from '@/providers/ThemeProvider';
 import PaymentIcon from '@mui/icons-material/Payment';
@@ -27,6 +28,7 @@ interface CheckoutProps {
   error: boolean;
   cardError: string | null | undefined;
   setCardError: (error: string | null | undefined) => void;
+  availablePaymentMethods: PaymentMethod[];
 }
 
 const paymentMethods = [
@@ -40,6 +42,7 @@ export const CheckoutForm: FC<CheckoutProps> = ({
   error,
   cardError,
   setCardError,
+  availablePaymentMethods,
 }) => {
   const {
     register,
@@ -216,12 +219,35 @@ export const CheckoutForm: FC<CheckoutProps> = ({
                 gap: '10px',
               }}
             >
-              {paymentMethods.map(({ value, label, icon: Icon }) => (
-                <StyledPaymentMethod key={value} value={value}>
-                  <Icon />
-                  {label}
-                </StyledPaymentMethod>
-              ))}
+              {paymentMethods.map(({ value, label, icon: Icon }) => {
+                const isDisabled = !availablePaymentMethods.includes(
+                  value as PaymentMethod
+                );
+
+                const paymentButton = (
+                  <StyledPaymentMethod
+                    key={value}
+                    value={value}
+                    disabled={isDisabled}
+                  >
+                    <Icon />
+                    {label}
+                  </StyledPaymentMethod>
+                );
+
+                if (isDisabled) {
+                  return (
+                    <Tooltip
+                      key={value}
+                      title="Your OS doesn't support this method"
+                    >
+                      {paymentButton}
+                    </Tooltip>
+                  );
+                }
+
+                return paymentButton;
+              })}
             </ToggleButtonGroup>
           </Box>
         )}
