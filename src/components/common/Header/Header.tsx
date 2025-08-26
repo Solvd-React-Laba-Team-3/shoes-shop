@@ -28,7 +28,7 @@ const StyledContainer = styled(Box)(({ theme }) => ({
   position: 'sticky',
   top: 0,
   backgroundColor: theme.palette.secondary.contrastText,
-  zIndex: 100,
+  zIndex: 900,
   transition: 'transform 0.2s ease-in-out',
   [theme.breakpoints.down('md')]: {
     width: '100%',
