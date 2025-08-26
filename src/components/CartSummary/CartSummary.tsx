@@ -24,6 +24,8 @@ interface CartSummaryProps {
   onOrderComplete?: () => void;
   paymentRequest?: PaymentRequest | null;
   paymentMethod?: PaymentMethod;
+  isFetching?: boolean;
+  isProcessing?: boolean;
 }
 
 export const CartSummary: FC<CartSummaryProps> = ({
@@ -33,6 +35,8 @@ export const CartSummary: FC<CartSummaryProps> = ({
   onOrderComplete,
   paymentRequest,
   paymentMethod,
+  isFetching = false,
+  isProcessing = false,
 }) => {
   const router = useRouter();
   const { data: session } = useSession();
@@ -88,10 +92,13 @@ export const CartSummary: FC<CartSummaryProps> = ({
   };
 
   const renderPaymentButton = () => {
+    const disabled: boolean =
+      isLoading || isPending || isProcessing || isFetching;
+
     if (!checkout) {
       return (
         <Button
-          disabled={isLoading || isPending || subtotal === 0}
+          disabled={disabled || subtotal === 0}
           type="submit"
           size="large"
           sx={{ width: '100%' }}
@@ -107,53 +114,22 @@ export const CartSummary: FC<CartSummaryProps> = ({
           <Button
             type="submit"
             sx={{ width: '100%' }}
-            disabled={isLoading || isPending}
+            size="large"
+            disabled={disabled}
           >
             Confirm & Pay
           </Button>
         );
 
       case 'googlePay':
-        if (!isLoading && !isPending) {
-          return (
-            paymentRequest && (
-              <PaymentRequestButtonElement
-                options={{
-                  paymentRequest: paymentRequest,
-                  style: {
-                    paymentRequestButton: {
-                      type: 'check-out',
-                    },
-                  },
-                }}
-              />
-            )
-          );
-        }
       case 'applePay':
-        if (!isLoading && !isPending) {
-          return (
-            paymentRequest && (
-              <PaymentRequestButtonElement
-                options={{
-                  paymentRequest: paymentRequest,
-                  style: {
-                    paymentRequestButton: {
-                      type: 'check-out',
-                    },
-                  },
-                }}
-              />
-            )
-          );
-        }
       case 'link':
-        if (!isLoading && !isPending) {
+        if (!disabled) {
           return (
             paymentRequest && (
               <PaymentRequestButtonElement
                 options={{
-                  paymentRequest: paymentRequest!,
+                  paymentRequest,
                   style: {
                     paymentRequestButton: {
                       type: 'check-out',
@@ -171,6 +147,14 @@ export const CartSummary: FC<CartSummaryProps> = ({
 
   return (
     <Box>
+      <Typography
+        variant="h2"
+        sx={{
+          mb: { xs: 2, sm: 3, md: 4 },
+        }}
+      >
+        Summary
+      </Typography>
       <Accordion
         expanded={promoOpen}
         onChange={(_, isExpanded) => setPromoOpen(isExpanded)}
