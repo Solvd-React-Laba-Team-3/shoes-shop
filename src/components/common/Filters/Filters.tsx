@@ -70,7 +70,7 @@ export const Filters: FC<DrawerProps> = ({ ...props }) => {
                 name: { $containsi: debouncedBrandsSearch.debouncedValue },
               },
             }
-          : {}
+          : undefined
       ),
       getColorsOptions(),
     ],
