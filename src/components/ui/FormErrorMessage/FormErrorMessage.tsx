@@ -1,10 +1,10 @@
 'use client';
 
-import WarningAmberIcon from '@mui/icons-material/WarningAmber';
 import Typography from '@mui/material/Typography';
 import FormLabel from '@mui/material/FormLabel';
 import { styled } from '@mui/material/styles';
 import { FC } from 'react';
+import { WarningAmberRounded } from '@mui/icons-material';
 
 interface FormErrorMessageProps {
   message?: string | null;
@@ -27,7 +27,7 @@ const StyledFormLabel = styled(FormLabel)<FormErrorMessageProps>(
 export const FormErrorMessage: FC<FormErrorMessageProps> = ({ message }) => {
   return (
     <StyledFormLabel message={message} error data-testid="form-error-message">
-      <WarningAmberIcon fontSize="small" />
+      <WarningAmberRounded fontSize="small" />
       <Typography variant="caption">{message}</Typography>
     </StyledFormLabel>
   );
