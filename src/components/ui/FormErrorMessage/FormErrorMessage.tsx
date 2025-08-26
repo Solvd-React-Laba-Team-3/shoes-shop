@@ -27,7 +27,7 @@ const StyledFormLabel = styled(FormLabel)<FormErrorMessageProps>(
 export const FormErrorMessage: FC<FormErrorMessageProps> = ({ message }) => {
   return (
     <StyledFormLabel message={message} error data-testid="form-error-message">
-      <WarningAmberRounded fontSize="small" />
+      <WarningAmberRounded fontSize="small" data-testid="form-error-icon" />
       <Typography variant="caption">{message}</Typography>
     </StyledFormLabel>
   );
