@@ -41,16 +41,16 @@ export const ProductsContainer: FC<ProductsContainerProps> = ({
   const search = searchParams.get('search');
 
   const queryParams = useMemo(() => {
-    if (search) {
-      return {
-        filters: {
-          ...filters.filters,
-          name: {
-            $contains: search,
-          },
+    if (!filters.filters && !search) return;
+
+    return {
+      filters: {
+        ...filters.filters,
+        name: {
+          $contains: search,
         },
-      };
-    }
+      },
+    };
   }, [filters, search]);
 
   const { data, isFetching, fetchNextPage, hasNextPage, isFetchingNextPage } =
