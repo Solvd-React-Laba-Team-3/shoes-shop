@@ -5,6 +5,9 @@ import { SessionProvider } from 'next-auth/react';
 import Cart from './page';
 
 jest.mock('@/lib/hooks/useCart/useCart');
+jest.mock('@/components/common/CartFallback', () => ({
+  CartFallback: jest.fn(() => <div data-testid="cart-fallback" />),
+}));
 
 const mockIncreaseQuantity = jest.fn();
 const mockDecreaseQuantity = jest.fn();
@@ -91,5 +94,54 @@ describe('Cart', () => {
       .find((button) => button.querySelector('[data-testid="RemoveIcon"]'));
     fireEvent.click(decreaseButton!);
     expect(mockDecreaseQuantity).toHaveBeenCalledWith(1, 42, 2);
+  });
+
+  it('renders "Your cart is empty." when there are no items', () => {
+    (useCart as jest.Mock).mockReturnValueOnce({
+      items: [],
+      subtotal: 0,
+      isLoading: false,
+      increaseQuantity: mockIncreaseQuantity,
+      decreaseQuantity: mockDecreaseQuantity,
+      removeItem: mockRemoveItem,
+    });
+
+    const queryClient = new QueryClient({
+      defaultOptions: { queries: { retry: false } },
+    });
+
+    render(
+      <SessionProvider session={null}>
+        <QueryClientProvider client={queryClient}>
+          <Cart />
+        </QueryClientProvider>
+      </SessionProvider>
+    );
+
+    expect(screen.getByText('Your cart is empty.')).toBeInTheDocument();
+  });
+
+  it('renders CartFallback when cart is loading', () => {
+    (useCart as jest.Mock).mockReturnValueOnce({
+      items: [],
+      subtotal: 0,
+      isLoading: true,
+      increaseQuantity: mockIncreaseQuantity,
+      decreaseQuantity: mockDecreaseQuantity,
+      removeItem: mockRemoveItem,
+    });
+
+    const queryClient = new QueryClient({
+      defaultOptions: { queries: { retry: false } },
+    });
+
+    render(
+      <SessionProvider session={null}>
+        <QueryClientProvider client={queryClient}>
+          <Cart />
+        </QueryClientProvider>
+      </SessionProvider>
+    );
+    expect(screen.getByTestId('cart-fallback')).toBeInTheDocument();
   });
 });
