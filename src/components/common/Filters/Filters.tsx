@@ -33,22 +33,27 @@ import { useHideOnScroll } from '@/lib/hooks/useHideOnScroll/useHideOnScroll';
 type FilterType = number | number[] | string | Record<string, number | object>;
 
 const StyledDrawer = styled(Drawer)(({ theme, open }) => ({
-  width: open ? '320px' : '0px',
+  [theme.breakpoints.up('md')]: {
+    position: 'sticky',
+    top: HEADER_HEIGHT,
+    height: `calc(100vh - ${HEADER_HEIGHT}px)`,
+    zIndex: 100,
+    width: open ? '320px' : '0px',
+  },
   transition: 'width 0.2s ease-in-out, transform 0.2s ease-in-out',
-  zIndex: 800,
-  position: 'sticky',
-  maxHeight: '90vh',
-  height: 'max-content',
-  top: HEADER_HEIGHT,
+
   '& .MuiDrawer-paper': {
     border: 'none',
-    paddingBottom: '50px',
     position: 'relative',
+    height: '100%',
+    width: '100%',
+    paddingBottom: '50px',
+
     [theme.breakpoints.down('md')]: {
-      top: 0,
-      height: '100vh',
-      position: 'fixed',
       right: 0,
+      top: 0,
+      width: '320px',
+      position: 'fixed',
     },
   },
 }));
@@ -167,7 +172,11 @@ export const Filters: FC<DrawerProps> = ({ ...props }) => {
       variant={isMobile ? 'temporary' : 'persistent'}
       anchor={isMobile ? 'right' : 'left'}
       sx={{
-        transform: hidden ? 'translateY(-100px)' : 'translateY(0)',
+        transform: hidden
+          ? isMobile
+            ? 'translateY(100%)'
+            : 'translateY(-100%)'
+          : 'translateY(0)',
       }}
       {...props}
     >
