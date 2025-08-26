@@ -10,9 +10,25 @@ export const StyledTooltipContent = styled(Box)(({ theme }) => ({
   textOverflow: 'ellipsis',
 }));
 
-export const StyledLabelWrapper = styled(Box)(({ theme }) => ({
+export const StyledLabelWrapper = styled(Box, {
+  shouldForwardProp: (prop) => prop !== 'block',
+})<{ block?: boolean }>(({ theme, block }) => ({
   ...theme.typography.caption,
   color: theme.palette.grey[600],
   fontWeight: 400,
-  minWidth: 0,
+  display: block ? 'block' : 'grid',
+  ...(block
+    ? {}
+    : {
+        gridTemplateColumns: 'auto auto',
+        justifyContent: 'center',
+        columnGap: '4px',
+        alignItems: 'center',
+        minWidth: 0,
+
+        [theme.breakpoints.down('lg')]: {
+          justifyContent: 'flex-start',
+          gridTemplateColumns: 'auto 1fr',
+        },
+      }),
 }));
