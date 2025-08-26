@@ -242,6 +242,7 @@ export const CheckoutForm: FC<CheckoutProps> = ({
                     <Tooltip
                       key={value}
                       title="Your browser doesn't support this method"
+                      block
                     >
                       {paymentButton}
                     </Tooltip>
