@@ -56,7 +56,7 @@ export const CheckoutForm: FC<CheckoutProps> = ({
   });
 
   return (
-    <Box sx={{ maxWidth: 800 }}>
+    <Box sx={{ maxWidth: '100%' }}>
       <Link
         href="/cart"
         sx={{
@@ -71,14 +71,14 @@ export const CheckoutForm: FC<CheckoutProps> = ({
         Checkout
       </Typography>
 
-      <Typography variant="h6" sx={{ mt: 8, mb: 3 }}>
+      <Typography variant="h6" sx={{ mt: { xs: 4, md: 8 }, mb: 3 }}>
         Personal info
       </Typography>
       <Box
         sx={{
           display: 'grid',
-          gridTemplateColumns: '1fr 1fr',
-          gap: '12px',
+          gridTemplateColumns: { xs: '1fr', md: '1fr 1fr' },
+          gap: { xs: '0px', md: '12px' },
         }}
       >
         <LabeledTextfield
@@ -108,16 +108,16 @@ export const CheckoutForm: FC<CheckoutProps> = ({
         />
       </Box>
 
-      <Divider sx={{ mt: 5, mb: 2 }} />
+      <Divider sx={{ mt: { xs: 2, md: 5 }, mb: 2 }} />
 
-      <Typography variant="h6" sx={{ mt: 9, mb: 3 }}>
+      <Typography variant="h6" sx={{ mt: { xs: 3, md: 9 }, mb: 3 }}>
         Shipping info
       </Typography>
       <Box
         sx={{
           display: 'grid',
-          gridTemplateColumns: 'repeat(3, 1fr)',
-          gap: '24px',
+          gridTemplateColumns: { xs: '1fr', md: 'repeat(3, 1fr)' },
+          gap: { xs: '0px', md: '24px' },
         }}
       >
         <Controller
@@ -181,13 +181,13 @@ export const CheckoutForm: FC<CheckoutProps> = ({
         label="Address"
         errorMessage={errors.address?.message}
         placeholder="Street, apartment, block"
-        sx={{ width: '100%', maxWidth: '800px' }}
+        sx={{ width: '100%', maxWidth: '100%' }}
         {...register('address')}
       />
 
       <Divider sx={{ mt: 6, mb: 2 }} />
 
-      <Typography variant="h6" sx={{ mt: 9, mb: 3 }}>
+      <Typography variant="h6" sx={{ mt: { xs: 3, md: 9 }, mb: 3 }}>
         Payment info
       </Typography>
 
@@ -208,15 +208,17 @@ export const CheckoutForm: FC<CheckoutProps> = ({
               exclusive
               value={field.value}
               onChange={(_, newValue) => {
-                if (newValue !== null) {
-                  field.onChange(newValue);
-                }
+                if (newValue !== null) field.onChange(newValue);
               }}
               sx={{
-                flexGrow: 1,
-                display: 'flex',
-                justifyContent: 'space-between',
+                display: 'grid',
                 gap: '10px',
+                width: '100%',
+                gridTemplateColumns: {
+                  xs: 'repeat(2, 1fr)',
+                  sm: 'repeat(2, 1fr)',
+                  md: 'repeat(4, 1fr)',
+                },
               }}
             >
               {paymentMethods.map(({ value, label, icon: Icon }) => {
@@ -239,7 +241,7 @@ export const CheckoutForm: FC<CheckoutProps> = ({
                   return (
                     <Tooltip
                       key={value}
-                      title="Your OS doesn't support this method"
+                      title="Your browser doesn't support this method"
                     >
                       {paymentButton}
                     </Tooltip>

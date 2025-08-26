@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import { CheckoutForm } from '@/components/CheckoutForm';
 import { Header } from '@/components/common/Header';
-import { Box, LinearProgress } from '@mui/material';
+import { Box, LinearProgress, Stack } from '@mui/material';
 import { CartSummary } from '@/components/CartSummary';
 import { useCart } from '@/lib/hooks';
 import { useQuery } from '@tanstack/react-query';
@@ -328,9 +328,14 @@ export default function Checkout() {
       <Box
         sx={{
           width: '100%',
+          maxWidth: '1600px',
+          margin: 'auto',
           display: 'flex',
-          justifyContent: 'space-around',
-          marginTop: '50px',
+          flexWrap: 'wrap',
+          flexDirection: { xs: 'column', xl: 'row' },
+          justifyContent: { xs: 'center', xl: 'space-between' },
+          alignContent: 'center',
+          padding: { xs: '30px 12px', sm: '30px 16px', md: '60px 85px' },
         }}
       >
         <FormProvider {...methods}>
@@ -340,7 +345,12 @@ export default function Checkout() {
             setCardError={setCardError}
             availablePaymentMethods={availablePaymentMethods}
           />
-          <Box sx={{ width: 600 }}>
+          <Stack
+            sx={{
+              flex: '0 0 auto',
+              width: { xs: '100%', xl: '400px' },
+            }}
+          >
             <CartSummary
               paymentMethod={paymentMethod}
               paymentRequest={paymentRequest}
@@ -348,11 +358,13 @@ export default function Checkout() {
               taxPercent={taxPercent}
               shippingAmount={shippingAmount}
               onOrderComplete={handleOrderComplete}
+              isProcessing={isProcessing}
+              isFetching={isFetching}
             />
             {(isProcessing || isFetching) && (
               <LinearProgress sx={{ marginTop: 2 }} />
             )}
-          </Box>
+          </Stack>
         </FormProvider>
       </Box>
     </>
