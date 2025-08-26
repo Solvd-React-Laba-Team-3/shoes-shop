@@ -183,4 +183,89 @@ describe('CartSummary', () => {
 
     expect(totalText).toBeInTheDocument();
   });
+
+  it('shows "Shipping and tax will be calculated at checkout" when checkout is false', () => {
+    renderWithClient(<CartSummary />);
+    expect(
+      screen.getByText(/Shipping and tax will be calculated at checkout\./i)
+    ).toBeInTheDocument();
+  });
+
+  it('renders discount row when discountAmount > 0 and not loading', () => {
+    const cartWithDiscount = {
+      ...defaultCart,
+      discountAmount: 15,
+      isLoading: false,
+    };
+
+    (useCart as jest.Mock).mockReturnValue(cartWithDiscount);
+
+    (useLocalStorage as jest.Mock).mockReturnValue({
+      value: true,
+      setValue: jest.fn(),
+    });
+
+    renderWithClient(<CartSummary />);
+
+    expect(screen.getByText(/Discount/i)).toBeInTheDocument();
+    expect(screen.getByText(/-\$15\.00/)).toBeInTheDocument();
+  });
+
+  it('does not render discount row when loading', () => {
+    (useCart as jest.Mock).mockReturnValueOnce({
+      ...defaultCart,
+      discountAmount: 20,
+      isLoading: true,
+    });
+
+    renderWithClient(<CartSummary />);
+    expect(screen.queryByText(/-\$20\.00/)).not.toBeInTheDocument();
+  });
+
+  it('clicking Edit button sets isEditing to true', () => {
+    const setValueMock = jest.fn();
+    (useLocalStorage as jest.Mock).mockReturnValue({
+      value: true,
+      setValue: setValueMock,
+    });
+
+    (useCart as jest.Mock).mockReturnValue({
+      ...defaultCart,
+      discountAmount: 15,
+      discountCode: 'PROMO',
+    });
+
+    renderWithClient(<CartSummary />);
+
+    const editButton = screen.getByRole('button', { name: /Edit/i });
+    fireEvent.click(editButton);
+
+    expect(screen.getByRole('button', { name: /Apply/i })).toBeInTheDocument();
+  });
+
+  it('submits promo code and calls applyDiscount', async () => {
+    const mutateMock = jest.fn();
+    (useApplyDiscount as jest.Mock).mockReturnValue({
+      mutate: mutateMock,
+      isPending: false,
+    });
+
+    renderWithClient(<CartSummary />);
+
+    const input = screen.getByPlaceholderText(
+      /Enter promo code/i
+    ) as HTMLInputElement;
+
+    fireEvent.change(input, { target: { value: 'promo1' } });
+
+    const form = input.closest('form')!;
+    fireEvent.submit(form);
+
+    await screen.findByRole('button', { name: /Apply/i });
+
+    expect(mutateMock).toHaveBeenCalledWith({
+      code: 'promo1',
+      total: defaultCart.subtotal,
+    });
+  });
 });
