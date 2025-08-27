@@ -16,7 +16,13 @@ import SearchIcon from '@mui/icons-material/Search';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useDebounce, useSearchParams } from '@/lib/hooks';
-import { List, Typography, useMediaQuery, useTheme } from '@mui/material';
+import {
+  List,
+  NoSsr,
+  Typography,
+  useMediaQuery,
+  useTheme,
+} from '@mui/material';
 import LinearProgress from '@mui/material/LinearProgress';
 import { useQuery } from '@tanstack/react-query';
 import { getPopularSearchTermsOptions } from '@/api/gemini/getPopularSearchTermsOptions';
@@ -33,8 +39,6 @@ export const MainSearchBar = () => {
   const [popularTerms, setPopularTerms] = useState<string[]>([]);
   const { debouncedValue, isDebouncing } = useDebounce(inputValue, 2000);
   const inputRef = useRef<HTMLInputElement>(null);
-
-  const [isMounted, setIsMounted] = useState(false);
 
   const queryOptions = getPopularSearchTermsOptions(debouncedValue);
 
@@ -101,14 +105,8 @@ export const MainSearchBar = () => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
 
-  useEffect(() => {
-    setIsMounted(true);
-  }, []);
-
-  if (!isMounted) return null;
-
   return (
-    <>
+    <NoSsr>
       {isFocused && <Overlay data-testid="overlay" onClick={handleClose} />}
       {isFocused && (
         <>
@@ -199,6 +197,6 @@ export const MainSearchBar = () => {
           )}
         </MainSearchBarContainer>
       )}
-    </>
+    </NoSsr>
   );
 };
