@@ -21,8 +21,7 @@ import { StyledInputLabel } from '../ProductForm/productForm.styles';
 import { shippingCountries } from '@/constants/shippingCountries';
 import { StyledPaymentMethod } from './checkoutForm.styles';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
-
-export type PaymentMethod = 'card' | 'googlePay' | 'applePay' | 'link';
+import { PaymentMethod } from '@/types/PaymentMethod';
 
 interface CheckoutProps {
   error: boolean;
@@ -56,7 +55,12 @@ export const CheckoutForm: FC<CheckoutProps> = ({
   });
 
   return (
-    <Box sx={{ maxWidth: '100%' }}>
+    <Box
+      sx={{
+        maxWidth: { xl: '100%' },
+        width: { xs: '100%', xl: 'auto' },
+      }}
+    >
       <Link
         href="/cart"
         sx={{
@@ -181,7 +185,7 @@ export const CheckoutForm: FC<CheckoutProps> = ({
         label="Address"
         errorMessage={errors.address?.message}
         placeholder="Street, apartment, block"
-        sx={{ width: '100%', maxWidth: '100%' }}
+        sx={{ width: '100%' }}
         {...register('address')}
       />
 

@@ -12,7 +12,7 @@ import { useCart } from '@/lib/hooks';
 import { useApplyDiscount } from '@/api/discount/useApplyDiscount';
 import { useLocalStorage } from '@/lib/hooks';
 import { PaymentRequestButtonElement } from '@stripe/react-stripe-js';
-import { PaymentMethod } from '../CheckoutForm';
+import type { PaymentMethod } from '@/types/PaymentMethod';
 import { PaymentRequest } from '@stripe/stripe-js';
 import { useSession } from 'next-auth/react';
 import { ConfirmActionModal } from '../common/ConfirmActionModal';

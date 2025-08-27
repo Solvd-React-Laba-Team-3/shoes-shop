@@ -1,6 +1,32 @@
 'use client';
 
-import { Box, Card, Skeleton, Typography } from '@mui/material';
+import { Box, Card, Skeleton, styled, Typography } from '@mui/material';
+
+const StyledCard = styled(Card)(({ theme }) => ({
+  borderRadius: theme.shape.borderRadius,
+  display: 'flex',
+  alignItems: 'center',
+  backgroundColor: theme.palette.grey[100],
+  boxShadow: 'none',
+  height: '88px',
+
+  [theme.breakpoints.down('sm')]: {
+    height: '56px',
+  },
+}));
+
+const StyledCardContent = styled(Box)(({ theme }) => ({
+  padding: '24px',
+  display: 'flex',
+  justifyContent: 'space-between',
+  alignItems: 'center',
+  gap: '16px',
+  width: '100%',
+
+  [theme.breakpoints.down('sm')]: {
+    padding: '16px',
+  },
+}));
 
 export const OrdersFallback = () => {
   return (
@@ -22,28 +48,8 @@ export const OrdersFallback = () => {
               width="60%"
               sx={{ mb: 1, display: { sm: 'none' } }}
             />
-            <Card
-              sx={{
-                borderRadius: (theme) => theme.shape.borderRadius,
-                minHeight: { xs: '56px', sm: '88px' },
-                maxHeight: { xs: '56px', sm: '88px' },
-                display: 'flex',
-                alignItems: 'center',
-                backgroundColor: (theme) => theme.palette.grey[100],
-                boxShadow: 'none',
-              }}
-            >
-              <Box
-                sx={{
-                  p: { xs: 2, sm: 3 },
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  alignItems: 'center',
-                  gap: 2,
-                  flexWrap: 'wrap',
-                  width: '100%',
-                }}
-              >
+            <StyledCard>
+              <StyledCardContent>
                 <Box
                   sx={{
                     display: 'flex',
@@ -90,8 +96,8 @@ export const OrdersFallback = () => {
                     sx={{ borderRadius: '16px' }}
                   />
                 </Box>
-              </Box>
-            </Card>
+              </StyledCardContent>
+            </StyledCard>
           </Box>
         ))}
       </Box>

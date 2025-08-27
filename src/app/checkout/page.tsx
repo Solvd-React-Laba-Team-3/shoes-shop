@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import { CheckoutForm } from '@/components/CheckoutForm';
 import { Header } from '@/components/common/Header';
-import { Box, LinearProgress, Stack } from '@mui/material';
+import { Box, LinearProgress, Stack, styled } from '@mui/material';
 import { CartSummary } from '@/components/CartSummary';
 import { useCart } from '@/lib/hooks';
 import { useQuery } from '@tanstack/react-query';
@@ -23,8 +23,29 @@ import {
 } from '@stripe/stripe-js';
 import { SHIPPING_AMOUNT } from '@/constants/shippingAmount';
 import { TAX_PERCENT } from '@/constants/taxPercent';
-import { PaymentMethod } from '@/components/CheckoutForm';
 import type { PaymentIntent } from '@stripe/stripe-js';
+import type { PaymentMethod } from '@/types/PaymentMethod';
+
+const StyledCheckoutContainer = styled(Box)(({ theme }) => ({
+  width: '100%',
+  maxWidth: '1600px',
+  margin: 'auto',
+  display: 'flex',
+  justifyContent: 'space-between',
+  padding: '60px 85px',
+  flexWrap: 'wrap',
+  alignContent: 'center',
+
+  [theme.breakpoints.down('md')]: {
+    padding: '30px 16px',
+  },
+
+  [theme.breakpoints.down('sm')]: {
+    flexDirection: 'column',
+    justifyContent: 'center',
+    padding: '30px 12px',
+  },
+}));
 
 export default function Checkout() {
   const stripe = useStripe();
@@ -325,19 +346,7 @@ export default function Checkout() {
   return (
     <>
       <Header />
-      <Box
-        sx={{
-          width: '100%',
-          maxWidth: '1600px',
-          margin: 'auto',
-          display: 'flex',
-          flexWrap: 'wrap',
-          flexDirection: { xs: 'column', xl: 'row' },
-          justifyContent: { xs: 'center', xl: 'space-between' },
-          alignContent: 'center',
-          padding: { xs: '30px 12px', sm: '30px 16px', md: '60px 85px' },
-        }}
-      >
+      <StyledCheckoutContainer>
         <FormProvider {...methods}>
           <CheckoutForm
             error={isError}
@@ -366,7 +375,7 @@ export default function Checkout() {
             )}
           </Stack>
         </FormProvider>
-      </Box>
+      </StyledCheckoutContainer>
     </>
   );
 }
