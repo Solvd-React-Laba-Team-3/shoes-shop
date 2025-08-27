@@ -12,10 +12,10 @@ import { FC, useState } from 'react';
 import { Button, IconButton } from '../ui';
 import { CartProduct } from '@/types/CartProduct';
 import { useCart } from '@/lib/hooks';
-import { DeleteConfirmationModal } from '../common/DeleteConfirmationModal';
 import { useRouter } from 'next/navigation';
 import IncreaseIcon from '@mui/icons-material/Add';
 import DecreaseIcon from '@mui/icons-material/Remove';
+import { ConfirmActionModal } from '../common/ConfirmActionModal';
 
 const StyledDeleteButton = styled(Button)(({ theme }) => ({
   background: 'transparent',
@@ -168,14 +168,14 @@ export const CartItem: FC<CartProduct> = ({
               <StyledDeleteButton
                 size="small"
                 onClick={() => setRemoveModalOpen(true)}
+                startIcon={
+                  <DeleteIcon
+                    aria-label="delete item"
+                    sx={{ color: 'text.secondary', mt: '2px' }}
+                  />
+                }
               >
-                <DeleteIcon
-                  aria-label="delete item"
-                  sx={{
-                    color: (theme) => theme.palette.grey[400],
-                  }}
-                />
-                <Typography variant="subtitle2">Delete</Typography>
+                <Typography variant="subtitle1">Delete</Typography>
               </StyledDeleteButton>
             </Box>
           </Stack>
@@ -184,13 +184,13 @@ export const CartItem: FC<CartProduct> = ({
         <Divider sx={{ margin: '60px 0' }} />
       </Box>
 
-      <DeleteConfirmationModal
+      <ConfirmActionModal
         title="Are you sure you want to remove this product from the cart?"
         description="Confirm to continue or cancel."
         open={removeModalOpen}
         onClose={() => setRemoveModalOpen(false)}
-        onDelete={handleRemoveItem}
-        deleteText="Remove"
+        onConfirm={handleRemoveItem}
+        confirmText="Remove"
       />
     </>
   );

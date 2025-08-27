@@ -11,35 +11,45 @@ import { cartSchema, CartSchema } from './cart.schema';
 import { useCart } from '@/lib/hooks';
 import { useApplyDiscount } from '@/api/discount/useApplyDiscount';
 import { useLocalStorage } from '@/lib/hooks';
-import { TAX_PERCENT } from '@/constants/taxPercent';
-import { SHIPPING_AMOUNT } from '@/constants/shippingAmount';
+import { PaymentRequestButtonElement } from '@stripe/react-stripe-js';
+import { PaymentMethod } from '../CheckoutForm';
+import { PaymentRequest } from '@stripe/stripe-js';
+import { useSession } from 'next-auth/react';
+import { ConfirmActionModal } from '../common/ConfirmActionModal';
 
 interface CartSummaryProps {
   checkout?: boolean;
   taxPercent?: number;
   shippingAmount?: number;
   onOrderComplete?: () => void;
+  paymentRequest?: PaymentRequest | null;
+  paymentMethod?: PaymentMethod;
 }
 
 export const CartSummary: FC<CartSummaryProps> = ({
   checkout = false,
-  taxPercent = TAX_PERCENT,
-  shippingAmount = SHIPPING_AMOUNT,
+  taxPercent = 0,
+  shippingAmount = 0,
   onOrderComplete,
-}: CartSummaryProps) => {
+  paymentRequest,
+  paymentMethod,
+}) => {
   const router = useRouter();
+  const { data: session } = useSession();
   const { value: promoOpen, setValue: setPromoOpen } = useLocalStorage<boolean>(
     'promoOpen',
     false
   );
 
-  const { subtotal, discountAmount, discountCode, isLoading } = useCart();
+  const { subtotal, discountAmount, discountCode, isLoading, getTotal } =
+    useCart();
 
+  const [showLoginConfirm, setShowLoginConfirm] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
 
   const subtotalWithDiscount = subtotal - discountAmount;
   const taxAmount = (subtotalWithDiscount * taxPercent) / 100;
-  const finalTotal = subtotalWithDiscount + shippingAmount + taxAmount;
+  const total = getTotal(shippingAmount, taxPercent);
 
   const {
     register,
@@ -68,7 +78,95 @@ export const CartSummary: FC<CartSummaryProps> = ({
 
   const handleCheckout = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
+    if (!session) {
+      setShowLoginConfirm(true);
+      return;
+    }
+
     router.push('/checkout');
+  };
+
+  const renderPaymentButton = () => {
+    if (!checkout) {
+      return (
+        <Button
+          disabled={isLoading || isPending || subtotal === 0}
+          type="submit"
+          size="large"
+          sx={{ width: '100%' }}
+        >
+          Checkout
+        </Button>
+      );
+    }
+
+    switch (paymentMethod) {
+      case 'card':
+        return (
+          <Button
+            type="submit"
+            sx={{ width: '100%' }}
+            disabled={isLoading || isPending}
+          >
+            Confirm & Pay
+          </Button>
+        );
+
+      case 'googlePay':
+        if (!isLoading && !isPending) {
+          return (
+            paymentRequest && (
+              <PaymentRequestButtonElement
+                options={{
+                  paymentRequest: paymentRequest,
+                  style: {
+                    paymentRequestButton: {
+                      type: 'check-out',
+                    },
+                  },
+                }}
+              />
+            )
+          );
+        }
+      case 'applePay':
+        if (!isLoading && !isPending) {
+          return (
+            paymentRequest && (
+              <PaymentRequestButtonElement
+                options={{
+                  paymentRequest: paymentRequest,
+                  style: {
+                    paymentRequestButton: {
+                      type: 'check-out',
+                    },
+                  },
+                }}
+              />
+            )
+          );
+        }
+      case 'link':
+        if (!isLoading && !isPending) {
+          return (
+            paymentRequest && (
+              <PaymentRequestButtonElement
+                options={{
+                  paymentRequest: paymentRequest!,
+                  style: {
+                    paymentRequestButton: {
+                      type: 'check-out',
+                    },
+                  },
+                }}
+              />
+            )
+          );
+        }
+      default:
+        return null;
+    }
   };
 
   return (
@@ -100,7 +198,6 @@ export const CartSummary: FC<CartSummaryProps> = ({
             sx={{
               height: '40px',
               '& .MuiInputBase-root': {
-                fontSize: '16px',
                 margin: { sm: '0' },
               },
             }}
@@ -146,7 +243,6 @@ export const CartSummary: FC<CartSummaryProps> = ({
         sx={{
           display: 'flex',
           justifyContent: 'space-between',
-          flexWrap: 'wrap',
           margin: '18px 0 20px',
         }}
       >
@@ -181,7 +277,6 @@ export const CartSummary: FC<CartSummaryProps> = ({
         sx={{
           display: 'flex',
           justifyContent: 'space-between',
-          flexWrap: 'wrap',
           margin: '20px 0',
         }}
       >
@@ -197,32 +292,21 @@ export const CartSummary: FC<CartSummaryProps> = ({
         sx={{
           display: 'flex',
           justifyContent: 'space-between',
-          flexWrap: 'wrap',
           margin: '20px 0',
         }}
       >
         <Typography variant="h3" sx={{ fontWeight: 400 }}>
-          Tax {checkout ? `(${taxPercent}%)` : ''}
+          Tax ({taxPercent}%)
         </Typography>
         <Typography variant="h3" sx={{ fontWeight: 400 }}>
-          {checkout ? `$${taxAmount.toFixed(2)}` : '-'}
+          ${taxAmount.toFixed(2)}
         </Typography>
       </Box>
-
-      {!checkout && (
-        <>
-          <Divider />
-          <Typography variant="caption">
-            Shipping and tax will be calculated at checkout.
-          </Typography>
-        </>
-      )}
-
+      <Divider sx={{ marginTop: '56px' }} />
       <Box
         sx={{
           display: 'flex',
           justifyContent: 'space-between',
-          flexWrap: 'wrap',
           margin: '20px 0',
         }}
       >
@@ -230,28 +314,27 @@ export const CartSummary: FC<CartSummaryProps> = ({
           Total
         </Typography>
         <Typography variant="h3" sx={{ fontWeight: 600 }}>
-          {checkout
-            ? `$${finalTotal.toFixed(2)}`
-            : discountAmount > 0
-              ? `$${(subtotal - discountAmount).toFixed(2)}`
-              : `$${subtotal.toFixed(2)}`}
+          ${total}
         </Typography>
       </Box>
 
-      <Divider sx={{ mb: { xs: 4, md: '22px' } }} />
+      <Divider sx={{ marginBottom: '113px' }} />
       <Box
         component="form"
         onSubmit={checkout ? onOrderComplete : handleCheckout}
       >
-        <Button
-          disabled={isLoading || isPending || subtotal === 0}
-          type="submit"
-          size="large"
-          sx={{ width: '100%' }}
-        >
-          {checkout ? 'Confirm & Pay' : 'Checkout'}
-        </Button>
+        {renderPaymentButton()}
       </Box>
+
+      <ConfirmActionModal
+        open={showLoginConfirm}
+        title="Login required"
+        description="You need to sign in to complete your purchase. Do you want to go to the login page now?"
+        onClose={() => setShowLoginConfirm(false)}
+        onConfirm={() => router.push('/auth/sign-in?next=checkout')}
+        cancelText="Stay here"
+        confirmText="Go to login"
+      />
     </Box>
   );
 };
