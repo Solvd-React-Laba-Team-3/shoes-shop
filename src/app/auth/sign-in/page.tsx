@@ -134,8 +134,15 @@ export default function SignIn() {
                 size="large"
                 checked={isRememberMe}
                 onChange={() => setIsRememberMe(!isRememberMe)}
+                id="rememberMe"
               />
-              <Typography variant="subtitle2" color="secondary">
+              <Typography
+                component="label"
+                htmlFor="rememberMe"
+                variant="subtitle2"
+                color="secondary"
+                sx={{ cursor: 'pointer' }}
+              >
                 Remember me
               </Typography>
             </Box>
