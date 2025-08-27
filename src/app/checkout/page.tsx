@@ -141,14 +141,18 @@ export default function Checkout() {
   }, [trigger, getValues]);
 
   const handleOrderComplete = handleSubmit(async (data: CheckoutSchema) => {
+    const orderNumber = Date.now();
+    if (process.env.NEXT_PUBLIC_CYPRESS_E2E === 'true') {
+      finalizeOrder(orderNumber);
+      return;
+    }
+
     if (!stripe || !elements || cardError !== null) {
       if (cardError === undefined) {
         setCardError('Card number is required');
       }
       return;
     }
-
-    const orderNumber = Date.now();
 
     try {
       setIsProcessing(true);

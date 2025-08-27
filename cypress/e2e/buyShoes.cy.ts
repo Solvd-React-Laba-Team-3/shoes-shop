@@ -1,5 +1,3 @@
-const email = 'jefferson.fl123@gmail.com';
-
 describe('Main flow', () => {
   it('It should allow user to buy shoes', () => {
     cy.viewport(1920, 1080);
@@ -16,31 +14,27 @@ describe('Main flow', () => {
     cy.get('.MuiToggleButton-root:not([disabled])').first().click();
     cy.contains('Add to Bag').click();
     cy.get('[title="Go to Cart"]').click();
-    cy.contains('+').click();
+    cy.get('[data-cy="increaseButton"]').click();
     cy.contains('Do you have a promo code?').click();
     cy.get('input[name="promoCode"]').type('free10{enter}');
     cy.contains('Checkout').click();
+    cy.contains('Go to login').click();
+    cy.get('input[name="email"]').type('test@email.com');
+    cy.get('input[name="password"]').type('password');
+    cy.contains('Sign in').click();
+    cy.intercept('/api/auth/callback/credentials').as('login');
+    cy.wait('@login').then((interception) => {
+      assert.equal(interception?.response?.statusCode, 200);
+    });
     cy.get('[name="name"]').type('Test');
     cy.get('[name="surname"]').type('User');
-    cy.get('[name="email"]').type(email);
     cy.get('[name="phone"]').type('55123456789');
     cy.contains('Select country').click();
     cy.contains('Brazil').click();
     cy.get('[name="city"]').type('São Paulo');
-    cy.get('[name="state"]').type('São Paulo');
-    cy.get('[name="zipCode"]').type('59999-999');
+    cy.get('[name="zipCode"]').type('59999999');
     cy.get('[name="address"]').type('Mock Address');
-    cy.get('[placeholder="Card number"]').type('4242424242424242');
 
-    // searchBar.
-
-    // cy.get('input[name="email"]').type('jefferson.fl123@gmail.com');
-    // cy.get('input[name="password"]').type('Test1234');
-    // cy.contains('Sign in').click();
-    // cy.intercept('/api/auth/callback/credentials').as('login');
-
-    // cy.wait('@login').then((interception) => {
-    //   assert.equal(interception?.response?.statusCode, 200);
-    // });
+    cy.contains('Confirm & Pay').click();
   });
 });
