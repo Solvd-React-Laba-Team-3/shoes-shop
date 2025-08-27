@@ -7,9 +7,12 @@ import { Suspense } from 'react';
 import { ProductListFallback } from '@/components/common/ProductListFallback';
 import { FiltersFallback } from '@/components/common/FiltersFallback';
 import { useState } from 'react';
+import { useSearchParams } from '@/lib/hooks';
 
 export const Catalog = () => {
-  const [isFiltersOpen, setIsFiltersOpen] = useState(false);
+  const searhParams = useSearchParams();
+  const hasFilters = Boolean(searhParams.get('filters'));
+  const [isFiltersOpen, setIsFiltersOpen] = useState(hasFilters);
 
   const handleFiltersToggle = () => {
     setIsFiltersOpen(!isFiltersOpen);
