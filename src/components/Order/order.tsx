@@ -61,8 +61,7 @@ export const Order: FC<OrderProps> = ({ order }) => {
       </Box>
       <Accordion
         sx={{
-          boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
-          border: `1px solid ${theme.palette.divider}`,
+          borderRadius: theme.shape.borderRadius,
           backgroundColor: theme.palette.grey[100],
         }}
         label={<OrderPreview order={order} />}
