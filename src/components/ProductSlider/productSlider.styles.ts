@@ -89,9 +89,9 @@ export const StyledThumbsWrapper = styled(Box)(({ theme }) => ({
   height: 'auto',
   contain: 'layout size',
   alignSelf: 'stretch',
-
   [theme.breakpoints.down('md')]: {
     order: 2,
     width: '100%',
+    contain: 'unset',
   },
 }));

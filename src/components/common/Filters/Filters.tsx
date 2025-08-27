@@ -32,6 +32,8 @@ import {
   StyledPricesContainer,
   StyledCloseWrapper,
 } from './Filters.styles';
+import { useHideOnScroll } from '@/lib/hooks/useHideOnScroll/useHideOnScroll';
+import { HEADER_HEIGHT } from '@/constants/headerHeight';
 
 export const Filters: FC<DrawerProps> = ({ ...props }) => {
   const {
@@ -77,11 +79,12 @@ export const Filters: FC<DrawerProps> = ({ ...props }) => {
 
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
-
+  const hidden = useHideOnScroll();
   return (
     <StyledDrawer
       variant={isMobile ? 'temporary' : 'persistent'}
       anchor={isMobile ? 'right' : 'left'}
+      sx={{ top: hidden ? 0 : `${HEADER_HEIGHT}px` }}
       {...props}
     >
       {isMobile ? (
