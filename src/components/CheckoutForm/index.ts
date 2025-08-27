@@ -1,1 +1,1 @@
-export { CheckoutForm, type PaymentMethod } from './CheckoutForm';
+export { CheckoutForm } from './CheckoutForm';

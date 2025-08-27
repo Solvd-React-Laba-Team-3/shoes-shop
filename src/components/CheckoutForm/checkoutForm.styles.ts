@@ -2,8 +2,8 @@ import { styled } from '@mui/material/styles';
 import { ToggleButton, Button } from '../ui';
 
 export const StyledPaymentMethod = styled(ToggleButton)(({ theme }) => ({
-  height: '100px',
-  width: '170px',
+  minWidth: '100%',
+  width: '100%',
   fontWeight: 500,
   textTransform: 'none',
   flexDirection: 'column',
@@ -17,7 +17,8 @@ export const StyledPaymentMethod = styled(ToggleButton)(({ theme }) => ({
 
   '&.MuiToggleButton-root.MuiToggleButton-root': {
     height: '100px',
-    width: '170px',
+    minWidth: '100%',
+    width: '100%',
   },
 
   '&:hover': {
