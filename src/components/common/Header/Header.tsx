@@ -42,19 +42,18 @@ export const Header = () => {
   return (
     <>
       <StyledContainer>
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: '30px' }}>
-          <Link href="/">
+        <Link href="/">
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: '30px' }}>
             <Image src={logo} alt="logo" width={40} height={30} />
-          </Link>
-          {
+
             <Typography
               sx={{ display: { xs: 'none', md: 'inline' } }}
               variant="subtitle2"
             >
               Products
             </Typography>
-          }
-        </Box>
+          </Box>
+        </Link>
         <Box
           sx={{
             display: 'flex',
