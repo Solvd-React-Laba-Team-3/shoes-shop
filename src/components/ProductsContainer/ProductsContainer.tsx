@@ -1,20 +1,21 @@
 'use client';
 
 import { getProductsOptions } from '@/api/products/getProductsOptions';
-import { useDeviceSize, useSearchParams } from '@/lib/hooks';
+import { useSearchParams } from '@/lib/hooks';
 import { parseQueryString } from '@/lib/utils';
 import { useSuspenseInfiniteQuery } from '@tanstack/react-query';
 import React, { FC, useMemo } from 'react';
 import { ProductList } from '../ProductList';
-import { Box, Typography } from '@mui/material';
+import { Box, Typography, useMediaQuery } from '@mui/material';
 import FilterAltOffIcon from '@mui/icons-material/FilterAlt';
 import FilterAltIcon from '@mui/icons-material/FilterAltOff';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import { Button } from '@/components/ui';
 import { useRouter } from 'next/navigation';
-import { styled } from '@mui/material/styles';
+import { styled, useTheme } from '@mui/material/styles';
 import LocalMallIcon from '@mui/icons-material/LocalMall';
 import { useIntersectionObserver } from '@/lib/hooks';
+import { EmptyProductList } from '../EmptyProductList';
 
 interface ProductsContainerProps {
   isFiltersOpen: boolean;
@@ -30,35 +31,30 @@ const StyledLocalMallIcon = styled(LocalMallIcon)(({ theme }) => ({
   height: '72px',
 }));
 
-const StyledNoProductsWrapper = styled(Box)(() => ({
-  display: 'flex',
-  justifyContent: 'center',
-  flexDirection: 'column',
-  alignItems: 'center',
-  gap: '30px',
-  height: 'calc(100vh - 300px)',
-}));
-
 export const ProductsContainer: FC<ProductsContainerProps> = ({
   isFiltersOpen,
   onFiltersToggle,
 }) => {
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+
   const router = useRouter();
   const searchParams = useSearchParams();
   const filters = parseQueryString(searchParams.get('filters') ?? '');
   const search = searchParams.get('search');
 
-  const queryParams = useMemo(
-    () => ({
+  const queryParams = useMemo(() => {
+    if (!filters.filters && !search) return;
+
+    return {
       filters: {
         ...filters.filters,
         name: {
           $contains: search,
         },
       },
-    }),
-    [filters, search]
-  );
+    };
+  }, [filters, search]);
 
   const { data, isFetching, fetchNextPage, hasNextPage, isFetchingNextPage } =
     useSuspenseInfiniteQuery(getProductsOptions(queryParams));
@@ -78,8 +74,6 @@ export const ProductsContainer: FC<ProductsContainerProps> = ({
   const handleClearFilters = () => {
     router.replace('/');
   };
-
-  const { isMobile } = useDeviceSize();
 
   return (
     <Box
@@ -159,24 +153,11 @@ export const ProductsContainer: FC<ProductsContainerProps> = ({
           <Box ref={ref} />
         </>
       ) : (
-        <StyledNoProductsWrapper>
-          <Box
-            sx={{
-              display: 'flex',
-              flexDirection: 'column',
-              gap: '10px',
-              alignItems: 'center',
-            }}
-          >
-            <StyledLocalMallIcon />
-            <Typography variant="h6">
-              There are no products match search
-            </Typography>
-            <Typography variant="caption">
-              Try to change search query
-            </Typography>
-          </Box>
-        </StyledNoProductsWrapper>
+        <EmptyProductList
+          icon={<StyledLocalMallIcon />}
+          message="There are no products match search"
+          caption="Try to change search query"
+        />
       )}
     </Box>
   );

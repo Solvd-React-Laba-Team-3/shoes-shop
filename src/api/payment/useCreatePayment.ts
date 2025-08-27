@@ -7,7 +7,7 @@ interface CreatePaymentResponse {
 
 interface CreatePaymentBody {
   amount: number;
-  discountAmount?: number;
+  discountAmount: number;
   discountCode?: string;
   shippingAmount: number;
   taxPercent: number;

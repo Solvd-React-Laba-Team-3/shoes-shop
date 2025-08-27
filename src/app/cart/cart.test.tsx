@@ -6,9 +6,10 @@ import Cart from './page';
 
 jest.mock('@/lib/hooks/useCart/useCart');
 
-const mockIncreaseQuantity = jest.fn();
-const mockDecreaseQuantity = jest.fn();
-const mockRemoveItem = jest.fn();
+const increaseQuantityMock = jest.fn();
+const decreaseQuantityMock = jest.fn();
+const removeItemMock = jest.fn();
+const getTotalMock = jest.fn().mockReturnValue(100);
 
 describe('Cart', () => {
   beforeEach(() => {
@@ -26,9 +27,10 @@ describe('Cart', () => {
       ],
       subtotal: 100,
       isLoading: false,
-      increaseQuantity: mockIncreaseQuantity,
-      decreaseQuantity: mockDecreaseQuantity,
-      removeItem: mockRemoveItem,
+      increaseQuantity: increaseQuantityMock,
+      decreaseQuantity: decreaseQuantityMock,
+      removeItem: removeItemMock,
+      getTotal: getTotalMock,
     });
   });
 
@@ -69,7 +71,7 @@ describe('Cart', () => {
       .getAllByRole('button')
       .find((button) => button.querySelector('[data-testid="AddIcon"]'));
     fireEvent.click(increaseButton!);
-    expect(mockIncreaseQuantity).toHaveBeenCalledWith(1, 42, 2);
+    expect(increaseQuantityMock).toHaveBeenCalledWith(1, 42, 2);
   });
 
   it('calls decreaseQuantity when decrease button is clicked', () => {
@@ -90,6 +92,6 @@ describe('Cart', () => {
       .getAllByRole('button')
       .find((button) => button.querySelector('[data-testid="RemoveIcon"]'));
     fireEvent.click(decreaseButton!);
-    expect(mockDecreaseQuantity).toHaveBeenCalledWith(1, 42, 2);
+    expect(decreaseQuantityMock).toHaveBeenCalledWith(1, 42, 2);
   });
 });

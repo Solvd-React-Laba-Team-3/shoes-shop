@@ -6,6 +6,9 @@ const nextConfig: NextConfig = {
     remotePatterns: [new URL('https://res.cloudinary.com/**')],
   },
   transpilePackages: ['@mui/material', '@mui/system', '@mui/icons-material'],
+  experimental: {
+    serverComponentsExternalPackages: ['puppeteer-core', '@sparticuz/chromium'],
+  },
 };
 
 export default nextConfig;

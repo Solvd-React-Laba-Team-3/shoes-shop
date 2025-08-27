@@ -6,7 +6,7 @@ import { styled } from '@mui/material/styles';
 import { FC } from 'react';
 
 export const StyledButton = styled(MUIButton)<MUIButtonProps>(
-  ({ size = 'medium', variant }) => ({
+  ({ size = 'medium', variant, fullWidth }) => ({
     borderRadius: '8px',
     fontSize: '16px',
     fontWeight: '500',
@@ -26,6 +26,10 @@ export const StyledButton = styled(MUIButton)<MUIButtonProps>(
     }),
     ...(variant === 'text' && {
       width: 'unset',
+    }),
+    ...(fullWidth && {
+      width: '100%',
+      height: '60px',
     }),
 
     '&:hover': {

@@ -17,4 +17,6 @@ export interface Order {
   products: CartProduct[];
   receipt_url?: string;
   paymentMethod: string;
+  decline_reason?: string;
+  latest_charge?: string;
 }

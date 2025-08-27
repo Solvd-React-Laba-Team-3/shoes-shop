@@ -7,7 +7,7 @@ import Typography from '@mui/material/Typography';
 import LocalMallOutlinedIcon from '@mui/icons-material/LocalMallOutlined';
 import MenuIcon from '@mui/icons-material/Menu';
 import Image from 'next/image';
-import { styled } from '@mui/material/styles';
+import { styled, useTheme } from '@mui/material/styles';
 import { Button, IconButton, Link } from '@/components/ui';
 import { HEADER_HEIGHT } from '@/constants/headerHeight';
 import { useRouter } from 'next/navigation';
@@ -15,8 +15,8 @@ import { MainSearchBar } from '@/components/MainSearchBar';
 import logo from '../../../../public/logo.png';
 import { useState } from 'react';
 import { Sidebar } from '../Sidebar';
-import { useDeviceSize } from '@/lib/hooks';
 import { useHideOnScroll } from '@/lib/hooks/useHideOnScroll/useHideOnScroll';
+import { useMediaQuery } from '@mui/material';
 
 const StyledContainer = styled(Box)(({ theme }) => ({
   display: 'flex',
@@ -39,11 +39,12 @@ const StyledContainer = styled(Box)(({ theme }) => ({
 export const Header = () => {
   const router = useRouter();
   const { data: session } = useSession();
-  const { isMobile } = useDeviceSize();
 
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   const hidden = useHideOnScroll();
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
 
   return (
     <>

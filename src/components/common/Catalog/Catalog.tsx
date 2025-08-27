@@ -7,10 +7,12 @@ import { Suspense } from 'react';
 import { ProductListFallback } from '@/components/common/ProductListFallback';
 import { FiltersFallback } from '@/components/common/FiltersFallback';
 import { useState } from 'react';
-import { useDeviceSize } from '@/lib/hooks';
+import { useMediaQuery, useTheme } from '@mui/material';
 
 export const Catalog = () => {
-  const { isMobile } = useDeviceSize();
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+
   const [isFiltersOpen, setIsFiltersOpen] = useState(false);
 
   const handleFiltersToggle = () => {
