@@ -116,11 +116,16 @@ export const Sidebar: FC<DrawerProps> = ({ open = false, ...props }) => {
               sx={{ width: '64px', height: '64px' }}
             />
             <Box sx={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-              <Typography variant="subtitle2" color="textDisabled">
+              <Typography
+                variant="subtitle2"
+                component={'span'}
+                color="textDisabled"
+              >
                 Welcome
               </Typography>
               <Typography
                 variant="subtitle2"
+                component={'span'}
                 sx={{
                   display: 'flex',
                   flexWrap: 'wrap',
@@ -176,6 +181,7 @@ export const Sidebar: FC<DrawerProps> = ({ open = false, ...props }) => {
             >
               <Typography
                 variant="subtitle2"
+                component={'span'}
                 sx={{
                   display: 'flex',
                   alignItems: 'center',

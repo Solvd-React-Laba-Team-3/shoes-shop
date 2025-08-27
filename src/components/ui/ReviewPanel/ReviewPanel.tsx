@@ -75,12 +75,14 @@ export const ReviewPanel: FC<ReviewPanelProps> = ({
       }}
     >
       <Stack direction="row" spacing={1} alignItems="center">
-        <Typography variant="h4">{name}</Typography>
+        <Typography variant="h4" component={'p'}>
+          {name}
+        </Typography>
         <Rating value={rating} readOnly size="large" />
       </Stack>
     </Stack>
 
-    <Typography variant="caption" sx={{ fontSize: '18px' }}>
+    <Typography variant="caption" component={'p'} sx={{ fontSize: '18px' }}>
       {location}
     </Typography>
   </StyledPaper>

@@ -103,13 +103,15 @@ export const ProductsContainer: FC<ProductsContainerProps> = ({
           height={'100%'}
           justifyContent={'center'}
         >
-          <Typography variant="h4" lineHeight={'40px'}>
+          <Typography variant="h4" component={'h1'} lineHeight={'40px'}>
             {search ? 'Search Results' : 'Catalog'}
           </Typography>
           {isMobile && search && (
             <Box>
-              <Typography variant="caption">Shoes/{search}</Typography>
-              <Typography variant="h4" lineHeight={'40px'}>
+              <Typography variant="caption" component={'span'}>
+                Shoes/{search}
+              </Typography>
+              <Typography variant="h4" component={'p'} lineHeight={'40px'}>
                 {search}
               </Typography>
             </Box>

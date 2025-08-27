@@ -61,6 +61,7 @@ export const Header = () => {
             <Typography
               sx={{ display: { xs: 'none', md: 'inline' } }}
               variant="subtitle2"
+              component={'span'}
             >
               Products
             </Typography>

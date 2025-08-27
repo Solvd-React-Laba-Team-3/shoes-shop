@@ -113,7 +113,7 @@ export const Filters: FC<DrawerProps> = ({ ...props }) => {
               flexShrink: 0,
             }}
           >
-            <Typography>Filters</Typography>
+            <Typography component={'h3'}>Filters</Typography>
             <Button
               variant="text"
               onClick={clearFilters}
@@ -130,8 +130,14 @@ export const Filters: FC<DrawerProps> = ({ ...props }) => {
         </>
       ) : (
         <Box sx={{ width: '100%', padding: '24px 48px' }}>
-          {search && <Typography variant="caption">Shoes/{search}</Typography>}
-          <Typography variant="h4">{search ?? 'Catalog'}</Typography>
+          {search && (
+            <Typography variant="caption" component={'span'}>
+              Shoes/{search}
+            </Typography>
+          )}
+          <Typography variant="h4" component={'span'}>
+            {search ?? 'Catalog'}
+          </Typography>
         </Box>
       )}
       <Box
@@ -264,7 +270,11 @@ export const Filters: FC<DrawerProps> = ({ ...props }) => {
                     });
                   }}
                 />
-                <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+                <Typography
+                  variant="body2"
+                  component={'span'}
+                  sx={{ color: 'text.secondary' }}
+                >
                   to
                 </Typography>
                 <TextField

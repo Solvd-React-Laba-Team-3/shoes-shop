@@ -5,7 +5,7 @@ import { Box, Card, Skeleton, Typography } from '@mui/material';
 export const OrdersFallback = () => {
   return (
     <Box sx={{ mx: 'auto' }}>
-      <Typography variant="h5" sx={{ mb: 4 }}>
+      <Typography variant="h5" component={'h1'} sx={{ mb: 4 }}>
         Order History
       </Typography>
       <Box

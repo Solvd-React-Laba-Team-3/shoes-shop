@@ -90,7 +90,7 @@ export const ProductCard: FC<ProductCardProps> = ({
                 </Typography>
                 <Typography
                   variant="subtitle1"
-                  component={'span'}
+                  component={'p'}
                   color="text.secondary"
                   marginTop={{ xs: 'auto', md: '0' }}
                 >
@@ -98,7 +98,7 @@ export const ProductCard: FC<ProductCardProps> = ({
                 </Typography>
               </Grid>
               <Grid>
-                <Typography variant="h5" component={'span'}>
+                <Typography variant="h5" component={'p'}>
                   ${product.price}
                 </Typography>
               </Grid>
