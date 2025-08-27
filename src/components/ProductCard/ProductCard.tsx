@@ -23,7 +23,7 @@ interface ProductCardProps {
   variant?: CardVariant;
 }
 
-const getGenderText = (genderName: string): string => {
+export const getGenderText = (genderName: string): string => {
   return genderName === 'Men' ? "Men's Shoes" : "Women's Shoes";
 };
 
