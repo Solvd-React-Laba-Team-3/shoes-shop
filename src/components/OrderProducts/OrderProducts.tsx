@@ -56,19 +56,14 @@ export const OrderProducts: FC<OrderProductsProps> = ({ products }) => {
       }}
     >
       <StyledOrderInfo>
-        <Typography variant="h5" component={'span'} sx={{ flex: 0.75 }}>
+        <Typography variant="subtitle1" sx={{ flex: 0.75 }}>
           Product
         </Typography>
-        <Typography
-          variant="h5"
-          component={'span'}
-          sx={{ flex: 0.15, textAlign: 'right' }}
-        >
+        <Typography variant="subtitle1" sx={{ flex: 0.15, textAlign: 'right' }}>
           Qty.
         </Typography>
         <Typography
-          variant="h5"
-          component={'span'}
+          variant="subtitle1"
           sx={{ flex: 0.15, mr: 2, textAlign: 'right' }}
         >
           Price
