@@ -56,13 +56,21 @@ export const OrderProducts: FC<OrderProductsProps> = ({ products }) => {
       }}
     >
       <StyledOrderInfo>
-        <Typography variant="h5" sx={{ flex: 0.75 }}>
+        <Typography variant="h5" component={'span'} sx={{ flex: 0.75 }}>
           Product
         </Typography>
-        <Typography variant="h5" sx={{ flex: 0.15, textAlign: 'right' }}>
+        <Typography
+          variant="h5"
+          component={'span'}
+          sx={{ flex: 0.15, textAlign: 'right' }}
+        >
           Qty.
         </Typography>
-        <Typography variant="h5" sx={{ flex: 0.15, mr: 2, textAlign: 'right' }}>
+        <Typography
+          variant="h5"
+          component={'span'}
+          sx={{ flex: 0.15, mr: 2, textAlign: 'right' }}
+        >
           Price
         </Typography>
       </StyledOrderInfo>
@@ -86,9 +94,12 @@ export const OrderProducts: FC<OrderProductsProps> = ({ products }) => {
               }}
             />
             <Box sx={{ display: 'flex', flexDirection: 'column' }}>
-              <Typography variant="h5">{product.name}</Typography>
+              <Typography variant="h5" component={'p'}>
+                {product.name}
+              </Typography>
               <Typography
                 variant="subtitle2"
+                component={'p'}
                 sx={{
                   display: { xs: 'none', sm: 'block' },
                   color: theme.palette.grey[600],
@@ -111,6 +122,7 @@ export const OrderProducts: FC<OrderProductsProps> = ({ products }) => {
               >
                 <Typography
                   variant="caption"
+                  component={'p'}
                   sx={{
                     fontWeight: 500,
                     color: theme.palette.grey[600],
@@ -118,7 +130,7 @@ export const OrderProducts: FC<OrderProductsProps> = ({ products }) => {
                 >
                   Price:{' '}
                   <Typography
-                    component="span"
+                    component="p"
                     variant="caption"
                     sx={{
                       fontWeight: 500,
@@ -148,6 +160,7 @@ export const OrderProducts: FC<OrderProductsProps> = ({ products }) => {
               >
                 <Typography
                   variant="subtitle2"
+                  component={'p'}
                   sx={{
                     color: theme.palette.grey[600],
                     textAlign: 'right',
@@ -155,7 +168,7 @@ export const OrderProducts: FC<OrderProductsProps> = ({ products }) => {
                 >
                   {!isBetweenMdAndLg ? 'Quantity: ' : ''}
                   <Typography
-                    component="span"
+                    component="p"
                     variant="subtitle1"
                     sx={{ color: theme.palette.secondary.main }}
                   >

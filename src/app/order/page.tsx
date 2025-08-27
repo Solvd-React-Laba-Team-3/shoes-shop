@@ -37,23 +37,26 @@ export default function Order() {
         }}
       >
         <Box>
-          <Typography variant="h1">THANK YOU</Typography>
+          <Typography variant="h1" component={'h1'}>
+            THANK YOU
+          </Typography>
           <Box
             display="flex"
             alignItems="baseline"
             gap={1}
             sx={{ margin: '45px 0 77px 0' }}
           >
-            <Typography variant="h2" component="span" sx={{ fontWeight: 300 }}>
+            <Typography variant="h2" component="p" sx={{ fontWeight: 300 }}>
               for your order
             </Typography>
-            <Typography component="span" variant="h2" color="primary.main">
+            <Typography component="p" variant="h2" color="primary.main">
               #{order}
             </Typography>
           </Box>
 
           <Typography
             variant="body1"
+            component={'p'}
             color="text.secondary"
             sx={{ marginBottom: '95px', maxWidth: '767px' }}
           >

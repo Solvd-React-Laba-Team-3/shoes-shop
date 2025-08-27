@@ -46,7 +46,7 @@ export default function RecentlyViewed() {
     <ProductListFallback />
   ) : items?.length ? (
     <Box>
-      <Typography variant="h2" paddingBottom={'64px'}>
+      <Typography variant="h2" component={'h1'} paddingBottom={'64px'}>
         Recently Viewed
       </Typography>
       <ProductList products={sortedProducts} variant="catalog" />

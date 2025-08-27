@@ -79,7 +79,9 @@ export const AIHelper = () => {
           }}
         >
           <Avatar src="/ai-helper-avatar.png" />
-          <Typography variant="h6">Shoozie Helper</Typography>
+          <Typography variant="h6" component={'p'}>
+            Shoozie Helper
+          </Typography>
         </Box>
         <IconButton onClick={toggleCollapsed}>
           {isCollapsed ? <ExpandMoreIcon /> : <ExpandLessIcon />}

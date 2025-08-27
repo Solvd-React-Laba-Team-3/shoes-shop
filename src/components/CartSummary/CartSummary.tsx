@@ -175,7 +175,10 @@ export const CartSummary: FC<CartSummaryProps> = ({
         expanded={promoOpen}
         onChange={(_, isExpanded) => setPromoOpen(isExpanded)}
         label={
-          <Typography sx={{ fontSize: '20px', fontWeight: 400 }}>
+          <Typography
+            component={'span'}
+            sx={{ fontSize: '20px', fontWeight: 400 }}
+          >
             Do you have a promo code?
           </Typography>
         }
@@ -246,10 +249,10 @@ export const CartSummary: FC<CartSummaryProps> = ({
           margin: '18px 0 20px',
         }}
       >
-        <Typography variant="h3" sx={{ fontWeight: 400 }}>
+        <Typography variant="h3" component={'span'} sx={{ fontWeight: 400 }}>
           Subtotal
         </Typography>
-        <Typography variant="h3" sx={{ fontWeight: 400 }}>
+        <Typography variant="h3" component={'span'} sx={{ fontWeight: 400 }}>
           ${subtotal.toFixed(2)}
         </Typography>
       </Box>
@@ -264,10 +267,10 @@ export const CartSummary: FC<CartSummaryProps> = ({
             color: 'green',
           }}
         >
-          <Typography variant="h3" sx={{ fontWeight: 400 }}>
+          <Typography variant="h3" component={'span'} sx={{ fontWeight: 400 }}>
             Discount
           </Typography>
-          <Typography variant="h3" sx={{ fontWeight: 400 }}>
+          <Typography variant="h3" component={'span'} sx={{ fontWeight: 400 }}>
             -${discountAmount.toFixed(2)}
           </Typography>
         </Box>
@@ -280,10 +283,10 @@ export const CartSummary: FC<CartSummaryProps> = ({
           margin: '20px 0',
         }}
       >
-        <Typography variant="h3" sx={{ fontWeight: 400 }}>
+        <Typography variant="h3" component={'span'} sx={{ fontWeight: 400 }}>
           Shipping
         </Typography>
-        <Typography variant="h3" sx={{ fontWeight: 400 }}>
+        <Typography variant="h3" component={'span'} sx={{ fontWeight: 400 }}>
           {checkout ? `$${shippingAmount.toFixed(2)}` : '-'}
         </Typography>
       </Box>
@@ -295,10 +298,10 @@ export const CartSummary: FC<CartSummaryProps> = ({
           margin: '20px 0',
         }}
       >
-        <Typography variant="h3" sx={{ fontWeight: 400 }}>
+        <Typography variant="h3" component={'span'} sx={{ fontWeight: 400 }}>
           Tax ({taxPercent}%)
         </Typography>
-        <Typography variant="h3" sx={{ fontWeight: 400 }}>
+        <Typography variant="h3" component={'span'} sx={{ fontWeight: 400 }}>
           ${taxAmount.toFixed(2)}
         </Typography>
       </Box>
@@ -310,10 +313,10 @@ export const CartSummary: FC<CartSummaryProps> = ({
           margin: '20px 0',
         }}
       >
-        <Typography variant="h3" sx={{ fontWeight: 600 }}>
+        <Typography variant="h3" component={'span'} sx={{ fontWeight: 600 }}>
           Total
         </Typography>
-        <Typography variant="h3" sx={{ fontWeight: 600 }}>
+        <Typography variant="h3" component={'span'} sx={{ fontWeight: 600 }}>
           ${total}
         </Typography>
       </Box>

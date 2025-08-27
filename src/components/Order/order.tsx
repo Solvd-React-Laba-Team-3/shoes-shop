@@ -48,6 +48,7 @@ export const Order: FC<OrderProps> = ({ order }) => {
       <Box sx={{ mb: 1 }}>
         <Typography
           variant="caption"
+          component={'p'}
           sx={{
             color: theme.palette.grey[600],
             display: { sm: 'none' },
@@ -169,6 +170,7 @@ export const Order: FC<OrderProps> = ({ order }) => {
                   >
                     <Typography
                       variant="subtitle2"
+                      component={'p'}
                       sx={{ color: theme.palette.primary.main }}
                     >
                       {isDownloading

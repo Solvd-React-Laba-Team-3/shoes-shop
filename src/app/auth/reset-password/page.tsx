@@ -63,7 +63,11 @@ export default function ResetPassword() {
         description="Please create new password here"
         footer={
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-            <Typography variant="subtitle2" color="textSecondary">
+            <Typography
+              variant="subtitle2"
+              component={'p'}
+              color="textSecondary"
+            >
               Back to
             </Typography>
             <Link href="/auth/sign-in" active>
@@ -109,7 +113,7 @@ export default function ResetPassword() {
             />
 
             {isSuccess && (
-              <Typography variant="subtitle2" color="success">
+              <Typography variant="subtitle2" component={'p'} color="success">
                 Password reset successful. Redirecting to login...
               </Typography>
             )}

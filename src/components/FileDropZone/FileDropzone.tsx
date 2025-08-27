@@ -55,6 +55,7 @@ export const FileDropzone: FC<FileDropzoneProps> = ({ onFilesDropped }) => {
           <Typography
             sx={{ lineHeight: '100%' }}
             variant="caption"
+            component={'p'}
             color="text.secondary"
             textAlign="center"
           >

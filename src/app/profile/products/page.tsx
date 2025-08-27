@@ -61,10 +61,15 @@ export default function MyProducts() {
             }}
           />
           <Box paddingTop="10px">
-            <Typography variant="h6" whiteSpace="pre-wrap" lineHeight="1.2">
+            <Typography
+              variant="h6"
+              component={'p'}
+              whiteSpace="pre-wrap"
+              lineHeight="1.2"
+            >
               {session?.user?.username}
             </Typography>
-            <Typography variant="caption">
+            <Typography variant="caption" component={'p'}>
               {`Joined in ${new Date(
                 session?.user?.createdAt || ''
               ).toLocaleDateString()}`}
@@ -74,7 +79,9 @@ export default function MyProducts() {
       </Box>
       <Box sx={{ display: 'flex', flexDirection: 'column', gap: '36px' }}>
         <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-          <Typography variant="h2">My Products</Typography>
+          <Typography variant="h2" component={'h1'}>
+            My Products
+          </Typography>
           <Button
             size="small"
             onClick={() => router.push('/profile/products/create')}

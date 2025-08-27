@@ -28,7 +28,9 @@ export const FormErrorMessage: FC<FormErrorMessageProps> = ({ message }) => {
   return (
     <StyledFormLabel message={message} error data-testid="form-error-message">
       <WarningAmberIcon fontSize="small" />
-      <Typography variant="caption">{message}</Typography>
+      <Typography variant="caption" component={'p'}>
+        {message}
+      </Typography>
     </StyledFormLabel>
   );
 };
