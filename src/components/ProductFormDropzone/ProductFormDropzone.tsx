@@ -39,6 +39,7 @@ export const ProductFormDropzone: FC<ProductFormDropzoneProps> = ({
           <Box key={index} sx={{ position: 'relative' }}>
             <Image src={image.url} alt="Product" width={320} height={380} />
             <Fab
+              aria-label="Delete image"
               size="small"
               color="error"
               sx={{
