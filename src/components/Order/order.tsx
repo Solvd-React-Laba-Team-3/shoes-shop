@@ -191,7 +191,7 @@ export const Order: FC<OrderProps> = ({ order }) => {
               {order.discountAmount && (
                 <ItemLabel
                   label="Discount: "
-                  title={`${order.discountAmount}$`}
+                  title={`${order.discountAmount.toFixed(2)}$`}
                   labelColor={theme.palette.grey[600]}
                   valueColor="green"
                 />

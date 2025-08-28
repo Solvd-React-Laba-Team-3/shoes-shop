@@ -86,7 +86,7 @@ export const Header = () => {
             <IconButton
               onClick={() => router.push('/cart')}
               color="secondary"
-              sx={{ paddingTop: '10px' }}
+              sx={{ padding: '0px' }}
             >
               <Badge
                 badgeContent={totalItems}
