@@ -15,7 +15,8 @@ import { MainSearchBar } from '@/components/MainSearchBar';
 import logo from '../../../../public/logo.png';
 import { useState } from 'react';
 import { Sidebar } from '../Sidebar';
-import { useMediaQuery } from '@mui/material';
+import { Badge, useMediaQuery } from '@mui/material';
+import { useCart } from '@/lib/hooks';
 
 const StyledContainer = styled(Box)(({ theme }) => ({
   display: 'flex',
@@ -38,6 +39,8 @@ export const Header = () => {
 
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+
+  const { totalItems } = useCart();
 
   return (
     <>
@@ -83,9 +86,21 @@ export const Header = () => {
             <IconButton
               onClick={() => router.push('/cart')}
               color="secondary"
-              sx={{ padding: 0 }}
+              sx={{ paddingTop: '10px' }}
             >
-              <LocalMallOutlinedIcon fontSize="medium" />
+              <Badge
+                badgeContent={totalItems}
+                color="error"
+                overlap="circular"
+                sx={{
+                  '& .MuiBadge-badge': {
+                    transform: 'translate(-40%, 55%)',
+                    color: 'white',
+                  },
+                }}
+              >
+                <LocalMallOutlinedIcon fontSize="medium" />
+              </Badge>
             </IconButton>
             {session && (
               <Link

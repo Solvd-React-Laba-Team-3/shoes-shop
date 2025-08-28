@@ -110,15 +110,23 @@ export default function Checkout() {
     PaymentMethod[]
   >(['card']);
 
+  const { products: productChunks, omitted } = useMemo(() => {
+    return splitProducts(products, 500, 40);
+  }, [products]);
+
   const productsMetadata = useMemo(() => {
-    return splitProducts(products).reduce(
+    const metadata: Record<string, string> = productChunks.reduce(
       (acc, chunk, i) => {
         acc[`products${i + 1}`] = chunk;
         return acc;
       },
       {} as Record<string, string>
     );
-  }, [products]);
+
+    metadata['omitted'] = omitted ? 'true' : 'false';
+
+    return metadata;
+  }, [productChunks, omitted]);
 
   const finalizeOrder = useCallback(
     (orderNumber: number) => {

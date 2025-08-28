@@ -17,7 +17,7 @@ import { Order as OrderType } from '@/types/Order';
 import { useDownloadReceipt } from '@/api/receipts/useDownloadReceipt';
 import { formatDate } from '@/lib/utils/';
 import { FC } from 'react';
-import { Tooltip, Accordion } from '../ui';
+import { Tooltip, Accordion, FormErrorMessage } from '../ui';
 import { ItemLabel } from '../ItemLabel';
 import { OrderProducts } from '../OrderProducts';
 import { OrderPreview } from '../OrderPreview';
@@ -42,9 +42,12 @@ export const Order: FC<OrderProps> = ({ order }) => {
       orderNumber: String(order.orderNumber),
     });
   };
-
   return (
     <Box key={`${order.orderNumber}`}>
+      {order.omitted && (
+        <FormErrorMessage message="Some products could not be added to this order." />
+      )}
+
       <Box sx={{ mb: 1 }}>
         <Typography
           variant="caption"
