@@ -2,7 +2,7 @@
 
 import { Product } from '@/types/Product';
 import { Box, Grid, Typography } from '@mui/material';
-import { FC } from 'react';
+import { FC, useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { ProductActionMenu } from '../ProductActionMenu';
@@ -33,14 +33,21 @@ export const ProductCard: FC<ProductCardProps> = ({
 }) => {
   const { removeItem } = useWishlist();
 
-  const productImage = product.images?.[0]?.url || placeholderImage;
+  const [imageIndex, setImageIndex] = useState(0);
+
+  const productImage = product.images?.[imageIndex]?.url || placeholderImage;
   const productImageAlt =
-    product.images && product.images[0].alternativeText
-      ? product.images[0].alternativeText
+    product.images && product.images[imageIndex].alternativeText
+      ? product.images[imageIndex].alternativeText
       : `product image: ${product.name}`;
 
   return (
-    <StyledCard>
+    <StyledCard
+      onMouseEnter={() =>
+        setImageIndex((product.images?.length ?? 0) > 1 ? 1 : 0)
+      }
+      onMouseLeave={() => setImageIndex(0)}
+    >
       <ActionButtonContainer>
         {variant === 'actionMenu' && <ProductActionMenu product={product} />}
         {variant === 'wishlist' && (
@@ -50,14 +57,27 @@ export const ProductCard: FC<ProductCardProps> = ({
       <Link href={`/products/${product.id}`} style={{ textDecoration: 'none' }}>
         <StyledCardActionArea disableRipple>
           <Box
-            sx={{ position: 'relative', width: '100%', aspectRatio: 320 / 380 }}
+            sx={{
+              position: 'relative',
+              width: '100%',
+              aspectRatio: 320 / 380,
+              animation: ' img fadeIn 0.5s',
+            }}
           >
             <Image
               sizes="400px"
               fill
+              key={product.images?.[imageIndex]?.url}
               src={productImage}
               alt={productImageAlt}
-              style={{ objectFit: 'cover' }}
+              style={{
+                objectFit: 'cover',
+                opacity: 0,
+                transition: 'opacity 0.5s ease-in-out',
+              }}
+              onLoad={(e) => {
+                e.currentTarget.style.opacity = '1';
+              }}
             />
           </Box>
 
