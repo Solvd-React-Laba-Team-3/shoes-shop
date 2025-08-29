@@ -30,7 +30,6 @@ import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 import { ProductFormDropzone } from '../ProductFormDropzone';
-import { PRODUCT_IMAGES_LIMIT } from '@/constants/productImagesLimit';
 import { TempImage } from '@/types/TempImage';
 import Image from 'next/image';
 import suggestionCollapsedIcon from '../../../public/suggestion-collapsed-icon.png';
@@ -78,7 +77,6 @@ export const ProductForm: FC<ProductFormProps> = ({
     handleSubmit,
     formState: { isSubmitting },
     formState: { errors },
-    setError,
     watch,
     setValue,
   } = useForm<ProductFormData>({
@@ -118,14 +116,6 @@ export const ProductForm: FC<ProductFormProps> = ({
   };
 
   const handleFormSubmit = (data: ProductFormData) => {
-    if (images.length > PRODUCT_IMAGES_LIMIT) {
-      setError('root', {
-        message: `You can only upload up to ${PRODUCT_IMAGES_LIMIT} images`,
-        type: 'manual',
-      });
-
-      return;
-    }
     onSubmit(data);
   };
 
