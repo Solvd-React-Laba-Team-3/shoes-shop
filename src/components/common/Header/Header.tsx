@@ -10,7 +10,7 @@ import Image from 'next/image';
 import { styled, useTheme } from '@mui/material/styles';
 import { Button, IconButton, Link } from '@/components/ui';
 import { HEADER_HEIGHT } from '@/constants/headerHeight';
-import { useRouter } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { MainSearchBar } from '@/components/MainSearchBar';
 import logo from '../../../../public/logo.png';
 import { useState } from 'react';
@@ -33,6 +33,7 @@ const StyledContainer = styled(Box)(({ theme }) => ({
 export const Header = () => {
   const router = useRouter();
   const { data: session } = useSession();
+  const path = usePathname();
 
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
@@ -67,7 +68,7 @@ export const Header = () => {
               variant="outlined"
               sx={{ display: { xs: 'none', md: 'block' } }}
               size="small"
-              onClick={() => router.push('/auth/sign-in')}
+              onClick={() => router.push('/auth/sign-in?next=' + path)}
             >
               Sign in
             </Button>
