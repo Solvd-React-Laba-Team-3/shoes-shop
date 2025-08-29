@@ -168,10 +168,7 @@ export const CheckoutForm: FC<CheckoutProps> = ({
                       </Typography>
                     );
                   return (
-                    <Typography
-                      component={'span'}
-                      sx={{ fontSize: '16px', fontWeight: 400 }}
-                    >
+                    <Typography component={'span'} variant="body2">
                       {value as string}
                     </Typography>
                   );
