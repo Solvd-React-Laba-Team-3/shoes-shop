@@ -1,6 +1,11 @@
 'use client';
 
-import { useDebounce, useFilters, useSearchParams } from '@/lib/hooks';
+import {
+  useDebounce,
+  useFilters,
+  useHideOnScroll,
+  useSearchParams,
+} from '@/lib/hooks';
 import {
   Box,
   Divider,
@@ -32,7 +37,6 @@ import {
   StyledPricesContainer,
   StyledCloseWrapper,
 } from './Filters.styles';
-import { useHideOnScroll } from '@/lib/hooks/useHideOnScroll/useHideOnScroll';
 import { HEADER_HEIGHT } from '@/constants/headerHeight';
 
 export const Filters: FC<DrawerProps> = ({ ...props }) => {

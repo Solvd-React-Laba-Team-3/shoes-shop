@@ -15,8 +15,8 @@ import { MainSearchBar } from '@/components/MainSearchBar';
 import logo from '../../../../public/logo.png';
 import { useState } from 'react';
 import { Sidebar } from '../Sidebar';
-import { useHideOnScroll } from '@/lib/hooks/useHideOnScroll/useHideOnScroll';
 import { useMediaQuery } from '@mui/material';
+import { useHideOnScroll } from '@/lib/hooks';
 
 const StyledContainer = styled(Box)(({ theme }) => ({
   display: 'flex',
