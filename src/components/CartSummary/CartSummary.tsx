@@ -286,13 +286,15 @@ export const CartSummary: FC<CartSummaryProps> = ({
           {checkout ? `$${taxAmount.toFixed(2)}` : '-'}
         </Typography>
       </Box>
-      {!checkout && (
+      {!checkout ? (
         <>
-          <Divider />
+          <Divider sx={{ marginTop: '32px' }} />
           <Typography variant="caption">
             Shipping and tax will be calculated at checkout.
           </Typography>
         </>
+      ) : (
+        <Divider sx={{ marginTop: '56px' }} />
       )}
       <Box
         sx={{
