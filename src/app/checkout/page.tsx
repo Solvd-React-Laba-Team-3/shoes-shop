@@ -56,7 +56,7 @@ export default function Checkout() {
   useEffect(() => {
     if (status === 'loading') return;
     if (!session) {
-      router.push('/auth/sign-in?next=checkout');
+      router.push('/auth/sign-in?next=/checkout');
     }
   }, [session, status, router]);
 
