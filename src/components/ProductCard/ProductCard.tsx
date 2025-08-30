@@ -67,16 +67,10 @@ export const ProductCard: FC<ProductCardProps> = ({
             <Image
               sizes="400px"
               fill
-              key={product.images?.[imageIndex]?.url}
               src={productImage}
               alt={productImageAlt}
               style={{
                 objectFit: 'cover',
-                opacity: 0,
-                transition: 'opacity 0.5s ease-in-out',
-              }}
-              onLoad={(e) => {
-                e.currentTarget.style.opacity = '1';
               }}
             />
           </Box>
