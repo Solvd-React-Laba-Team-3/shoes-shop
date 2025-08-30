@@ -90,7 +90,7 @@ export const Header = () => {
             </IconButton>
             {session && (
               <Link
-                href={session ? '/profile/products' : '/auth/sign-in'}
+                href="/profile/products"
                 sx={{ display: { xs: 'none', md: 'flex' } }}
               >
                 <Avatar
@@ -103,6 +103,7 @@ export const Header = () => {
               <IconButton
                 color="secondary"
                 onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+                data-testid="menu-button"
               >
                 <MenuIcon />
               </IconButton>
