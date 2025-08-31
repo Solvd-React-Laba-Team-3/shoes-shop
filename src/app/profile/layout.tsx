@@ -12,10 +12,9 @@ export default async function ProfileLayout({
   children: React.ReactNode;
 }) {
   const session = await getServerSession(authOptions);
-  const headersList = await headers();
-  headersList.forEach(console.log);
+  const { get } = await headers();
 
-  const pathname = headersList.get('x-pathname') || '';
+  const pathname = get('x-pathname') || '';
 
   if (!session) redirect('/auth/sign-in?next=' + pathname);
 

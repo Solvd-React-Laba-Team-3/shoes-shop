@@ -124,7 +124,6 @@ describe('Header', () => {
       const menuButton = screen.getByTestId('menu-button');
       fireEvent.click(menuButton);
 
-      // Since the sidebar state is internal, we can only verify the click event
       expect(menuButton).toBeInTheDocument();
     });
   });
