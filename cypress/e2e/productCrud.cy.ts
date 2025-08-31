@@ -1,19 +1,15 @@
 const productName = 'End to end test';
-const credentials = {
-  email: 'test@email.com',
-  password: 'password',
-};
 
 describe('Main flow', () => {
   it('It should allow user to buy shoes', () => {
     cy.viewport(1920, 1080);
     cy.visit('/');
-    cy.contains('Sign in').click();
-    cy.get('input[name="email"]').type(credentials.email);
-    cy.get('input[name="password"]').type(credentials.password);
-    cy.contains('Sign in').click();
-    cy.intercept('/api/auth/callback/credentials');
-
+    cy.fixture('credentials').then((credentials) => {
+      cy.contains('Sign in').click();
+      cy.get('input[name="email"]').type(credentials.email);
+      cy.get('input[name="password"]').type(credentials.password);
+      cy.contains('Sign in').click();
+    });
     cy.contains('Add Product').click();
     cy.get('input[name="name"]').type(productName);
     cy.get('input[name="price"]').type('200');
@@ -31,10 +27,10 @@ describe('Main flow', () => {
 
     cy.contains('Drop your image here').selectFile(
       [
-        'cypress/fixtures/images/nike1.jpg',
-        'cypress/fixtures/images/nike2.jpg',
-        'cypress/fixtures/images/nike3.avif',
-        'cypress/fixtures/images/nike4.avif',
+        'cypress/fixtures/images/nike1.png',
+        'cypress/fixtures/images/nike2.png',
+        'cypress/fixtures/images/nike3.png',
+        'cypress/fixtures/images/nike4.png',
       ],
       { action: 'drag-drop' }
     );
@@ -63,7 +59,7 @@ describe('Main flow', () => {
     );
     cy.wait('@invalidateCache');
 
-    cy.get('[data-cy="actionMenu"]').click();
+    cy.get('[data-cy="actionMenu"]').first().click();
     cy.contains('Delete').click();
     cy.get('[data-cy="deleteItem"]').click();
   });

@@ -13,7 +13,7 @@ import { getShippingTaxOptions } from '@/api/shippingAndTax/getShippingTaxOption
 import { FormProvider, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { checkoutSchema, CheckoutSchema } from './checkout.schema';
-import { splitProducts } from '@/lib/utils';
+import { splitProducts, isCypressTest } from '@/lib/utils';
 import { useCreatePayment } from '@/api/payment/useCreatePayment';
 import { CardElement, useElements, useStripe } from '@stripe/react-stripe-js';
 import {
@@ -142,7 +142,8 @@ export default function Checkout() {
 
   const handleOrderComplete = handleSubmit(async (data: CheckoutSchema) => {
     const orderNumber = Date.now();
-    if (process.env.NEXT_PUBLIC_CYPRESS_E2E === 'true') {
+
+    if (isCypressTest()) {
       finalizeOrder(orderNumber);
       return;
     }

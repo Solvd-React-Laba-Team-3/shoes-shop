@@ -69,7 +69,12 @@ export const ProductCard: FC<ProductCardProps> = ({
               color="text.primary"
             >
               <Grid size={{ xs: 9 }} sx={{ minWidth: 0 }}>
-                <Typography variant="h5" component={'p'} gutterBottom={false}>
+                <Typography
+                  variant="h5"
+                  component={'p'}
+                  gutterBottom={false}
+                  data-cy="product-name"
+                >
                   {product.name}
                 </Typography>
                 <Typography
