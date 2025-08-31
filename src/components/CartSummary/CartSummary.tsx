@@ -327,7 +327,7 @@ export const CartSummary: FC<CartSummaryProps> = ({
         title="Login required"
         description="You need to sign in to complete your purchase. Do you want to go to the login page now?"
         onClose={() => setShowLoginConfirm(false)}
-        onConfirm={() => router.push('/auth/sign-in?next=checkout')}
+        onConfirm={() => router.push('/auth/sign-in?next=/checkout')}
         cancelText="Stay here"
         confirmText="Go to login"
       />
