@@ -85,7 +85,7 @@ export async function GET(req: Request) {
             shippingAmount: shippingAmount ? Number(shippingAmount) : 0,
             taxPercent: taxPercent ? Number(taxPercent) : 0,
             products,
-            omitted: omitted && omitted === 'true' ? true : false,
+            isOmitted: omitted && omitted === 'true',
             receipt_url: receiptUrl,
             paymentMethod,
             decline_reason: declineReason,
