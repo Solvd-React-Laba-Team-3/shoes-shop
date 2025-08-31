@@ -35,6 +35,7 @@ export const CartFallback = () => {
       >
         <Typography
           variant="h2"
+          component={'h1'}
           sx={{
             mb: { xs: 2, sm: 3, md: 4 },
           }}
@@ -135,6 +136,7 @@ export const CartFallback = () => {
       >
         <Typography
           variant="h2"
+          component={'h3'}
           sx={{
             mb: { xs: 2, sm: 3, md: 4 },
           }}

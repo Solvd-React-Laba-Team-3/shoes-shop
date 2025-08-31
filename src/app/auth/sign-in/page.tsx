@@ -77,7 +77,11 @@ export default function SignIn() {
         description="Welcome back! Please enter your details to log into your account."
         footer={
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-            <Typography variant="subtitle2" color="textSecondary">
+            <Typography
+              variant="subtitle2"
+              component={'p'}
+              color="textSecondary"
+            >
               {"Don't have an account?"}
             </Typography>
             <Link href="/auth/sign-up" active>

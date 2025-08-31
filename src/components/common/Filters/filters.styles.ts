@@ -1,4 +1,3 @@
-import { HEADER_HEIGHT } from '@/constants/headerHeight';
 import { Box, Drawer, FormLabel } from '@mui/material';
 import { styled } from '@mui/material/styles';
 
@@ -8,27 +7,33 @@ export const StyledCloseWrapper = styled(Box)(() => ({
   paddingBottom: '8px',
   paddingTop: '12px',
   backgroundColor: 'background.paper',
+  top: 0,
   zIndex: 10,
   flexShrink: 0,
 }));
 
 export const StyledDrawer = styled(Drawer)(({ theme, open }) => ({
+  position: 'sticky',
+  height: '90vh',
+  zIndex: 1000,
   width: open ? '320px' : '0px',
-  transition: 'width 0.2s ease-in-out',
-  zIndex: 800,
-  position: 'relative',
+
+  transition:
+    'width 0.2s ease-in-out, transform 0.2s ease-in-out, top 0.2s ease-in-out',
 
   '& .MuiDrawer-paper': {
     border: 'none',
-    paddingBottom: '50px',
-    top: HEADER_HEIGHT,
     position: 'sticky',
+    height: '100%',
+    width: '100%',
+    paddingBottom: '50px',
 
     [theme.breakpoints.down('md')]: {
-      top: 0,
-      height: '100vh',
-      position: 'fixed',
       right: 0,
+      top: 0,
+      height: '100%',
+      width: '320px',
+      position: 'fixed',
     },
   },
 }));

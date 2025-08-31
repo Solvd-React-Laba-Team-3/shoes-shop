@@ -98,6 +98,7 @@ export const CartItem: FC<CartProduct> = ({
               <Stack direction="row">
                 <Typography
                   variant="h3"
+                  component={'p'}
                   sx={{
                     whiteSpace: { xs: 'nowrap', md: 'normal', lg: 'nowrap' },
                   }}
@@ -106,9 +107,13 @@ export const CartItem: FC<CartProduct> = ({
                 </Typography>
               </Stack>
 
-              <Typography variant="h6">{gender}&apos;s Shoes</Typography>
-              <Typography variant="subtitle1">Size: {size}</Typography>
-              <Typography variant="h4" color="primary.main">
+              <Typography variant="h6" component={'p'}>
+                {gender}&apos;s Shoes
+              </Typography>
+              <Typography variant="subtitle1" component={'p'}>
+                Size: {size}
+              </Typography>
+              <Typography variant="h4" component={'small'} color="primary.main">
                 In Stock
               </Typography>
             </Stack>
@@ -124,7 +129,9 @@ export const CartItem: FC<CartProduct> = ({
               minHeight: '100%',
             }}
           >
-            <Typography variant="h3">${updatedPrice}</Typography>
+            <Typography variant="h3" component={'p'}>
+              ${updatedPrice}
+            </Typography>
             <Box display="flex" alignItems="center" gap={2}>
               <ButtonGroup
                 size="small"
@@ -142,7 +149,9 @@ export const CartItem: FC<CartProduct> = ({
                 >
                   <DecreaseIcon fontSize="small" />
                 </IconButton>
-                <Typography variant="body1">{quantity}</Typography>
+                <Typography variant="body1" component={'p'}>
+                  {quantity}
+                </Typography>
                 <IconButton
                   size="small"
                   data-cy="increaseButton"
@@ -159,6 +168,7 @@ export const CartItem: FC<CartProduct> = ({
               </ButtonGroup>
               <Typography
                 variant="body2"
+                component={'span'}
                 sx={{
                   color: 'text.secondary',
                   display: { xs: 'none', sm: 'block' },
@@ -176,7 +186,9 @@ export const CartItem: FC<CartProduct> = ({
                   />
                 }
               >
-                <Typography variant="subtitle1">Delete</Typography>
+                <Typography variant="subtitle1" component={'span'}>
+                  Delete
+                </Typography>
               </StyledDeleteButton>
             </Box>
           </Stack>

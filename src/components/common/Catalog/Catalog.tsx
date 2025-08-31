@@ -7,11 +7,16 @@ import { Suspense } from 'react';
 import { ProductListFallback } from '@/components/common/ProductListFallback';
 import { FiltersFallback } from '@/components/common/FiltersFallback';
 import { useState } from 'react';
+import { useMediaQuery, useTheme } from '@mui/material';
 import { useSearchParams } from '@/lib/hooks';
 
 export const Catalog = () => {
-  const searhParams = useSearchParams();
-  const hasFilters = Boolean(searhParams.get('filters'));
+  const searchParams = useSearchParams();
+  const hasFilters = Boolean(searchParams.get('filters'));
+
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+
   const [isFiltersOpen, setIsFiltersOpen] = useState(hasFilters);
 
   const handleFiltersToggle = () => {
@@ -20,14 +25,9 @@ export const Catalog = () => {
 
   return (
     <Box sx={{ display: 'flex' }}>
-      {isFiltersOpen && (
-        <Suspense fallback={<FiltersFallback />}>
-          <Filters
-            open={isFiltersOpen}
-            onClose={() => setIsFiltersOpen(false)}
-          />
-        </Suspense>
-      )}
+      <Suspense fallback={!isMobile && isFiltersOpen && <FiltersFallback />}>
+        <Filters open={isFiltersOpen} onClose={() => setIsFiltersOpen(false)} />
+      </Suspense>
       <Suspense fallback={<ProductListFallback />}>
         <ProductsContainer
           isFiltersOpen={isFiltersOpen}

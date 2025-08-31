@@ -2,7 +2,7 @@
 
 import { Product } from '@/types/Product';
 import { Box, Grid, Typography } from '@mui/material';
-import { FC } from 'react';
+import { FC, useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { ProductActionMenu } from '../ProductActionMenu';
@@ -33,31 +33,48 @@ export const ProductCard: FC<ProductCardProps> = ({
 }) => {
   const { removeItem } = useWishlist();
 
-  const productImage = product.images?.[0]?.url || placeholderImage;
+  const [imageIndex, setImageIndex] = useState(0);
+
+  const productImage = product.images?.[imageIndex]?.url || placeholderImage;
   const productImageAlt =
-    product.images && product.images[0].alternativeText
-      ? product.images[0].alternativeText
+    product.images && product.images[imageIndex].alternativeText
+      ? product.images[imageIndex].alternativeText
       : `product image: ${product.name}`;
 
   return (
-    <StyledCard>
+    <StyledCard
+      onMouseEnter={() =>
+        setImageIndex((product.images?.length ?? 0) > 1 ? 1 : 0)
+      }
+      onMouseLeave={() => setImageIndex(0)}
+    >
       <ActionButtonContainer>
         {variant === 'actionMenu' && <ProductActionMenu product={product} />}
         {variant === 'wishlist' && (
           <WishlistButton onRemove={() => removeItem(product.id)} />
         )}
       </ActionButtonContainer>
-      <Link href={`/products/${product.id}`} style={{ textDecoration: 'none' }}>
+      <Link
+        href={`/products/${product.id}`}
+        style={{ textDecoration: 'none', display: 'block', height: '100%' }}
+      >
         <StyledCardActionArea disableRipple>
           <Box
-            sx={{ position: 'relative', width: '100%', aspectRatio: 320 / 380 }}
+            sx={{
+              position: 'relative',
+              width: '100%',
+              aspectRatio: 320 / 380,
+              animation: ' img fadeIn 0.5s',
+            }}
           >
             <Image
               sizes="400px"
               fill
               src={productImage}
               alt={productImageAlt}
-              style={{ objectFit: 'cover' }}
+              style={{
+                objectFit: 'cover',
+              }}
             />
           </Box>
 
@@ -67,8 +84,21 @@ export const ProductCard: FC<ProductCardProps> = ({
               justifyContent="space-between"
               alignItems="flex-start"
               color="text.primary"
+              height={'100%'}
+              flexDirection={{ xs: 'column', md: 'row' }}
             >
-              <Grid size={{ xs: 9 }} sx={{ minWidth: 0 }}>
+              <Grid
+                size={{ xs: 9 }}
+                display={'flex'}
+                flexDirection={'column'}
+                sx={{
+                  minWidth: 0,
+                  flex: 1,
+                  marginRight: { md: '10px' },
+                  width: { xs: '100%', md: 'auto' },
+                  height: '100%',
+                }}
+              >
                 <Typography
                   variant="h5"
                   component={'p'}
@@ -79,14 +109,15 @@ export const ProductCard: FC<ProductCardProps> = ({
                 </Typography>
                 <Typography
                   variant="subtitle1"
-                  component={'span'}
+                  component={'p'}
                   color="text.secondary"
+                  marginTop={{ xs: 'auto', md: '0' }}
                 >
                   {getGenderText(product.gender?.name)}
                 </Typography>
               </Grid>
               <Grid>
-                <Typography variant="h5" component={'span'}>
+                <Typography variant="h5" component={'p'}>
                   ${product.price}
                 </Typography>
               </Grid>
