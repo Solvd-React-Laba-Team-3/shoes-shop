@@ -289,7 +289,16 @@ export const CartSummary: FC<CartSummaryProps> = ({
           ${taxAmount.toFixed(2)}
         </Typography>
       </Box>
-      <Divider sx={{ marginTop: '56px' }} />
+      {!checkout ? (
+        <>
+          <Divider sx={{ marginTop: '32px' }} />
+          <Typography variant="caption">
+            Shipping and tax will be calculated at checkout.
+          </Typography>
+        </>
+      ) : (
+        <Divider sx={{ marginTop: '56px' }} />
+      )}
       <Box
         sx={{
           display: 'flex',
