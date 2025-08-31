@@ -141,7 +141,9 @@ export default function Settings() {
 
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', gap: '35px' }}>
-      <Typography variant="h2">My Profile</Typography>
+      <Typography variant="h2" component={'h1'}>
+        My Profile
+      </Typography>
       <Box sx={{ display: 'flex', alignItems: 'center', gap: '60px' }}>
         <Avatar
           src={avatarUrl || ''}
@@ -193,7 +195,7 @@ export default function Settings() {
           {uploadingFileError.message}
         </FormLabel>
       )}
-      <Typography variant="caption">
+      <Typography variant="caption" component={'p'}>
         Welcome back! Please enter your details to log into your account.
       </Typography>
       <Box

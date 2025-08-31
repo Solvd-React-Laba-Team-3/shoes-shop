@@ -59,8 +59,9 @@ export const Sidebar: FC<DrawerProps> = ({ open = false, ...props }) => {
       anchor={isMobile ? 'right' : 'left'}
       open={isMobile ? open : true}
       sx={{
+        maxWidth: '320px',
+        zIndex: isMobile ? 1000 : 800,
         width: { xs: '320px', md: '260px', lg: '320px' },
-        zIndex: 100,
 
         '& .MuiDrawer-paper': {
           border: 'none',
@@ -115,11 +116,16 @@ export const Sidebar: FC<DrawerProps> = ({ open = false, ...props }) => {
               sx={{ width: '64px', height: '64px' }}
             />
             <Box sx={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-              <Typography variant="subtitle2" color="textDisabled">
+              <Typography
+                variant="subtitle2"
+                component={'span'}
+                color="textDisabled"
+              >
                 Welcome
               </Typography>
               <Typography
                 variant="subtitle2"
+                component={'span'}
                 sx={{
                   display: 'flex',
                   flexWrap: 'wrap',
@@ -175,6 +181,7 @@ export const Sidebar: FC<DrawerProps> = ({ open = false, ...props }) => {
             >
               <Typography
                 variant="subtitle2"
+                component={'span'}
                 sx={{
                   display: 'flex',
                   alignItems: 'center',

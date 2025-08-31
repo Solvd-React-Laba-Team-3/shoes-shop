@@ -37,7 +37,11 @@ export default function Orders() {
   if (isError)
     return (
       <Box sx={{ mx: 'auto', p: 3 }}>
-        <Typography variant="h5" sx={{ mb: 3, fontWeight: 600 }}>
+        <Typography
+          variant="h5"
+          component={'h1'}
+          sx={{ mb: 3, fontWeight: 600 }}
+        >
           Order History
         </Typography>
         <Alert severity="error">
@@ -50,7 +54,7 @@ export default function Orders() {
     <OrdersFallback />
   ) : (
     <Box sx={{ pb: 10 }}>
-      <Typography variant="h5" sx={{ mb: 3 }}>
+      <Typography variant="h5" component={'h1'} sx={{ mb: 3 }}>
         Order History
       </Typography>
       <Box
@@ -85,7 +89,7 @@ export default function Orders() {
 
         {!hasNextPage && orders.length > 0 && (
           <Box sx={{ display: 'flex', justifyContent: 'center', py: 2 }}>
-            <Typography variant="body2" color="text.secondary">
+            <Typography variant="body2" component={'p'} color="text.secondary">
               No more orders to load..
             </Typography>
           </Box>

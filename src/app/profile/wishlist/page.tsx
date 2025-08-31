@@ -41,7 +41,7 @@ export default function Wishlist() {
     <ProductListFallback />
   ) : items?.length ? (
     <Box>
-      <Typography variant="h2" paddingBottom={'64px'}>
+      <Typography variant="h2" component={'h1'} paddingBottom={'64px'}>
         My Wishlist
       </Typography>
       <ProductList products={products} variant="wishlist" />
