@@ -52,8 +52,8 @@ export default function SignIn() {
         return;
       }
 
-      if (nextParam === 'checkout') {
-        router.replace('/checkout');
+      if (nextParam) {
+        router.replace(nextParam);
       } else {
         router.replace('/profile/products');
       }
