@@ -14,4 +14,9 @@
 // ***********************************************************
 
 // Import commands.js using ES2015 syntax:
-import './commands'
+import './commands';
+
+beforeEach(() => {
+  Cypress.config('defaultCommandTimeout', 10000);
+  cy.window().should('have.property', 'document');
+});

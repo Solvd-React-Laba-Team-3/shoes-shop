@@ -272,6 +272,7 @@ export const CheckoutForm: FC<CheckoutProps> = ({
             }}
           >
             <CardElement
+              data-cy="card-element"
               onChange={(e) => {
                 if (e.error) {
                   setCardError(e.error.message);
