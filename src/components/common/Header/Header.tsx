@@ -16,6 +16,7 @@ import logo from '../../../../public/logo.png';
 import { useState } from 'react';
 import { Sidebar } from '../Sidebar';
 import { useMediaQuery } from '@mui/material';
+import { useHideOnScroll } from '@/lib/hooks';
 
 const StyledContainer = styled(Box)(({ theme }) => ({
   display: 'flex',
@@ -24,6 +25,11 @@ const StyledContainer = styled(Box)(({ theme }) => ({
   borderBottom: `1px solid ${theme.palette.divider}`,
   padding: '45px 40px',
   height: HEADER_HEIGHT,
+  position: 'sticky',
+  top: 0,
+  backgroundColor: theme.palette.secondary.contrastText,
+  zIndex: 900,
+  transition: 'transform 0.2s ease-in-out',
   [theme.breakpoints.down('md')]: {
     width: '100%',
     padding: '18px 10px 14px 20px',
@@ -36,12 +42,17 @@ export const Header = () => {
 
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
+  const hidden = useHideOnScroll();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
 
   return (
     <>
-      <StyledContainer>
+      <StyledContainer
+        sx={{
+          transform: hidden ? 'translateY(-100%)' : 'translateY(0)',
+        }}
+      >
         <Box sx={{ display: 'flex', alignItems: 'center', gap: '30px' }}>
           <Link href="/">
             <Image src={logo} alt="logo" width={40} height={30} />
@@ -51,6 +62,7 @@ export const Header = () => {
             <Typography
               sx={{ display: { xs: 'none', md: 'inline' } }}
               variant="subtitle2"
+              component={'span'}
             >
               Products
             </Typography>

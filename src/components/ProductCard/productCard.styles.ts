@@ -9,9 +9,13 @@ export const StyledCard = styled(Card)({
   boxShadow: 'none',
   position: 'relative',
   borderRadius: 0,
+  height: '100%',
 });
 
 export const StyledCardActionArea = styled(CardActionArea)({
+  height: '100%',
+  display: 'flex',
+  flexDirection: 'column',
   '&:hover, &:focus, &:active': {
     backgroundColor: 'transparent',
   },
@@ -22,6 +26,8 @@ export const StyledCardActionArea = styled(CardActionArea)({
 });
 
 export const StyledCardContent = styled(CardContent)({
+  flexGrow: 1,
+  width: '100%',
   padding: '12px 0 0 0',
 });
 

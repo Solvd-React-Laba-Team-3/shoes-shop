@@ -34,8 +34,12 @@ export const EmptyProductList: FC<EmptyProductListProps> = ({
         }}
       >
         {icon}
-        <Typography variant="h6">{message}</Typography>
-        <Typography variant="caption">{caption}</Typography>
+        <Typography variant="h6" component={'h3'}>
+          {message}
+        </Typography>
+        <Typography variant="caption" component={'p'}>
+          {caption}
+        </Typography>
       </Box>
       {children}
     </StyledNoProductsWrapper>

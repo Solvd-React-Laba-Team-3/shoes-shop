@@ -71,11 +71,19 @@ export const CheckoutForm: FC<CheckoutProps> = ({
       >
         Back to cart
       </Link>
-      <Typography variant="h2" sx={{ marginTop: theme.spacing(3) }}>
+      <Typography
+        variant="h2"
+        component={'h1'}
+        sx={{ marginTop: theme.spacing(3) }}
+      >
         Checkout
       </Typography>
 
-      <Typography variant="h6" sx={{ mt: { xs: 4, md: 8 }, mb: 3 }}>
+      <Typography
+        variant="h6"
+        component={'h3'}
+        sx={{ mt: { xs: 4, md: 8 }, mb: 3 }}
+      >
         Personal info
       </Typography>
       <Box
@@ -114,7 +122,11 @@ export const CheckoutForm: FC<CheckoutProps> = ({
 
       <Divider sx={{ mt: { xs: 2, md: 5 }, mb: 2 }} />
 
-      <Typography variant="h6" sx={{ mt: { xs: 3, md: 9 }, mb: 3 }}>
+      <Typography
+        variant="h6"
+        component={'h3'}
+        sx={{ mt: { xs: 3, md: 9 }, mb: 3 }}
+      >
         Shipping info
       </Typography>
       <Box
@@ -147,12 +159,16 @@ export const CheckoutForm: FC<CheckoutProps> = ({
                 renderValue={(value) => {
                   if (!value)
                     return (
-                      <Typography variant="body2" color="textSecondary">
+                      <Typography
+                        variant="body2"
+                        component={'span'}
+                        color="textSecondary"
+                      >
                         Select country
                       </Typography>
                     );
                   return (
-                    <Typography sx={{ fontSize: '16px', fontWeight: 400 }}>
+                    <Typography component={'span'} variant="body2">
                       {value as string}
                     </Typography>
                   );
@@ -160,7 +176,9 @@ export const CheckoutForm: FC<CheckoutProps> = ({
               >
                 {shippingCountries.map((country) => (
                   <MenuItem key={country} value={country}>
-                    <Typography variant="caption">{country}</Typography>
+                    <Typography component={'span'} variant="caption">
+                      {country}
+                    </Typography>
                   </MenuItem>
                 ))}
               </Select>
@@ -191,7 +209,11 @@ export const CheckoutForm: FC<CheckoutProps> = ({
 
       <Divider sx={{ mt: 6, mb: 2 }} />
 
-      <Typography variant="h6" sx={{ mt: { xs: 3, md: 9 }, mb: 3 }}>
+      <Typography
+        variant="h6"
+        component={'h3'}
+        sx={{ mt: { xs: 3, md: 9 }, mb: 3 }}
+      >
         Payment info
       </Typography>
 

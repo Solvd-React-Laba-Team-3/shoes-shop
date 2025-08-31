@@ -52,7 +52,9 @@ export const AuthContainer: FC<AuthContainerProps> = ({
         textAlign: 'center',
       }}
     >
-      <Typography variant="h2">{title}</Typography>
+      <Typography variant="h2" component={'h1'}>
+        {title}
+      </Typography>
 
       {description && (
         <Typography variant="caption" component="p" color="textSecondary">

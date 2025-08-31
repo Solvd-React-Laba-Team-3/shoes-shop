@@ -92,7 +92,7 @@ export const OrderPreview: FC<OrderPreviewProps> = ({ order }) => {
             width: { md: '200px' },
           }}
         >
-          <Typography variant="caption">
+          <Typography variant="caption" component={'p'}>
             <strong>N°{order.orderNumber}</strong>
           </Typography>
           <Box
@@ -104,6 +104,7 @@ export const OrderPreview: FC<OrderPreviewProps> = ({ order }) => {
           >
             <Typography
               variant="caption"
+              component={'p'}
               sx={{
                 color: theme.palette.grey[600],
                 fontWeight: 400,
@@ -122,6 +123,7 @@ export const OrderPreview: FC<OrderPreviewProps> = ({ order }) => {
         >
           <Typography
             variant="caption"
+            component={'span'}
             sx={{
               color: theme.palette.grey[600],
               fontWeight: 400,
@@ -154,6 +156,7 @@ export const OrderPreview: FC<OrderPreviewProps> = ({ order }) => {
         >
           <Typography
             variant="caption"
+            component={'span'}
             sx={{
               color: theme.palette.grey[600],
               fontWeight: 400,

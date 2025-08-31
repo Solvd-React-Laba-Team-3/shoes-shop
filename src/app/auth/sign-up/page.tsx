@@ -59,7 +59,11 @@ export default function SignUp() {
               gap: 1,
             }}
           >
-            <Typography variant="subtitle2" color="textSecondary">
+            <Typography
+              variant="subtitle2"
+              component={'p'}
+              color="textSecondary"
+            >
               Already have an account?
             </Typography>
             <Link href="/auth/sign-in" active>

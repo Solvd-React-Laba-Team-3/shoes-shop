@@ -178,7 +178,9 @@ export const MainSearchBar = () => {
                     }}
                   />
                 )}
-              <Typography variant="h6">Popular Search Terms</Typography>
+              <Typography variant="h6" component={'h3'}>
+                Popular Search Terms
+              </Typography>
               <List disablePadding>
                 {popularTerms.map((term, index) => (
                   <PopularTermItem
@@ -187,7 +189,11 @@ export const MainSearchBar = () => {
                     onClick={() => handleTermClick(term)}
                     data-testid={`popular-term-${index}`}
                   >
-                    <Typography variant="body1" fontWeight={500}>
+                    <Typography
+                      variant="body1"
+                      component={'p'}
+                      fontWeight={500}
+                    >
                       {term}
                     </Typography>
                   </PopularTermItem>
