@@ -7,6 +7,7 @@ import { theme } from '@/providers/ThemeProvider';
 const mockSignIn = jest.fn();
 const mockUseSession = jest.fn();
 const mockRouter = jest.fn();
+const mockUseMediaQuery = jest.fn();
 
 jest.mock('next-auth/react', () => ({
   useSession: () => mockUseSession(),
@@ -15,6 +16,7 @@ jest.mock('next-auth/react', () => ({
 
 jest.mock('next/navigation', () => ({
   useRouter: () => ({ push: mockRouter }),
+  usePathname: () => '/',
 }));
 
 jest.mock('next/image', () => ({
@@ -89,7 +91,7 @@ describe('Header', () => {
       const signInButton = screen.getByRole('button', { name: 'Sign in' });
       fireEvent.click(signInButton);
 
-      expect(mockRouter).toHaveBeenCalledWith('/auth/sign-in');
+      expect(mockRouter).toHaveBeenCalledWith('/auth/sign-in?next=/');
     });
 
     it('navigates to cart page when clicking cart icon', () => {
@@ -101,6 +103,28 @@ describe('Header', () => {
       fireEvent.click(cartButton!);
 
       expect(mockRouter).toHaveBeenCalledWith('/cart');
+    });
+  });
+
+  describe('Test Menu Button', () => {
+    beforeEach(() => {
+      mockUseSession.mockReturnValue({ data: null });
+      mockUseMediaQuery.mockReturnValue(true);
+    });
+    it('renders menu button on small screens', () => {
+      renderHeaderWithTheme();
+
+      const menuButton = screen.getByTestId('menu-button');
+      expect(menuButton).toBeInTheDocument();
+    });
+
+    it('toggles sidebar when clicking menu button', () => {
+      renderHeaderWithTheme();
+
+      const menuButton = screen.getByTestId('menu-button');
+      fireEvent.click(menuButton);
+
+      expect(menuButton).toBeInTheDocument();
     });
   });
 

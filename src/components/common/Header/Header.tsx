@@ -10,13 +10,14 @@ import Image from 'next/image';
 import { styled, useTheme } from '@mui/material/styles';
 import { Button, IconButton, Link } from '@/components/ui';
 import { HEADER_HEIGHT } from '@/constants/headerHeight';
-import { useRouter } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { MainSearchBar } from '@/components/MainSearchBar';
 import logo from '../../../../public/logo.png';
 import { useState } from 'react';
 import { Sidebar } from '../Sidebar';
 import { Badge, useMediaQuery } from '@mui/material';
 import { useCart } from '@/lib/hooks';
+import { useHideOnScroll } from '@/lib/hooks';
 
 const StyledContainer = styled(Box)(({ theme }) => ({
   display: 'flex',
@@ -25,6 +26,11 @@ const StyledContainer = styled(Box)(({ theme }) => ({
   borderBottom: `1px solid ${theme.palette.divider}`,
   padding: '45px 40px',
   height: HEADER_HEIGHT,
+  position: 'sticky',
+  top: 0,
+  backgroundColor: theme.palette.secondary.contrastText,
+  zIndex: 900,
+  transition: 'transform 0.2s ease-in-out',
   [theme.breakpoints.down('md')]: {
     width: '100%',
     padding: '18px 10px 14px 20px',
@@ -34,9 +40,11 @@ const StyledContainer = styled(Box)(({ theme }) => ({
 export const Header = () => {
   const router = useRouter();
   const { data: session } = useSession();
+  const path = usePathname();
 
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
+  const hidden = useHideOnScroll();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
 
@@ -44,7 +52,11 @@ export const Header = () => {
 
   return (
     <>
-      <StyledContainer>
+      <StyledContainer
+        sx={{
+          transform: hidden ? 'translateY(-100%)' : 'translateY(0)',
+        }}
+      >
         <Box sx={{ display: 'flex', alignItems: 'center', gap: '30px' }}>
           <Link href="/">
             <Image src={logo} alt="logo" width={40} height={30} />
@@ -53,6 +65,7 @@ export const Header = () => {
             <Typography
               sx={{ display: { xs: 'none', md: 'inline' } }}
               variant="subtitle2"
+              component={'span'}
             >
               Products
             </Typography>
@@ -70,7 +83,7 @@ export const Header = () => {
               variant="outlined"
               sx={{ display: { xs: 'none', md: 'block' } }}
               size="small"
-              onClick={() => router.push('/auth/sign-in')}
+              onClick={() => router.push('/auth/sign-in?next=' + path)}
             >
               Sign in
             </Button>
@@ -104,7 +117,7 @@ export const Header = () => {
             </IconButton>
             {session && (
               <Link
-                href={session ? '/profile/products' : '/auth/sign-in'}
+                href="/profile/products"
                 sx={{ display: { xs: 'none', md: 'flex' } }}
               >
                 <Avatar
@@ -117,6 +130,7 @@ export const Header = () => {
               <IconButton
                 color="secondary"
                 onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+                data-testid="menu-button"
               >
                 <MenuIcon />
               </IconButton>

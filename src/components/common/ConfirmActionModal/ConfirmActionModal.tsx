@@ -65,7 +65,9 @@ export const ConfirmActionModal: FC<ConfirmActionModalProps> = ({
         <DialogTitle variant="h2">{title}</DialogTitle>
       </Box>
       <DialogContent>
-        <Typography variant="caption">{description}</Typography>
+        <Typography variant="caption" component={'p'}>
+          {description}
+        </Typography>
       </DialogContent>
       <DialogActions sx={{ gap: '16px', justifyContent: 'center' }}>
         <Button variant="outlined" onClick={onClose}>
