@@ -174,9 +174,12 @@ export const ProductForm: FC<ProductFormProps> = ({
               gap: { xs: '12px', md: '35px' },
             }}
           >
-            <Typography variant="h2">{title}</Typography>
+            <Typography variant="h2" component={'h3'}>
+              {title}
+            </Typography>
             <Typography
               variant="caption"
+              component={'p'}
               sx={{ maxWidth: { xs: '100%', md: '890px' } }}
             >
               {description}
@@ -264,7 +267,9 @@ export const ProductForm: FC<ProductFormProps> = ({
                     renderValue={(value) => {
                       if (!value)
                         return (
-                          <Typography variant="body2">Select color</Typography>
+                          <Typography variant="body2" component={'p'}>
+                            Select color
+                          </Typography>
                         );
                       const selectedColor = colors?.find(
                         (c) => c.id === Number(value)
@@ -274,7 +279,9 @@ export const ProductForm: FC<ProductFormProps> = ({
                   >
                     {colors.map((color) => (
                       <MenuItem key={color.id} value={color.id.toString()}>
-                        <Typography variant="caption">{color.name}</Typography>
+                        <Typography variant="caption" component={'span'}>
+                          {color.name}
+                        </Typography>
                       </MenuItem>
                     ))}
                   </Select>
@@ -307,7 +314,7 @@ export const ProductForm: FC<ProductFormProps> = ({
                       renderValue={(value) => {
                         if (!value)
                           return (
-                            <Typography variant="caption">
+                            <Typography variant="caption" component={'p'}>
                               Select gender
                             </Typography>
                           );
@@ -319,7 +326,7 @@ export const ProductForm: FC<ProductFormProps> = ({
                     >
                       {genders?.map((gender) => (
                         <MenuItem key={gender.id} value={gender.id.toString()}>
-                          <Typography variant="caption">
+                          <Typography variant="caption" component={'span'}>
                             {gender.name}
                           </Typography>
                         </MenuItem>
@@ -353,7 +360,7 @@ export const ProductForm: FC<ProductFormProps> = ({
                       renderValue={(value) => {
                         if (!value)
                           return (
-                            <Typography variant="caption">
+                            <Typography variant="caption" component={'span'}>
                               Select brand
                             </Typography>
                           );
@@ -367,7 +374,7 @@ export const ProductForm: FC<ProductFormProps> = ({
                     >
                       {brands.map((brand) => (
                         <MenuItem key={brand.id} value={brand.id.toString()}>
-                          <Typography variant="caption">
+                          <Typography variant="caption" component={'span'}>
                             {brand.name}
                           </Typography>
                         </MenuItem>

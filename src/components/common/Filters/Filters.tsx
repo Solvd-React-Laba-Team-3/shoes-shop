@@ -1,6 +1,11 @@
 'use client';
 
-import { useDebounce, useFilters, useSearchParams } from '@/lib/hooks';
+import {
+  useDebounce,
+  useFilters,
+  useHideOnScroll,
+  useSearchParams,
+} from '@/lib/hooks';
 import {
   Box,
   Divider,
@@ -31,7 +36,8 @@ import {
   StyledFormLabel,
   StyledPricesContainer,
   StyledCloseWrapper,
-} from './Filters.styles';
+} from './filters.styles';
+import { HEADER_HEIGHT } from '@/constants/headerHeight';
 
 export const Filters: FC<DrawerProps> = ({ ...props }) => {
   const {
@@ -42,7 +48,6 @@ export const Filters: FC<DrawerProps> = ({ ...props }) => {
     priceInput,
   } = useFilters();
   const searchParams = useSearchParams();
-
   const selectedGenders = normalizeToUniqueArray(
     currentFilters.gender?.id?.$in
   );
@@ -78,11 +83,12 @@ export const Filters: FC<DrawerProps> = ({ ...props }) => {
 
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
-
+  const hidden = useHideOnScroll();
   return (
     <StyledDrawer
       variant={isMobile ? 'temporary' : 'persistent'}
       anchor={isMobile ? 'right' : 'left'}
+      sx={{ top: hidden ? 0 : `${HEADER_HEIGHT}px` }}
       {...props}
     >
       {isMobile ? (
@@ -111,7 +117,7 @@ export const Filters: FC<DrawerProps> = ({ ...props }) => {
               flexShrink: 0,
             }}
           >
-            <Typography>Filters</Typography>
+            <Typography component={'h3'}>Filters</Typography>
             <Button
               variant="text"
               onClick={clearFilters}
@@ -128,8 +134,14 @@ export const Filters: FC<DrawerProps> = ({ ...props }) => {
         </>
       ) : (
         <Box sx={{ width: '100%', padding: '24px 48px' }}>
-          {search && <Typography variant="caption">Shoes/{search}</Typography>}
-          <Typography variant="h4">{search ?? 'Catalog'}</Typography>
+          {search && (
+            <Typography variant="caption" component={'span'}>
+              Shoes/{search}
+            </Typography>
+          )}
+          <Typography variant="h4" component={'span'}>
+            {search ?? 'Catalog'}
+          </Typography>
         </Box>
       )}
       <Box
@@ -262,7 +274,11 @@ export const Filters: FC<DrawerProps> = ({ ...props }) => {
                     });
                   }}
                 />
-                <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+                <Typography
+                  variant="body2"
+                  component={'span'}
+                  sx={{ color: 'text.secondary' }}
+                >
                   to
                 </Typography>
                 <TextField

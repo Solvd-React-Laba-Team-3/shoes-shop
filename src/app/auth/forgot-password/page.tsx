@@ -54,7 +54,11 @@ export default function ForgotPassword() {
         description="Don’t worry, we’ll send you reset instructions."
         footer={
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-            <Typography variant="subtitle2" color="textSecondary">
+            <Typography
+              variant="subtitle2"
+              component={'p'}
+              color="textSecondary"
+            >
               Back to
             </Typography>
             <Link href="/auth/sign-in" active>
@@ -90,7 +94,7 @@ export default function ForgotPassword() {
             />
 
             {isSuccess && (
-              <Typography variant="subtitle2" color="success">
+              <Typography variant="subtitle2" component={'p'} color="success">
                 A reset link has been sent to your email. Redirecting to
                 login...
               </Typography>

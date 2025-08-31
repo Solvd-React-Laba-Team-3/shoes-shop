@@ -7,3 +7,4 @@ export { useWishlist } from './useWishlist/useWishlist';
 export { useRecentlyViewed } from './useRecentlyViewed/useRecentlyViewed';
 export { useIntersectionObserver } from './useIntersectionObserver/useIntersectionObserver';
 export { useFilters } from './useFilters/useFilters';
+export { useHideOnScroll } from './useHideOnScroll/useHideOnScroll';
