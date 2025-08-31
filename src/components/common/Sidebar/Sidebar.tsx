@@ -60,7 +60,7 @@ export const Sidebar: FC<DrawerProps> = ({ open = false, ...props }) => {
       open={isMobile ? open : true}
       sx={{
         maxWidth: '320px',
-        zIndex: 900,
+        zIndex: isMobile ? 1000 : 800,
         width: { xs: '320px', md: '260px', lg: '320px' },
 
         '& .MuiDrawer-paper': {
