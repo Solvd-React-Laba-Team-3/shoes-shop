@@ -20,8 +20,14 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      - name: Start development server
-        run: npm run dev
+      - name: Install wait-on for server readiness
+        run: npm install -g wait-on
+
+      - name: Start development server in background
+        run: npm run dev &
+
+      - name: Wait for server to be ready
+        run: wait-on http://localhost:3000 --timeout 60000
 
       - name: Run E2E tests
         run: npx cypress run
