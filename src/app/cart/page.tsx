@@ -46,6 +46,7 @@ export default function Cart() {
           >
             <Typography
               variant="h2"
+              component={'h1'}
               sx={{
                 mb: { xs: 2, sm: 3, md: 4 },
               }}
@@ -65,6 +66,7 @@ export default function Cart() {
               ) : (
                 <Typography
                   variant="h6"
+                  component={'p'}
                   color="text.secondary"
                   sx={{ textAlign: { xs: 'center', md: 'left' } }}
                 >

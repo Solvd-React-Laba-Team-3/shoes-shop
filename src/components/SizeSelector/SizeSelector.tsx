@@ -23,7 +23,7 @@ export const SizeSelector: FC<SizeSelector> = ({
     <Stack direction="column" paddingBottom="36px">
       <Typography
         variant="h6"
-        component={'h2'}
+        component={'h3'}
         paddingBottom="24px"
         color="text.secondary"
       >
