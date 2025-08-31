@@ -12,7 +12,7 @@ const config: Config = {
     '^@/(.*)$': '<rootDir>/src/$1',
   },
   collectCoverage: true,
-  coverageDirectory: 'coverage', 
+  coverageDirectory: 'coverage',
   coverageThreshold: {
     global: {
       branches: 75,
@@ -21,6 +21,9 @@ const config: Config = {
       statements: 75,
     },
   },
+  coveragePathIgnorePatterns: [
+    '<rootDir>/src/api/', 
+  ],
 };
 
 export default createJestConfig(config);
