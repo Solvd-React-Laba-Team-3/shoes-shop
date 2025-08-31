@@ -36,7 +36,7 @@ import {
   StyledFormLabel,
   StyledPricesContainer,
   StyledCloseWrapper,
-} from './Filters.styles';
+} from './filters.styles';
 import { HEADER_HEIGHT } from '@/constants/headerHeight';
 
 export const Filters: FC<DrawerProps> = ({ ...props }) => {

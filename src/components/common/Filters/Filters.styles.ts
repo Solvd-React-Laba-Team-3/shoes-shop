@@ -13,12 +13,11 @@ export const StyledCloseWrapper = styled(Box)(() => ({
 }));
 
 export const StyledDrawer = styled(Drawer)(({ theme, open }) => ({
-  [theme.breakpoints.up('md')]: {
-    position: 'sticky',
-    height: '90vh',
-    zIndex: 100,
-    width: open ? '320px' : '0px',
-  },
+  position: 'sticky',
+  height: '90vh',
+  zIndex: 1000,
+  width: open ? '320px' : '0px',
+
   transition:
     'width 0.2s ease-in-out, transform 0.2s ease-in-out, top 0.2s ease-in-out',
 
@@ -32,6 +31,7 @@ export const StyledDrawer = styled(Drawer)(({ theme, open }) => ({
     [theme.breakpoints.down('md')]: {
       right: 0,
       top: 0,
+      height: '100%',
       width: '320px',
       position: 'fixed',
     },
