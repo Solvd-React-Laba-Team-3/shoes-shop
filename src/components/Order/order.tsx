@@ -44,7 +44,7 @@ export const Order: FC<OrderProps> = ({ order }) => {
   };
   return (
     <Box key={`${order.orderNumber}`}>
-      {order.omitted && (
+      {order.isOmitted && (
         <FormErrorMessage message="Some products could not be added to this order." />
       )}
 
