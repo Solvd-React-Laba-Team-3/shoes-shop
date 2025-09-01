@@ -120,8 +120,11 @@ export const useCart = () => {
     );
   };
 
+  const totalItems = items.reduce((acc, item) => acc + item.quantity, 0);
+
   return {
     items,
+    totalItems,
     subtotal,
     getTotal,
     discountAmount,
