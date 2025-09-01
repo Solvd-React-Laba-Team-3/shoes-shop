@@ -159,7 +159,10 @@ export const CartSummary: FC<CartSummaryProps> = ({
         expanded={promoOpen}
         onChange={(_, isExpanded) => setPromoOpen(isExpanded)}
         label={
-          <Typography sx={{ fontSize: '20px', fontWeight: 400 }}>
+          <Typography
+            component={'p'}
+            sx={{ fontSize: '20px', fontWeight: 400 }}
+          >
             Do you have a promo code?
           </Typography>
         }
@@ -230,10 +233,10 @@ export const CartSummary: FC<CartSummaryProps> = ({
           margin: '18px 0 20px',
         }}
       >
-        <Typography variant="h3" sx={{ fontWeight: 400 }}>
+        <Typography variant="h3" component={'p'} sx={{ fontWeight: 400 }}>
           Subtotal
         </Typography>
-        <Typography variant="h3" sx={{ fontWeight: 400 }}>
+        <Typography variant="h3" component={'p'} sx={{ fontWeight: 400 }}>
           ${subtotal.toFixed(2)}
         </Typography>
       </Box>
@@ -248,10 +251,10 @@ export const CartSummary: FC<CartSummaryProps> = ({
             color: 'green',
           }}
         >
-          <Typography variant="h3" sx={{ fontWeight: 400 }}>
+          <Typography variant="h3" component={'p'} sx={{ fontWeight: 400 }}>
             Discount
           </Typography>
-          <Typography variant="h3" sx={{ fontWeight: 400 }}>
+          <Typography variant="h3" component={'p'} sx={{ fontWeight: 400 }}>
             -${discountAmount.toFixed(2)}
           </Typography>
         </Box>
@@ -264,10 +267,10 @@ export const CartSummary: FC<CartSummaryProps> = ({
           margin: '20px 0',
         }}
       >
-        <Typography variant="h3" sx={{ fontWeight: 400 }}>
+        <Typography variant="h3" component={'p'} sx={{ fontWeight: 400 }}>
           Shipping
         </Typography>
-        <Typography variant="h3" sx={{ fontWeight: 400 }}>
+        <Typography variant="h3" component={'p'} sx={{ fontWeight: 400 }}>
           {checkout ? `$${shippingAmount.toFixed(2)}` : '-'}
         </Typography>
       </Box>
@@ -279,11 +282,11 @@ export const CartSummary: FC<CartSummaryProps> = ({
           margin: '20px 0',
         }}
       >
-        <Typography variant="h3" sx={{ fontWeight: 400 }}>
+        <Typography variant="h3" component={'p'} sx={{ fontWeight: 400 }}>
           Tax ({taxPercent}%)
         </Typography>
-        <Typography variant="h3" sx={{ fontWeight: 400 }}>
-          {checkout ? `$${taxAmount.toFixed(2)}` : '-'}
+        <Typography variant="h3" component={'p'} sx={{ fontWeight: 400 }}>
+          ${taxAmount.toFixed(2)}
         </Typography>
       </Box>
       {!checkout ? (
@@ -303,10 +306,15 @@ export const CartSummary: FC<CartSummaryProps> = ({
           margin: '20px 0',
         }}
       >
-        <Typography variant="h3" sx={{ fontWeight: 600 }}>
+        <Typography variant="h3" component={'p'} sx={{ fontWeight: 600 }}>
           Total
         </Typography>
-        <Typography variant="h3" data-testId="total" sx={{ fontWeight: 600 }}>
+        <Typography
+          variant="h3"
+          data-testId="total"
+          sx={{ fontWeight: 600 }}
+          component={'p'}
+        >
           ${total}
         </Typography>
       </Box>
@@ -324,7 +332,7 @@ export const CartSummary: FC<CartSummaryProps> = ({
         title="Login required"
         description="You need to sign in to complete your purchase. Do you want to go to the login page now?"
         onClose={() => setShowLoginConfirm(false)}
-        onConfirm={() => router.push('/auth/sign-in?next=checkout')}
+        onConfirm={() => router.push('/auth/sign-in?next=/checkout')}
         cancelText="Stay here"
         confirmText="Go to login"
       />

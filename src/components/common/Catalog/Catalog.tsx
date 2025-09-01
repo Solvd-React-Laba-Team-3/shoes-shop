@@ -7,8 +7,12 @@ import { Suspense } from 'react';
 import { ProductListFallback } from '@/components/common/ProductListFallback';
 import { FiltersFallback } from '@/components/common/FiltersFallback';
 import { useState } from 'react';
+import { useMediaQuery, useTheme } from '@mui/material';
 
 export const Catalog = () => {
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+
   const [isFiltersOpen, setIsFiltersOpen] = useState(false);
 
   const handleFiltersToggle = () => {
@@ -17,14 +21,9 @@ export const Catalog = () => {
 
   return (
     <Box sx={{ display: 'flex' }}>
-      {isFiltersOpen && (
-        <Suspense fallback={<FiltersFallback />}>
-          <Filters
-            open={isFiltersOpen}
-            onClose={() => setIsFiltersOpen(false)}
-          />
-        </Suspense>
-      )}
+      <Suspense fallback={!isMobile && isFiltersOpen && <FiltersFallback />}>
+        <Filters open={isFiltersOpen} onClose={() => setIsFiltersOpen(false)} />
+      </Suspense>
       <Suspense fallback={<ProductListFallback />}>
         <ProductsContainer
           isFiltersOpen={isFiltersOpen}

@@ -66,6 +66,7 @@ export async function GET(req: Request) {
             taxPercent,
             email,
             paymentMethod,
+            omitted,
           } = intent.metadata;
           const { shipping } = intent;
 
@@ -84,6 +85,7 @@ export async function GET(req: Request) {
             shippingAmount: shippingAmount ? Number(shippingAmount) : 0,
             taxPercent: taxPercent ? Number(taxPercent) : 0,
             products,
+            isOmitted: omitted && omitted === 'true',
             receipt_url: receiptUrl,
             paymentMethod,
             decline_reason: declineReason,

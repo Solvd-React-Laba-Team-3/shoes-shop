@@ -17,7 +17,7 @@ import { Order as OrderType } from '@/types/Order';
 import { useDownloadReceipt } from '@/api/receipts/useDownloadReceipt';
 import { formatDate } from '@/lib/utils/';
 import { FC } from 'react';
-import { Tooltip, Accordion } from '../ui';
+import { Tooltip, Accordion, FormErrorMessage } from '../ui';
 import { ItemLabel } from '../ItemLabel';
 import { OrderProducts } from '../OrderProducts';
 import { OrderPreview } from '../OrderPreview';
@@ -42,12 +42,16 @@ export const Order: FC<OrderProps> = ({ order }) => {
       orderNumber: String(order.orderNumber),
     });
   };
-
   return (
     <Box key={`${order.orderNumber}`}>
+      {order.isOmitted && (
+        <FormErrorMessage message="Some products could not be added to this order." />
+      )}
+
       <Box sx={{ mb: 1 }}>
         <Typography
           variant="caption"
+          component={'p'}
           sx={{
             color: theme.palette.grey[600],
             display: { sm: 'none' },
@@ -168,6 +172,7 @@ export const Order: FC<OrderProps> = ({ order }) => {
                   >
                     <Typography
                       variant="subtitle2"
+                      component={'p'}
                       sx={{ color: theme.palette.primary.main }}
                     >
                       {isDownloading
@@ -188,7 +193,7 @@ export const Order: FC<OrderProps> = ({ order }) => {
               {order.discountAmount && (
                 <ItemLabel
                   label="Discount: "
-                  title={`${order.discountAmount}$`}
+                  title={`${order.discountAmount.toFixed(2)}$`}
                   labelColor={theme.palette.grey[600]}
                   valueColor="green"
                 />
