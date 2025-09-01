@@ -1,7 +1,7 @@
 import { FC, useState } from 'react';
 import { FileDropzone } from '@/components/FileDropZone';
 import Image from 'next/image';
-import { DeleteConfirmationModal } from '../common/DeleteConfirmationModal';
+import { ConfirmActionModal } from '../common/ConfirmActionModal';
 import DeleteIcon from '@mui/icons-material/Delete';
 import Box from '@mui/material/Box';
 import Fab from '@mui/material/Fab';
@@ -28,16 +28,27 @@ export const ProductFormDropzone: FC<ProductFormDropzoneProps> = ({
       <Box
         sx={{
           display: 'grid',
-          gridTemplateColumns: '1fr 1fr',
-          gap: '52px',
+          gridTemplateColumns: {
+            sm: 'min-content',
+            lg: '1fr 1fr ',
+            xl: '1fr 1fr',
+          },
+          gap: { xs: '20px', md: '52px' },
           flex: 1,
         }}
       >
         <FileDropzone onFilesDropped={handleFilesDropped} />
 
         {images.map((image, index) => (
-          <Box key={index} sx={{ position: 'relative' }}>
-            <Image src={image.url} alt="Product" width={320} height={380} />
+          <Box
+            key={index}
+            sx={{
+              position: 'relative',
+              width: { xs: '100%', md: 'unset' },
+              zIndex: 1,
+            }}
+          >
+            <Image src={image.url} alt="Product" width={300} height={380} />
             <Fab
               aria-label="Delete image"
               size="small"
@@ -55,16 +66,16 @@ export const ProductFormDropzone: FC<ProductFormDropzoneProps> = ({
         ))}
       </Box>
       {deletingImage !== null && (
-        <DeleteConfirmationModal
+        <ConfirmActionModal
           open={deletingImage !== null}
           title="Are you sure to delete product image?"
-          description="Lorem ipsum dolor sit amet consectetur. Sed imperdiet tempor facilisi
-          massa aliquet sit habitant. Lorem ipsum dolor sit amet consectetur."
+          description="This will remove this image from this product."
           onClose={() => setDeletingImage(null)}
-          onDelete={() => {
+          onConfirm={() => {
             onRemoveImage(deletingImage.id, deletingImage.index);
             setDeletingImage(null);
           }}
+          confirmText="Delete"
         />
       )}
     </>

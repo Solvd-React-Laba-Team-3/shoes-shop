@@ -13,11 +13,10 @@ import {
 import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
 import SearchIcon from '@mui/icons-material/Search';
-
 import Link from 'next/link';
 import Image from 'next/image';
-import { useDebounce, useDeviceSize, useSearchParams } from '@/lib/hooks';
-import { List, Typography } from '@mui/material';
+import { useDebounce, useSearchParams } from '@/lib/hooks';
+import { List, Typography, useMediaQuery, useTheme } from '@mui/material';
 import LinearProgress from '@mui/material/LinearProgress';
 import { useQuery } from '@tanstack/react-query';
 import { getPopularSearchTermsOptions } from '@/api/gemini/getPopularSearchTermsOptions';
@@ -97,7 +96,8 @@ export const MainSearchBar = () => {
     handleClose();
   };
 
-  const { isMobile } = useDeviceSize();
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
 
   return (
     <>

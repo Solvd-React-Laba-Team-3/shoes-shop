@@ -1,13 +1,26 @@
 import { render, screen, fireEvent } from '@testing-library/react';
+import {
+  normalizeToUniqueArray,
+  parseQueryString,
+  toQueryString,
+} from '@/lib/utils';
+
 import { Filters } from './Filters';
-import { useSearchParams, useDebounce, useDeviceSize } from '@/lib/hooks';
+import { useSearchParams, useDebounce, useFilters } from '@/lib/hooks';
 import { useSuspenseQueries } from '@tanstack/react-query';
+
 import '@testing-library/jest-dom';
+
+const mockUseMediaQuery = jest.fn();
+jest.mock('@mui/material/useMediaQuery', () => ({
+  __esModule: true,
+  default: (query: string) => mockUseMediaQuery(query),
+}));
 
 jest.mock('@/lib/hooks', () => ({
   useSearchParams: jest.fn(),
   useDebounce: jest.fn(),
-  useDeviceSize: jest.fn(),
+  useFilters: jest.fn(),
 }));
 
 jest.mock('@tanstack/react-query', () => ({
@@ -17,22 +30,27 @@ jest.mock('@tanstack/react-query', () => ({
 jest.mock('@/api/gender/getGendersOptions', () => ({
   getGendersOptions: jest.fn(),
 }));
+
 jest.mock('@/api/size/getSizesOptions', () => ({ getSizesOptions: jest.fn() }));
+
 jest.mock('@/api/color/getColorsOptions', () => ({
   getColorsOptions: jest.fn(),
 }));
+
 jest.mock('@/api/brand/getBrandsOptions', () => ({
   getBrandsOptions: jest.fn(),
 }));
 
 jest.mock('@/lib/utils', () => ({
   parseQueryString: jest.fn(() => ({ filters: {} })),
+  normalizeToUniqueArray: jest.fn((arr) => Array.from(new Set(arr))),
   toQueryString: jest.fn((filters) => JSON.stringify(filters)),
 }));
 
 describe('Filters component full coverage', () => {
   const mockSet = jest.fn();
   const mockDelete = jest.fn();
+  const mockUpdateFilters = jest.fn();
 
   beforeEach(() => {
     jest.clearAllMocks();
@@ -41,8 +59,27 @@ describe('Filters component full coverage', () => {
       set: mockSet,
       delete: mockDelete,
     });
+
+    (normalizeToUniqueArray as jest.Mock).mockImplementation((arr: []) =>
+      Array.from(new Set(arr))
+    );
+    (parseQueryString as jest.Mock).mockReturnValue({ filters: {} });
+    (toQueryString as jest.Mock).mockImplementation((filters) =>
+      JSON.stringify(filters)
+    );
+
+    (useFilters as jest.Mock).mockReturnValue({
+      currentFilters: {},
+      updateFilters: mockUpdateFilters,
+      clearFilters: jest.fn(() => mockDelete()),
+      priceInput: [1, 10000],
+      toggleSelection: jest.fn(() => mockSet()),
+    });
+
     (useDebounce as jest.Mock).mockReturnValue({ debouncedValue: '' });
-    (useDeviceSize as jest.Mock).mockReturnValue({ isMobile: false });
+
+    mockUseMediaQuery.mockReturnValue(false);
+
     (useSuspenseQueries as jest.Mock).mockReturnValue([
       { data: [{ id: 1, name: 'Male' }] },
       { data: [{ id: 1, value: 'M' }] },
@@ -66,6 +103,8 @@ describe('Filters component full coverage', () => {
     const checkbox = screen.getByRole('checkbox', { name: 'Male' });
     fireEvent.click(checkbox);
     fireEvent.click(checkbox);
+    fireEvent.click(checkbox);
+
     expect(mockSet).toHaveBeenCalled();
   });
 
@@ -74,6 +113,7 @@ describe('Filters component full coverage', () => {
     const checkbox = screen.getByRole('checkbox', { name: 'Nike' });
     fireEvent.click(checkbox);
     fireEvent.click(checkbox);
+
     expect(mockSet).toHaveBeenCalled();
   });
 
@@ -82,6 +122,7 @@ describe('Filters component full coverage', () => {
     const checkbox = screen.getByRole('checkbox', { name: 'Red' });
     fireEvent.click(checkbox);
     fireEvent.click(checkbox);
+
     expect(mockSet).toHaveBeenCalled();
   });
 
@@ -90,6 +131,7 @@ describe('Filters component full coverage', () => {
     const checkbox = screen.getByRole('checkbox', { name: 'M' });
     fireEvent.click(checkbox);
     fireEvent.click(checkbox);
+
     expect(mockSet).toHaveBeenCalled();
   });
 
@@ -101,11 +143,20 @@ describe('Filters component full coverage', () => {
     expect(mockSet).toHaveBeenCalledTimes(0);
   });
 
+  it('calls updateFilters for price-range changes', () => {
+    render(<Filters open />);
+    const inputs = screen.getAllByTestId('price-range');
+    fireEvent.change(inputs[0], { target: { value: 100 } });
+    fireEvent.change(inputs[1], { target: { value: 1000 } });
+    expect(mockUpdateFilters).toHaveBeenCalledTimes(2);
+  });
+
   it('clears filters on mobile', () => {
-    (useDeviceSize as jest.Mock).mockReturnValue({ isMobile: true });
+    mockUseMediaQuery.mockReturnValue(true);
     const onClose = jest.fn();
     render(<Filters open onClose={onClose} />);
     fireEvent.click(screen.getByText('Clear'));
+
     expect(mockDelete).toHaveBeenCalled();
   });
 

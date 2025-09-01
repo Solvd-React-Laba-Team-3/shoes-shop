@@ -19,9 +19,15 @@ jest.mock('@/constants/geminiConfig', () => ({
 }));
 
 describe('useAIHelperChat', () => {
-  const initialChat = [
-    { content: 'Hello, how can I help you today?', sender: 'model' },
-  ];
+  const initialChat = {
+    history: [
+      {
+        content: 'Hello, how can I help you today?',
+        sender: 'model',
+      },
+    ],
+    isCollapsed: false,
+  };
 
   beforeEach(() => {
     jest.clearAllMocks();
@@ -35,7 +41,7 @@ describe('useAIHelperChat', () => {
 
   it('initializes with chat from localStorage', () => {
     const { result } = renderHook(() => useAIHelperChat());
-    expect(result.current.chat).toEqual(initialChat);
+    expect(result.current.history).toEqual(initialChat.history);
     expect(result.current.isPending).toBe(false);
   });
 
@@ -52,6 +58,26 @@ describe('useAIHelperChat', () => {
         generationConfig: { temperature: 0.7 },
       })
     );
+  });
+
+  it('toggles isCollapsed and calls setChat in toggleCollapsed', () => {
+    const setChatMock = jest.fn();
+    mockUseLocalStorage.mockReturnValue({
+      value: initialChat,
+      setValue: setChatMock,
+      isLoading: false,
+    });
+
+    const { result } = renderHook(() => useAIHelperChat());
+
+    act(() => {
+      result.current.toggleCollapsed();
+    });
+
+    expect(setChatMock).toHaveBeenCalledWith({
+      ...initialChat,
+      isCollapsed: !initialChat.isCollapsed,
+    });
   });
 
   it('sends a message and updates chat with AI response', async () => {
@@ -76,15 +102,21 @@ describe('useAIHelperChat', () => {
       await result.current.sendMessage('Hello AI');
     });
 
-    expect(setChatMock).toHaveBeenCalledWith([
+    expect(setChatMock).toHaveBeenCalledWith({
       ...initialChat,
-      { content: 'Hello AI', sender: 'user' },
-    ]);
-    expect(setChatMock).toHaveBeenCalledWith([
+      history: [
+        ...initialChat.history,
+        { content: 'Hello AI', sender: 'user' },
+      ],
+    });
+    expect(setChatMock).toHaveBeenCalledWith({
       ...initialChat,
-      { content: 'Hello AI', sender: 'user' },
-      { content: aiResponseText, sender: 'model' },
-    ]);
+      history: [
+        ...initialChat.history,
+        { content: 'Hello AI', sender: 'user' },
+        { content: aiResponseText, sender: 'model' },
+      ],
+    });
   });
 
   it('sets isPending correctly during sendMessage', async () => {

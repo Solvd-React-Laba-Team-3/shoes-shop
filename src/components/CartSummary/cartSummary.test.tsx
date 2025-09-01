@@ -6,8 +6,12 @@ import { useCart, useLocalStorage } from '@/lib/hooks';
 import { TAX_PERCENT } from '@/constants/taxPercent';
 import { SHIPPING_AMOUNT } from '@/constants/shippingAmount';
 import { useApplyDiscount } from '@/api/discount/useApplyDiscount';
+import { useSession } from 'next-auth/react';
 
 jest.mock('next/navigation', () => ({ useRouter: jest.fn() }));
+
+jest.mock('next-auth/react', () => ({ useSession: jest.fn() }));
+
 jest.mock('@/lib/hooks', () => ({
   ...jest.requireActual('@/lib/hooks'),
   useCart: jest.fn(),
@@ -44,6 +48,7 @@ describe('CartSummary', () => {
   beforeEach(() => {
     (useCart as jest.Mock).mockReturnValue(defaultCart);
     (useRouter as jest.Mock).mockReturnValue({ push: jest.fn() });
+    (useSession as jest.Mock).mockReturnValue({ data: {} });
     (useLocalStorage as jest.Mock).mockReturnValue({
       value: true,
       setValue: jest.fn(),
@@ -73,12 +78,35 @@ describe('CartSummary', () => {
     fireEvent.click(screen.getByText(/Do you have a promo code\?/i));
     expect(screen.getByText(/Do you have a promo code\?/i)).toBeInTheDocument();
   });
-  it('renders "Confirm & Pay" when checkout is true', () => {
-    renderWithClient(<CartSummary checkout />);
+
+  it('renders "Confirm & Pay" when checkout is true and payment method is "Card"', () => {
+    renderWithClient(
+      <CartSummary
+        checkout
+        shippingAmount={SHIPPING_AMOUNT}
+        taxPercent={TAX_PERCENT}
+        paymentMethod="card"
+      />
+    );
     expect(
       screen.getByRole('button', { name: /Confirm & Pay/i })
     ).toBeInTheDocument();
   });
+
+  it('renders "Confirm & Pay" when checkout is true', () => {
+    renderWithClient(
+      <CartSummary
+        checkout
+        shippingAmount={SHIPPING_AMOUNT}
+        taxPercent={TAX_PERCENT}
+        paymentMethod="googlePay"
+      />
+    );
+    expect(
+      screen.queryByRole('button', { name: /Confirm & Pay/gim })
+    ).not.toBeInTheDocument();
+  });
+
   it('calls router.push("/checkout") on submit when checkout=false', () => {
     const pushMock = jest.fn();
     (useRouter as jest.Mock).mockReturnValue({ push: pushMock });
@@ -108,8 +136,13 @@ describe('CartSummary', () => {
 
   it('calls onOrderComplete when checkout and form submitted', () => {
     const onOrderCompleteMock = jest.fn();
+
     renderWithClient(
-      <CartSummary checkout onOrderComplete={onOrderCompleteMock} />
+      <CartSummary
+        checkout
+        onOrderComplete={onOrderCompleteMock}
+        paymentMethod="card"
+      />
     );
     fireEvent.click(screen.getByRole('button', { name: /Confirm & Pay/i }));
     expect(onOrderCompleteMock).toHaveBeenCalled();
@@ -122,7 +155,13 @@ describe('CartSummary', () => {
   });
 
   it('shows shipping and tax when checkout is true', () => {
-    renderWithClient(<CartSummary checkout />);
+    renderWithClient(
+      <CartSummary
+        checkout
+        shippingAmount={SHIPPING_AMOUNT}
+        taxPercent={TAX_PERCENT}
+      />
+    );
     expect(
       screen.getByText(`$${SHIPPING_AMOUNT.toFixed(2)}`)
     ).toBeInTheDocument();
@@ -155,14 +194,21 @@ describe('CartSummary', () => {
   });
 
   it('calculates finalTotal correctly', () => {
-    (useCart as jest.Mock).mockReturnValueOnce({
+    (useCart as jest.Mock).mockReturnValue({
       ...defaultCart,
-      subtotal: 100,
-      discountAmount: 0,
+      subtotal: 108,
+      discountAmount: 10,
+      getTotal: (shippingAmount: number, taxPercent: number) => {
+        return Number(
+          ((108 + shippingAmount - 10) * (1 + taxPercent / 100)).toFixed(2)
+        );
+      },
     });
 
-    const shippingAmount = 10;
-    const taxPercent = 10;
+    const shippingAmount = 20;
+    const taxPercent = 17;
+    const subtotal = 108;
+    const discountAmount = 10;
 
     renderWithClient(
       <CartSummary
@@ -172,16 +218,12 @@ describe('CartSummary', () => {
       />
     );
 
-    const expectedTotal = 100 + shippingAmount + (100 * taxPercent) / 100; // 100 + 10 + 10 = 120
+    const expectedTotal =
+      (subtotal + shippingAmount - discountAmount) * (1 + taxPercent / 100);
 
-    const totalText = screen.getByText((content, element) => {
-      return (
-        element?.tagName === 'H3' &&
-        content.includes(`$${expectedTotal.toFixed(2)}`)
-      );
-    });
+    const totalText = screen.getByTestId('total').textContent;
 
-    expect(totalText).toBeInTheDocument();
+    expect(totalText).toEqual(`$${expectedTotal.toFixed(2)}`);
   });
 
   it('shows "Shipping and tax will be calculated at checkout" when checkout is false', () => {
@@ -218,7 +260,7 @@ describe('CartSummary', () => {
       isLoading: true,
     });
 
-    renderWithClient(<CartSummary />);
+    renderWithClient(<CartSummary checkout />);
     expect(screen.queryByText(/-\$20\.00/)).not.toBeInTheDocument();
   });
 

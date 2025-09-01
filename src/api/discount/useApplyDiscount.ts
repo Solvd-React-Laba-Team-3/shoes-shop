@@ -39,6 +39,7 @@ export const useApplyDiscount = ({
     onSuccess: (result, variables) => {
       let newDiscountAmount = 0;
       let discountType: 'fixed' | 'percent' = 'fixed';
+      let percentOff: number | undefined;
 
       if (result.type === 'amount' && result.amountOff) {
         newDiscountAmount = result.amountOff;
@@ -46,12 +47,14 @@ export const useApplyDiscount = ({
       } else if (result.type === 'percent' && result.percentOff) {
         newDiscountAmount = (subtotal * result.percentOff) / 100;
         discountType = 'percent';
+        percentOff = result.percentOff;
       }
 
       setDiscount(
         result.code ?? variables.code,
         newDiscountAmount,
-        discountType
+        discountType,
+        percentOff
       );
 
       clearErrors('promoCode');

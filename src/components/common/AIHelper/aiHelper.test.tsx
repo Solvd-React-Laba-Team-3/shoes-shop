@@ -30,7 +30,7 @@ describe('AIHelper', () => {
   beforeEach(() => {
     jest.useFakeTimers();
     (useAIHelperChat as jest.Mock).mockReturnValue({
-      chat: [],
+      history: [],
       sendMessage: jest.fn(),
       isPending: false,
     });
@@ -42,13 +42,18 @@ describe('AIHelper', () => {
   });
 
   it('renders initial loading state with fallbacks', () => {
+    (useAIHelperChat as jest.Mock).mockReturnValue({
+      history: [],
+      sendMessage: jest.fn(),
+      isPending: true,
+    });
     render(<AIHelper />);
-    expect(screen.getAllByTestId(/fallback-/)).toHaveLength(3);
+    expect(screen.getAllByTestId(/fallback-/)).toHaveLength(1);
   });
 
   it('renders chat messages after loading', () => {
     (useAIHelperChat as jest.Mock).mockReturnValue({
-      chat: [{ content: 'Hello **world**', sender: 'user' }],
+      history: [{ content: 'Hello **world**', sender: 'user' }],
       sendMessage: jest.fn(),
       isPending: false,
     });
@@ -61,7 +66,7 @@ describe('AIHelper', () => {
 
   it('renders pending fallback when isPending is true', () => {
     (useAIHelperChat as jest.Mock).mockReturnValue({
-      chat: [],
+      history: [],
       sendMessage: jest.fn(),
       isPending: true,
     });
@@ -74,7 +79,7 @@ describe('AIHelper', () => {
 
   it('shows CircularProgress instead of SendIcon when isPending is true', () => {
     (useAIHelperChat as jest.Mock).mockReturnValue({
-      chat: [],
+      history: [],
       sendMessage: jest.fn(),
       isPending: true,
     });
@@ -87,7 +92,7 @@ describe('AIHelper', () => {
 
   it('renders markdown link correctly', () => {
     (useAIHelperChat as jest.Mock).mockReturnValue({
-      chat: [{ content: '[OpenAI](https://openai.com)', sender: 'assistant' }],
+      history: [{ content: '[OpenAI](https://openai.com)', sender: 'model' }],
       sendMessage: jest.fn(),
       isPending: false,
     });

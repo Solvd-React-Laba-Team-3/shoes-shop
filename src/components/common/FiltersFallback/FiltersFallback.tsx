@@ -6,8 +6,12 @@ import Skeleton from '@mui/material/Skeleton';
 
 export const FiltersFallback = () => (
   <Box
-    sx={{ width: '320px', paddingBottom: '200px' }}
     data-testid="filters-fallback"
+    sx={{
+      width: '320px',
+      paddingBottom: '200px',
+      display: { xs: 'none', md: 'block' },
+    }}
   >
     <Box sx={{ padding: '40px' }}>
       <Skeleton

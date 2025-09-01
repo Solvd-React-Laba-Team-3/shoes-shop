@@ -2,7 +2,7 @@
 
 import { Controller, useFormContext, useWatch } from 'react-hook-form';
 import { CheckoutSchema } from '../../app/checkout/checkout.schema';
-import { FC, useState } from 'react';
+import { FC } from 'react';
 import { Box, Typography, ToggleButtonGroup, Divider } from '@mui/material';
 import {
   FormErrorMessage,
@@ -10,42 +10,39 @@ import {
   Link,
   MenuItem,
   Select,
+  Tooltip,
 } from '../ui';
 import { theme } from '@/providers/ThemeProvider';
 import PaymentIcon from '@mui/icons-material/Payment';
 import GoogleIcon from '@mui/icons-material/Google';
-import MoneyIcon from '@mui/icons-material/AttachMoney';
-import ScheduleIcon from '@mui/icons-material/Schedule';
-import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
-import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
+import AppleIcon from '@mui/icons-material/Apple';
 import { CardElement } from '@stripe/react-stripe-js';
 import { StyledInputLabel } from '../ProductForm/productForm.styles';
 import { shippingCountries } from '@/constants/shippingCountries';
-import {
-  StyledChevronButton,
-  StyledPaymentMethod,
-} from './checkoutForm.styles';
+import { StyledPaymentMethod } from './checkoutForm.styles';
+import ChevronRightIcon from '@mui/icons-material/ChevronRight';
+import { PaymentMethod } from '@/types/PaymentMethod';
 
 interface CheckoutProps {
   error: boolean;
   cardError: string | null | undefined;
   setCardError: (error: string | null | undefined) => void;
+  availablePaymentMethods: PaymentMethod[];
 }
 
 const paymentMethods = [
   { value: 'card', label: 'Card', icon: PaymentIcon },
   { value: 'googlePay', label: 'Google Pay', icon: GoogleIcon },
-  { value: 'cashApp', label: 'Cash App Pay', icon: MoneyIcon },
-  { value: 'afterPay', label: 'After Payment', icon: ScheduleIcon },
+  { value: 'applePay', label: 'Apple Pay', icon: AppleIcon },
+  { value: 'link', label: 'Link', icon: ChevronRightIcon },
 ];
 
 export const CheckoutForm: FC<CheckoutProps> = ({
   error,
   cardError,
   setCardError,
+  availablePaymentMethods,
 }) => {
-  const [showCardFields, setShowCardFields] = useState(true);
-
   const {
     register,
     control,
@@ -58,7 +55,12 @@ export const CheckoutForm: FC<CheckoutProps> = ({
   });
 
   return (
-    <Box sx={{ maxWidth: 800 }}>
+    <Box
+      sx={{
+        maxWidth: { xl: '100%' },
+        width: { xs: '100%', xl: 'auto' },
+      }}
+    >
       <Link
         href="/cart"
         sx={{
@@ -73,26 +75,28 @@ export const CheckoutForm: FC<CheckoutProps> = ({
         Checkout
       </Typography>
 
-      <Typography variant="h6" sx={{ mt: 8, mb: 3 }}>
+      <Typography variant="h6" sx={{ mt: { xs: 4, md: 8 }, mb: 3 }}>
         Personal info
       </Typography>
       <Box
         sx={{
           display: 'grid',
-          gridTemplateColumns: '1fr 1fr',
-          gap: '12px',
+          gridTemplateColumns: { xs: '1fr', md: '1fr 1fr' },
+          gap: { xs: '0px', md: '12px' },
         }}
       >
         <LabeledTextfield
           label="Name"
           placeholder="Type your name..."
           errorMessage={errors.name?.message}
+          data-testid="textfield-Name"
           {...register('name')}
         />
         <LabeledTextfield
           label="Surname"
           placeholder="Type your surname..."
           errorMessage={errors.surname?.message}
+          data-testid="textfield-Surname"
           {...register('surname')}
         />
         <LabeledTextfield
@@ -100,26 +104,28 @@ export const CheckoutForm: FC<CheckoutProps> = ({
           label="Email"
           placeholder="example@gmail.com"
           errorMessage={errors.email?.message}
+          data-testid="textfield-Email"
           {...register('email')}
         />
         <LabeledTextfield
           label="Phone number"
           placeholder="(54) 9 114180-1332"
           errorMessage={errors.phone?.message}
+          data-testid="textfield-Phone number"
           {...register('phone')}
         />
       </Box>
 
-      <Divider sx={{ mt: 5, mb: 2 }} />
+      <Divider sx={{ mt: { xs: 2, md: 5 }, mb: 2 }} />
 
-      <Typography variant="h6" sx={{ mt: 9, mb: 3 }}>
+      <Typography variant="h6" sx={{ mt: { xs: 3, md: 9 }, mb: 3 }}>
         Shipping info
       </Typography>
       <Box
         sx={{
           display: 'grid',
-          gridTemplateColumns: 'repeat(4, 1fr)',
-          gap: '24px',
+          gridTemplateColumns: { xs: '1fr', md: 'repeat(3, 1fr)' },
+          gap: { xs: '0px', md: '24px' },
         }}
       >
         <Controller
@@ -139,26 +145,23 @@ export const CheckoutForm: FC<CheckoutProps> = ({
 
               <Select
                 displayEmpty
-                sx={{ padding: '4px' }}
+                sx={{
+                  padding: '4px',
+                  '& option': {
+                    fontSize: '16px',
+                    fontWeight: 400,
+                  },
+                }}
                 error={!!errors.country}
                 {...field}
                 renderValue={(value) => {
-                  if (!value)
-                    return (
-                      <Typography variant="body2" color="textSecondary">
-                        Select country
-                      </Typography>
-                    );
-                  return (
-                    <Typography sx={{ fontSize: '16px', fontWeight: 400 }}>
-                      {value as string}
-                    </Typography>
-                  );
+                  if (!value) return 'Select country';
+                  return value as string;
                 }}
               >
                 {shippingCountries.map((country) => (
                   <MenuItem key={country} value={country}>
-                    <Typography variant="caption">{country}</Typography>
+                    {country}
                   </MenuItem>
                 ))}
               </Select>
@@ -170,18 +173,14 @@ export const CheckoutForm: FC<CheckoutProps> = ({
           label="City"
           placeholder="New York"
           errorMessage={errors.city?.message}
+          data-testid="textfield-City"
           {...register('city')}
-        />
-        <LabeledTextfield
-          label="State"
-          placeholder="New York"
-          errorMessage={errors.state?.message}
-          {...register('state')}
         />
         <LabeledTextfield
           label="Zip Code"
           placeholder="3490583"
           errorMessage={errors.zipCode?.message}
+          data-testid="textfield-Zip Code"
           {...register('zipCode')}
         />
       </Box>
@@ -189,13 +188,14 @@ export const CheckoutForm: FC<CheckoutProps> = ({
         label="Address"
         errorMessage={errors.address?.message}
         placeholder="Street, apartment, block"
-        sx={{ width: '100%', maxWidth: '800px' }}
+        sx={{ width: '100%' }}
+        data-testid="textfield-Address"
         {...register('address')}
       />
 
       <Divider sx={{ mt: 6, mb: 2 }} />
 
-      <Typography variant="h6" sx={{ mt: 9, mb: 3 }}>
+      <Typography variant="h6" sx={{ mt: { xs: 3, md: 9 }, mb: 3 }}>
         Payment info
       </Typography>
 
@@ -216,51 +216,63 @@ export const CheckoutForm: FC<CheckoutProps> = ({
               exclusive
               value={field.value}
               onChange={(_, newValue) => {
-                if (newValue !== null) {
-                  field.onChange(newValue);
-                }
+                if (newValue !== null) field.onChange(newValue);
               }}
               sx={{
-                flexGrow: 1,
-                display: 'flex',
-                justifyContent: 'space-between',
+                display: 'grid',
+                gap: '10px',
+                width: '100%',
+                gridTemplateColumns: {
+                  xs: 'repeat(2, 1fr)',
+                  sm: 'repeat(2, 1fr)',
+                  md: 'repeat(4, 1fr)',
+                },
               }}
             >
-              {paymentMethods.map(({ value, label, icon: Icon }) => (
-                <StyledPaymentMethod
-                  key={value}
-                  value={value}
-                  onClick={() => setShowCardFields(true)}
-                >
-                  <Icon />
-                  {label}
-                </StyledPaymentMethod>
-              ))}
+              {paymentMethods.map(({ value, label, icon: Icon }) => {
+                const isDisabled = !availablePaymentMethods.includes(
+                  value as PaymentMethod
+                );
+
+                const paymentButton = (
+                  <StyledPaymentMethod
+                    key={value}
+                    value={value}
+                    disabled={isDisabled}
+                  >
+                    <Icon />
+                    {label}
+                  </StyledPaymentMethod>
+                );
+
+                if (isDisabled) {
+                  return (
+                    <Tooltip
+                      key={value}
+                      title="Your browser doesn't support this method"
+                      block
+                    >
+                      {paymentButton}
+                    </Tooltip>
+                  );
+                }
+
+                return paymentButton;
+              })}
             </ToggleButtonGroup>
-            <StyledChevronButton
-              variant="outlined"
-              disableRipple
-              onClick={() => setShowCardFields((prev) => !prev)}
-            >
-              {showCardFields ? (
-                <KeyboardArrowDownIcon />
-              ) : (
-                <KeyboardArrowUpIcon />
-              )}
-            </StyledChevronButton>
           </Box>
         )}
       />
-
-      {paymentMethod === 'card' && showCardFields && (
-        <Box sx={{ mt: 2 }}>
+      {paymentMethod === 'card' && (
+        <>
           <Box
             sx={{
               border: `1px solid ${theme.palette.secondary.dark}`,
               borderRadius: '8px',
               p: 2,
-              maxWidth: '100%',
+              width: '100%',
               height: '56px',
+              mt: 2,
             }}
           >
             <CardElement
@@ -291,9 +303,9 @@ export const CheckoutForm: FC<CheckoutProps> = ({
               }}
             />
           </Box>
-        </Box>
+          <FormErrorMessage message={cardError} />
+        </>
       )}
-      <FormErrorMessage message={cardError} />
       {error && <FormErrorMessage message="Payment failed" />}
       <Divider sx={{ mt: 6, mb: 2 }} />
     </Box>

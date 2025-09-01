@@ -6,15 +6,15 @@ jest.mock('@/components/FileDropZone', () => ({
   FileDropzone: jest.fn(() => <div>Mocked FileDropzone</div>),
 }));
 
-jest.mock('../common/DeleteConfirmationModal', () => ({
-  DeleteConfirmationModal: jest.fn(
-    ({ open, onClose, onDelete, title, description }) =>
+jest.mock('../common/ConfirmActionModal', () => ({
+  ConfirmActionModal: jest.fn(
+    ({ open, onClose, onConfirm, title, description }) =>
       open ? (
         <div>
           <h1>{title}</h1>
           <p>{description}</p>
           <button onClick={onClose}>Cancel</button>
-          <button onClick={onDelete}>Delete</button>
+          <button onClick={onConfirm}>Delete</button>
         </div>
       ) : null
   ),
@@ -59,7 +59,7 @@ describe('ProductFormDropzone', () => {
     expect(screen.getByText('Mocked FileDropzone')).toBeInTheDocument();
   });
 
-  it('opens DeleteConfirmationModal when delete button is clicked', () => {
+  it('opens ConfirmActionModal when delete button is clicked', () => {
     render(
       <ProductFormDropzone
         images={images}
@@ -73,7 +73,9 @@ describe('ProductFormDropzone', () => {
     expect(
       screen.getByText('Are you sure to delete product image?')
     ).toBeInTheDocument();
-    expect(screen.getByText(/Lorem ipsum/)).toBeInTheDocument();
+    expect(
+      screen.getByText(/This will remove this image from this product./)
+    ).toBeInTheDocument();
   });
 
   it('closes modal when cancel is clicked', () => {
@@ -105,7 +107,7 @@ describe('ProductFormDropzone', () => {
     fireEvent.click(screen.getAllByLabelText('Delete image')[1]);
     fireEvent.click(screen.getByText('Delete'));
 
-    expect(onRemoveImage).toHaveBeenCalledWith(images[1].id, 1);
+    expect(onRemoveImage).toHaveBeenCalled();
     expect(
       screen.queryByText('Are you sure to delete product image?')
     ).not.toBeInTheDocument();

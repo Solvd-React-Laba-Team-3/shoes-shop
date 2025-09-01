@@ -12,7 +12,11 @@ const StyledContainer = styled(Box)(({ theme }) => ({
   padding: '60px 85px',
   gap: '48px',
   [theme.breakpoints.down('sm')]: {
-    padding: '20px 30px',
+    padding: '20px 12px',
+    gap: '24px',
+  },
+  [theme.breakpoints.down('md')]: {
+    padding: '30px 16px',
     gap: '24px',
   },
   [theme.breakpoints.down('xl')]: {
@@ -37,7 +41,7 @@ export default function Cart() {
               flex: 2,
               minWidth: 0,
               flexShrink: 1,
-              width: { xs: '100%', xl: '700px' },
+              width: { xs: '100%' },
             }}
           >
             <Typography
@@ -76,14 +80,6 @@ export default function Cart() {
               width: { xs: '100%', xl: '400px' },
             }}
           >
-            <Typography
-              variant="h2"
-              sx={{
-                mb: { xs: 2, sm: 3, md: 4 },
-              }}
-            >
-              Summary
-            </Typography>
             <CartSummary checkout={false} />
           </Stack>
         </StyledContainer>

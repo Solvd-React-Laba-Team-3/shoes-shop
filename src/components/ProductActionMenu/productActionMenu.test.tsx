@@ -23,15 +23,15 @@ jest.mock('../common/EditProductModal', () => ({
   ),
 }));
 
-jest.mock('../common/DeleteConfirmationModal', () => ({
-  DeleteConfirmationModal: ({
+jest.mock('../common/ConfirmActionModal', () => ({
+  ConfirmActionModal: ({
     open,
-    onDelete,
+    onConfirm,
     onClose,
     title,
   }: {
     open: boolean;
-    onDelete: () => void;
+    onConfirm: () => void;
     onClose: () => void;
     title: string;
   }) => (
@@ -39,7 +39,7 @@ jest.mock('../common/DeleteConfirmationModal', () => ({
       {open && (
         <>
           <span>{title}</span>
-          <button onClick={onDelete}>DeleteConfirm</button>
+          <button onClick={onConfirm}>DeleteConfirm</button>
           <button onClick={onClose}>CloseModal</button>
         </>
       )}
@@ -173,7 +173,7 @@ describe('ProductActionMenu', () => {
     });
   });
 
-  it('opens DeleteConfirmationModal when clicking "Delete"', () => {
+  it('opens ConfirmActionModal when clicking "Delete"', () => {
     render(<ProductActionMenu product={mockProduct} />);
     fireEvent.click(screen.getByRole('button'));
     fireEvent.click(screen.getByText('Delete'));
@@ -190,7 +190,7 @@ describe('ProductActionMenu', () => {
     expect(mockDelete).toHaveBeenCalledWith({ id: mockProduct.id });
   });
 
-  it('closes DeleteConfirmationModal on close', () => {
+  it('closes ConfirmActionModal on close', () => {
     render(<ProductActionMenu product={mockProduct} />);
     fireEvent.click(screen.getByRole('button'));
     fireEvent.click(screen.getByText('Delete'));

@@ -8,17 +8,25 @@ interface Message {
   sender: 'user' | 'model';
 }
 
+interface ChatState {
+  history: Message[];
+  isCollapsed: boolean;
+}
+
 export const useAIHelperChat = () => {
   const [isPending, setIsPending] = useState(false);
 
-  const { value: chat, setValue: setChat } = useLocalStorage<Message[]>(
-    'chat-history',
-    [
-      {
-        content: 'Hello, how can I help you today?',
-        sender: 'model',
-      },
-    ]
+  const { value: chat, setValue: setChat } = useLocalStorage<ChatState>(
+    'chat',
+    {
+      history: [
+        {
+          content: 'Hello, how can I help you today?',
+          sender: 'model',
+        },
+      ],
+      isCollapsed: false,
+    }
   );
 
   const chatClient = geminiModel.startChat({
@@ -27,7 +35,7 @@ export const useAIHelperChat = () => {
         role: 'user',
         parts: [{ text: AI_HELPER_PROMPT }],
       },
-      ...chat.map((message) => ({
+      ...chat.history.map((message) => ({
         role: message.sender,
         parts: [{ text: message.content }],
       })),
@@ -38,7 +46,10 @@ export const useAIHelperChat = () => {
   });
 
   const sendMessage = async (prompt: string) => {
-    const updatedChat = [...chat, { content: prompt, sender: 'user' as const }];
+    const updatedChat = {
+      ...chat,
+      history: [...chat.history, { content: prompt, sender: 'user' as const }],
+    };
     setChat(updatedChat);
     setIsPending(true);
 
@@ -47,7 +58,13 @@ export const useAIHelperChat = () => {
       const response = await result.response;
       const message = response.text();
 
-      setChat([...updatedChat, { content: message, sender: 'model' }]);
+      setChat({
+        ...updatedChat,
+        history: [
+          ...updatedChat.history,
+          { content: message, sender: 'model' },
+        ],
+      });
     } catch (error) {
       console.error(error);
     } finally {
@@ -55,5 +72,19 @@ export const useAIHelperChat = () => {
     }
   };
 
-  return { chat, setChat, sendMessage, isPending };
+  const toggleCollapsed = () => {
+    setChat({
+      ...chat,
+      isCollapsed: !chat.isCollapsed,
+    });
+  };
+
+  return {
+    history: chat.history,
+    isCollapsed: chat.isCollapsed,
+    setChat,
+    sendMessage,
+    isPending,
+    toggleCollapsed,
+  };
 };

@@ -1,8 +1,8 @@
 import { render, screen, fireEvent } from '@testing-library/react';
-import { DeleteConfirmationModal } from './DeleteConfirmationModal';
+import { ConfirmActionModal } from './ConfirmActionModal';
 import React from 'react';
 
-describe('DeleteConfirmationModal', () => {
+describe('ConfirmActionModal', () => {
   const title = 'Delete Item';
   const description = 'Are you sure you want to delete this item?';
   const onClose = jest.fn();
@@ -10,12 +10,14 @@ describe('DeleteConfirmationModal', () => {
 
   const renderComponent = (props = {}) =>
     render(
-      <DeleteConfirmationModal
+      <ConfirmActionModal
         open={true}
         title={title}
         description={description}
         onClose={onClose}
-        onDelete={onDelete}
+        onConfirm={onDelete}
+        cancelText="Cancel"
+        confirmText="Delete"
         {...props}
       />
     );
@@ -37,7 +39,7 @@ describe('DeleteConfirmationModal', () => {
   });
 
   it('renders custom cancel and delete button text', () => {
-    renderComponent({ cancelText: 'No', deleteText: 'Yes' });
+    renderComponent({ cancelText: 'No', confirmText: 'Yes' });
     expect(screen.getByRole('button', { name: /no/i })).toBeInTheDocument();
     expect(screen.getByRole('button', { name: /yes/i })).toBeInTheDocument();
   });

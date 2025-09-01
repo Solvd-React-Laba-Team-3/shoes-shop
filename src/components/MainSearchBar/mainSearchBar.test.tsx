@@ -12,6 +12,12 @@ import { getPopularSearchTerms } from '@/api/gemini/getPopularSearchTermsOptions
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { usePathname } from 'next/navigation';
 
+function resizeWindow(width: number, height: number) {
+  window.innerWidth = width;
+  window.innerHeight = height;
+  window.dispatchEvent(new Event('resize'));
+}
+
 const mockPush = jest.fn();
 const mockSearchParams = new Map<string, string>();
 
@@ -23,6 +29,12 @@ const createTestQueryClient = () =>
       },
     },
   });
+
+const mockUseMediaQuery = jest.fn();
+jest.mock('@mui/material/useMediaQuery', () => ({
+  __esModule: true,
+  default: (query: string) => mockUseMediaQuery(query),
+}));
 
 const renderWithQueryClient = (ui: React.ReactElement) => {
   const testQueryClient = createTestQueryClient();
@@ -335,10 +347,10 @@ describe('MainSearchBar', () => {
 
   describe('MainSearchBar - Mobile behavior', () => {
     it('should render search icon button when mobile and not focused, and open search on click', async () => {
-      const { useDeviceSize } = jest.requireMock('@/lib/hooks');
-      (useDeviceSize as jest.Mock).mockReturnValue({ isMobile: true });
+      mockUseMediaQuery.mockReturnValue(true);
 
       renderWithQueryClient(<MainSearchBar />);
+      resizeWindow(420, 800);
 
       const mobileBtn = screen.getByRole('button');
       expect(mobileBtn).toBeInTheDocument();

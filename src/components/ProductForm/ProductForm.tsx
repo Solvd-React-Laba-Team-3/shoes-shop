@@ -30,7 +30,6 @@ import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 import { ProductFormDropzone } from '../ProductFormDropzone';
-import { PRODUCT_IMAGES_LIMIT } from '@/constants/productImagesLimit';
 import { TempImage } from '@/types/TempImage';
 import Image from 'next/image';
 import suggestionCollapsedIcon from '../../../public/suggestion-collapsed-icon.png';
@@ -78,7 +77,6 @@ export const ProductForm: FC<ProductFormProps> = ({
     handleSubmit,
     formState: { isSubmitting },
     formState: { errors },
-    setError,
     watch,
     setValue,
   } = useForm<ProductFormData>({
@@ -118,14 +116,6 @@ export const ProductForm: FC<ProductFormProps> = ({
   };
 
   const handleFormSubmit = (data: ProductFormData) => {
-    if (images.length > PRODUCT_IMAGES_LIMIT) {
-      setError('root', {
-        message: `You can only upload up to ${PRODUCT_IMAGES_LIMIT} images`,
-        type: 'manual',
-      });
-
-      return;
-    }
     onSubmit(data);
   };
 
@@ -157,7 +147,12 @@ export const ProductForm: FC<ProductFormProps> = ({
         />
       )}
       <Box
-        sx={{ display: 'flex', flexDirection: 'column', gap: '40px' }}
+        sx={{
+          display: 'flex',
+          flexDirection: 'column',
+          gap: { xs: '12px', md: '40px' },
+          width: 'unset',
+        }}
         component="form"
         noValidate
         autoComplete="off"
@@ -166,13 +161,19 @@ export const ProductForm: FC<ProductFormProps> = ({
         <Box
           sx={{
             display: 'flex',
-            justifyContent: 'space-between',
             flexDirection: { xs: 'column', md: 'row' },
+            justifyContent: 'space-between',
             alignItems: { xs: 'flex-start', md: 'center' },
             gap: { xs: 2, md: 0 },
           }}
         >
-          <Box sx={{ display: 'flex', flexDirection: 'column', gap: '35px' }}>
+          <Box
+            sx={{
+              display: 'flex',
+              flexDirection: 'column',
+              gap: { xs: '12px', md: '35px' },
+            }}
+          >
             <Typography variant="h2">{title}</Typography>
             <Typography
               variant="caption"
@@ -183,7 +184,7 @@ export const ProductForm: FC<ProductFormProps> = ({
           </Box>
           <Box
             sx={{
-              display: 'flex',
+              display: { xs: 'none', md: 'flex' },
               flexDirection: 'column',
               gap: '8px',
               alignItems: { xs: 'flex-start', md: 'flex-end' },
@@ -202,8 +203,9 @@ export const ProductForm: FC<ProductFormProps> = ({
         <Box
           sx={{
             display: 'flex',
-            flexDirection: { xs: 'column', md: 'row' },
-            gap: { xs: 4, md: '234px' },
+            gap: { xs: '16px', xl: '100px', xxl: '200px' },
+            flexDirection: { xs: 'column', xl: 'row' },
+            maxWidth: '1200px',
           }}
         >
           <Box
@@ -247,6 +249,7 @@ export const ProductForm: FC<ProductFormProps> = ({
                   sx={{
                     display: 'flex',
                     flexDirection: 'column',
+                    flexGrow: '1',
                     gap: '2px',
                   }}
                 >
@@ -286,7 +289,8 @@ export const ProductForm: FC<ProductFormProps> = ({
                 render={({ field }) => (
                   <Box
                     sx={{
-                      width: '210px',
+                      width: { md: '210px' },
+                      flexGrow: '1',
                       display: 'flex',
                       flexDirection: 'column',
                       gap: '2px',
@@ -331,7 +335,8 @@ export const ProductForm: FC<ProductFormProps> = ({
                 render={({ field }) => (
                   <Box
                     sx={{
-                      width: '210px',
+                      width: { md: '210px' },
+                      flexGrow: '1',
                       display: 'flex',
                       flexDirection: 'column',
                       gap: '2px',
@@ -386,7 +391,7 @@ export const ProductForm: FC<ProductFormProps> = ({
                       {...field}
                       aria-label="Description"
                       minRows={3}
-                      placeholder="Lorem ipsum, or lipsum as it is sometimes known, is dummy text used in laying out print, graphic or web designs. The passage is attributed to an unknown typesetter in the 15th century who is thought to have scrambled parts of Cicero's De Finibus Bonorum et Malorum for use in a type specimen book. It usually begins with"
+                      placeholder="Enter description..."
                       sx={{
                         border: (theme) =>
                           errors.description
@@ -440,22 +445,21 @@ export const ProductForm: FC<ProductFormProps> = ({
                     <ToggleButtonGroup
                       size="small"
                       sx={{
-                        maxWidth: '436px',
-                        flexWrap: 'wrap',
+                        maxWidth: { xs: '100%', xl: '436px' },
+                        display: 'grid',
+                        gridTemplateColumns:
+                          'repeat(auto-fit, minmax(85px, 1fr))',
                         gap: '12px',
                         mt: '8px',
                       }}
                     >
-                      {sizes.map((size, index, arr) => {
+                      {sizes.map((size) => {
                         const isSelected = (field.value || []).some(
                           (selectedSize) => selectedSize === size.id
                         );
 
                         return (
-                          <Box
-                            key={size.id}
-                            sx={{ mr: index < arr.length - 1 ? 0.39 : 0 }}
-                          >
+                          <Box key={size.id}>
                             <ToggleButton
                               value={size.id}
                               selected={isSelected}
@@ -464,6 +468,7 @@ export const ProductForm: FC<ProductFormProps> = ({
                                 height: 48,
                                 width: 74,
                                 minWidth: 74,
+                                border: '1px solid secondary.dark',
                               }}
                               onClick={() =>
                                 handleToggleSize(
@@ -485,12 +490,31 @@ export const ProductForm: FC<ProductFormProps> = ({
               }}
             />
           </Box>
-          <Box sx={{ width: { xs: '100%', md: '692px' }, maxWidth: '100%' }}>
+          <Box
+            sx={{
+              width: { xs: 'min(100%, 300px)', md: '692px' },
+              alignSelf: { xs: 'center', sm: 'unset' },
+            }}
+          >
             <ProductFormDropzone
               images={images}
               onRemoveImage={onRemoveImage}
               handleFilesDropped={handleFilesDropped}
             />
+          </Box>
+          <Box
+            sx={{
+              display: { xs: 'flex', md: 'none' },
+              flexDirection: 'column',
+              gap: '8px',
+              alignItems: 'flex-end',
+              marginTop: '16px',
+            }}
+          >
+            <Button type="submit" fullWidth loading={isSubmitting || isPending}>
+              Save
+            </Button>
+            <FormErrorMessage message={errors.root?.message} />
           </Box>
         </Box>
       </Box>

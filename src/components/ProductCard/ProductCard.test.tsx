@@ -6,13 +6,12 @@ import { ReactNode } from 'react';
 import { getGenderText } from './ProductCard';
 import { useWishlist } from '@/lib/hooks';
 
-jest.mock('next/image', () => ({
-  __esModule: true,
-  default: ({ src, alt }: { src: string; alt: string }) => (
+jest.mock('next/image', () => {
+  return function NextImage({ src, alt }: { src: string; alt: string }) {
     // eslint-disable-next-line @next/next/no-img-element
-    <img src={src} alt={alt} />
-  ),
-}));
+    return <img src={src} alt={alt} />;
+  };
+});
 
 jest.mock('next/link', () => {
   const MockNextLink = ({

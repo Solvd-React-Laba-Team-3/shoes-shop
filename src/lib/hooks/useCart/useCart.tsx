@@ -8,6 +8,7 @@ interface CartState {
   discountCode?: string;
   discountAmount?: number;
   discountType?: 'fixed' | 'percent';
+  discountPercent?: number;
 }
 
 export const useCart = () => {
@@ -62,13 +63,15 @@ export const useCart = () => {
   const setDiscount = (
     code?: string,
     amount?: number,
-    type?: 'fixed' | 'percent'
+    type?: 'fixed' | 'percent',
+    percent?: number
   ) => {
     setCartState({
       ...cartState,
       discountCode: code,
       discountAmount: amount,
       discountType: type,
+      discountPercent: percent,
     });
   };
 
@@ -104,8 +107,17 @@ export const useCart = () => {
     }
   }
 
+  if (cartState.discountType === 'percent' && cartState.discountPercent) {
+    discountAmount = (subtotal * cartState.discountPercent) / 100;
+  }
+
   const getTotal = (shippingAmount: number, taxPercent: number) => {
-    return (subtotal + shippingAmount) * (1 + taxPercent / 100);
+    return Number(
+      (
+        (subtotal + shippingAmount - discountAmount) *
+        (1 + taxPercent / 100)
+      ).toFixed(2)
+    );
   };
 
   return {

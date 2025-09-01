@@ -4,6 +4,10 @@
   margin: 0;
 }
 
+body {
+  padding-bottom: 60px; /* reserved space for AIHelper */
+}
+
 input[type='number']::-webkit-inner-spin-button,
 input[type='number']::-webkit-outer-spin-button {
   -webkit-appearance: none;

@@ -111,8 +111,14 @@ export const EditProductModal: FC<EditPageProps> = ({
       onClose={onClose}
       sx={{
         '& .MuiDialog-paper': {
-          minWidth: '1487px',
-          padding: '53px 40px 40px 85px',
+          width: { xs: '95%' },
+          maxWidth: 'unset',
+          padding: {
+            xs: '12px 16px',
+            sm: '12px 24px',
+            md: '53px 40px 40px 85px',
+          },
+          margin: '10px',
         },
       }}
     >
@@ -132,7 +138,7 @@ export const EditProductModal: FC<EditPageProps> = ({
       >
         <ProductForm
           title="Edit product"
-          description="Lorem ipsum, or lipsum as it is sometimes known, is dummy text used in laying out print, graphic or web designs. The passage is attributed to an unknown typesetter in the 15th century who is thought to have scrambled parts of Cicero's De Finibus Bonorum et Malorum for use in a type specimen book. It usually begins with"
+          description="Edit your product there! You can add multiple images and sizes. Try using AI to generate a description for your product. Don't forget to add a brand and a gender to your product."
           onSubmit={handleSubmit}
           isPending={isPending || isUploading}
           images={images}

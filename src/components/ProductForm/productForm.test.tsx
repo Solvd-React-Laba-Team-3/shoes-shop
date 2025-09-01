@@ -1,16 +1,9 @@
-import {
-  render,
-  screen,
-  fireEvent,
-  waitFor,
-  within,
-} from '@testing-library/react';
+import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { ProductForm, handleToggleSize } from './';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ThemeProvider } from '@mui/material';
 import { theme } from '@/providers/ThemeProvider';
 import { ProductFormData } from './productForm.schema';
-import { PRODUCT_IMAGES_LIMIT } from '@/constants/productImagesLimit';
 import { TempImage } from '@/types/TempImage';
 
 const mockData = {
@@ -156,7 +149,7 @@ describe('ProductForm', () => {
       const onSubmit = jest.fn();
       renderProductForm({ onSubmit });
 
-      const submitButton = screen.getByText('Save');
+      const submitButton = screen.getAllByText('Save')[0];
       fireEvent.click(submitButton);
 
       await waitFor(() => {
@@ -222,7 +215,7 @@ describe('ProductForm', () => {
 
       fireEvent.click(screen.getByRole('button', { name: '36' }));
 
-      fireEvent.click(screen.getByText('Save'));
+      fireEvent.click(screen.getAllByText('Save', { selector: 'button' })[0]);
 
       await waitFor(() => {
         expect(onSubmit).toHaveBeenCalledWith(
@@ -266,40 +259,6 @@ describe('ProductForm', () => {
       expect(onChangeMock).toHaveBeenCalledWith([]);
     });
 
-    it('should show root error when images exceed limit', async () => {
-      const onSubmit = jest.fn();
-      const images = Array(PRODUCT_IMAGES_LIMIT + 1).fill({
-        id: 1,
-        url: 'https://fakestoreapi.com/img/test.jpg',
-      });
-
-      renderProductForm({
-        onSubmit,
-        editingProduct: {
-          ...validFormData,
-          color: validFormData.color.toString(),
-          gender: validFormData.gender.toString(),
-          brand: validFormData.brand.toString(),
-        },
-        images,
-      });
-
-      fireEvent.click(screen.getByRole('button', { name: /save/i }));
-
-      const saveBox = screen.getByRole('button', { name: /save/i })
-        .parentElement as HTMLElement;
-
-      await waitFor(() => {
-        expect(
-          within(saveBox).getByText(
-            `You can only upload up to ${PRODUCT_IMAGES_LIMIT} images`
-          )
-        ).toBeInTheDocument();
-      });
-
-      expect(onSubmit).not.toHaveBeenCalled();
-    });
-
     it('should show LinearProgress when isPending is true', () => {
       renderProductForm({ isPending: true });
 
@@ -316,7 +275,8 @@ describe('ProductForm', () => {
       );
       renderProductForm({ onSubmit });
 
-      fireEvent.click(screen.getByText('Save'));
+      fireEvent.click(screen.getAllByText('Save', { selector: 'button' })[0]);
+
       const linearProgressBars = screen.getAllByRole('progressbar');
       const linearProgress = linearProgressBars.find((el) =>
         el.className.includes('MuiLinearProgress-root')
