@@ -19,4 +19,5 @@ export interface Order {
   paymentMethod: string;
   decline_reason?: string;
   latest_charge?: string;
+  isOmitted?: boolean;
 }
