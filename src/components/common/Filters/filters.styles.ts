@@ -1,4 +1,4 @@
-import { Box, Drawer, FormLabel } from '@mui/material';
+import { Box, Drawer, FormLabel, IconButton, TextField } from '@mui/material';
 import { styled } from '@mui/material/styles';
 
 export const StyledCloseWrapper = styled(Box)(() => ({
@@ -54,4 +54,40 @@ export const StyledPricesContainer = styled(FormLabel)(() => ({
   mt: 2,
   gap: '6px',
   width: '100%',
+}));
+
+export const StyledHeaderBox = styled(Box)(() => ({
+  display: 'flex',
+  padding: '0 20px 0 40px',
+  alignItems: 'center',
+  justifyContent: 'space-between',
+  backgroundColor: 'var(--mui-palette-background-paper)',
+  zIndex: 10,
+  paddingBottom: '12px',
+  flexShrink: 0,
+}));
+
+export const StyledHeaderButton = styled(IconButton)(() => ({
+  cursor: 'pointer',
+  zIndex: 1000,
+  color: 'var(--mui-palette-text-secondary)',
+}));
+
+export const StyledSectionBox = styled(Box)(() => ({
+  paddingLeft: '40px',
+}));
+
+export const StyledRowBox = styled(Box)(() => ({
+  display: 'flex',
+  alignItems: 'center',
+}));
+
+export const StyledTextField = styled(TextField)(() => ({
+  width: 50,
+  '& .MuiOutlinedInput-input': {
+    borderRadius: '6px',
+    fontSize: 12,
+    padding: '4px',
+    textAlign: 'center',
+  },
 }));
