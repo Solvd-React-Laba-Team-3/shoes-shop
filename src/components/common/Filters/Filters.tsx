@@ -34,6 +34,7 @@ import {
   StyledSectionBox,
   StyledRowBox,
   StyledTextField,
+  StyledBox,
 } from './filters.styles';
 import { HEADER_HEIGHT } from '@/constants/headerHeight';
 
@@ -127,18 +128,7 @@ export const Filters: FC<DrawerProps> = ({ ...props }) => {
           </Typography>
         </Box>
       )}
-      <Box
-        display="flex"
-        flexDirection="column"
-        sx={{
-          gap: { xs: '12px', md: '28px' },
-          overflow: { xs: 'auto', md: 'visible' },
-          flex: { xs: '1 1 auto', md: 'unset' },
-          paddingBottom: { xs: '20px', md: '0' },
-          minHeight: { xs: 0, md: 'auto' },
-        }}
-        width="320px"
-      >
+      <StyledBox>
         <Divider sx={{ display: { xs: 'none', md: 'block' } }} />
         <StyledSectionBox>
           <Accordion label="Gender" defaultExpanded>
@@ -311,7 +301,7 @@ export const Filters: FC<DrawerProps> = ({ ...props }) => {
             </Box>
           </Accordion>
         </StyledSectionBox>
-      </Box>
+      </StyledBox>
     </StyledDrawer>
   );
 };

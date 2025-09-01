@@ -91,3 +91,22 @@ export const StyledTextField = styled(TextField)(() => ({
     textAlign: 'center',
   },
 }));
+
+export const StyledBox = styled('div')(({ theme }) => ({
+  display: 'flex',
+  flexDirection: 'column',
+  width: '320px',
+  gap: theme.spacing(1.5, 3.5),
+  overflow: 'auto',
+  flex: '1 1 auto',
+  paddingBottom: '20px',
+  minHeight: 0,
+
+  [theme.breakpoints.up('md')]: {
+    gap: theme.spacing(3.5),
+    overflow: 'visible',
+    flex: 'unset',
+    paddingBottom: 0,
+    minHeight: 'auto',
+  },
+}));
