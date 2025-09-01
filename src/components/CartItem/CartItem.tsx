@@ -154,6 +154,7 @@ export const CartItem: FC<CartProduct> = ({
                 </Typography>
                 <IconButton
                   size="small"
+                  data-cy="increaseButton"
                   sx={(theme) => ({
                     width: '20px',
                     height: '20px',

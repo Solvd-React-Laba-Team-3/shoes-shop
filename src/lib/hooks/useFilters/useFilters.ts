@@ -41,14 +41,6 @@ export const useFilters = () => {
     searchParams.delete('filters');
   }, [searchParams]);
 
-  const priceInput = useMemo<[number, number]>(
-    () => [
-      currentFilters?.price?.$gte || 1,
-      currentFilters?.price?.$lte || 10000,
-    ],
-    [currentFilters?.price]
-  );
-
   const toggleSelection = (key: string, checked: boolean, value?: number) => {
     {
       const existing = normalizeToUniqueArray(currentFilters[key]?.id?.$in);
@@ -68,7 +60,6 @@ export const useFilters = () => {
     currentFilters,
     updateFilters,
     clearFilters,
-    priceInput,
     toggleSelection,
   };
 };

@@ -73,7 +73,7 @@ export const ConfirmActionModal: FC<ConfirmActionModalProps> = ({
         <Button variant="outlined" onClick={onClose}>
           {cancelText}
         </Button>
-        <Button variant="contained" onClick={onConfirm}>
+        <Button variant="contained" data-cy="deleteItem" onClick={onConfirm}>
           {confirmText}
         </Button>
       </DialogActions>

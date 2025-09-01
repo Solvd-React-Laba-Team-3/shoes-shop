@@ -17,7 +17,13 @@ import SearchIcon from '@mui/icons-material/Search';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useDebounce, useSearchParams } from '@/lib/hooks';
-import { List, Typography, useMediaQuery, useTheme } from '@mui/material';
+import {
+  List,
+  NoSsr,
+  Typography,
+  useMediaQuery,
+  useTheme,
+} from '@mui/material';
 import { useQuery } from '@tanstack/react-query';
 import { getPopularSearchTermsOptions } from '@/api/gemini/getPopularSearchTermsOptions';
 import { MIN_SEARCH_LENGTH } from '@/constants/minSearchLength';
@@ -100,7 +106,7 @@ export const MainSearchBar = () => {
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
 
   return (
-    <>
+    <NoSsr>
       {isFocused && <Overlay data-testid="overlay" onClick={handleClose} />}
       {isFocused && (
         <>
@@ -186,6 +192,6 @@ export const MainSearchBar = () => {
           )}
         </MainSearchBarContainer>
       )}
-    </>
+    </NoSsr>
   );
 };

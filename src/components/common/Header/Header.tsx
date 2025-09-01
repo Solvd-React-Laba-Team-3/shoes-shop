@@ -61,7 +61,8 @@ export const Header = () => {
           <Link href="/">
             <Image src={logo} alt="logo" width={40} height={30} />
           </Link>
-          {
+
+          <Link href="/">
             <Typography
               sx={{ display: { xs: 'none', md: 'inline' } }}
               variant="subtitle2"
@@ -69,7 +70,7 @@ export const Header = () => {
             >
               Products
             </Typography>
-          }
+          </Link>
         </Box>
         <Box
           sx={{
@@ -99,7 +100,8 @@ export const Header = () => {
             <IconButton
               onClick={() => router.push('/cart')}
               color="secondary"
-              sx={{ padding: '0px' }}
+              title="Go to Cart"
+              sx={{ padding: 0 }}
             >
               <Badge
                 badgeContent={totalItems}
