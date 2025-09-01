@@ -9,6 +9,10 @@
     "lint": "next lint",
     "format": "prettier --write .",
     "test": "jest",
+    "cypress:open": "cypress open",
+    "cypress:run": "cypress run",
+    "e2e": "start-server-and-test dev http://localhost:3000 cypress:run",
+    "e2e:open": "start-server-and-test dev http://localhost:3000 cypress:open",
     "prepare": "husky install"
   },
   "dependencies": {
@@ -44,6 +48,7 @@
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "cypress": "^15.0.0",
     "eslint": "^9",
     "eslint-config-next": "15.3.5",
     "eslint-plugin-react-hooks": "^5.2.0",
@@ -53,6 +58,7 @@
     "lint-staged": "^16.1.2",
     "prettier": "^3.6.2",
     "sharp": "^0.34.3",
+    "start-server-and-test": "^2.0.8",
     "ts-node": "^10.9.2",
     "typescript": "^5",
     "typescript-eslint": "^8.36.0"
