@@ -23,7 +23,7 @@ const StyledDrawer = styled(MuiDrawer, {
 })<{ isMobile: boolean }>(({ theme, isMobile }) => ({
   maxWidth: '320px',
   zIndex: isMobile ? 1000 : 800,
-  width: '260px',
+  width: '320px',
   position: 'relative',
 
   [theme.breakpoints.down('lg')]: {
