@@ -39,7 +39,7 @@ export async function GET(req: Request) {
     });
     await browser.close();
 
-    return new NextResponse(pdfBuffer, {
+    return new NextResponse(Buffer.from(pdfBuffer), {
       headers: {
         'Content-Disposition': `attachment; filename="${decodeURIComponent(filename)}"`,
         'Content-Type': 'application/pdf',

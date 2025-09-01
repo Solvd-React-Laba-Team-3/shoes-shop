@@ -7,3 +7,4 @@ export { flatStrapiData } from './flatStrapiData/flatStrapiData';
 export { splitProducts } from './splitProducts/splitProducts';
 export { formatDate } from './formatDate/formatDate';
 export { normalizeToUniqueArray } from './normalizeUniqueArray/normalizeUniqueArray';
+export { isCypressTest } from './isCypressTest/isCypressTest';
