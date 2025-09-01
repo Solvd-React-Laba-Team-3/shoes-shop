@@ -11,12 +11,62 @@ import PreviewIcon from '@mui/icons-material/Preview';
 import Avatar from '@mui/material/Avatar';
 import Typography from '@mui/material/Typography';
 import { signOut, useSession } from 'next-auth/react';
-import { Button, IconButton, Link } from '@/components/ui';
+import { Button as MuiButton, IconButton, Link } from '@/components/ui';
 import { usePathname } from 'next/navigation';
 import { HEADER_HEIGHT } from '@/constants/headerHeight';
-import Drawer, { DrawerProps } from '@mui/material/Drawer';
+import MuiDrawer, { DrawerProps } from '@mui/material/Drawer';
 import { FC } from 'react';
-import { useMediaQuery, useTheme } from '@mui/material';
+import { styled, useMediaQuery, useTheme } from '@mui/material';
+
+const StyledDrawer = styled(MuiDrawer, {
+  shouldForwardProp: (prop) => prop !== 'isMobile',
+})<{ isMobile: boolean }>(({ theme, isMobile }) => ({
+  maxWidth: '320px',
+  zIndex: isMobile ? 1000 : 800,
+  width: '100%',
+  [theme.breakpoints.up('md')]: {
+    width: '260px',
+    position: 'relative',
+  },
+  [theme.breakpoints.up('lg')]: {
+    width: '320px',
+  },
+  '& .MuiDrawer-paper': {
+    border: 'none',
+    paddingBottom: '200px',
+    top: isMobile ? 0 : HEADER_HEIGHT,
+  },
+  '& .MuiPaper-root': {
+    position: isMobile ? 'fixed' : 'sticky',
+  },
+}));
+
+const CloseButtonContainer = styled(Box)(() => ({
+  display: 'flex',
+  justifyContent: 'flex-end',
+  paddingBottom: '8px',
+  paddingTop: '12px',
+  width: '100%',
+}));
+
+const UserInfoContainer = styled(Box)(({ theme }) => ({
+  display: 'flex',
+  alignItems: 'center',
+  gap: '16px',
+  padding: '32px 40px',
+  width: '100%',
+  borderBottom: `1px solid ${theme.palette.divider}`,
+}));
+
+const LogoutButton = styled(MuiButton)(() => ({
+  padding: '0 0 0 4px',
+  justifyContent: 'flex-start',
+  '&:hover': {
+    backgroundColor: 'transparent',
+    textDecoration: 'underline',
+  },
+  height: '25px',
+}));
 
 export const Sidebar: FC<DrawerProps> = ({ open = false, ...props }) => {
   const pathname = usePathname();
@@ -54,38 +104,15 @@ export const Sidebar: FC<DrawerProps> = ({ open = false, ...props }) => {
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
 
   return (
-    <Drawer
+    <StyledDrawer
+      isMobile={isMobile}
       variant={isMobile ? 'temporary' : 'persistent'}
       anchor={isMobile ? 'right' : 'left'}
       open={isMobile ? open : true}
-      sx={{
-        maxWidth: '320px',
-        zIndex: isMobile ? 1000 : 800,
-        width: { xs: '320px', md: '260px', lg: '320px' },
-
-        '& .MuiDrawer-paper': {
-          border: 'none',
-          paddingBottom: '200px',
-          top: { xs: 0, md: HEADER_HEIGHT },
-        },
-        '& .MuiPaper-root': {
-          position: { md: 'sticky' },
-        },
-
-        position: { md: 'relative' },
-      }}
       {...props}
     >
       {isMobile && (
-        <Box
-          sx={{
-            display: 'flex',
-            justifyContent: 'flex-end',
-            paddingBottom: '8px',
-            paddingTop: '12px',
-            width: { xs: '320px', md: '260px', lg: '320px' },
-          }}
-        >
+        <CloseButtonContainer>
           <IconButton
             sx={{
               cursor: 'pointer',
@@ -96,20 +123,11 @@ export const Sidebar: FC<DrawerProps> = ({ open = false, ...props }) => {
           >
             <CloseIcon />
           </IconButton>
-        </Box>
+        </CloseButtonContainer>
       )}
       {session ? (
         <>
-          <Box
-            sx={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: '16px',
-              padding: '32px 40px',
-              width: { xs: '320px', md: '260px', lg: '320px' },
-              borderBottom: (theme) => `1px solid ${theme.palette.divider}`,
-            }}
-          >
+          <UserInfoContainer>
             <Avatar
               src={session?.user?.avatar?.url}
               alt="Avatar"
@@ -136,7 +154,7 @@ export const Sidebar: FC<DrawerProps> = ({ open = false, ...props }) => {
                 {session?.user?.username}
               </Typography>
             </Box>
-          </Box>
+          </UserInfoContainer>
 
           <Box
             sx={{
@@ -164,17 +182,8 @@ export const Sidebar: FC<DrawerProps> = ({ open = false, ...props }) => {
               </Link>
             ))}
 
-            <Button
+            <LogoutButton
               variant="text"
-              sx={{
-                padding: '0 0 0 4px',
-                justifyContent: 'flex-start',
-                '&:hover': {
-                  backgroundColor: 'transparent',
-                  textDecoration: 'underline',
-                },
-                height: '25px',
-              }}
               size="small"
               onClick={() => signOut({ redirect: true, callbackUrl: '/' })}
               color="secondary"
@@ -191,7 +200,7 @@ export const Sidebar: FC<DrawerProps> = ({ open = false, ...props }) => {
                 <LogoutIcon fontSize="small" />
                 Logout
               </Typography>
-            </Button>
+            </LogoutButton>
           </Box>
         </>
       ) : (
@@ -219,6 +228,6 @@ export const Sidebar: FC<DrawerProps> = ({ open = false, ...props }) => {
           </Link>
         </Box>
       )}
-    </Drawer>
+    </StyledDrawer>
   );
 };

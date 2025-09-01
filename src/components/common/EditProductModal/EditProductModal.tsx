@@ -4,19 +4,32 @@ import { ProductForm } from '@/components/ProductForm';
 import type { ProductFormData } from '@/components/ProductForm/productForm.schema';
 import { Product } from '@/types/Product';
 import Dialog from '@mui/material/Dialog';
-import { FC, useState } from 'react';
-import { Suspense } from 'react';
+import { FC, useState, Suspense } from 'react';
 import Box from '@mui/material/Box';
 import CircularProgress from '@mui/material/CircularProgress';
 import { useUpdateProduct } from '@/api/products/useUpdateProduct';
 import { useUploadFile } from '@/api/uploadFile/useUploadFile';
 import { TempImage } from '@/types/TempImage';
+import { styled } from '@mui/material/styles';
 
 interface EditPageProps {
   open: boolean;
   onClose: () => void;
   editingProduct: Product;
 }
+
+const StyledDialog = styled(Dialog)(() => ({
+  '& .MuiDialog-paper': {
+    width: '95%',
+    maxWidth: 'unset',
+    padding: {
+      xs: '12px 16px',
+      sm: '12px 24px',
+      md: '53px 40px 40px 85px',
+    },
+    margin: '10px',
+  },
+}));
 
 export const EditProductModal: FC<EditPageProps> = ({
   open,
@@ -106,22 +119,7 @@ export const EditProductModal: FC<EditPageProps> = ({
   };
 
   return (
-    <Dialog
-      open={open}
-      onClose={onClose}
-      sx={{
-        '& .MuiDialog-paper': {
-          width: { xs: '95%' },
-          maxWidth: 'unset',
-          padding: {
-            xs: '12px 16px',
-            sm: '12px 24px',
-            md: '53px 40px 40px 85px',
-          },
-          margin: '10px',
-        },
-      }}
-    >
+    <StyledDialog open={open} onClose={onClose}>
       <Suspense
         fallback={
           <Box
@@ -155,6 +153,6 @@ export const EditProductModal: FC<EditPageProps> = ({
           }}
         />
       </Suspense>
-    </Dialog>
+    </StyledDialog>
   );
 };
