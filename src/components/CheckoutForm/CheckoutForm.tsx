@@ -19,7 +19,7 @@ import AppleIcon from '@mui/icons-material/Apple';
 import { CardElement } from '@stripe/react-stripe-js';
 import { StyledInputLabel } from '../ProductForm/productForm.styles';
 import { shippingCountries } from '@/constants/shippingCountries';
-import { StyledPaymentMethod } from './checkoutForm.styles';
+import { StyledBox, StyledPaymentMethod } from './checkoutForm.styles';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import { PaymentMethod } from '@/types/PaymentMethod';
 
@@ -283,16 +283,7 @@ export const CheckoutForm: FC<CheckoutProps> = ({
       />
       {paymentMethod === 'card' && (
         <>
-          <Box
-            sx={{
-              border: `1px solid ${theme.palette.secondary.dark}`,
-              borderRadius: '8px',
-              p: 2,
-              width: '100%',
-              height: '56px',
-              mt: 2,
-            }}
-          >
+          <StyledBox>
             <CardElement
               data-cy="card-element"
               onChange={(e) => {
@@ -321,7 +312,7 @@ export const CheckoutForm: FC<CheckoutProps> = ({
                 },
               }}
             />
-          </Box>
+          </StyledBox>
           <FormErrorMessage message={cardError} />
         </>
       )}

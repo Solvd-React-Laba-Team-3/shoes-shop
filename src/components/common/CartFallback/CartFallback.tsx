@@ -22,6 +22,23 @@ const StyledContainer = styled(Box)(({ theme }) => ({
   margin: '0 auto',
 }));
 
+const StyledSkeletonContainer = styled(Box)(({ theme }) => ({
+  position: 'relative',
+  aspectRatio: '1 / 1',
+  flexShrink: 0,
+  marginRight: '46px',
+  width: '300px',
+  height: '300px',
+
+  [theme.breakpoints.down('md')]: {
+    marginRight: 0,
+  },
+  [theme.breakpoints.down('sm')]: {
+    width: '200px',
+    height: '200px',
+  },
+}));
+
 export const CartFallback = () => {
   return (
     <StyledContainer>
@@ -67,23 +84,14 @@ export const CartFallback = () => {
                       flexDirection: { xs: 'column', md: 'row' },
                     }}
                   >
-                    <Box
-                      sx={{
-                        position: 'relative',
-                        aspectRatio: '1 / 1',
-                        flexShrink: 0,
-                        marginRight: { xs: 0, md: '46px' },
-                        width: { xs: '200px', sm: '300px' },
-                        height: { xs: '200px', sm: '300px' },
-                      }}
-                    >
+                    <StyledSkeletonContainer>
                       <Skeleton
                         variant="rectangular"
                         width="100%"
                         height="100%"
                         sx={{ borderRadius: 1 }}
                       />
-                    </Box>
+                    </StyledSkeletonContainer>
 
                     <Stack spacing={0.5}>
                       <Skeleton variant="text" width={200} height={32} />
