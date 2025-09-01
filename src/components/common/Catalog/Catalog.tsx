@@ -8,12 +8,16 @@ import { ProductListFallback } from '@/components/common/ProductListFallback';
 import { FiltersFallback } from '@/components/common/FiltersFallback';
 import { useState } from 'react';
 import { useMediaQuery, useTheme } from '@mui/material';
+import { useSearchParams } from '@/lib/hooks';
 
 export const Catalog = () => {
+  const searchParams = useSearchParams();
+  const hasFilters = Boolean(searchParams.get('filters'));
+
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
 
-  const [isFiltersOpen, setIsFiltersOpen] = useState(false);
+  const [isFiltersOpen, setIsFiltersOpen] = useState(hasFilters);
 
   const handleFiltersToggle = () => {
     setIsFiltersOpen(!isFiltersOpen);

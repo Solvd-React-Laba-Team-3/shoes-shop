@@ -29,7 +29,7 @@ import { getGendersOptions } from '@/api/gender/getGendersOptions';
 import { getSizesOptions } from '@/api/size/getSizesOptions';
 import { getColorsOptions } from '@/api/color/getColorsOptions';
 import { getBrandsOptions } from '@/api/brand/getBrandsOptions';
-import { FC, useState } from 'react';
+import { FC, useEffect, useState } from 'react';
 import { normalizeToUniqueArray } from '@/lib/utils';
 import {
   StyledDrawer,
@@ -40,13 +40,8 @@ import {
 import { HEADER_HEIGHT } from '@/constants/headerHeight';
 
 export const Filters: FC<DrawerProps> = ({ ...props }) => {
-  const {
-    currentFilters,
-    updateFilters,
-    clearFilters,
-    toggleSelection,
-    priceInput,
-  } = useFilters();
+  const { currentFilters, updateFilters, clearFilters, toggleSelection } =
+    useFilters();
   const searchParams = useSearchParams();
   const selectedGenders = normalizeToUniqueArray(
     currentFilters.gender?.id?.$in
@@ -57,7 +52,20 @@ export const Filters: FC<DrawerProps> = ({ ...props }) => {
 
   const search = searchParams.get('search');
   const [searchBrands, setSearchBrands] = useState('');
+
   const debouncedBrandsSearch = useDebounce(searchBrands, 500);
+
+  const [priceInput, setPriceInput] = useState<number[]>();
+
+  const debouncedPrice = useDebounce(priceInput, 300);
+
+  useEffect(() => {
+    if (debouncedPrice.debouncedValue === undefined) return;
+    updateFilters('price', {
+      $gte: debouncedPrice.debouncedValue[0] ?? 0,
+      $lte: debouncedPrice.debouncedValue[1] ?? 10000,
+    });
+  }, [debouncedPrice, updateFilters]);
 
   const [
     { data: genders },
@@ -230,15 +238,12 @@ export const Filters: FC<DrawerProps> = ({ ...props }) => {
               alignItems="center"
             >
               <Slider
-                value={priceInput}
+                value={priceInput ?? [1, 10000]}
                 max={10000}
                 min={1}
                 valueLabelDisplay="auto"
                 onChange={(_, value) => {
-                  updateFilters('price', {
-                    $gte: (value as [number, number])[0],
-                    $lte: (value as [number, number])[1],
-                  });
+                  setPriceInput(value as number[]);
                 }}
                 sx={{ width: '90%' }}
               />
@@ -263,16 +268,13 @@ export const Filters: FC<DrawerProps> = ({ ...props }) => {
                     },
                   }}
                   size="small"
-                  value={priceInput[0]}
-                  onChange={(e) => {
-                    const numValue = Number(e.target.value);
-                    if (isNaN(numValue)) return;
-
-                    updateFilters('price', {
-                      $gte: numValue,
-                      $lte: priceInput[1],
-                    });
-                  }}
+                  value={priceInput ? priceInput[0] : 1}
+                  onChange={(e) =>
+                    setPriceInput((prev) => [
+                      Number(e.target.value),
+                      prev ? prev[1] : 10000,
+                    ])
+                  }
                 />
                 <Typography
                   variant="body2"
@@ -283,7 +285,7 @@ export const Filters: FC<DrawerProps> = ({ ...props }) => {
                 </Typography>
                 <TextField
                   type="text"
-                  value={priceInput[1]}
+                  value={priceInput ? priceInput[1] : 10000}
                   size="small"
                   sx={{
                     width: 50,
@@ -302,15 +304,12 @@ export const Filters: FC<DrawerProps> = ({ ...props }) => {
                       },
                     },
                   }}
-                  onChange={(e) => {
-                    const numValue = Number(e.target.value);
-                    if (isNaN(numValue)) return;
-
-                    updateFilters('price', {
-                      $gte: priceInput[0],
-                      $lte: numValue,
-                    });
-                  }}
+                  onChange={(e) =>
+                    setPriceInput((prev) => [
+                      prev ? prev[0] : 0,
+                      Number(e.target.value),
+                    ])
+                  }
                 />
               </StyledPricesContainer>
             </Box>

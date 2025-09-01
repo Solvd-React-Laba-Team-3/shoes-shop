@@ -99,7 +99,12 @@ export const ProductCard: FC<ProductCardProps> = ({
                   height: '100%',
                 }}
               >
-                <Typography variant="h5" component={'p'} gutterBottom={false}>
+                <Typography
+                  variant="h5"
+                  component={'p'}
+                  gutterBottom={false}
+                  data-cy="product-name"
+                >
                   {product.name}
                 </Typography>
                 <Typography

@@ -112,7 +112,7 @@ export const ProductActionMenu: FC<ProductActionMenuProps> = ({ product }) => {
         />
       )}
 
-      <IconButton color="secondary" onClick={handleClick}>
+      <IconButton data-cy="actionMenu" color="secondary" onClick={handleClick}>
         <MoreHorizIcon />
       </IconButton>
 

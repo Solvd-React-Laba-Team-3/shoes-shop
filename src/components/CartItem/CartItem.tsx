@@ -156,6 +156,7 @@ export const CartItem: FC<CartProduct> = ({
                 <IconButton
                   aria-label="increase quantity"
                   size="small"
+                  data-cy="increaseButton"
                   sx={(theme) => ({
                     width: '20px',
                     height: '20px',
