@@ -23,13 +23,13 @@ const StyledDialog = styled(Dialog)(({ theme }) => ({
   '& .MuiDialog-paper': {
     width: '95%',
     maxWidth: 'unset',
-    padding: '12px 16px',
     margin: '10px',
-    [theme.breakpoints.up('sm')]: {
+    padding: '53px 40px 40px 85px',
+    [theme.breakpoints.down('md')]: {
       padding: '12px 24px',
     },
-    [theme.breakpoints.up('md')]: {
-      padding: '53px 40px 40px 85px',
+    [theme.breakpoints.down('sm')]: {
+      padding: '12px 16px',
     },
   },
 }));

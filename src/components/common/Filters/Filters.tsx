@@ -31,8 +31,6 @@ import {
   StyledCloseWrapper,
   StyledHeaderBox,
   StyledHeaderButton,
-  StyledSectionBox,
-  StyledRowBox,
   StyledTextField,
   StyledBox,
 } from './filters.styles';
@@ -130,7 +128,7 @@ export const Filters: FC<DrawerProps> = ({ ...props }) => {
       )}
       <StyledBox>
         <Divider sx={{ display: { xs: 'none', md: 'block' } }} />
-        <StyledSectionBox>
+        <Box sx={{ paddingLeft: '40px' }}>
           <Accordion label="Gender" defaultExpanded>
             <Box
               display="flex"
@@ -138,7 +136,10 @@ export const Filters: FC<DrawerProps> = ({ ...props }) => {
               sx={{ gap: { xs: '12px', md: '20px' } }}
             >
               {genders.map((gender) => (
-                <StyledRowBox key={gender.id}>
+                <Box
+                  key={gender.id}
+                  sx={{ display: 'flex', alignItems: 'center' }}
+                >
                   <Checkbox
                     id={`gender-${gender.id}`}
                     onChange={({ target: { checked } }) =>
@@ -150,13 +151,13 @@ export const Filters: FC<DrawerProps> = ({ ...props }) => {
                   <StyledFormLabel htmlFor={`gender-${gender.id}`}>
                     {gender.name}
                   </StyledFormLabel>
-                </StyledRowBox>
+                </Box>
               ))}
             </Box>
           </Accordion>
-        </StyledSectionBox>
+        </Box>
         <Divider />
-        <StyledSectionBox>
+        <Box sx={{ paddingLeft: '40px' }}>
           <Accordion label="Brand" defaultExpanded>
             <Box
               display="flex"
@@ -170,7 +171,10 @@ export const Filters: FC<DrawerProps> = ({ ...props }) => {
                 placeholder="Search brand"
               />
               {brands.map((brand) => (
-                <StyledRowBox key={brand.id}>
+                <Box
+                  key={brand.id}
+                  sx={{ display: 'flex', alignItems: 'center' }}
+                >
                   <Checkbox
                     id={`brand-${brand.id}`}
                     onChange={({ target: { checked } }) =>
@@ -182,13 +186,13 @@ export const Filters: FC<DrawerProps> = ({ ...props }) => {
                   <StyledFormLabel htmlFor={`brand-${brand.id}`}>
                     {brand.name}
                   </StyledFormLabel>
-                </StyledRowBox>
+                </Box>
               ))}
             </Box>
           </Accordion>
-        </StyledSectionBox>
+        </Box>
         <Divider />
-        <StyledSectionBox>
+        <Box sx={{ paddingLeft: '40px' }}>
           <Accordion label="Price" defaultExpanded>
             <Box
               display="flex"
@@ -248,9 +252,9 @@ export const Filters: FC<DrawerProps> = ({ ...props }) => {
               </StyledPricesContainer>
             </Box>
           </Accordion>
-        </StyledSectionBox>
+        </Box>
         <Divider />
-        <StyledSectionBox>
+        <Box sx={{ paddingLeft: '40px' }}>
           <Accordion label="Color" defaultExpanded>
             <Box
               display="flex"
@@ -258,7 +262,10 @@ export const Filters: FC<DrawerProps> = ({ ...props }) => {
               sx={{ gap: { xs: '12px', md: '20px' } }}
             >
               {colors?.map((color) => (
-                <StyledRowBox key={color.id}>
+                <Box
+                  key={color.id}
+                  sx={{ display: 'flex', alignItems: 'center' }}
+                >
                   <Checkbox
                     id={`color-${color.id}`}
                     onChange={({ target: { checked } }) =>
@@ -270,13 +277,13 @@ export const Filters: FC<DrawerProps> = ({ ...props }) => {
                   <StyledFormLabel htmlFor={`color-${color.id}`}>
                     {color.name}
                   </StyledFormLabel>
-                </StyledRowBox>
+                </Box>
               ))}
             </Box>
           </Accordion>
-        </StyledSectionBox>
+        </Box>
         <Divider />
-        <StyledSectionBox>
+        <Box sx={{ paddingLeft: '40px' }}>
           <Accordion label="Size" defaultExpanded>
             <Box
               display="flex"
@@ -284,7 +291,10 @@ export const Filters: FC<DrawerProps> = ({ ...props }) => {
               sx={{ gap: { xs: '12px', md: '20px' } }}
             >
               {sizes?.map((size) => (
-                <StyledRowBox key={size.id}>
+                <Box
+                  key={size.id}
+                  sx={{ display: 'flex', alignItems: 'center' }}
+                >
                   <Checkbox
                     id={`size-${size.id}`}
                     onChange={({ target: { checked } }) =>
@@ -296,11 +306,11 @@ export const Filters: FC<DrawerProps> = ({ ...props }) => {
                   <StyledFormLabel htmlFor={`size-${size.id}`}>
                     {size.value}
                   </StyledFormLabel>
-                </StyledRowBox>
+                </Box>
               ))}
             </Box>
           </Accordion>
-        </StyledSectionBox>
+        </Box>
       </StyledBox>
     </StyledDrawer>
   );

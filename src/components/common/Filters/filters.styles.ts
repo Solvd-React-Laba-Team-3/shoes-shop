@@ -73,15 +73,6 @@ export const StyledHeaderButton = styled(IconButton)(() => ({
   color: 'var(--mui-palette-text-secondary)',
 }));
 
-export const StyledSectionBox = styled(Box)(() => ({
-  paddingLeft: '40px',
-}));
-
-export const StyledRowBox = styled(Box)(() => ({
-  display: 'flex',
-  alignItems: 'center',
-}));
-
 export const StyledTextField = styled(TextField)(() => ({
   width: 50,
   '& .MuiOutlinedInput-input': {
@@ -96,17 +87,17 @@ export const StyledBox = styled('div')(({ theme }) => ({
   display: 'flex',
   flexDirection: 'column',
   width: '320px',
-  gap: theme.spacing(1.5, 3.5),
-  overflow: 'auto',
-  flex: '1 1 auto',
-  paddingBottom: '20px',
-  minHeight: 0,
+  gap: theme.spacing(3.5),
+  overflow: 'visible',
+  flex: 'unset',
+  paddingBottom: 0,
+  minHeight: 'auto',
 
-  [theme.breakpoints.up('md')]: {
-    gap: theme.spacing(3.5),
-    overflow: 'visible',
-    flex: 'unset',
-    paddingBottom: 0,
-    minHeight: 'auto',
+  [theme.breakpoints.down('md')]: {
+    gap: theme.spacing(1.5, 3.5),
+    overflow: 'auto',
+    flex: '1 1 auto',
+    paddingBottom: '20px',
+    minHeight: 0,
   },
 }));
