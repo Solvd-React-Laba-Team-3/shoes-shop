@@ -98,6 +98,7 @@ export default function ForgotPassword() {
                 variant="subtitle2"
                 color="success"
                 data-testid="reset-success-message"
+                component={'p'}
               >
                 A reset link has been sent to your email. Redirecting to
                 login...
