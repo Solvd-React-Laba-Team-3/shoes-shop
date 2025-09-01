@@ -9,6 +9,7 @@ import {
   Overlay,
   PopularTermsContainer,
   PopularTermItem,
+  StyledLinearProgress,
 } from './mainSearchBar.styles';
 import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
@@ -17,7 +18,6 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { useDebounce, useSearchParams } from '@/lib/hooks';
 import { List, Typography, useMediaQuery, useTheme } from '@mui/material';
-import LinearProgress from '@mui/material/LinearProgress';
 import { useQuery } from '@tanstack/react-query';
 import { getPopularSearchTermsOptions } from '@/api/gemini/getPopularSearchTermsOptions';
 import { MIN_SEARCH_LENGTH } from '@/constants/minSearchLength';
@@ -159,18 +159,7 @@ export const MainSearchBar = () => {
             >
               {(isFetching || isDebouncing) &&
                 inputValue.length > MIN_SEARCH_LENGTH && (
-                  <LinearProgress
-                    data-testid="loading-bar"
-                    sx={{
-                      position: 'absolute',
-                      top: -20,
-                      left: '50%',
-                      transform: 'translateX(-50%)',
-                      width: '100%',
-                      maxWidth: 1040,
-                      zIndex: 1,
-                    }}
-                  />
+                  <StyledLinearProgress data-testid="loading-bar" />
                 )}
               <Typography variant="h6" component={'h3'}>
                 Popular Search Terms
