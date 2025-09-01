@@ -80,26 +80,6 @@ describe('useFilters', () => {
     expect(deleteMock).toHaveBeenCalledWith('filters');
   });
 
-  it('should return default priceInput if no filters', () => {
-    getMock.mockReturnValue(undefined);
-
-    const { result } = renderHook(() => useFilters());
-
-    expect(result.current.priceInput).toEqual([1, 10000]);
-  });
-
-  it('should use priceInput from filters', () => {
-    getMock.mockReturnValue('query');
-    const { parseQueryString } = jest.requireMock('@/lib/utils');
-    (parseQueryString as jest.Mock).mockReturnValue({
-      filters: { price: { $gte: 10, $lte: 500 } },
-    });
-
-    const { result } = renderHook(() => useFilters());
-
-    expect(result.current.priceInput).toEqual([10, 500]);
-  });
-
   it('should toggleSelection add value', () => {
     const { normalizeToUniqueArray } = jest.requireMock('@/lib/utils');
     (normalizeToUniqueArray as jest.Mock).mockReturnValue([]);

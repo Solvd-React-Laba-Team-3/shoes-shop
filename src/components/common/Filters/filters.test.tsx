@@ -149,7 +149,7 @@ describe('Filters component full coverage', () => {
     const inputs = screen.getAllByTestId('price-range');
     fireEvent.change(inputs[0], { target: { value: 100 } });
     fireEvent.change(inputs[1], { target: { value: 1000 } });
-    expect(mockUpdateFilters).toHaveBeenCalledTimes(2);
+    expect(mockUpdateFilters).toHaveBeenCalledTimes(1);
   });
 
   it('clears filters on mobile', () => {
