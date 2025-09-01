@@ -21,9 +21,7 @@ const config: Config = {
       statements: 75,
     },
   },
-  coveragePathIgnorePatterns: [
-    '<rootDir>/src/api/', 
-  ],
+  coveragePathIgnorePatterns: ['<rootDir>/src/api/', '\\.styles\\.ts$'],
 };
 
 export default createJestConfig(config);

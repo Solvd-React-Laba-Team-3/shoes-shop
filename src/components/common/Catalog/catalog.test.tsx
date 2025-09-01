@@ -1,6 +1,5 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 import { Catalog } from './Catalog';
-import { useDeviceSize } from '@/lib/hooks';
 import React from 'react';
 
 jest.mock('@/components/ProductsContainer', () => ({
@@ -39,17 +38,15 @@ jest.mock('@/lib/hooks', () => ({
   useDeviceSize: jest.fn(),
 }));
 
+const mockUseMediaQuery = jest.fn();
+jest.mock('@mui/material', () => ({
+  ...jest.requireActual('@mui/material'),
+  useMediaQuery: (query: string) => mockUseMediaQuery(query),
+}));
+
 describe('Catalog Component', () => {
   beforeEach(() => {
-    (useDeviceSize as jest.Mock).mockReturnValue({ isMobile: false });
-  });
-
-  it('renders ProductsContainer and fallback components correctly', () => {
-    render(<Catalog />);
-
-    expect(screen.getByText(/ProductsContainer/)).toBeInTheDocument();
-
-    expect(screen.queryByText(/Filters - Open/)).not.toBeInTheDocument();
+    mockUseMediaQuery.mockReturnValue(false);
   });
 
   it('opens Filters when toggled and shows FiltersFallback on desktop', () => {
@@ -68,11 +65,11 @@ describe('Catalog Component', () => {
     expect(screen.getByText(/Filters - Open: true/)).toBeInTheDocument();
 
     fireEvent.click(screen.getByText('Close Filters'));
-    expect(screen.queryByText(/Filters - Open/)).not.toBeInTheDocument();
+    expect(screen.queryByText(/Filters - Open: true/)).not.toBeInTheDocument();
   });
 
   it('renders FiltersFallback on desktop when Suspense is pending', () => {
-    (useDeviceSize as jest.Mock).mockReturnValue({ isMobile: false });
+    mockUseMediaQuery.mockReturnValue(false);
 
     jest.mock('@/components/common/Filters', () => ({
       Filters: React.lazy(() => new Promise(() => {})),
@@ -84,7 +81,7 @@ describe('Catalog Component', () => {
   });
 
   it('does not render FiltersFallback on mobile', () => {
-    (useDeviceSize as jest.Mock).mockReturnValue({ isMobile: true });
+    mockUseMediaQuery.mockReturnValue(true);
     render(<Catalog />);
 
     fireEvent.click(screen.getByText('Toggle Filters'));

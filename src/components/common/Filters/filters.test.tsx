@@ -21,6 +21,7 @@ jest.mock('@/lib/hooks', () => ({
   useSearchParams: jest.fn(),
   useDebounce: jest.fn(),
   useFilters: jest.fn(),
+  useHideOnScroll: jest.fn(() => ({ hideOnScroll: false })),
 }));
 
 jest.mock('@tanstack/react-query', () => ({
