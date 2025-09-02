@@ -23,8 +23,8 @@ describe('normalizeToUniqueArray', () => {
   });
 
   it('should convert other types to number', () => {
-    expect(normalizeToUniqueArray(true)).toEqual([1]); // true -> 1
-    expect(normalizeToUniqueArray(false)).toEqual([0]); // false -> 0
-    expect(normalizeToUniqueArray({})).toEqual([NaN]); // {} -> NaN
+    expect(normalizeToUniqueArray(true)).toEqual([1]);
+    expect(normalizeToUniqueArray(false)).toEqual([0]);
+    expect(normalizeToUniqueArray({})).toEqual([NaN]);
   });
 });

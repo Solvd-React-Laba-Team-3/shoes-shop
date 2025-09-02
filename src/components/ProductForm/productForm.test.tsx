@@ -1,5 +1,5 @@
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
-import { ProductForm, handleToggleSize } from './';
+import { ProductForm, handleToggleSize } from './ProductForm';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ThemeProvider } from '@mui/material';
 import { theme } from '@/providers/ThemeProvider';

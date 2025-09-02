@@ -4,7 +4,7 @@ import { CartProduct } from '@/types/CartProduct';
 const makeProduct = (id: number, size = 10): CartProduct =>
   ({
     id,
-    name: 'x'.repeat(size), // controla tamanho da string
+    name: 'x'.repeat(size),
   }) as CartProduct;
 
 describe('splitProducts', () => {
@@ -45,9 +45,9 @@ describe('splitProducts', () => {
       makeProduct(2, 200),
       makeProduct(3, 200),
     ];
-    const result = splitProducts(products, 300, 1); // só permite 1 chunk
+    const result = splitProducts(products, 300, 1);
     expect(result.products).toHaveLength(1);
-    expect(result.omitted).toBe(true); // o resto foi cortado
+    expect(result.omitted).toBe(true);
   });
 
   it('should add last chunk if not empty', () => {

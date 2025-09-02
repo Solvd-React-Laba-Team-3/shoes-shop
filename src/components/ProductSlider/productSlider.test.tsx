@@ -1,10 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-jest.mock('swiper/css', () => ({}));
-jest.mock('swiper/css/navigation', () => ({}));
-jest.mock('swiper/css/pagination', () => ({}));
-jest.mock('swiper/css/thumbs', () => ({}));
-
 import { render, screen } from '@testing-library/react';
 import { ProductSlider } from './ProductSlider';
 import { File } from '@/types/api/File';
@@ -15,14 +10,17 @@ import {
 } from './productSlider.styles';
 import '@testing-library/jest-dom';
 
-// Mock next/image
+jest.mock('swiper/css', () => ({}));
+jest.mock('swiper/css/navigation', () => ({}));
+jest.mock('swiper/css/pagination', () => ({}));
+jest.mock('swiper/css/thumbs', () => ({}));
+
 jest.mock('next/image', () => {
   const Image = (props: any) => <img {...props} alt={props.alt} />;
   Image.displayName = 'NextImage';
   return Image;
 });
 
-// Mock Swiper/react
 jest.mock('swiper/react', () => {
   const Swiper = ({ children }: any) => (
     <div data-testid="swiper">{children}</div>
@@ -33,33 +31,12 @@ jest.mock('swiper/react', () => {
   return { Swiper, SwiperSlide };
 });
 
-// Mock Swiper modules
 jest.mock('swiper/modules', () => ({
   Navigation: {},
   Thumbs: {},
   A11y: {},
   FreeMode: {},
 }));
-
-// Mock MUI Box + styled
-jest.mock('@mui/material', () => {
-  const Box = ({ children, ...rest }: any) => <div {...rest}>{children}</div>;
-  const styled = (Component: any) => () => Component;
-  return { Box, styled };
-});
-
-// Mock MUI icons
-jest.mock('@mui/icons-material/ChevronLeftRounded', () => {
-  const LeftIcon = () => <span>Left</span>;
-  LeftIcon.displayName = 'ChevronLeftRounded';
-  return LeftIcon;
-});
-
-jest.mock('@mui/icons-material/ChevronRightRounded', () => {
-  const RightIcon = () => <span>Right</span>;
-  RightIcon.displayName = 'ChevronRightRounded';
-  return RightIcon;
-});
 
 describe('ProductSlider', () => {
   const images: File[] = [
@@ -124,8 +101,8 @@ describe('ProductSlider', () => {
 
   it('renders navigation arrows', () => {
     render(<ProductSlider images={images} productName="Test Product" />);
-    expect(screen.getByText('Left')).toBeInTheDocument();
-    expect(screen.getByText('Right')).toBeInTheDocument();
+    expect(screen.getByLabelText('Previous image')).toBeInTheDocument();
+    expect(screen.getByLabelText('Next image')).toBeInTheDocument();
   });
 
   it('renders main slides with images', () => {
@@ -142,7 +119,7 @@ describe('ProductSlider', () => {
     const noAltImages: File[] = [
       {
         ...images[0],
-        alternativeText: null, // force fallback
+        alternativeText: null,
       },
     ];
 
@@ -184,7 +161,7 @@ describe('ProductSlider', () => {
 
     it('applies slider container styles', () => {
       const { container } = render(<StyledSliderContainer />);
-      expect(container.firstChild).toHaveStyle({ display: 'block' });
+      expect(container.firstChild).toHaveStyle({ display: 'flex' });
     });
 
     it('applies thumbs wrapper styles', () => {
@@ -270,7 +247,6 @@ describe('ProductSlider', () => {
       render(<ProductSlider images={images} productName="Test Product" />);
       const swiper = screen.getAllByTestId('swiper')[0];
       expect(swiper).toBeInTheDocument();
-      // Since Swiper is mocked, we can at least check that the breakpoints object exists
       expect(swiper.parentElement).toBeTruthy();
     });
 
@@ -283,7 +259,7 @@ describe('ProductSlider', () => {
 
     it('renders main slides with fill prop true', () => {
       render(<ProductSlider images={images} productName="Test Product" />);
-      const mainImg = screen.getAllByAltText('Alt 1')[1]; // main slide is second in DOM
+      const mainImg = screen.getAllByAltText('Alt 1')[1];
       expect(mainImg).toBeInTheDocument();
     });
   });

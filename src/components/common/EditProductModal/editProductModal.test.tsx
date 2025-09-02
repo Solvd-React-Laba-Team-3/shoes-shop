@@ -108,13 +108,6 @@ describe('EditProductModal', () => {
     );
   });
 
-  //    beforeEach(() => {
-  //      jest.clearAllMocks();
-  //      global.URL.createObjectURL = jest.fn(
-  //        (file: Blob) => `blob:${(file as File).name}`
-  //      );
-  //    });
-
   it('renders ProductForm with correct title and product name', () => {
     renderWithProviders(
       <EditProductModal
@@ -267,7 +260,6 @@ describe('EditProductModal', () => {
       productFormProps.onSubmit(formData);
     });
 
-    // Simulate success callback
     const mutateCall = editProductMock.mock.calls[0][1];
     act(() => {
       mutateCall.onSuccess();
@@ -310,11 +302,11 @@ describe('EditProductModal', () => {
     const productFormProps = (global as any).lastProductFormProps;
 
     act(() => {
-      productFormProps.onRemoveImage(999, 10); // non-existent image and index
+      productFormProps.onRemoveImage(999, 10);
     });
 
     const updatedImages = (global as any).lastProductFormProps.images;
-    expect(updatedImages).toHaveLength(1); // original image stays intact
+    expect(updatedImages).toHaveLength(1);
   });
 
   it('maps editingProduct fields correctly to ProductForm', () => {

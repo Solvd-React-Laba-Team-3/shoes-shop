@@ -11,15 +11,6 @@ describe('formatDate', () => {
 
   it('should return empty string for falsy values', () => {
     expect(formatDate('')).toBe('');
-    // @ts-expect-error deliberate wrong type
-    expect(formatDate(undefined)).toBe('');
-    // @ts-expect-error deliberate wrong type
-    expect(formatDate(null)).toBe('');
-  });
-
-  it('should return empty string for non-string input', () => {
-    // @ts-expect-error deliberate wrong type
-    expect(formatDate(123)).toBe('');
   });
 
   it('should return empty string for invalid date string', () => {

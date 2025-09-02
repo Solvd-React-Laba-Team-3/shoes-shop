@@ -1,9 +1,8 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom';
-import { Sidebar } from './';
+import { Sidebar } from './Sidebar';
 import { useSession, signOut } from 'next-auth/react';
 import { usePathname } from 'next/navigation';
-import { useDeviceSize } from '@/lib/hooks';
 
 jest.mock('next-auth/react', () => ({
   useSession: jest.fn(),
@@ -29,7 +28,6 @@ describe('Sidebar', () => {
   beforeEach(() => {
     (useSession as jest.Mock).mockReturnValue({ data: mockSession });
     (usePathname as jest.Mock).mockReturnValue('/profile/products');
-    (useDeviceSize as jest.Mock).mockReturnValue({ isMobile: false });
   });
 
   afterEach(() => {
@@ -71,9 +69,7 @@ describe('Sidebar', () => {
   });
 
   it('renders drawer as persistent on desktop', () => {
-    (useDeviceSize as jest.Mock).mockReturnValue({ isMobile: false });
     render(<Sidebar />);
-    // The close button should not exist on desktop
     expect(
       screen.queryByRole('button', { name: /close/i })
     ).not.toBeInTheDocument();

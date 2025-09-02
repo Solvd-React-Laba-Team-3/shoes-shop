@@ -2,13 +2,6 @@ import { render, screen } from '@testing-library/react';
 import { SizeSelector } from './SizeSelector';
 import { useSuspenseQuery } from '@tanstack/react-query';
 
-jest.mock('../ui', () => ({
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  ToggleButton: ({ children, ...props }: any) => (
-    <button {...props}>{children}</button>
-  ),
-}));
-
 jest.mock('@tanstack/react-query', () => ({
   useSuspenseQuery: jest.fn(),
 }));
