@@ -1,8 +1,10 @@
-import { render, screen } from '@testing-library/react';
+import { fireEvent, render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { ProductCard } from './ProductCard';
 import { Product } from '@/types/Product';
 import { ReactNode } from 'react';
+import { getGenderText } from './ProductCard';
+import { useWishlist } from '@/lib/hooks';
 
 jest.mock('next/image', () => {
   return function NextImage({ src, alt }: { src: string; alt: string }) {
@@ -30,10 +32,16 @@ jest.mock('../ProductActionMenu', () => {
 });
 
 jest.mock('../WishlistButton', () => {
-  const MockWishlistButton = () => <div data-testid="wishlist-button" />;
+  const MockWishlistButton = ({ onRemove }: { onRemove?: () => void }) => (
+    <div data-testid="wishlist-button" onClick={onRemove} />
+  );
   MockWishlistButton.displayName = 'MockWishlistButton';
   return { WishlistButton: MockWishlistButton };
 });
+
+jest.mock('@/lib/hooks', () => ({
+  useWishlist: jest.fn(() => ({ removeItem: jest.fn() })),
+}));
 
 const mockProduct = {
   id: 1,
@@ -98,7 +106,6 @@ const mockProduct = {
     },
   ] as NonNullable<Product['images']>,
 };
-
 describe('ProductCard', () => {
   it('renders product details correctly', () => {
     render(<ProductCard product={mockProduct} />);
@@ -117,9 +124,7 @@ describe('ProductCard', () => {
   it('uses image name as alt when alternativeText is missing', () => {
     const productWithoutAlt = {
       ...mockProduct,
-      images: mockProduct.images
-        ? [{ ...mockProduct.images[0], alternativeText: '' }]
-        : [],
+      images: [{ ...mockProduct.images[0], alternativeText: '' }],
     };
     render(<ProductCard product={productWithoutAlt} />);
     const img = screen.getByRole('img') as HTMLImageElement;
@@ -132,9 +137,9 @@ describe('ProductCard', () => {
       gender: {
         id: 2,
         name: 'Women',
-        createdAt: '0000-00-00',
-        updatedAt: '0000-00-00',
-        publishedAt: '0000-00-00',
+        createdAt: '',
+        updatedAt: '',
+        publishedAt: '',
       },
     };
     render(<ProductCard product={femaleProduct} />);
@@ -163,5 +168,25 @@ describe('ProductCard', () => {
     render(<ProductCard product={mockProduct} />);
     const link = screen.getByRole('link') as HTMLAnchorElement;
     expect(link).toHaveAttribute('href', '/products/1');
+  });
+
+  it('getGenderText returns "Men\'s Shoes" for "Men"', () => {
+    expect(getGenderText('Men')).toBe("Men's Shoes");
+  });
+
+  it('getGenderText returns "Women\'s Shoes" for other values', () => {
+    expect(getGenderText('Women')).toBe("Women's Shoes");
+  });
+
+  it('calls removeItem when WishlistButton is clicked', async () => {
+    const removeItemMock = jest.fn();
+    (useWishlist as jest.Mock).mockReturnValue({ removeItem: removeItemMock });
+
+    render(<ProductCard product={mockProduct} variant="wishlist" />);
+
+    const wishlistButton = screen.getByTestId('wishlist-button');
+    await fireEvent.click(wishlistButton);
+
+    expect(removeItemMock).toHaveBeenCalledWith(mockProduct.id);
   });
 });

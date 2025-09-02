@@ -80,7 +80,7 @@ The local development server will be available at:
 ## 🔗 Useful Links
 
 - **📋 Code Style Conventions:**
-  [CODE_STYLE.md](.CODE_STYLE.md)
+  [CODE_STYLE.md](CODE_STYLE.md)
 
 - **📜 API Documentation (Swagger):**
   [Swagger Link](https://shoes-shop-strapi.herokuapp.com/documentation#)

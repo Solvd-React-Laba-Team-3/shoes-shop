@@ -1,4 +1,4 @@
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen, fireEvent, createEvent } from '@testing-library/react';
 import { FileDropzone } from './FileDropzone';
 
 describe('FileDropzone', () => {
@@ -34,5 +34,33 @@ describe('FileDropzone', () => {
     fireEvent.change(inputElement, { target: { files: [file] } });
 
     expect(inputElement.files?.[0]).toEqual(file);
+  });
+
+  it('does not call onFilesDropped if no files are selected', () => {
+    const handleDrop = jest.fn();
+    render(<FileDropzone onFilesDropped={handleDrop} />);
+
+    const inputElement = document.querySelector(
+      'input[type="file"]'
+    ) as HTMLInputElement;
+
+    fireEvent.change(inputElement, { target: { files: null } });
+
+    expect(handleDrop).not.toHaveBeenCalled();
+  });
+
+  it('prevents default behavior on drag over', () => {
+    render(<FileDropzone onFilesDropped={() => {}} />);
+
+    const dropzone = screen
+      .getByText(/Drop your image here, or click to select a file/i)
+      .closest('div')!;
+
+    const dragOverEvent = createEvent.dragOver(dropzone);
+    dragOverEvent.preventDefault = jest.fn();
+
+    fireEvent(dropzone, dragOverEvent);
+
+    expect(dragOverEvent.preventDefault).toHaveBeenCalled();
   });
 });

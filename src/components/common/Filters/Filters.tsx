@@ -158,7 +158,7 @@ export const Filters: FC<DrawerProps> = ({ ...props }) => {
                     onChange={({ target: { checked } }) =>
                       toggleSelection('gender', checked, gender.id)
                     }
-                    checked={selectedGenders.includes(gender.id || -1)}
+                    checked={selectedGenders.includes(gender.id)}
                     value={gender.id}
                   />
                   <StyledFormLabel htmlFor={`gender-${gender.id}`}>
@@ -194,7 +194,7 @@ export const Filters: FC<DrawerProps> = ({ ...props }) => {
                       toggleSelection('brand', checked, brand.id)
                     }
                     value={brand.id}
-                    checked={selectedBrands.includes(brand.id || -1)}
+                    checked={selectedBrands.includes(brand.id)}
                   />
                   <StyledFormLabel htmlFor={`brand-${brand.id}`}>
                     {brand.name}
@@ -282,7 +282,7 @@ export const Filters: FC<DrawerProps> = ({ ...props }) => {
                     onChange={({ target: { checked } }) =>
                       toggleSelection('color', checked, color.id)
                     }
-                    checked={selectedColors.includes(color.id || -1)}
+                    checked={selectedColors.includes(color.id)}
                     value={color.id}
                   />
                   <StyledFormLabel htmlFor={`color-${color.id}`}>
@@ -311,7 +311,7 @@ export const Filters: FC<DrawerProps> = ({ ...props }) => {
                     onChange={({ target: { checked } }) =>
                       toggleSelection('sizes', checked, size.id)
                     }
-                    checked={selectedSizes.includes(size.id || -1)}
+                    checked={selectedSizes.includes(size.id)}
                     value={size.id}
                   />
                   <StyledFormLabel htmlFor={`size-${size.id}`}>
