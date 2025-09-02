@@ -11,17 +11,11 @@ const StyledDropzone = styled(Box)(({ theme }) => ({
   borderRadius: `${theme.shape.borderRadius}`,
   display: 'flex',
   alignItems: 'center',
-  width: '320px',
-  height: '380px',
+  width: '100%',
   justifyContent: 'center',
   cursor: 'pointer',
   padding: '20px',
-  [theme.breakpoints.down('lg')]: {
-    width: '420px',
-  },
-  [theme.breakpoints.down('sm')]: {
-    width: '300px',
-  },
+  aspectRatio: '300/380',
 }));
 
 export const FileDropzone: FC<FileDropzoneProps> = ({ onFilesDropped }) => {

@@ -24,7 +24,7 @@ const StyledDialog = styled(Dialog)(({ theme }) => ({
     width: '95%',
     maxWidth: 'unset',
     margin: '10px',
-    padding: '53px 40px 40px 85px',
+    padding: '53px 40px',
     [theme.breakpoints.down('md')]: {
       padding: '12px 24px',
     },
