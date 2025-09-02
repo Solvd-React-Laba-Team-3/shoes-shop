@@ -1,5 +1,5 @@
 import { render, screen, fireEvent } from '@testing-library/react';
-import { WishlistButton } from './WishlistButton';
+import { WishlistButton } from './';
 
 describe('ProductWishlistButton', () => {
   it('renders the heart icon', () => {

@@ -70,4 +70,10 @@ describe('useWishlist', () => {
     act(() => result.current.removeItem(999));
     expect(setValue).toHaveBeenCalledWith([5, 6]);
   });
+
+  it('handles undefined items from useLocalStorage', () => {
+    setMock({ value: undefined });
+    const { result } = renderHook(() => useWishlist());
+    expect(result.current.items).toEqual([]);
+  });
 });

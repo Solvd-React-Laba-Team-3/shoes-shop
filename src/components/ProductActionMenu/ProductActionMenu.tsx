@@ -166,6 +166,7 @@ export const ProductActionMenu: FC<ProductActionMenuProps> = ({ product }) => {
         description="This will permanently delete this product from your profile."
         onClose={() => setIsDeleteModalOpen(false)}
         onConfirm={handleDeleteProduct}
+        confirmText="Delete"
       />
     </>
   );

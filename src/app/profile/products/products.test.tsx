@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react';
+import { fireEvent, render, screen } from '@testing-library/react';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import MyProducts from './page';
@@ -143,5 +143,44 @@ describe('MyProducts', () => {
     expect(
       screen.getByText('Start adding products to your profile')
     ).toBeInTheDocument();
+  });
+
+  it('navigates to create product page when top Add Product button is clicked', () => {
+    render(<MyProducts />, { wrapper: createWrapper() });
+
+    const addButton = screen.getAllByRole('button', { name: 'Add Product' })[0];
+    fireEvent.click(addButton);
+
+    expect(mockRouter.push).toHaveBeenCalledWith('/profile/products/create');
+  });
+
+  it('navigates to create product page when bottom Add Product button is clicked in empty state', async () => {
+    (useSuspenseQuery as jest.Mock).mockReturnValue({ data: [] });
+    render(<MyProducts />, { wrapper: createWrapper() });
+
+    const addButton = screen.getAllByRole('button', { name: 'Add Product' })[1];
+    fireEvent.click(addButton);
+
+    expect(mockRouter.push).toHaveBeenCalledWith('/profile/products/create');
+  });
+
+  it('formats joined date correctly when createdAt is defined', () => {
+    render(<MyProducts />, { wrapper: createWrapper() });
+
+    const joinedText = screen.getByText(/^Joined in/);
+    const date = new Date(mockSession.user.createdAt).toLocaleDateString();
+    expect(joinedText).toHaveTextContent(`Joined in ${date}`);
+  });
+
+  it('renders correctly when createdAt is undefined', () => {
+    const mockSessionNoDate = {
+      user: { ...mockSession.user, createdAt: undefined },
+    };
+    (useSession as jest.Mock).mockReturnValue({ data: mockSessionNoDate });
+
+    render(<MyProducts />, { wrapper: createWrapper() });
+
+    const joinedText = screen.getByText(/^Joined in/);
+    expect(joinedText).toHaveTextContent('Joined in');
   });
 });

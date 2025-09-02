@@ -17,7 +17,7 @@ export const ProfileProductsFallback = () => (
   <Box sx={{ display: 'flex', flexDirection: 'column', gap: '108px' }}>
     <Box sx={{ position: 'relative' }}>
       <Skeleton variant="rectangular" width="100%" height={250} />
-      <StyledProfileWrapper>
+      <StyledProfileWrapper data-testid="profile-wrapper">
         <Skeleton
           variant="circular"
           width={120}
