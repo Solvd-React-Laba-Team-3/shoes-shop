@@ -15,6 +15,7 @@ export const MessageFallback: FC<MessageFallbackProps> = ({ align }) => (
     }}
   >
     <Skeleton
+      data-testid="message-skeleton"
       variant="rounded"
       width={150}
       height={40}

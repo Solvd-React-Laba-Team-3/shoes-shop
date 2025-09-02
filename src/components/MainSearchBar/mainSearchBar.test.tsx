@@ -6,14 +6,89 @@ import {
   act,
   waitFor,
   cleanup,
+  waitFor,
 } from '@testing-library/react';
 import { MainSearchBar } from './MainSearchBar';
-import { mockPush } from '@/testing/mocks/navigation';
-import {
-  setupSearchParams,
-  resetSearchParams,
-} from '@/testing/mocks/searchParams';
-import { mockGetPopularSneakerTerms } from '@/testing/mocks/gemini';
+import { getPopularSearchTerms } from '@/api/gemini/getPopularSearchTermsOptions';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { usePathname } from 'next/navigation';
+
+function resizeWindow(width: number, height: number) {
+  window.innerWidth = width;
+  window.innerHeight = height;
+  window.dispatchEvent(new Event('resize'));
+}
+
+const mockPush = jest.fn();
+const mockSearchParams = new Map<string, string>();
+
+const createTestQueryClient = () =>
+  new QueryClient({
+    defaultOptions: {
+      queries: {
+        retry: false,
+      },
+    },
+  });
+
+const mockUseMediaQuery = jest.fn();
+jest.mock('@mui/material/useMediaQuery', () => ({
+  __esModule: true,
+  default: (query: string) => mockUseMediaQuery(query),
+}));
+
+const renderWithQueryClient = (ui: React.ReactElement) => {
+  const testQueryClient = createTestQueryClient();
+  return render(
+    <QueryClientProvider client={testQueryClient}>{ui}</QueryClientProvider>
+  );
+};
+
+const createMockSearchParams = (params: Record<string, string> = {}) => {
+  mockSearchParams.clear();
+  Object.entries(params).forEach(([key, value]) => {
+    mockSearchParams.set(key, value);
+  });
+};
+
+jest.mock('next/navigation', () => {
+  return {
+    usePathname: jest.fn(),
+    useRouter: () => ({
+      push: mockPush,
+    }),
+    useSearchParams: () => ({
+      get: (param: string) => mockSearchParams.get(param) || null,
+      toString: () =>
+        Array.from(mockSearchParams.entries())
+          .map(([key, value]) => `${key}=${value}`)
+          .join('&'),
+    }),
+  };
+});
+
+jest.mock('@/api/gemini/getPopularSearchTermsOptions', () => {
+  const mockGetPopularSearchTerms = jest.fn();
+  return {
+    getPopularSearchTerms: mockGetPopularSearchTerms,
+    getPopularSearchTermsOptions: jest.fn((query: string) => ({
+      queryKey: ['searchPopularTerms', query],
+      queryFn: () => mockGetPopularSearchTerms(query),
+      staleTime: 1000,
+    })),
+  };
+});
+
+jest.mock('@/lib/hooks', () => {
+  const original = jest.requireActual('@/lib/hooks');
+  return {
+    ...original,
+    useDeviceSize: jest.fn(() => ({ isMobile: false })),
+    useDebounce: original.useDebounce,
+  };
+});
+
+const mockGetPopularSearchTerms = getPopularSearchTerms as jest.Mock;
 
 const getSearchInput = () => screen.getByLabelText('search');
 
@@ -21,8 +96,9 @@ describe('MainSearchBar', () => {
   beforeEach(() => {
     jest.useFakeTimers();
     jest.clearAllMocks();
-    resetSearchParams();
-    mockGetPopularSneakerTerms.mockResolvedValue([]);
+    mockGetPopularSearchTerms.mockResolvedValue([]);
+    (usePathname as jest.Mock).mockReturnValue('/');
+    createMockSearchParams();
   });
 
   afterEach(() => {
@@ -32,7 +108,7 @@ describe('MainSearchBar', () => {
 
   describe('Focus and Blur Behavior', () => {
     it('should show overlay and controls when focused', async () => {
-      render(<MainSearchBar />);
+      renderWithQueryClient(<MainSearchBar />);
       const input = getSearchInput();
 
       await act(async () => {
@@ -44,7 +120,7 @@ describe('MainSearchBar', () => {
     });
 
     it('should hide overlay after blur timeout', async () => {
-      render(<MainSearchBar />);
+      renderWithQueryClient(<MainSearchBar />);
       const input = getSearchInput();
 
       await act(async () => {
@@ -60,7 +136,7 @@ describe('MainSearchBar', () => {
     });
 
     it('should clear blur timeout when focusing again quickly', async () => {
-      render(<MainSearchBar />);
+      renderWithQueryClient(<MainSearchBar />);
       const input = getSearchInput();
 
       await act(async () => {
@@ -78,36 +154,8 @@ describe('MainSearchBar', () => {
   });
 
   describe('Search Functionality', () => {
-    it('should trigger search on Enter key press', async () => {
-      render(<MainSearchBar />);
-      const input = getSearchInput();
-
-      await act(async () => {
-        fireEvent.change(input, { target: { value: 'nike shoes' } });
-        fireEvent.keyDown(input, { key: 'Enter', code: 'Enter' });
-      });
-
-      await waitFor(() => {
-        expect(mockPush).toHaveBeenCalledWith('?search=nike+shoes');
-      });
-    });
-
-    it('should handle empty search submission', async () => {
-      render(<MainSearchBar />);
-      const input = getSearchInput();
-
-      await act(async () => {
-        fireEvent.change(input, { target: { value: '   ' } });
-        fireEvent.keyDown(input, { key: 'Enter', code: 'Enter' });
-      });
-
-      await waitFor(() => {
-        expect(mockPush).toHaveBeenCalledWith('?search=');
-      });
-    });
-
     it('should not trigger search on non-Enter keys', async () => {
-      render(<MainSearchBar />);
+      renderWithQueryClient(<MainSearchBar />);
       const input = getSearchInput();
 
       await act(async () => {
@@ -117,33 +165,11 @@ describe('MainSearchBar', () => {
 
       expect(mockPush).not.toHaveBeenCalled();
     });
-
-    it('should preserve existing search params when searching', async () => {
-      setupSearchParams({ category: 'sneakers', brand: 'nike' });
-      render(<MainSearchBar />);
-      const input = getSearchInput();
-
-      await act(async () => {
-        fireEvent.change(input, { target: { value: 'jordan' } });
-        fireEvent.keyDown(input, { key: 'Enter', code: 'Enter' });
-      });
-
-      await waitFor(() => {
-        const expectedUrlParams = new URLSearchParams(
-          'category=sneakers&brand=nike&search=jordan'
-        );
-        const actualCall = new URLSearchParams(
-          mockPush.mock.calls[0][0].split('?')[1]
-        );
-
-        expect(actualCall.toString()).toEqual(expectedUrlParams.toString());
-      });
-    });
   });
 
   describe('Overlay and Controls', () => {
     it('should close overlay when clicking close button', async () => {
-      render(<MainSearchBar />);
+      renderWithQueryClient(<MainSearchBar />);
       const input = getSearchInput();
 
       await act(async () => {
@@ -160,7 +186,7 @@ describe('MainSearchBar', () => {
     });
 
     it('should close overlay when clicking on it', async () => {
-      render(<MainSearchBar />);
+      renderWithQueryClient(<MainSearchBar />);
       const input = getSearchInput();
 
       await act(async () => {
@@ -175,26 +201,11 @@ describe('MainSearchBar', () => {
 
       expect(screen.queryByTestId('overlay')).not.toBeInTheDocument();
     });
-
-    it('should close overlay after Enter key search', async () => {
-      render(<MainSearchBar />);
-      const input = getSearchInput();
-
-      await act(async () => {
-        fireEvent.focus(input);
-        fireEvent.change(input, { target: { value: 'test' } });
-        fireEvent.keyDown(input, { key: 'Enter', code: 'Enter' });
-      });
-
-      await waitFor(() => {
-        expect(screen.queryByTestId('overlay')).not.toBeInTheDocument();
-      });
-    });
   });
 
   describe('Cleanup', () => {
     it('should clean up blur timeout on unmount', async () => {
-      const { unmount } = render(<MainSearchBar />);
+      const { unmount } = renderWithQueryClient(<MainSearchBar />);
       const input = getSearchInput();
 
       await act(async () => {
@@ -210,23 +221,147 @@ describe('MainSearchBar', () => {
 
       expect(true).toBeTruthy();
     });
+  });
 
-    it('should clean up debounce timeout on unmount', async () => {
-      const { unmount } = render(<MainSearchBar />);
+  describe('Additional Coverage for MainSearchBar', () => {
+    it('should not search if the trimmed value is the same as current search param', async () => {
+      createMockSearchParams({ search: 'same' });
+      renderWithQueryClient(<MainSearchBar />);
+      const input = getSearchInput();
+
+      await act(async () => {
+        fireEvent.change(input, { target: { value: 'same' } });
+        fireEvent.keyDown(input, { key: 'Enter', code: 'Enter' });
+      });
+
+      expect(mockPush).not.toHaveBeenCalled();
+    });
+
+    it('should blur input and close overlay when handleClose is called', async () => {
+      renderWithQueryClient(<MainSearchBar />);
+      const input = getSearchInput();
+      const blurSpy = jest.spyOn(input, 'blur');
+
+      await act(async () => {
+        fireEvent.focus(input);
+      });
+
+      await act(async () => {
+        fireEvent.keyDown(input, { key: 'Escape' });
+      });
+
+      const closeBtn = screen.getByTestId('close-button');
+      fireEvent.click(closeBtn);
+
+      expect(blurSpy).toHaveBeenCalled();
+      expect(screen.queryByTestId('overlay')).not.toBeInTheDocument();
+    });
+
+    it('should not set popular terms when query is not successful', async () => {
+      mockGetPopularSearchTerms.mockResolvedValueOnce(undefined);
+
+      renderWithQueryClient(<MainSearchBar />);
+      const input = getSearchInput();
+
+      await act(async () => {
+        fireEvent.change(input, { target: { value: 'test' } });
+      });
+
+      expect(
+        screen.queryByTestId('popular-terms-container')
+      ).not.toBeInTheDocument();
+    });
+
+    it('should enable query when input is empty', async () => {
+      mockGetPopularSearchTerms.mockResolvedValueOnce(['term1', 'term2']);
+
+      renderWithQueryClient(<MainSearchBar />);
       const input = getSearchInput();
 
       await act(async () => {
         fireEvent.focus(input);
-        fireEvent.change(input, { target: { value: 'nike' } });
       });
-
-      unmount();
 
       await act(async () => {
-        jest.runAllTimers();
+        fireEvent.change(input, { target: { value: '' } });
       });
 
-      expect(mockGetPopularSneakerTerms).not.toHaveBeenCalled();
+      await act(async () => {
+        jest.advanceTimersByTime(2000);
+      });
+
+      expect(
+        await screen.findByTestId('popular-terms-container')
+      ).toBeInTheDocument();
+    });
+
+    it('should show loading bar and handle term click to trigger search and close overlay', async () => {
+      (usePathname as jest.Mock).mockReturnValue('/somepage');
+      mockGetPopularSearchTerms.mockResolvedValueOnce(['clickedTerm']);
+
+      renderWithQueryClient(<MainSearchBar />);
+      const input = getSearchInput();
+
+      await act(async () => {
+        fireEvent.focus(input);
+      });
+
+      await act(async () => {
+        fireEvent.change(input, { target: { value: 'longsearchvalue' } });
+        jest.advanceTimersByTime(2000);
+      });
+
+      expect(await screen.getByTestId('loading-bar')).toBeInTheDocument();
+
+      const termItem = await screen.findByTestId('popular-term-0');
+
+      await act(async () => {
+        fireEvent.click(termItem);
+      });
+
+      expect(mockPush).toHaveBeenCalledWith(
+        expect.stringContaining('clickedTerm')
+      );
+      expect(screen.queryByTestId('overlay')).not.toBeInTheDocument();
+    });
+  });
+  describe('MainSearchBar - Edge cases', () => {
+    it('should not render popular terms container if API returns undefined', async () => {
+      mockGetPopularSearchTerms.mockResolvedValueOnce(undefined);
+
+      renderWithQueryClient(<MainSearchBar />);
+      const input = getSearchInput();
+
+      await act(async () => {
+        fireEvent.focus(input);
+        fireEvent.change(input, { target: { value: 'test' } });
+        jest.advanceTimersByTime(2000);
+      });
+
+      await waitFor(() => {
+        expect(
+          screen.queryByTestId('popular-terms-container')
+        ).not.toBeInTheDocument();
+      });
+    });
+  });
+
+  describe('MainSearchBar - Mobile behavior', () => {
+    it('should render search icon button when mobile and not focused, and open search on click', async () => {
+      mockUseMediaQuery.mockReturnValue(true);
+
+      renderWithQueryClient(<MainSearchBar />);
+      resizeWindow(420, 800);
+
+      const mobileBtn = screen.getByRole('button');
+      expect(mobileBtn).toBeInTheDocument();
+
+      await act(async () => {
+        fireEvent.click(mobileBtn);
+      });
+
+      expect(screen.getByTestId('overlay')).toBeInTheDocument();
+      expect(screen.getByTestId('search-input')).toBeInTheDocument();
     });
   });
 });

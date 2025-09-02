@@ -141,4 +141,34 @@ describe('SignUp', () => {
       await screen.findByText(/passwords do not match/i)
     ).toBeInTheDocument();
   });
+
+  test('redirects to sign in on successful registration', async () => {
+    render(<SignUp />, { wrapper: TestWrapper });
+
+    fireEvent.change(screen.getByLabelText(/name/i), {
+      target: { value: 'Olha' },
+    });
+    fireEvent.change(screen.getByLabelText(/email/i), {
+      target: { value: 'olha@example.com' },
+    });
+    fireEvent.change(screen.getByLabelText(/^Password/i), {
+      target: { value: 'password123' },
+    });
+    fireEvent.change(screen.getByLabelText(/confirm password/i), {
+      target: { value: 'password123' },
+    });
+
+    fireEvent.submit(screen.getByRole('button', { name: /sign up/i }));
+
+    await waitFor(() => {
+      expect(mockMutate).toHaveBeenCalled();
+    });
+
+    const [, options] = mockMutate.mock.calls[0];
+    options.onSuccess();
+
+    await waitFor(() => {
+      expect(mockRouter.push).toHaveBeenCalledWith('/auth/sign-in');
+    });
+  });
 });

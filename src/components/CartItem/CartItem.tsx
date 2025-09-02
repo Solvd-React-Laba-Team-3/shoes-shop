@@ -138,6 +138,7 @@ export const CartItem: FC<CartProduct> = ({
                 sx={{ gap: '10px', alignItems: 'center' }}
               >
                 <IconButton
+                  aria-label="decrease quantity"
                   size="small"
                   sx={(theme) => ({
                     width: '20px',
@@ -153,6 +154,7 @@ export const CartItem: FC<CartProduct> = ({
                   {quantity}
                 </Typography>
                 <IconButton
+                  aria-label="increase quantity"
                   size="small"
                   data-cy="increaseButton"
                   sx={(theme) => ({

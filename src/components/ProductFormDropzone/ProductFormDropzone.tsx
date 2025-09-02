@@ -50,6 +50,7 @@ export const ProductFormDropzone: FC<ProductFormDropzoneProps> = ({
           >
             <Image src={image.url} alt="Product" width={300} height={380} />
             <Fab
+              aria-label="Delete image"
               size="small"
               color="error"
               sx={{
@@ -74,6 +75,7 @@ export const ProductFormDropzone: FC<ProductFormDropzoneProps> = ({
             onRemoveImage(deletingImage.id, deletingImage.index);
             setDeletingImage(null);
           }}
+          confirmText="Delete"
         />
       )}
     </>
