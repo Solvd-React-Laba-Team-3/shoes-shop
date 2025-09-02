@@ -309,7 +309,12 @@ export const CartSummary: FC<CartSummaryProps> = ({
         <Typography variant="h3" component={'p'} sx={{ fontWeight: 600 }}>
           Total
         </Typography>
-        <Typography variant="h3" component={'p'} sx={{ fontWeight: 600 }}>
+        <Typography
+          variant="h3"
+          data-testId="total"
+          sx={{ fontWeight: 600 }}
+          component={'p'}
+        >
           ${total}
         </Typography>
       </Box>

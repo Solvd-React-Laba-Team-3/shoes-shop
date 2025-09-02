@@ -47,7 +47,7 @@ interface ProductFormProps {
   onRemoveImage: (id: number, index: number) => void;
 }
 
-const handleToggleSize = (
+export const handleToggleSize = (
   selected: Size,
   currentValues: number[],
   onChange: (value: number[]) => void

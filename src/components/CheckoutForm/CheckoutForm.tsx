@@ -97,12 +97,14 @@ export const CheckoutForm: FC<CheckoutProps> = ({
           label="Name"
           placeholder="Type your name..."
           errorMessage={errors.name?.message}
+          data-testid="textfield-Name"
           {...register('name')}
         />
         <LabeledTextfield
           label="Surname"
           placeholder="Type your surname..."
           errorMessage={errors.surname?.message}
+          data-testid="textfield-Surname"
           {...register('surname')}
         />
         <LabeledTextfield
@@ -110,12 +112,14 @@ export const CheckoutForm: FC<CheckoutProps> = ({
           label="Email"
           placeholder="example@gmail.com"
           errorMessage={errors.email?.message}
+          data-testid="textfield-Email"
           {...register('email')}
         />
         <LabeledTextfield
           label="Phone number"
           placeholder="(54) 9 114180-1332"
           errorMessage={errors.phone?.message}
+          data-testid="textfield-Phone number"
           {...register('phone')}
         />
       </Box>
@@ -153,7 +157,13 @@ export const CheckoutForm: FC<CheckoutProps> = ({
 
               <Select
                 displayEmpty
-                sx={{ padding: '4px' }}
+                sx={{
+                  padding: '4px',
+                  '& option': {
+                    fontSize: '16px',
+                    fontWeight: 400,
+                  },
+                }}
                 error={!!errors.country}
                 {...field}
                 renderValue={(value) => {
@@ -175,8 +185,8 @@ export const CheckoutForm: FC<CheckoutProps> = ({
                 }}
               >
                 {shippingCountries.map((country) => (
-                  <MenuItem key={country} value={country}>
-                    <Typography component={'span'} variant="caption">
+                  <MenuItem key={country} value={country} component={'span'}>
+                    <Typography component={'option'} variant="caption">
                       {country}
                     </Typography>
                   </MenuItem>
@@ -190,12 +200,14 @@ export const CheckoutForm: FC<CheckoutProps> = ({
           label="City"
           placeholder="New York"
           errorMessage={errors.city?.message}
+          data-testid="textfield-City"
           {...register('city')}
         />
         <LabeledTextfield
           label="Zip Code"
           placeholder="3490583"
           errorMessage={errors.zipCode?.message}
+          data-testid="textfield-Zip Code"
           {...register('zipCode')}
         />
       </Box>
@@ -204,6 +216,7 @@ export const CheckoutForm: FC<CheckoutProps> = ({
         errorMessage={errors.address?.message}
         placeholder="Street, apartment, block"
         sx={{ width: '100%' }}
+        data-testid="textfield-Address"
         {...register('address')}
       />
 
