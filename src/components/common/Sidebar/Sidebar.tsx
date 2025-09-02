@@ -5,17 +5,20 @@ import HistoryIcon from '@mui/icons-material/History';
 import LoyaltyIcon from '@mui/icons-material/Loyalty';
 import SettingsIcon from '@mui/icons-material/Settings';
 import LogoutIcon from '@mui/icons-material/Logout';
+import LoginIcon from '@mui/icons-material/Login';
+import CloseIcon from '@mui/icons-material/Close';
 import PreviewIcon from '@mui/icons-material/Preview';
 import Avatar from '@mui/material/Avatar';
 import Typography from '@mui/material/Typography';
 import { signOut, useSession } from 'next-auth/react';
-import { Button, Link } from '@/components/ui';
+import { Button, IconButton, Link } from '@/components/ui';
 import { usePathname } from 'next/navigation';
 import { HEADER_HEIGHT } from '@/constants/headerHeight';
 import Drawer, { DrawerProps } from '@mui/material/Drawer';
 import { FC } from 'react';
+import { useMediaQuery, useTheme } from '@mui/material';
 
-export const Sidebar: FC<DrawerProps> = ({ open = true, ...props }) => {
+export const Sidebar: FC<DrawerProps> = ({ open = false, ...props }) => {
   const pathname = usePathname();
   const { data: session } = useSession();
 
@@ -23,114 +26,187 @@ export const Sidebar: FC<DrawerProps> = ({ open = true, ...props }) => {
     {
       label: 'My Products',
       icon: <StorefrontIcon />,
-      href: '/products',
+      href: '/profile/products',
     },
     {
       label: 'Order history',
       icon: <HistoryIcon />,
-      href: '/history',
+      href: '/profile/orders',
     },
     {
       label: 'My Wishlist',
       icon: <LoyaltyIcon />,
-      href: '/wishlist',
+      href: '/profile/wishlist',
     },
     {
       label: 'Recently viewed',
       icon: <PreviewIcon />,
-      href: '/recently-viewed',
+      href: '/profile/recently-viewed',
     },
     {
       label: 'Settings',
       icon: <SettingsIcon />,
-      href: '/settings',
+      href: '/profile/settings',
     },
   ];
 
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+
   return (
     <Drawer
-      variant="persistent"
-      open={open}
+      variant={isMobile ? 'temporary' : 'persistent'}
+      anchor={isMobile ? 'right' : 'left'}
+      open={isMobile ? open : true}
       sx={{
-        width: '320px',
-        zIndex: 100,
+        maxWidth: '320px',
+        zIndex: isMobile ? 1000 : 800,
+        width: { xs: '320px', md: '260px', lg: '320px' },
 
-        '& .MuiPaper-root': {
-          height: `calc(100vh - ${HEADER_HEIGHT}px)`,
-          position: 'sticky',
-          top: 0,
+        '& .MuiDrawer-paper': {
+          border: 'none',
+          paddingBottom: '200px',
+          top: { xs: 0, md: HEADER_HEIGHT },
         },
+        '& .MuiPaper-root': {
+          position: { md: 'sticky' },
+        },
+
+        position: { md: 'relative' },
       }}
       {...props}
     >
-      <Box
-        sx={{
-          display: 'flex',
-          alignItems: 'center',
-          gap: '16px',
-          padding: '32px 40px',
-          borderBottom: (theme) => `1px solid ${theme.palette.divider}`,
-        }}
-      >
-        <Avatar
-          src={session?.user?.avatar?.url}
-          alt="Avatar"
-          sx={{ width: '64px', height: '64px' }}
-        />
-        <Box sx={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-          <Typography
-            sx={{ fontSize: '12px', fontWeight: 500 }}
-            color="textDisabled"
-          >
-            Welcome
-          </Typography>
-          <Typography variant="subtitle2" sx={{ whiteSpace: 'nowrap' }}>
-            {session?.user?.username}
-          </Typography>
-        </Box>
-      </Box>
-
-      <Box
-        sx={{
-          display: 'flex',
-          flexDirection: 'column',
-          gap: '36px',
-          padding: '32px 40px',
-        }}
-      >
-        {navLinks.map((link) => (
-          <Link
-            key={link.href}
-            href={link.href}
-            active={pathname.includes(link.href)}
-            variant="subtitle2"
-            sx={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: '15px',
-            }}
-          >
-            {link.icon}
-            {link.label}
-          </Link>
-        ))}
-
-        <Button
-          variant="text"
+      {isMobile && (
+        <Box
           sx={{
-            padding: '0 0 0 4px',
-            justifyContent: 'flex-start',
-            '&:hover': {
-              backgroundColor: 'transparent',
-              textDecoration: 'underline',
-            },
-            height: '25px',
+            display: 'flex',
+            justifyContent: 'flex-end',
+            paddingBottom: '8px',
+            paddingTop: '12px',
+            width: { xs: '320px', md: '260px', lg: '320px' },
           }}
-          size="small"
-          onClick={() => signOut({ redirect: true, callbackUrl: '/' })}
-          color="secondary"
         >
-          <Typography
+          <IconButton
+            sx={{
+              cursor: 'pointer',
+              zIndex: 1000,
+              color: 'text.secondary',
+            }}
+            onClick={(e) => props.onClose?.(e, 'backdropClick')}
+          >
+            <CloseIcon />
+          </IconButton>
+        </Box>
+      )}
+      {session ? (
+        <>
+          <Box
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '16px',
+              padding: '32px 40px',
+              width: { xs: '320px', md: '260px', lg: '320px' },
+              borderBottom: (theme) => `1px solid ${theme.palette.divider}`,
+            }}
+          >
+            <Avatar
+              src={session?.user?.avatar?.url}
+              alt="Avatar"
+              sx={{ width: '64px', height: '64px' }}
+            />
+            <Box sx={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+              <Typography
+                variant="subtitle2"
+                component={'span'}
+                color="textDisabled"
+              >
+                Welcome
+              </Typography>
+              <Typography
+                variant="subtitle2"
+                component={'span'}
+                sx={{
+                  display: 'flex',
+                  flexWrap: 'wrap',
+                  width: { xs: '140px', md: '140px', lg: '200px' },
+                  wordBreak: 'break-word',
+                }}
+              >
+                {session?.user?.username}
+              </Typography>
+            </Box>
+          </Box>
+
+          <Box
+            sx={{
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '36px',
+              padding: '32px 40px',
+            }}
+          >
+            {navLinks.map((link) => (
+              <Link
+                onClick={() => props.onClose?.({}, 'backdropClick')}
+                key={link.href}
+                href={link.href}
+                active={pathname.includes(link.href)}
+                variant="subtitle2"
+                sx={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '15px',
+                }}
+              >
+                {link.icon}
+                {link.label}
+              </Link>
+            ))}
+
+            <Button
+              variant="text"
+              sx={{
+                padding: '0 0 0 4px',
+                justifyContent: 'flex-start',
+                '&:hover': {
+                  backgroundColor: 'transparent',
+                  textDecoration: 'underline',
+                },
+                height: '25px',
+              }}
+              size="small"
+              onClick={() => signOut({ redirect: true, callbackUrl: '/' })}
+              color="secondary"
+            >
+              <Typography
+                variant="subtitle2"
+                component={'span'}
+                sx={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '15px',
+                }}
+              >
+                <LogoutIcon fontSize="small" />
+                Logout
+              </Typography>
+            </Button>
+          </Box>
+        </>
+      ) : (
+        <Box
+          sx={{
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '36px',
+            padding: '32px 40px',
+          }}
+        >
+          <Link
+            onClick={() => props.onClose?.({}, 'backdropClick')}
+            href={'/auth/sign-in'}
+            active={pathname.includes('/auth/sign-in')}
             variant="subtitle2"
             sx={{
               display: 'flex',
@@ -138,11 +214,11 @@ export const Sidebar: FC<DrawerProps> = ({ open = true, ...props }) => {
               gap: '15px',
             }}
           >
-            <LogoutIcon fontSize="small" />
-            Logout
-          </Typography>
-        </Button>
-      </Box>
+            <LoginIcon fontSize="small" />
+            Sign in
+          </Link>
+        </Box>
+      )}
     </Drawer>
   );
 };

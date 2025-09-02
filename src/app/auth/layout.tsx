@@ -4,6 +4,7 @@ import { getServerSession } from 'next-auth';
 import Image from 'next/image';
 import { redirect } from 'next/navigation';
 import { ReactNode } from 'react';
+import logo from '../../../public/logo.png';
 
 export default async function AuthLayout({
   children,
@@ -13,20 +14,21 @@ export default async function AuthLayout({
   const session = await getServerSession();
 
   if (session) {
-    redirect('/products');
+    redirect('/profile/products');
   }
 
   return (
     <>
-      <Box sx={{ position: 'absolute', top: '50px', left: '40px' }}>
+      <Box sx={{ position: 'absolute', top: '22px', left: '24px' }}>
         <Link href="/">
-          <Image src="/logo.png" alt="logo" width={40} height={30} />
+          <Image src={logo} alt="logo" width={40} height={30} />
         </Link>
       </Box>
+
       <Box
         sx={{
           display: 'grid',
-          gridTemplateColumns: '1fr 1fr',
+          gridTemplateColumns: { xs: '1fr', lg: '1fr 1fr' },
           height: '100vh',
           overflow: 'hidden',
         }}

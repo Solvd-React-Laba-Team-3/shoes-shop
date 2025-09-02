@@ -1,8 +1,14 @@
 import type { NextConfig } from 'next';
 
 const nextConfig: NextConfig = {
-  /* config options here */
   logging: { fetches: { fullUrl: true } },
+  images: {
+    remotePatterns: [new URL('https://res.cloudinary.com/**')],
+  },
+  transpilePackages: ['@mui/material', '@mui/system', '@mui/icons-material'],
+  experimental: {
+    serverComponentsExternalPackages: ['puppeteer-core', '@sparticuz/chromium'],
+  },
 };
 
 export default nextConfig;

@@ -1,0 +1,1 @@
+export { ProductPageFallback } from './ProductPageFallback';

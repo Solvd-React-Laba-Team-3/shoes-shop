@@ -15,17 +15,6 @@ import {
 } from '@/testing/mocks/searchParams';
 import { mockGetPopularSneakerTerms } from '@/testing/mocks/gemini';
 
-jest.mock('@/components/ui', () => {
-  const originalModule = jest.requireActual('@/components/ui');
-  return {
-    __esModule: true,
-    ...originalModule,
-    Link: ({ href, children }: { href: string; children: React.ReactNode }) => (
-      <a href={href}>{children}</a>
-    ),
-  };
-});
-
 const getSearchInput = () => screen.getByLabelText('search');
 
 describe('MainSearchBar', () => {

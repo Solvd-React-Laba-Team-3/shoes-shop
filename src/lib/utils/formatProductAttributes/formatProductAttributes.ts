@@ -26,22 +26,16 @@ export function formatProductAttributes(
     description: attributes.description,
     price: attributes.price,
     teamName: attributes.teamName,
-    images: attributes.images?.data?.map((img) => ({
-      ...img.attributes,
-    })),
-    brand: {
-      ...attributes.brand.data.attributes,
-    },
-    categories: attributes.categories.data.map((cat) => ({
-      ...cat.attributes,
-    })),
-    color: {
-      ...attributes.color.data.attributes,
-    },
-    gender: {
-      ...attributes.gender.data.attributes,
-    },
-    sizes: attributes.sizes.data.map((size) => ({
+    images:
+      attributes.images.data?.map((img) => ({
+        ...img.attributes,
+      })) || null,
+    brand: attributes.brand.data?.attributes,
+    categories:
+      attributes.categories.data?.map((cat) => ({ ...cat.attributes })) || null,
+    color: attributes.color.data?.attributes,
+    gender: attributes.gender.data?.attributes,
+    sizes: attributes.sizes.data?.map((size) => ({
       ...size.attributes,
     })),
   };

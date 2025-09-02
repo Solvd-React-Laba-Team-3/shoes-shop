@@ -1,132 +1,81 @@
 'use client';
 
 import { Product } from '@/types/Product';
-import {
-  Box,
-  Card,
-  CardActionArea,
-  CardContent,
-  styled,
-  Grid,
-  Typography,
-  Stack,
-} from '@mui/material';
-import { FC } from 'react';
+import { Box, Grid, Typography } from '@mui/material';
+import { FC, useState } from 'react';
 import Link from 'next/link';
-import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
 import Image from 'next/image';
 import { ProductActionMenu } from '../ProductActionMenu';
-import { ProductWishlistButton } from '../ProductWishlistButton';
+import { WishlistButton } from '../WishlistButton';
+import placeholderImage from '../../../public/product-placeholder.png';
+import { useWishlist } from '@/lib/hooks';
+import {
+  ActionButtonContainer,
+  StyledCard,
+  StyledCardActionArea,
+  StyledCardContent,
+} from './productCard.styles';
 
-type ProductCardProps = Pick<
-  Product,
-  'id' | 'name' | 'gender' | 'price' | 'images'
-> & {
-  cardType?: 'catalog' | 'actionMenu' | 'wishlist';
-};
+export type CardVariant = 'catalog' | 'actionMenu' | 'wishlist';
 
-const StyledCard = styled(Card)({
-  backgroundColor: 'transparent',
-  boxShadow: 'none',
-  position: 'relative',
-  borderRadius: 0,
-});
-
-const StyledCardActionArea = styled(CardActionArea)({
-  '&:hover, &:focus, &:active': {
-    backgroundColor: 'transparent',
-  },
-  '& .MuiCardActionArea-focusHighlight': {
-    backgroundColor: 'transparent',
-  },
-  touchAction: 'pan-y',
-});
-
-const StyledCardContent = styled(CardContent)({
-  padding: '12px 0 0 0',
-});
-
-const HoverCartBox = styled(Box)(({ theme }) => ({
-  position: 'absolute',
-  top: '50%',
-  left: '50%',
-  transform: 'translate(-50%, -50%)',
-  opacity: 0,
-  transition: 'opacity 0.2s ease',
-  background: 'rgba(255,255,255,0.75)',
-  width: '80px',
-  height: '80px',
-  borderRadius: '100%',
-  color: theme.palette.text.secondary,
-  '.MuiCardActionArea-root:hover &': {
-    opacity: 1,
-  },
-}));
-
-const ActionButtonContainer = styled(Box)(({ theme }) => ({
-  position: 'absolute',
-  top: '10px',
-  right: '10px',
-  zIndex: 2,
-  '& .MuiIconButton-root': {
-    backgroundColor: 'transparent',
-    transition: 'color 0.2s ease-in, background-color 0.2s ease-in',
-  },
-  '& .MuiIconButton-root:hover': {
-    color: theme.palette.primary.main,
-    backgroundColor: 'rgba(255,255,255,0.5)',
-  },
-}));
+interface ProductCardProps {
+  product: Product;
+  variant?: CardVariant;
+}
 
 const getGenderText = (genderName: string): string => {
   return genderName === 'Men' ? "Men's Shoes" : "Women's Shoes";
 };
 
 export const ProductCard: FC<ProductCardProps> = ({
-  id,
-  images,
-  name,
-  gender,
-  price,
-  cardType = 'catalog',
+  product,
+  variant = 'catalog',
 }) => {
-  const productImage = images ? images[0].url : '/product-placeholder.png';
+  const { removeItem } = useWishlist();
+
+  const [imageIndex, setImageIndex] = useState(0);
+
+  const productImage = product.images?.[imageIndex]?.url || placeholderImage;
   const productImageAlt =
-    images && images[0].alternativeText
-      ? images[0].alternativeText
-      : `product image: ${name}`;
+    product.images && product.images[imageIndex].alternativeText
+      ? product.images[imageIndex].alternativeText
+      : `product image: ${product.name}`;
 
   return (
-    <StyledCard>
+    <StyledCard
+      onMouseEnter={() =>
+        setImageIndex((product.images?.length ?? 0) > 1 ? 1 : 0)
+      }
+      onMouseLeave={() => setImageIndex(0)}
+    >
       <ActionButtonContainer>
-        {cardType === 'actionMenu' && <ProductActionMenu productId={id} />}
-        {cardType === 'wishlist' && <ProductWishlistButton />}
+        {variant === 'actionMenu' && <ProductActionMenu product={product} />}
+        {variant === 'wishlist' && (
+          <WishlistButton onRemove={() => removeItem(product.id)} />
+        )}
       </ActionButtonContainer>
-      <Link href={`/products/${id}`} style={{ textDecoration: 'none' }}>
+      <Link
+        href={`/products/${product.id}`}
+        style={{ textDecoration: 'none', display: 'block', height: '100%' }}
+      >
         <StyledCardActionArea disableRipple>
-          <Box sx={{ position: 'relative' }}>
+          <Box
+            sx={{
+              position: 'relative',
+              width: '100%',
+              aspectRatio: 320 / 380,
+              animation: ' img fadeIn 0.5s',
+            }}
+          >
             <Image
-              width={300}
-              height={300}
+              sizes="400px"
+              fill
               src={productImage}
               alt={productImageAlt}
-              style={{ width: '100%', height: 'auto', aspectRatio: '320/380' }}
+              style={{
+                objectFit: 'cover',
+              }}
             />
-
-            <HoverCartBox>
-              <Stack
-                direction="column"
-                alignItems="center"
-                justifyContent="center"
-                spacing={1}
-                height="100%"
-              >
-                <AddShoppingCartIcon color="inherit" />
-                <Typography fontSize="8px" fontWeight="500">
-                  Add to cart
-                </Typography>
-              </Stack>
-            </HoverCartBox>
           </Box>
 
           <StyledCardContent>
@@ -135,17 +84,42 @@ export const ProductCard: FC<ProductCardProps> = ({
               justifyContent="space-between"
               alignItems="flex-start"
               color="text.primary"
+              height={'100%'}
+              flexDirection={{ xs: 'column', md: 'row' }}
             >
-              <Grid size={{ xs: 9 }} sx={{ minWidth: 0 }}>
-                <Typography variant="h5" gutterBottom={false}>
-                  {name}
+              <Grid
+                size={{ xs: 9 }}
+                display={'flex'}
+                flexDirection={'column'}
+                sx={{
+                  minWidth: 0,
+                  flex: 1,
+                  marginRight: { md: '10px' },
+                  width: { xs: '100%', md: 'auto' },
+                  height: '100%',
+                }}
+              >
+                <Typography
+                  variant="h5"
+                  component={'p'}
+                  gutterBottom={false}
+                  data-cy="product-name"
+                >
+                  {product.name}
                 </Typography>
-                <Typography variant="subtitle1" color="text.secondary">
-                  {getGenderText(gender.name)}
+                <Typography
+                  variant="subtitle1"
+                  component={'p'}
+                  color="text.secondary"
+                  marginTop={{ xs: 'auto', md: '0' }}
+                >
+                  {getGenderText(product.gender?.name)}
                 </Typography>
               </Grid>
               <Grid>
-                <Typography variant="h5">${price}</Typography>
+                <Typography variant="h5" component={'p'}>
+                  ${product.price}
+                </Typography>
               </Grid>
             </Grid>
           </StyledCardContent>

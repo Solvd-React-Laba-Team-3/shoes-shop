@@ -23,6 +23,10 @@ Check out the live version of the website:
 - **🎨 MUI (Material UI)** – Customizable component library for fast, accessible, and responsive UI.
 - **🔐 NextAuth** – Authentication and session management solution.
 - **🔄 React Query** – Data fetching and caching for better API interactions.
+- **📝 react-hook-form** – Flexible form management with minimal re-renders.
+- **🛡 Zod** – Schema validation for safer and more predictable data handling.
+- **💳 Stripe** – Secure and seamless payment processing.
+- **🤖 @google/generative-ai** – AI-powered assistant for enhanced shopping experience.
 
 ### ✅ **Testing & Quality**
 
@@ -76,7 +80,7 @@ The local development server will be available at:
 ## 🔗 Useful Links
 
 - **📋 Code Style Conventions:**
-  [CODE_STYLE.md](.CODE_STYLE.md)
+  [CODE_STYLE.md](CODE_STYLE.md)
 
 - **📜 API Documentation (Swagger):**
   [Swagger Link](https://shoes-shop-strapi.herokuapp.com/documentation#)

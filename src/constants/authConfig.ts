@@ -1,16 +1,16 @@
 import { login } from '@/api/auth/login';
 import { AuthOptions } from 'next-auth';
-import { User as IUser } from '@/types/User';
+import { User as UserType } from '@/types/User';
 import CredentialsProvider from 'next-auth/providers/credentials';
-import { getUserProfile } from '@/api/profile/getUserProfile';
 import { SESSION_MAX_AGE } from './sessionMaxAge';
+import { getUserProfile } from '@/api/profile/getUserProfile';
 
 declare module 'next-auth' {
   interface Session {
-    user: IUser & { accessToken: string };
+    user: UserType & { accessToken: string };
   }
 
-  interface User extends IUser {
+  interface User extends UserType {
     accessToken: string;
     email: string;
   }
@@ -18,7 +18,7 @@ declare module 'next-auth' {
 
 declare module 'next-auth/jwt' {
   interface JWT {
-    user: IUser & { accessToken: string };
+    user: UserType & { accessToken: string };
   }
 }
 

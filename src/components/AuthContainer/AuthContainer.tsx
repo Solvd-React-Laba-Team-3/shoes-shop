@@ -1,33 +1,60 @@
 'use client';
 
-import { Box, Typography } from '@mui/material';
-import { ReactNode } from 'react';
+import { styled, Typography } from '@mui/material';
+import { FC, ReactNode } from 'react';
+import Box from '@mui/material/Box';
 
-type AuthContainerProp = {
+interface AuthContainerProps {
   title: string;
   description?: string;
   children: ReactNode;
   footer?: ReactNode;
-};
+}
 
-export const AuthContainer = ({
+const StyledContainer = styled(Box)(({ theme }) => ({
+  margin: '20% auto',
+  position: 'relative',
+  display: 'flex',
+  flexDirection: 'column',
+  alignItems: 'center',
+  justifyContent: 'center',
+  gap: '48px',
+  width: '100%',
+  padding: '0',
+
+  [theme.breakpoints.down('sm')]: {
+    padding: '0 24px',
+  },
+}));
+
+const StyledContent = styled(Box)({
+  display: 'flex',
+  flexDirection: 'column',
+  gap: '24px',
+  alignItems: 'center',
+  justifyContent: 'center',
+  width: '100%',
+  maxWidth: '400px',
+});
+
+export const AuthContainer: FC<AuthContainerProps> = ({
   title,
   description,
   children,
   footer,
-}: AuthContainerProp) => (
-  <Box
-    sx={{
-      margin: '20% auto',
-      position: 'relative',
-      display: 'flex',
-      flexDirection: 'column',
-      alignItems: 'flex-start',
-      gap: '48px',
-    }}
-  >
-    <Box sx={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-      <Typography variant="h2">{title}</Typography>
+}) => (
+  <StyledContainer>
+    <Box
+      sx={{
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '16px',
+        textAlign: 'center',
+      }}
+    >
+      <Typography variant="h2" component={'h1'}>
+        {title}
+      </Typography>
 
       {description && (
         <Typography variant="caption" component="p" color="textSecondary">
@@ -35,17 +62,9 @@ export const AuthContainer = ({
         </Typography>
       )}
     </Box>
-    <Box
-      sx={{
-        display: 'flex',
-        flexDirection: 'column',
-        gap: '24px',
-        alignItems: 'center',
-        justifyContent: 'center',
-      }}
-    >
+    <StyledContent>
       {children}
       {footer}
-    </Box>
-  </Box>
+    </StyledContent>
+  </StyledContainer>
 );

@@ -15,7 +15,7 @@ export const SearchContainer = styled(Box, {
     position: 'relative',
     borderRadius: 42,
     marginLeft: 0,
-    width: size === 'small' ? theme.spacing(35) : theme.spacing(40),
+    width: size === 'small' ? theme.spacing(32) : theme.spacing(40),
     height: size === 'small' ? theme.spacing(4) : theme.spacing(6),
     display: 'flex',
     alignItems: 'center',
@@ -43,6 +43,27 @@ export const SearchContainer = styled(Box, {
         },
       },
     }),
+    [theme.breakpoints.down('lg')]: {
+      ...(expandOnFocus && {
+        '&:focus-within': {
+          margin: '0 80px 0 20px',
+        },
+      }),
+    },
+    [theme.breakpoints.down('md')]: {
+      ...(expandOnFocus && {
+        paddingLeft: '0px',
+        height: '48px',
+        margin: '0 80px 0 20px ',
+        width: '100%',
+        '&:focus-within': {
+          height: '48px',
+          width: '100%',
+          maxWidth: '100%',
+          margin: '0 80px 0 20px ',
+        },
+      }),
+    },
   })
 );
 
@@ -69,6 +90,9 @@ export const StyledInputBase = styled(InputBase, {
       duration: theme.transitions.duration.short,
     }),
     width: '100%',
+    [theme.breakpoints.down('md')]: {
+      paddingLeft: theme.spacing(0),
+    },
   },
 
   ...(size === 'small' && {

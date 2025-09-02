@@ -4,5 +4,6 @@ export type QueryParam = Record<
   | number
   | boolean
   | Record<string, unknown>
-  | Array<string | number | boolean>
+  | Array<string | number | boolean | Record<string, unknown>>
+  | undefined
 >;

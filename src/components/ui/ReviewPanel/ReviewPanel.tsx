@@ -15,22 +15,26 @@ const StyledPaper = styled(Paper)(({ theme }) => ({
   backdropFilter: 'blur(20px)',
   borderRadius: '32px',
   padding: theme.spacing(4),
-  display: 'grid',
   justifyItems: 'start',
   width: '756px',
   position: 'absolute',
-  right: '102px',
-  bottom: '255px',
+  right: '5%',
+  bottom: '10%',
+  display: 'grid',
+
+  [theme.breakpoints.down('xxl')]: {
+    display: 'none',
+  },
 }));
 
-type ReviewPanelProps = {
+interface ReviewPanelProps {
   quote: string;
   name: string;
   location: string;
   rating: number;
   onPrev?: () => void;
   onNext?: () => void;
-};
+}
 
 export const ReviewPanel: FC<ReviewPanelProps> = ({
   quote,
@@ -63,14 +67,22 @@ export const ReviewPanel: FC<ReviewPanelProps> = ({
       </Stack>
     </Box>
 
-    <Stack spacing={1} alignItems="center" sx={{ margin: '16px 0 4px' }}>
+    <Stack
+      spacing={1}
+      alignItems="center"
+      sx={{
+        margin: '16px 0 4px',
+      }}
+    >
       <Stack direction="row" spacing={1} alignItems="center">
-        <Typography variant="h4">{name}</Typography>
+        <Typography variant="h4" component={'p'}>
+          {name}
+        </Typography>
         <Rating value={rating} readOnly size="large" />
       </Stack>
     </Stack>
 
-    <Typography variant="caption" sx={{ fontSize: '18px' }}>
+    <Typography variant="caption" component={'p'} sx={{ fontSize: '18px' }}>
       {location}
     </Typography>
   </StyledPaper>

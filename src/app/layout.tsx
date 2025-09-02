@@ -5,7 +5,10 @@ import { ThemeProvider } from '@/providers/ThemeProvider';
 import { SessionProvider } from '@/providers/SessionProvider';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/constants/authConfig';
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import '@/styles/globals.css';
+import { AIHelper } from '@/components/common/AIHelper';
+import { StripeProvider } from '@/providers/StripeProvider';
 
 const workSans = Work_Sans({
   variable: '--font-work-sans',
@@ -28,9 +31,15 @@ export default async function RootLayout({
     <html lang="en">
       <body className={`${workSans.variable}`}>
         <QueryProvider>
-          <ThemeProvider>
-            <SessionProvider session={session}>{children}</SessionProvider>
-          </ThemeProvider>
+          <StripeProvider>
+            <ThemeProvider>
+              <SessionProvider session={session}>
+                {children}
+                <AIHelper />
+                <ReactQueryDevtools initialIsOpen={false} />
+              </SessionProvider>
+            </ThemeProvider>
+          </StripeProvider>
         </QueryProvider>
       </body>
     </html>

@@ -9,7 +9,7 @@ describe('AuthContainer', () => {
       </AuthContainer>
     );
 
-    expect(screen.getByRole('heading', { level: 2 })).toHaveTextContent(
+    expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent(
       'Login'
     );
   });

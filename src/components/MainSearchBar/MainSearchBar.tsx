@@ -1,6 +1,6 @@
 'use client';
-import { useState, useEffect } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useState, useEffect, useRef } from 'react';
+import { useRouter, usePathname } from 'next/navigation';
 import { SearchBar } from '../ui';
 import {
   MainSearchBarContainer,
@@ -12,80 +12,79 @@ import {
 } from './mainSearchBar.styles';
 import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
+import SearchIcon from '@mui/icons-material/Search';
 import Link from 'next/link';
 import Image from 'next/image';
-import { useDebounce } from '@/lib/hooks/useDebounce';
-import { List, Typography } from '@mui/material';
-import { getPopularSneakerTerms } from '@/api/gemini/getPopularSneakerTerms';
+import { useDebounce, useSearchParams } from '@/lib/hooks';
+import {
+  List,
+  NoSsr,
+  Typography,
+  useMediaQuery,
+  useTheme,
+} from '@mui/material';
 import LinearProgress from '@mui/material/LinearProgress';
-import { AI_REQUEST_STALE_TIME } from '@/constants/queriesStaleTime';
-
-const searchSuggestionsCache = new Map<
-  string,
-  { timestamp: number; data: string[] }
->();
+import { useQuery } from '@tanstack/react-query';
+import { getPopularSearchTermsOptions } from '@/api/gemini/getPopularSearchTermsOptions';
+import { MIN_SEARCH_LENGTH } from '@/constants/minSearchLength';
 
 export const MainSearchBar = () => {
   const router = useRouter();
-  const searchParams = useSearchParams();
+  const pathname = usePathname();
+  const { update, searchParams } = useSearchParams();
   const [inputValue, setInputValue] = useState(
     searchParams.get('search') || ''
   );
   const [isFocused, setIsFocused] = useState(false);
   const [popularTerms, setPopularTerms] = useState<string[]>([]);
-  const debouncedInput = useDebounce(inputValue, 2000);
-  const [isLoading, setIsLoading] = useState(false);
-  const [hasFetchedInitialTerms, setHasFetchedInitialTerms] = useState(false);
+  const { debouncedValue, isDebouncing } = useDebounce(inputValue, 2000);
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  const queryOptions = getPopularSearchTermsOptions(debouncedValue);
+
+  const {
+    data: popularResults,
+    isSuccess,
+    isFetching,
+  } = useQuery({
+    ...queryOptions,
+    enabled:
+      debouncedValue.length === 0 || debouncedValue.length > MIN_SEARCH_LENGTH,
+  });
 
   useEffect(() => {
-    const getTerms = async () => {
-      const normalizedQuery = debouncedInput.trim().toLowerCase();
-      const now = Date.now();
-
-      const cached = searchSuggestionsCache.get(normalizedQuery);
-      if (cached && now - cached.timestamp < AI_REQUEST_STALE_TIME) {
-        setPopularTerms(cached.data);
-        setIsLoading(false);
-        return;
-      }
-
-      setIsLoading(true);
-      try {
-        const terms = await getPopularSneakerTerms(normalizedQuery);
-        setPopularTerms(terms.length > 0 ? terms : []);
-        searchSuggestionsCache.set(normalizedQuery, {
-          data: terms,
-          timestamp: now,
-        });
-      } catch {
-        setPopularTerms([]);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    if (debouncedInput.trim() === '' && !hasFetchedInitialTerms) {
-      setHasFetchedInitialTerms(true);
+    if (isSuccess && popularResults) {
+      setPopularTerms(popularResults);
     }
-
-    setIsLoading(true);
-    getTerms();
-  }, [debouncedInput, hasFetchedInitialTerms]);
+  }, [isSuccess, popularResults]);
 
   const handleSearch = (value: string) => {
+    const trimmedValue = value.trim();
     const params = new URLSearchParams(searchParams.toString());
-    params.set('search', value);
-    router.push(`?${params.toString()}`);
+
+    if (params.get('search') === trimmedValue) return;
+    params.set('search', trimmedValue);
+
+    if (pathname !== '/') {
+      router.push(`/?${params.toString()}`);
+    } else {
+      update(params);
+    }
+
+    handleClose();
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter') {
       handleSearch(inputValue.trim());
-      handleClose();
     }
   };
 
   const handleClose = () => {
+    if (document.activeElement instanceof HTMLElement) {
+      document.activeElement.blur();
+    }
+    inputRef.current?.blur();
     setIsFocused(false);
   };
 
@@ -100,14 +99,14 @@ export const MainSearchBar = () => {
   const handleTermClick = (term: string) => {
     setInputValue(term);
     handleSearch(term);
-    if (document.activeElement instanceof HTMLElement) {
-      document.activeElement.blur();
-    }
     handleClose();
   };
 
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+
   return (
-    <>
+    <NoSsr>
       {isFocused && <Overlay data-testid="overlay" onClick={handleClose} />}
       {isFocused && (
         <>
@@ -130,60 +129,80 @@ export const MainSearchBar = () => {
           </IconButtonRight>
         </>
       )}
-      <MainSearchBarContainer
-        isFocused={isFocused}
-        data-testid="search-container"
-      >
-        <SearchBar
-          value={inputValue}
-          onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-            setInputValue(e.target.value);
-          }}
-          placeholder="Search"
-          expandOnFocus
-          size="medium"
-          onKeyDown={handleKeyDown}
-          onFocus={handleFocus}
-          onBlur={handleBlur}
-          data-testid="search-input"
-        />
-        {popularTerms.length > 0 && isFocused && (
-          <PopularTermsContainer
-            data-testid="popular-terms-container"
-            sx={{ position: 'relative' }}
-          >
-            {isLoading && (
-              <LinearProgress
-                data-testid="loading-bar"
-                sx={{
-                  position: 'absolute',
-                  top: -20,
-                  left: '50%',
-                  transform: 'translateX(-50%)',
-                  width: '100%',
-                  maxWidth: 1040,
-                  zIndex: 1,
-                }}
-              />
-            )}
-            <Typography variant="h6">Popular Search Terms</Typography>
-            <List disablePadding>
-              {popularTerms.map((term, index) => (
-                <PopularTermItem
-                  key={index}
-                  onMouseDown={(e) => e.preventDefault()}
-                  onClick={() => handleTermClick(term)}
-                  data-testid={`popular-term-${index}`}
-                >
-                  <Typography variant="body1" fontWeight={500}>
-                    {term}
-                  </Typography>
-                </PopularTermItem>
-              ))}
-            </List>
-          </PopularTermsContainer>
-        )}
-      </MainSearchBarContainer>
-    </>
+      {isMobile && !isFocused && (
+        <IconButton
+          onClick={handleFocus}
+          sx={{ paddingRight: '20px' }}
+          color="secondary"
+        >
+          <SearchIcon />
+        </IconButton>
+      )}
+      {(!isMobile || isFocused) && (
+        <MainSearchBarContainer
+          isFocused={isFocused}
+          data-testid="search-container"
+        >
+          <SearchBar
+            value={inputValue}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+              setInputValue(e.target.value);
+            }}
+            placeholder="Search"
+            expandOnFocus
+            size="medium"
+            onKeyDown={handleKeyDown}
+            onFocus={handleFocus}
+            onBlur={handleBlur}
+            inputRef={inputRef}
+            data-testid="search-input"
+            autoFocus={isMobile}
+          />
+          {popularTerms.length > 0 && isFocused && (
+            <PopularTermsContainer
+              data-testid="popular-terms-container"
+              sx={{ position: 'relative' }}
+            >
+              {(isFetching || isDebouncing) &&
+                inputValue.length > MIN_SEARCH_LENGTH && (
+                  <LinearProgress
+                    data-testid="loading-bar"
+                    sx={{
+                      position: 'absolute',
+                      top: -20,
+                      left: '50%',
+                      transform: 'translateX(-50%)',
+                      width: '100%',
+                      maxWidth: 1040,
+                      zIndex: 1,
+                    }}
+                  />
+                )}
+              <Typography variant="h6" component={'h3'}>
+                Popular Search Terms
+              </Typography>
+              <List disablePadding>
+                {popularTerms.map((term, index) => (
+                  <PopularTermItem
+                    key={index}
+                    onMouseDown={(e) => e.preventDefault()}
+                    onClick={() => handleTermClick(term)}
+                    data-testid={`popular-term-${index}`}
+                  >
+                    <Typography
+                      variant="body1"
+                      component={'p'}
+                      fontWeight={500}
+                    >
+                      {term}
+                    </Typography>
+                  </PopularTermItem>
+                ))}
+              </List>
+            </PopularTermsContainer>
+          )}
+        </MainSearchBarContainer>
+      )}
+    </NoSsr>
   );
 };

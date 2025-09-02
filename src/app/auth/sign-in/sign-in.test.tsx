@@ -13,6 +13,7 @@ const mockRouter = {
 
 jest.mock('next/navigation', () => ({
   useRouter: () => mockRouter,
+  useSearchParams: () => new URLSearchParams(),
 }));
 
 jest.mock('@/components/ui', () => {
@@ -100,7 +101,7 @@ describe('SignIn', () => {
       );
     });
 
-    expect(mockRouter.replace).toHaveBeenCalledWith('/products');
+    expect(mockRouter.replace).toHaveBeenCalledWith('/profile/products');
   });
 
   it('shows error message on failed login', async () => {

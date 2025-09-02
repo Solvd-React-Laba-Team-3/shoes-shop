@@ -1,7 +1,7 @@
 'use client';
 
-import { LabeledTextfield } from '@/components/ui';
-import { Box, FormLabel, Typography } from '@mui/material';
+import { Button, LabeledTextfield } from '@/components/ui';
+import { Box, Typography } from '@mui/material';
 import Image from 'next/image';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
@@ -11,10 +11,9 @@ import {
   ForgotPasswordSchema,
   forgotPasswordSchema,
 } from './forgot-password.schema';
-import { LoaderButton } from '@/components/LoaderButton';
 import { Link } from '@/components/ui';
 import { useRouter } from 'next/navigation';
-import WarningAmberIcon from '@mui/icons-material/WarningAmber';
+import recoveryImage from '../../../../public/recovery.jpg';
 
 export default function ForgotPassword() {
   const router = useRouter();
@@ -28,6 +27,7 @@ export default function ForgotPassword() {
     defaultValues: {
       email: '',
     },
+    shouldFocusError: true,
   });
 
   const {
@@ -54,11 +54,15 @@ export default function ForgotPassword() {
         description="Don’t worry, we’ll send you reset instructions."
         footer={
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-            <Typography variant="subtitle2" color="textSecondary">
+            <Typography
+              variant="subtitle2"
+              component={'p'}
+              color="textSecondary"
+            >
               Back to
             </Typography>
-            <Link href="/auth/sign-in" size="small">
-              log in
+            <Link href="/auth/sign-in" active>
+              Log in
             </Link>
           </Box>
         }
@@ -69,65 +73,53 @@ export default function ForgotPassword() {
           autoComplete="off"
           display="flex"
           flexDirection="column"
-          gap={2}
+          gap={1.5}
           width="100%"
-          maxWidth={400}
           onSubmit={handleSubmit(onSubmit)}
         >
-          <LabeledTextfield
-            id="Email"
-            label="Email"
-            type="email"
-            placeholder="Enter your email"
-            required
-            {...register('email')}
-            error={!!errors.email}
-          />
-          {errors.email && (
-            <FormLabel
-              sx={{
-                fontSize: '13px',
-                display: 'flex',
-                alignItems: 'center',
-                gap: 1,
-              }}
-              error
-            >
-              <WarningAmberIcon fontSize="small" /> {errors.email.message}
-            </FormLabel>
-          )}
-          {isError && (
-            <FormLabel
-              sx={{
-                fontSize: '13px',
-                display: 'flex',
-                alignItems: 'center',
-                gap: 1,
-              }}
-              error
-            >
-              <WarningAmberIcon fontSize="small" />
-              Failed to send reset instructions. Please try again.
-            </FormLabel>
-          )}
+          <Box>
+            <LabeledTextfield
+              id="Email"
+              label="Email"
+              type="email"
+              placeholder="Enter your email"
+              required
+              {...register('email')}
+              errorMessage={
+                errors.email?.message ||
+                (isError
+                  ? 'Failed to send reset instructions. Please try again.'
+                  : null)
+              }
+            />
 
-          {isSuccess && (
-            <Typography variant="subtitle2" color="success">
-              A confirmation link has been sent to your email. Redirecting to
-              login...
-            </Typography>
-          )}
+            {isSuccess && (
+              <Typography variant="subtitle2" component={'p'} color="success">
+                A reset link has been sent to your email. Redirecting to
+                login...
+              </Typography>
+            )}
+          </Box>
 
-          <LoaderButton
-            isSubmitting={isPending || isSuccess}
-            text="Forgot password"
-            loadingText="Submitting..."
-          />
+          <Button
+            loading={isPending || isSuccess}
+            type="submit"
+            size="large"
+            sx={{ width: '100%' }}
+          >
+            Forgot password
+          </Button>
         </Box>
       </AuthContainer>
 
-      <Box sx={{ height: '100vh', position: 'relative' }}>
-        <Image src="/recovery.jpg" alt="forgot password" fill sizes="50vw" />
+      <Box
+        sx={{
+          height: '100vh',
+          position: 'relative',
+          display: { xs: 'none', lg: 'block' },
+        }}
+      >
+        <Image src={recoveryImage} alt="forgot password" fill sizes="50vw" />
       </Box>
     </>
   );

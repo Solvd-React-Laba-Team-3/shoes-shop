@@ -1,7 +1,7 @@
 'use client';
 
-import { LabeledTextfield, Link, ReviewPanel } from '@/components/ui';
-import { Box, Typography, FormLabel } from '@mui/material';
+import { Button, LabeledTextfield, Link, ReviewPanel } from '@/components/ui';
+import { Box, Typography } from '@mui/material';
 import Image from 'next/image';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -9,12 +9,13 @@ import { useRegister } from '@/api/auth/useRegister';
 import { AuthContainer } from '@/components/AuthContainer';
 import { SignUpSchema, signUpSchema } from './sign-up.schema';
 import { useRouter } from 'next/navigation';
-import { LoaderButton } from '@/components/LoaderButton';
-import WarningAmberIcon from '@mui/icons-material/WarningAmber';
+import registerImage from '../../../../public/register.jpg';
+import { useTheme } from '@mui/material/styles';
 
 export default function SignUp() {
   const router = useRouter();
 
+  const theme = useTheme();
   const {
     register,
     handleSubmit,
@@ -27,6 +28,7 @@ export default function SignUp() {
       password: '',
       confirmPassword: '',
     },
+    shouldFocusError: true,
   });
 
   const { mutate: registerUser, error, isPending } = useRegister();
@@ -50,11 +52,21 @@ export default function SignUp() {
         title="Create an account"
         description="Create an account to get easy access to your dream shopping"
         footer={
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-            <Typography variant="subtitle2" color="textSecondary">
+          <Box
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: 1,
+            }}
+          >
+            <Typography
+              variant="subtitle2"
+              component={'p'}
+              color="textSecondary"
+            >
               Already have an account?
             </Typography>
-            <Link href="/auth/sign-in" size="small">
+            <Link href="/auth/sign-in" active>
               Sign in
             </Link>
           </Box>
@@ -66,9 +78,8 @@ export default function SignUp() {
           autoComplete="off"
           display="flex"
           flexDirection="column"
-          gap={2}
+          gap={1.5}
           width="100%"
-          maxWidth={400}
           onSubmit={handleSubmit(onSubmit)}
         >
           <LabeledTextfield
@@ -77,21 +88,8 @@ export default function SignUp() {
             required
             placeholder="Hayman Andrews"
             {...register('name')}
-            error={!!errors.name}
+            errorMessage={errors.name?.message}
           />
-          {errors.name && (
-            <FormLabel
-              sx={{
-                fontSize: '13px',
-                display: 'flex',
-                alignItems: 'center',
-                gap: 1,
-              }}
-              error
-            >
-              <WarningAmberIcon fontSize="small" /> {errors.name.message}
-            </FormLabel>
-          )}
 
           <LabeledTextfield
             id="email"
@@ -99,21 +97,9 @@ export default function SignUp() {
             required
             placeholder="example@mail.com"
             {...register('email')}
-            error={!!errors.email}
+            errorMessage={errors.email?.message}
           />
-          {errors.email && (
-            <FormLabel
-              sx={{
-                fontSize: '13px',
-                display: 'flex',
-                alignItems: 'center',
-                gap: 1,
-              }}
-              error
-            >
-              <WarningAmberIcon fontSize="small" /> {errors.email.message}
-            </FormLabel>
-          )}
+
           <LabeledTextfield
             id="password"
             label="Password"
@@ -121,21 +107,8 @@ export default function SignUp() {
             type="password"
             placeholder="at least 6 characters"
             {...register('password')}
-            error={!!errors.password}
+            errorMessage={errors.password?.message}
           />
-          {errors.password && (
-            <FormLabel
-              sx={{
-                fontSize: '13px',
-                display: 'flex',
-                alignItems: 'center',
-                gap: 1,
-              }}
-              error
-            >
-              <WarningAmberIcon fontSize="small" /> {errors.password.message}
-            </FormLabel>
-          )}
 
           <LabeledTextfield
             id="confirmPassword"
@@ -144,57 +117,36 @@ export default function SignUp() {
             type="password"
             placeholder="at least 6 characters"
             {...register('confirmPassword')}
-            error={!!errors.confirmPassword}
+            errorMessage={errors.confirmPassword?.message || error?.message}
           />
-          {errors.confirmPassword && (
-            <FormLabel
-              sx={{
-                fontSize: '13px',
-                display: 'flex',
-                alignItems: 'center',
-                gap: 1,
-              }}
-              error
-            >
-              <WarningAmberIcon fontSize="small" />{' '}
-              {errors.confirmPassword.message}
-            </FormLabel>
-          )}
 
-          {error && (
-            <FormLabel
-              sx={{
-                fontSize: '13px',
-                display: 'flex',
-                alignItems: 'center',
-                gap: 1,
-              }}
-              error
-            >
-              <WarningAmberIcon fontSize="small" />
-              {error.message}
-            </FormLabel>
-          )}
-          <LoaderButton
-            isSubmitting={isPending}
-            text="Sign up"
-            loadingText="Submitting..."
-          />
+          <Button
+            loading={isPending}
+            type="submit"
+            size="large"
+            sx={{ width: '100%' }}
+          >
+            Sign up
+          </Button>
         </Box>
       </AuthContainer>
 
       <Box
         sx={{
           position: 'relative',
-          height: '100%',
+          height: '100vh',
           width: '100%',
+          [theme.breakpoints.down('lg')]: {
+            display: { xs: 'none', lg: 'block' },
+          },
         }}
       >
-        <Image src="/register.jpg" alt="sign up" fill sizes="50vw" />
+        <Image src={registerImage} alt="sign up" fill sizes="50vw" />
+
         <ReviewPanel
-          quote="Lorem Ipsum is a really great company because the team is passionate about the projects they produce, the people they work with, the quality of the work they do."
+          quote="Shoes Shop is a really great company because the team is passionate about the projects they produce, the people they work with, the quality of the work they do."
           name="John Stone"
-          location="Ukraine, Chernivtsi"
+          location="Ukraine, Kyiv"
           rating={5}
         />
       </Box>

@@ -1,4 +1,5 @@
 import { QueryParam } from '@/types/api/QueryParam';
+import { toQueryString } from '../toQueryString/toQueryString';
 
 interface FetchOptions {
   endpoint: string;
@@ -6,41 +7,8 @@ interface FetchOptions {
   token?: string;
   body?: unknown;
   queryParams?: QueryParam;
-}
-
-/**
- * Converts an object of query parameters into a URL-encoded query string.
- *
- * @param {Record<string, string | number | boolean>} [queryParams] - The query parameters to convert
- * @returns {string} The URL-encoded query string, starting with '?' if parameters exist, otherwise an empty string
- */
-function toQueryString(queryParams?: QueryParam): string {
-  if (!queryParams || Object.keys(queryParams).length === 0) {
-    return '';
-  }
-
-  function buildParams(obj: QueryParam, prefix = ''): string[] {
-    return Object.entries(obj).flatMap(([key, value]) => {
-      const paramKey = prefix ? `${prefix}[${key}]` : key;
-      if (
-        typeof value === 'object' &&
-        value !== null &&
-        !Array.isArray(value)
-      ) {
-        return buildParams(value as QueryParam, paramKey);
-      } else if (Array.isArray(value)) {
-        return value.map(
-          (v) =>
-            `${encodeURIComponent(paramKey)}[]=${encodeURIComponent(String(v))}`
-        );
-      } else {
-        return `${encodeURIComponent(paramKey)}=${encodeURIComponent(String(value))}`;
-      }
-    });
-  }
-
-  const params = buildParams(queryParams).join('&');
-  return params ? `?${params}` : '';
+  apiRoute?: boolean;
+  responseType?: 'json' | 'blob';
 }
 
 /**
@@ -51,6 +19,8 @@ function toQueryString(queryParams?: QueryParam): string {
  * @param {('GET'|'POST'|'PUT'|'DELETE')} method - The HTTP method to use
  * @param {unknown} [body] - Optional request body that will be JSON stringified
  * @param {string} [token] - Optional token to be used for authentication
+ * @param {boolean} [apiRoute] - Optional flag to use the API route instead of the public API URL
+ * @param {('json' | 'blob')} [responseType] - Optional response type to return
  *
  * @returns {Promise<T | StrapiError>} A promise that resolves to either:
  *  - The successful response data of type T
@@ -63,6 +33,8 @@ export const fetchApi = async <T>({
   body,
   token,
   queryParams,
+  apiRoute = false,
+  responseType = 'json',
 }: FetchOptions): Promise<T> => {
   const isFormData = body instanceof FormData;
 
@@ -73,28 +45,31 @@ export const fetchApi = async <T>({
   };
 
   const queryString = toQueryString(queryParams);
-  const response = await fetch(
-    `${process.env.NEXT_PUBLIC_API_URL}${endpoint}${queryString}`,
-    {
-      method,
-      headers,
-      body: isFormData
-        ? (body as FormData)
-        : body
-          ? JSON.stringify(body)
-          : undefined,
-    }
-  );
+  const baseUrl = apiRoute ? '/api' : process.env.NEXT_PUBLIC_API_URL;
 
-  const data = await response.json();
+  const response = await fetch(`${baseUrl}${endpoint}${queryString}`, {
+    method,
+    headers,
+    body: isFormData
+      ? (body as FormData)
+      : body
+        ? JSON.stringify(body)
+        : undefined,
+  });
 
   if (!response.ok) {
+    const data = await response.json();
+
     if (data.error) {
       throw new Error(data.error.message);
     }
-
     throw new Error(data.message);
   }
 
-  return data;
+  switch (responseType) {
+    case 'blob':
+      return (await response.blob()) as T;
+    case 'json':
+      return await response.json();
+  }
 };
