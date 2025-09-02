@@ -311,7 +311,7 @@ export const CartSummary: FC<CartSummaryProps> = ({
         </Typography>
         <Typography
           variant="h3"
-          data-testId="total"
+          data-testid="total"
           sx={{ fontWeight: 600 }}
           component={'p'}
         >

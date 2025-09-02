@@ -228,6 +228,11 @@ export const Filters: FC<DrawerProps> = ({ ...props }) => {
                   type="text"
                   size="small"
                   value={priceInput ? priceInput[0] : 1}
+                  slotProps={{
+                    input: {
+                      inputProps: { 'data-testid': 'price-range' },
+                    },
+                  }}
                   onChange={(e) =>
                     setPriceInput((prev) => [
                       Number(e.target.value),
@@ -244,13 +249,11 @@ export const Filters: FC<DrawerProps> = ({ ...props }) => {
                 </Typography>
                 <StyledTextField
                   type="text"
-                  value={priceInput ? priceInput[1] : 10000}
                   size="small"
+                  value={priceInput ? priceInput[1] : 10000}
                   slotProps={{
                     input: {
-                      inputProps: {
-                        'data-testid': 'price-range',
-                      },
+                      inputProps: { 'data-testid': 'price-range' }, // ✅
                     },
                   }}
                   onChange={(e) =>
