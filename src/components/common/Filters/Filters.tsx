@@ -14,6 +14,7 @@ import {
   Slider,
   Typography,
   useTheme,
+  IconButton,
 } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import { Accordion, Button, Checkbox, SearchBar } from '@/components/ui';
@@ -30,9 +31,8 @@ import {
   StyledPricesContainer,
   StyledCloseWrapper,
   StyledHeaderBox,
-  StyledHeaderButton,
-  StyledTextField,
   StyledBox,
+  StyledTextField,
 } from './filters.styles';
 import { HEADER_HEIGHT } from '@/constants/headerHeight';
 
@@ -100,11 +100,16 @@ export const Filters: FC<DrawerProps> = ({ ...props }) => {
       {isMobile ? (
         <>
           <StyledCloseWrapper>
-            <StyledHeaderButton
+            <IconButton
               onClick={(e) => props.onClose?.(e, 'backdropClick')}
+              sx={{
+                cursor: 'pointer',
+                zIndex: 1000,
+                color: 'var(--mui-palette-text-secondary)',
+              }}
             >
               <CloseIcon />
-            </StyledHeaderButton>
+            </IconButton>
           </StyledCloseWrapper>
           <StyledHeaderBox>
             <Typography component={'h3'}>Filters</Typography>
@@ -241,16 +246,6 @@ export const Filters: FC<DrawerProps> = ({ ...props }) => {
                   type="text"
                   value={priceInput ? priceInput[1] : 10000}
                   size="small"
-                  sx={{
-                    width: 50,
-
-                    '& .MuiOutlinedInput-input': {
-                      padding: '4px',
-                      textAlign: 'center',
-                      borderRadius: '6px',
-                      fontSize: 12,
-                    },
-                  }}
                   slotProps={{
                     input: {
                       inputProps: {

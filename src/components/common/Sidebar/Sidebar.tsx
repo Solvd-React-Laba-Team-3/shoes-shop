@@ -11,65 +11,13 @@ import PreviewIcon from '@mui/icons-material/Preview';
 import Avatar from '@mui/material/Avatar';
 import Typography from '@mui/material/Typography';
 import { signOut, useSession } from 'next-auth/react';
-import { Button as MuiButton, IconButton, Link } from '@/components/ui';
+import { Button, IconButton, Link } from '@/components/ui';
 import { usePathname } from 'next/navigation';
-import { HEADER_HEIGHT } from '@/constants/headerHeight';
-import MuiDrawer, { DrawerProps } from '@mui/material/Drawer';
+import { DrawerProps } from '@mui/material/Drawer';
 import { FC } from 'react';
-import { styled, useMediaQuery, useTheme } from '@mui/material';
-
-const StyledDrawer = styled(MuiDrawer, {
-  shouldForwardProp: (prop) => prop !== 'isMobile',
-})<{ isMobile: boolean }>(({ theme, isMobile }) => ({
-  maxWidth: '320px',
-  zIndex: isMobile ? 1000 : 800,
-  width: '320px',
-  position: 'relative',
-
-  [theme.breakpoints.down('lg')]: {
-    width: '260px',
-  },
-  [theme.breakpoints.down('md')]: {
-    width: '100%',
-    position: 'fixed',
-  },
-
-  '& .MuiDrawer-paper': {
-    border: 'none',
-    paddingBottom: '200px',
-    top: isMobile ? 0 : HEADER_HEIGHT,
-  },
-  '& .MuiPaper-root': {
-    position: isMobile ? 'fixed' : 'sticky',
-  },
-}));
-
-const CloseButtonContainer = styled(Box)(() => ({
-  display: 'flex',
-  justifyContent: 'flex-end',
-  paddingBottom: '8px',
-  paddingTop: '12px',
-  width: '100%',
-}));
-
-const UserInfoContainer = styled(Box)(({ theme }) => ({
-  display: 'flex',
-  alignItems: 'center',
-  gap: '16px',
-  padding: '32px 40px',
-  width: '100%',
-  borderBottom: `1px solid ${theme.palette.divider}`,
-}));
-
-const LogoutButton = styled(MuiButton)(() => ({
-  padding: '0 0 0 4px',
-  justifyContent: 'flex-start',
-  '&:hover': {
-    backgroundColor: 'transparent',
-    textDecoration: 'underline',
-  },
-  height: '25px',
-}));
+import { useMediaQuery, useTheme } from '@mui/material';
+import { StyledDrawer } from './sidebar.styles';
+import { UserInfoContainer } from './sidebar.styles';
 
 export const Sidebar: FC<DrawerProps> = ({ open = false, ...props }) => {
   const pathname = usePathname();
@@ -115,7 +63,15 @@ export const Sidebar: FC<DrawerProps> = ({ open = false, ...props }) => {
       {...props}
     >
       {isMobile && (
-        <CloseButtonContainer>
+        <Box
+          sx={{
+            display: 'flex',
+            justifyContent: 'flex-end',
+            paddingBottom: '8px',
+            paddingTop: '12px',
+            width: '100%',
+          }}
+        >
           <IconButton
             sx={{
               cursor: 'pointer',
@@ -126,7 +82,7 @@ export const Sidebar: FC<DrawerProps> = ({ open = false, ...props }) => {
           >
             <CloseIcon />
           </IconButton>
-        </CloseButtonContainer>
+        </Box>
       )}
       {session ? (
         <>
@@ -185,11 +141,20 @@ export const Sidebar: FC<DrawerProps> = ({ open = false, ...props }) => {
               </Link>
             ))}
 
-            <LogoutButton
+            <Button
               variant="text"
               size="small"
               onClick={() => signOut({ redirect: true, callbackUrl: '/' })}
               color="secondary"
+              sx={{
+                padding: '0 0 0 4px',
+                justifyContent: 'flex-start',
+                height: '25px',
+                '&:hover': {
+                  backgroundColor: 'transparent',
+                  textDecoration: 'underline',
+                },
+              }}
             >
               <Typography
                 variant="subtitle2"
@@ -203,7 +168,7 @@ export const Sidebar: FC<DrawerProps> = ({ open = false, ...props }) => {
                 <LogoutIcon fontSize="small" />
                 Logout
               </Typography>
-            </LogoutButton>
+            </Button>
           </Box>
         </>
       ) : (

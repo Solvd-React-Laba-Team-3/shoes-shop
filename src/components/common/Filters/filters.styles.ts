@@ -1,4 +1,4 @@
-import { Box, Drawer, FormLabel, IconButton, TextField } from '@mui/material';
+import { Box, Drawer, FormLabel, TextField } from '@mui/material';
 import { styled } from '@mui/material/styles';
 
 export const StyledCloseWrapper = styled(Box)(() => ({
@@ -65,12 +65,6 @@ export const StyledHeaderBox = styled(Box)(() => ({
   zIndex: 10,
   paddingBottom: '12px',
   flexShrink: 0,
-}));
-
-export const StyledHeaderButton = styled(IconButton)(() => ({
-  cursor: 'pointer',
-  zIndex: 1000,
-  color: 'var(--mui-palette-text-secondary)',
 }));
 
 export const StyledTextField = styled(TextField)(() => ({
