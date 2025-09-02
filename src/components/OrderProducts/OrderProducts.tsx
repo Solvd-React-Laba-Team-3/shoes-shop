@@ -116,7 +116,7 @@ export const OrderProducts: FC<OrderProductsProps> = ({ products }) => {
                 }}
               >
                 <Typography
-                  variant="caption"
+                  variant="subtitle2"
                   component={'p'}
                   sx={{
                     fontWeight: 500,
@@ -125,8 +125,8 @@ export const OrderProducts: FC<OrderProductsProps> = ({ products }) => {
                 >
                   Price:{' '}
                   <Typography
-                    component="p"
-                    variant="caption"
+                    component="span"
+                    variant="subtitle1"
                     sx={{
                       fontWeight: 500,
                       color: theme.palette.secondary.main,
@@ -163,7 +163,7 @@ export const OrderProducts: FC<OrderProductsProps> = ({ products }) => {
                 >
                   {!isBetweenMdAndLg ? 'Quantity: ' : ''}
                   <Typography
-                    component="p"
+                    component="span"
                     variant="subtitle1"
                     sx={{ color: theme.palette.secondary.main }}
                   >

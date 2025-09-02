@@ -1,5 +1,19 @@
 'use client';
-import { Box, Grid, Skeleton } from '@mui/material';
+import { Box, Grid, Skeleton, styled } from '@mui/material';
+
+const StyledBox = styled(Box)(({ theme }) => ({
+  display: 'flex',
+  gap: '26px',
+  alignItems: 'center',
+  position: 'absolute',
+  left: '58px',
+  bottom: '-90px',
+
+  [theme.breakpoints.down('md')]: {
+    gap: '12px',
+    left: 0,
+  },
+}));
 
 const Loading = () => (
   <Box sx={{ display: 'flex', flexDirection: 'column', gap: '108px' }}>
@@ -17,16 +31,7 @@ const Loading = () => (
           height={250}
           style={{ width: '100%' }}
         />
-        <Box
-          sx={{
-            display: 'flex',
-            gap: { xs: '12px', md: '26px' },
-            alignItems: 'center',
-            position: 'absolute',
-            left: { md: '58px' },
-            bottom: '-90px',
-          }}
-        >
+        <StyledBox>
           <Skeleton
             variant="circular"
             sx={{
@@ -39,7 +44,7 @@ const Loading = () => (
             <Skeleton variant="text" width={150} height={32} />
             <Skeleton variant="text" width={130} height={18} />
           </Box>
-        </Box>
+        </StyledBox>
       </Box>
       <Box
         sx={{

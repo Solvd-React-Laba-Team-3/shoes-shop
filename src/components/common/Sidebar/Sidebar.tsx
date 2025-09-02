@@ -13,10 +13,11 @@ import Typography from '@mui/material/Typography';
 import { signOut, useSession } from 'next-auth/react';
 import { Button, IconButton, Link } from '@/components/ui';
 import { usePathname } from 'next/navigation';
-import { HEADER_HEIGHT } from '@/constants/headerHeight';
-import Drawer, { DrawerProps } from '@mui/material/Drawer';
+import { DrawerProps } from '@mui/material/Drawer';
 import { FC } from 'react';
 import { useMediaQuery, useTheme } from '@mui/material';
+import { StyledDrawer } from './sidebar.styles';
+import { UserInfoContainer } from './sidebar.styles';
 
 export const Sidebar: FC<DrawerProps> = ({ open = false, ...props }) => {
   const pathname = usePathname();
@@ -54,26 +55,11 @@ export const Sidebar: FC<DrawerProps> = ({ open = false, ...props }) => {
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
 
   return (
-    <Drawer
+    <StyledDrawer
+      isMobile={isMobile}
       variant={isMobile ? 'temporary' : 'persistent'}
       anchor={isMobile ? 'right' : 'left'}
       open={isMobile ? open : true}
-      sx={{
-        maxWidth: '320px',
-        zIndex: isMobile ? 1000 : 800,
-        width: { xs: '320px', md: '260px', lg: '320px' },
-
-        '& .MuiDrawer-paper': {
-          border: 'none',
-          paddingBottom: '200px',
-          top: { xs: 0, md: HEADER_HEIGHT },
-        },
-        '& .MuiPaper-root': {
-          position: { md: 'sticky' },
-        },
-
-        position: { md: 'relative' },
-      }}
       {...props}
     >
       {isMobile && (
@@ -83,7 +69,7 @@ export const Sidebar: FC<DrawerProps> = ({ open = false, ...props }) => {
             justifyContent: 'flex-end',
             paddingBottom: '8px',
             paddingTop: '12px',
-            width: { xs: '320px', md: '260px', lg: '320px' },
+            width: '100%',
           }}
         >
           <IconButton
@@ -100,16 +86,7 @@ export const Sidebar: FC<DrawerProps> = ({ open = false, ...props }) => {
       )}
       {session ? (
         <>
-          <Box
-            sx={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: '16px',
-              padding: '32px 40px',
-              width: { xs: '320px', md: '260px', lg: '320px' },
-              borderBottom: (theme) => `1px solid ${theme.palette.divider}`,
-            }}
-          >
+          <UserInfoContainer>
             <Avatar
               src={session?.user?.avatar?.url}
               alt="Avatar"
@@ -136,7 +113,7 @@ export const Sidebar: FC<DrawerProps> = ({ open = false, ...props }) => {
                 {session?.user?.username}
               </Typography>
             </Box>
-          </Box>
+          </UserInfoContainer>
 
           <Box
             sx={{
@@ -166,18 +143,18 @@ export const Sidebar: FC<DrawerProps> = ({ open = false, ...props }) => {
 
             <Button
               variant="text"
+              size="small"
+              onClick={() => signOut({ redirect: true, callbackUrl: '/' })}
+              color="secondary"
               sx={{
                 padding: '0 0 0 4px',
                 justifyContent: 'flex-start',
+                height: '25px',
                 '&:hover': {
                   backgroundColor: 'transparent',
                   textDecoration: 'underline',
                 },
-                height: '25px',
               }}
-              size="small"
-              onClick={() => signOut({ redirect: true, callbackUrl: '/' })}
-              color="secondary"
             >
               <Typography
                 variant="subtitle2"
@@ -219,6 +196,6 @@ export const Sidebar: FC<DrawerProps> = ({ open = false, ...props }) => {
           </Link>
         </Box>
       )}
-    </Drawer>
+    </StyledDrawer>
   );
 };

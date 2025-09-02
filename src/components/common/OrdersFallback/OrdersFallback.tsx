@@ -28,6 +28,23 @@ const StyledCardContent = styled(Box)(({ theme }) => ({
   },
 }));
 
+const StyledBox = styled(Box)(({ theme }) => ({
+  display: 'flex',
+  alignItems: 'center',
+  gap: theme.spacing(1),
+  width: '340px',
+  justifyContent: 'flex-end',
+  flexGrow: 0,
+
+  [theme.breakpoints.down('lg')]: {
+    width: '340px',
+  },
+  [theme.breakpoints.down('sm')]: {
+    width: '120px',
+    flexGrow: 1,
+  },
+}));
+
 export const OrdersFallback = () => {
   return (
     <Box sx={{ mx: 'auto' }}>
@@ -74,16 +91,7 @@ export const OrdersFallback = () => {
                 >
                   <Skeleton variant="text" width="80px" />
                 </Box>
-                <Box
-                  sx={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: 1,
-                    width: { xs: '120px', lg: '340px' },
-                    justifyContent: 'flex-end',
-                    flexGrow: { xs: 1, sm: 0 },
-                  }}
-                >
+                <StyledBox>
                   <Skeleton
                     variant="text"
                     width="60px"
@@ -95,7 +103,7 @@ export const OrdersFallback = () => {
                     height="24px"
                     sx={{ borderRadius: '16px' }}
                   />
-                </Box>
+                </StyledBox>
               </StyledCardContent>
             </StyledCard>
           </Box>

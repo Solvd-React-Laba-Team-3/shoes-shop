@@ -1,6 +1,7 @@
 import { styled } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import { ListItem } from '@mui/material';
+import LinearProgress from '@mui/material/LinearProgress';
 
 interface ContainerProps {
   isFocused: boolean;
@@ -83,3 +84,13 @@ export const Overlay = styled('div')(() => ({
   zIndex: 900,
   transition: 'opacity 0.5s ease',
 }));
+
+export const StyledLinearProgress = styled(LinearProgress)({
+  position: 'absolute',
+  top: -20,
+  left: '50%',
+  transform: 'translateX(-50%)',
+  width: '100%',
+  maxWidth: 1040,
+  zIndex: 1,
+});
