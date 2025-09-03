@@ -15,7 +15,7 @@ export const StyledCloseWrapper = styled(Box)(() => ({
 export const StyledDrawer = styled(Drawer)(({ theme, open }) => ({
   position: 'sticky',
   height: '90vh',
-  zIndex: 1000,
+  zIndex: 800,
   width: open ? '320px' : '0px',
 
   transition:
