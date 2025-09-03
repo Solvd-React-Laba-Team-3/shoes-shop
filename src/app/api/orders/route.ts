@@ -49,19 +49,17 @@ export async function GET(req: Request) {
       email: customerMail,
       limit: 1,
     });
+
     if (!customers.data.length) {
       return NextResponse.json(
-        { error: 'Customer not found' },
-        { status: 404 }
+        {
+          orders: [],
+          pagination: { page: 1, limit, total: 0, hasMore: false },
+        },
+        { status: 200 }
       );
     }
 
-    if (!customers.data.length) {
-      return NextResponse.json({
-        orders: [],
-        pagination: { page: 1, limit, total: 0, hasMore: false },
-      });
-    }
     const customerId = customers.data[0].id;
 
     const searchResults = await stripe.paymentIntents.search({
@@ -126,6 +124,7 @@ export async function GET(req: Request) {
     const sortedOrders = allOrders.sort(
       (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
     );
+
     const startIndex = (page - 1) * limit;
     const endIndex = startIndex + limit;
     const paginatedOrders = sortedOrders.slice(startIndex, endIndex);
