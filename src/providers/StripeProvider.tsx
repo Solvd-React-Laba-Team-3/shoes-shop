@@ -9,5 +9,9 @@ const stripe = loadStripe(
 );
 
 export const StripeProvider: FC<PropsWithChildren> = ({ children }) => {
-  return <Elements stripe={stripe}>{children}</Elements>;
+  return (
+    <Elements stripe={stripe} options={{ locale: 'en' }}>
+      {children}
+    </Elements>
+  );
 };

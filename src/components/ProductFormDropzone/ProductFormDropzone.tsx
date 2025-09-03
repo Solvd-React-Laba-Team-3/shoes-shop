@@ -1,4 +1,4 @@
-import { FC, useState } from 'react';
+import { FC, useEffect, useState } from 'react';
 import { FileDropzone } from '@/components/FileDropZone';
 import Image from 'next/image';
 import { ConfirmActionModal } from '../common/ConfirmActionModal';
@@ -22,6 +22,10 @@ export const ProductFormDropzone: FC<ProductFormDropzoneProps> = ({
     id: number;
     index: number;
   } | null>(null);
+  const [hasImages, setHasImages] = useState(false);
+  useEffect(() => {
+    setHasImages(images.length !== 0);
+  }, [images]);
 
   return (
     <>
@@ -29,9 +33,10 @@ export const ProductFormDropzone: FC<ProductFormDropzoneProps> = ({
         sx={{
           display: 'grid',
           gridTemplateColumns: {
-            sm: 'min-content',
-            lg: '1fr 1fr ',
-            xl: '1fr 1fr',
+            xs: `repeat(${hasImages ? 2 : 1}, minmax(0, 1fr))`,
+            sm: 'repeat(2, minmax(0, 1fr))',
+            lg: 'repeat(3, minmax(0, 1fr))',
+            xl: 'repeat(2, minmax(0, 1fr))',
           },
           gap: { xs: '20px', md: '52px' },
           flex: 1,
@@ -48,7 +53,13 @@ export const ProductFormDropzone: FC<ProductFormDropzoneProps> = ({
               zIndex: 1,
             }}
           >
-            <Image src={image.url} alt="Product" width={300} height={380} />
+            <Image
+              src={image.url}
+              alt="Product"
+              width={300}
+              height={380}
+              style={{ width: '100%', height: 'unset', aspectRatio: '300/380' }}
+            />
             <Fab
               aria-label="Delete image"
               size="small"

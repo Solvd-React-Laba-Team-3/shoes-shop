@@ -1,4 +1,4 @@
-import { Box, Drawer, FormLabel } from '@mui/material';
+import { Box, Drawer, FormLabel, TextField } from '@mui/material';
 import { styled } from '@mui/material/styles';
 
 export const StyledCloseWrapper = styled(Box)(() => ({
@@ -54,4 +54,44 @@ export const StyledPricesContainer = styled(FormLabel)(() => ({
   mt: 2,
   gap: '6px',
   width: '100%',
+}));
+
+export const StyledHeaderBox = styled(Box)(() => ({
+  display: 'flex',
+  padding: '0 20px 0 40px',
+  alignItems: 'center',
+  justifyContent: 'space-between',
+  backgroundColor: 'var(--mui-palette-background-paper)',
+  zIndex: 10,
+  paddingBottom: '12px',
+  flexShrink: 0,
+}));
+
+export const StyledTextField = styled(TextField)(() => ({
+  width: 50,
+  '& .MuiOutlinedInput-input': {
+    borderRadius: '6px',
+    fontSize: 12,
+    padding: '4px',
+    textAlign: 'center',
+  },
+}));
+
+export const StyledBox = styled('div')(({ theme }) => ({
+  display: 'flex',
+  flexDirection: 'column',
+  width: '320px',
+  gap: theme.spacing(3.5),
+  overflow: 'visible',
+  flex: 'unset',
+  paddingBottom: 0,
+  minHeight: 'auto',
+
+  [theme.breakpoints.down('md')]: {
+    gap: theme.spacing(1.5, 3.5),
+    overflow: 'auto',
+    flex: '1 1 auto',
+    paddingBottom: '20px',
+    minHeight: 0,
+  },
 }));

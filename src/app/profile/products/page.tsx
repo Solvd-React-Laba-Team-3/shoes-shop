@@ -24,6 +24,20 @@ const StyledBusinessCenterIcon = styled(BusinessCenterIcon)(({ theme }) => ({
   height: '72px',
 }));
 
+const StyledAvatarContainer = styled(Box)(({ theme }) => ({
+  display: 'flex',
+  gap: '26px',
+  alignItems: 'center',
+  position: 'absolute',
+  left: '58px',
+  bottom: '-90px',
+
+  [theme.breakpoints.down('md')]: {
+    gap: '12px',
+    left: 0,
+  },
+}));
+
 export default function MyProducts() {
   const router = useRouter();
   const { data: session } = useSession();
@@ -41,16 +55,7 @@ export default function MyProducts() {
           height={250}
           style={{ height: '250px', width: '100%' }}
         />
-        <Box
-          sx={{
-            display: 'flex',
-            gap: { xs: '12px', md: '26px' },
-            alignItems: 'center',
-            position: 'absolute',
-            left: { md: '58px' },
-            bottom: '-90px',
-          }}
-        >
+        <StyledAvatarContainer>
           <Avatar
             src={session?.user?.avatar?.url}
             alt="Avatar"
@@ -75,7 +80,7 @@ export default function MyProducts() {
               ).toLocaleDateString()}`}
             </Typography>
           </Box>
-        </Box>
+        </StyledAvatarContainer>
       </Box>
       <Box sx={{ display: 'flex', flexDirection: 'column', gap: '36px' }}>
         <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>

@@ -144,7 +144,14 @@ export default function Settings() {
       <Typography variant="h2" component={'h1'}>
         My Profile
       </Typography>
-      <Box sx={{ display: 'flex', alignItems: 'center', gap: '60px' }}>
+      <Box
+        sx={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: { xs: 0, md: '60px' },
+          justifyContent: { xs: 'space-between', md: 'normal' },
+        }}
+      >
         <Avatar
           src={avatarUrl || ''}
           sx={{
@@ -203,7 +210,7 @@ export default function Settings() {
         onSubmit={handleSubmit(onSubmit)}
         sx={{
           display: 'grid',
-          gridTemplateColumns: { md: '350px 350px', xs: '1fr' },
+          gridTemplateColumns: { xs: '1fr', lg: '350px 350px' },
           gap: { md: '100px', xs: '20px' },
         }}
       >

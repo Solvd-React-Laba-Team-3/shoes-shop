@@ -208,7 +208,6 @@ export const ProductForm: FC<ProductFormProps> = ({
             display: 'flex',
             gap: { xs: '16px', xl: '100px', xxl: '200px' },
             flexDirection: { xs: 'column', xl: 'row' },
-            maxWidth: '1200px',
           }}
         >
           <Box
@@ -236,6 +235,7 @@ export const ProductForm: FC<ProductFormProps> = ({
                   startAdornment={'$'}
                   errorMessage={errors.price?.message}
                   {...field}
+                  onFocus={(e) => e.currentTarget.select()}
                   onChange={(e) => {
                     const numValue = Number(e.target.value);
                     if (isNaN(numValue)) return;
@@ -252,7 +252,6 @@ export const ProductForm: FC<ProductFormProps> = ({
                   sx={{
                     display: 'flex',
                     flexDirection: 'column',
-                    flexGrow: '1',
                     gap: '2px',
                   }}
                 >
@@ -500,7 +499,7 @@ export const ProductForm: FC<ProductFormProps> = ({
           </Box>
           <Box
             sx={{
-              width: { xs: 'min(100%, 300px)', md: '692px' },
+              width: { xs: '100%', xl: '692px' },
               alignSelf: { xs: 'center', sm: 'unset' },
             }}
           >

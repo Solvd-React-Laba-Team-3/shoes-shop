@@ -292,7 +292,11 @@ export const CartSummary: FC<CartSummaryProps> = ({
       {!checkout ? (
         <>
           <Divider sx={{ marginTop: '32px' }} />
-          <Typography variant="caption">
+          <Typography
+            variant="caption"
+            component={'p'}
+            sx={{ paddingTop: '10px' }}
+          >
             Shipping and tax will be calculated at checkout.
           </Typography>
         </>
@@ -311,7 +315,7 @@ export const CartSummary: FC<CartSummaryProps> = ({
         </Typography>
         <Typography
           variant="h3"
-          data-testId="total"
+          data-testid="total"
           sx={{ fontWeight: 600 }}
           component={'p'}
         >

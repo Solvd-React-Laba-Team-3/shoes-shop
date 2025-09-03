@@ -12,18 +12,12 @@ import {
   DrawerProps,
   useMediaQuery,
   Slider,
-  TextField,
   Typography,
   useTheme,
+  IconButton,
 } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
-import {
-  Accordion,
-  Button,
-  Checkbox,
-  IconButton,
-  SearchBar,
-} from '@/components/ui';
+import { Accordion, Button, Checkbox, SearchBar } from '@/components/ui';
 import { useSuspenseQueries } from '@tanstack/react-query';
 import { getGendersOptions } from '@/api/gender/getGendersOptions';
 import { getSizesOptions } from '@/api/size/getSizesOptions';
@@ -36,6 +30,9 @@ import {
   StyledFormLabel,
   StyledPricesContainer,
   StyledCloseWrapper,
+  StyledHeaderBox,
+  StyledBox,
+  StyledTextField,
 } from './filters.styles';
 import { HEADER_HEIGHT } from '@/constants/headerHeight';
 
@@ -92,6 +89,7 @@ export const Filters: FC<DrawerProps> = ({ ...props }) => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
   const hidden = useHideOnScroll();
+
   return (
     <StyledDrawer
       variant={isMobile ? 'temporary' : 'persistent'}
@@ -103,28 +101,17 @@ export const Filters: FC<DrawerProps> = ({ ...props }) => {
         <>
           <StyledCloseWrapper>
             <IconButton
+              onClick={(e) => props.onClose?.(e, 'backdropClick')}
               sx={{
                 cursor: 'pointer',
                 zIndex: 1000,
-                color: 'text.secondary',
+                color: 'var(--mui-palette-text-secondary)',
               }}
-              onClick={(e) => props.onClose?.(e, 'backdropClick')}
             >
               <CloseIcon />
             </IconButton>
           </StyledCloseWrapper>
-          <Box
-            display="flex"
-            padding="0 20px 0 40px"
-            alignItems="center"
-            justifyContent="space-between"
-            sx={{
-              backgroundColor: 'background.paper',
-              zIndex: 10,
-              paddingBottom: '12px',
-              flexShrink: 0,
-            }}
-          >
+          <StyledHeaderBox>
             <Typography component={'h3'}>Filters</Typography>
             <Button
               variant="text"
@@ -138,7 +125,7 @@ export const Filters: FC<DrawerProps> = ({ ...props }) => {
             >
               Clear
             </Button>
-          </Box>
+          </StyledHeaderBox>
         </>
       ) : (
         <Box sx={{ width: '100%', padding: '24px 48px' }}>
@@ -152,20 +139,9 @@ export const Filters: FC<DrawerProps> = ({ ...props }) => {
           </Typography>
         </Box>
       )}
-      <Box
-        display="flex"
-        flexDirection="column"
-        sx={{
-          gap: { xs: '12px', md: '28px' },
-          overflow: { xs: 'auto', md: 'visible' },
-          flex: { xs: '1 1 auto', md: 'unset' },
-          paddingBottom: { xs: '20px', md: '0' },
-          minHeight: { xs: 0, md: 'auto' },
-        }}
-        width="320px"
-      >
+      <StyledBox>
         <Divider sx={{ display: { xs: 'none', md: 'block' } }} />
-        <Box paddingLeft="40px">
+        <Box sx={{ paddingLeft: '40px' }}>
           <Accordion label="Gender" defaultExpanded>
             <Box
               display="flex"
@@ -174,8 +150,8 @@ export const Filters: FC<DrawerProps> = ({ ...props }) => {
             >
               {genders.map((gender) => (
                 <Box
-                  sx={{ display: 'flex', alignItems: 'center' }}
                   key={gender.id}
+                  sx={{ display: 'flex', alignItems: 'center' }}
                 >
                   <Checkbox
                     id={`gender-${gender.id}`}
@@ -194,7 +170,7 @@ export const Filters: FC<DrawerProps> = ({ ...props }) => {
           </Accordion>
         </Box>
         <Divider />
-        <Box paddingLeft="40px">
+        <Box sx={{ paddingLeft: '40px' }}>
           <Accordion label="Brand" defaultExpanded>
             <Box
               display="flex"
@@ -209,8 +185,8 @@ export const Filters: FC<DrawerProps> = ({ ...props }) => {
               />
               {brands.map((brand) => (
                 <Box
-                  sx={{ display: 'flex', alignItems: 'center' }}
                   key={brand.id}
+                  sx={{ display: 'flex', alignItems: 'center' }}
                 >
                   <Checkbox
                     id={`brand-${brand.id}`}
@@ -229,7 +205,7 @@ export const Filters: FC<DrawerProps> = ({ ...props }) => {
           </Accordion>
         </Box>
         <Divider />
-        <Box paddingLeft="40px">
+        <Box sx={{ paddingLeft: '40px' }}>
           <Accordion label="Price" defaultExpanded>
             <Box
               display="flex"
@@ -248,27 +224,15 @@ export const Filters: FC<DrawerProps> = ({ ...props }) => {
                 sx={{ width: '90%' }}
               />
               <StyledPricesContainer>
-                <TextField
+                <StyledTextField
                   type="text"
-                  sx={{
-                    width: 50,
-
-                    '& .MuiOutlinedInput-input': {
-                      borderRadius: '6px',
-                      fontSize: 12,
-                      padding: '4px',
-                      textAlign: 'center',
-                    },
-                  }}
-                  slotProps={{
-                    input: {
-                      inputProps: {
-                        'data-testid': 'price-range',
-                      },
-                    },
-                  }}
                   size="small"
                   value={priceInput ? priceInput[0] : 1}
+                  slotProps={{
+                    input: {
+                      inputProps: { 'data-testid': 'price-range' },
+                    },
+                  }}
                   onChange={(e) =>
                     setPriceInput((prev) => [
                       Number(e.target.value),
@@ -283,25 +247,13 @@ export const Filters: FC<DrawerProps> = ({ ...props }) => {
                 >
                   to
                 </Typography>
-                <TextField
+                <StyledTextField
                   type="text"
-                  value={priceInput ? priceInput[1] : 10000}
                   size="small"
-                  sx={{
-                    width: 50,
-
-                    '& .MuiOutlinedInput-input': {
-                      padding: '4px',
-                      textAlign: 'center',
-                      borderRadius: '6px',
-                      fontSize: 12,
-                    },
-                  }}
+                  value={priceInput ? priceInput[1] : 10000}
                   slotProps={{
                     input: {
-                      inputProps: {
-                        'data-testid': 'price-range',
-                      },
+                      inputProps: { 'data-testid': 'price-range' }, // ✅
                     },
                   }}
                   onChange={(e) =>
@@ -316,7 +268,7 @@ export const Filters: FC<DrawerProps> = ({ ...props }) => {
           </Accordion>
         </Box>
         <Divider />
-        <Box paddingLeft="40px">
+        <Box sx={{ paddingLeft: '40px' }}>
           <Accordion label="Color" defaultExpanded>
             <Box
               display="flex"
@@ -325,8 +277,8 @@ export const Filters: FC<DrawerProps> = ({ ...props }) => {
             >
               {colors?.map((color) => (
                 <Box
-                  sx={{ display: 'flex', alignItems: 'center' }}
                   key={color.id}
+                  sx={{ display: 'flex', alignItems: 'center' }}
                 >
                   <Checkbox
                     id={`color-${color.id}`}
@@ -345,7 +297,7 @@ export const Filters: FC<DrawerProps> = ({ ...props }) => {
           </Accordion>
         </Box>
         <Divider />
-        <Box paddingLeft="40px">
+        <Box sx={{ paddingLeft: '40px' }}>
           <Accordion label="Size" defaultExpanded>
             <Box
               display="flex"
@@ -354,8 +306,8 @@ export const Filters: FC<DrawerProps> = ({ ...props }) => {
             >
               {sizes?.map((size) => (
                 <Box
-                  sx={{ display: 'flex', alignItems: 'center' }}
                   key={size.id}
+                  sx={{ display: 'flex', alignItems: 'center' }}
                 >
                   <Checkbox
                     id={`size-${size.id}`}
@@ -373,7 +325,7 @@ export const Filters: FC<DrawerProps> = ({ ...props }) => {
             </Box>
           </Accordion>
         </Box>
-      </Box>
+      </StyledBox>
     </StyledDrawer>
   );
 };

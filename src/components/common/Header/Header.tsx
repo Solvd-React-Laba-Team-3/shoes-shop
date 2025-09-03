@@ -15,7 +15,7 @@ import { MainSearchBar } from '@/components/MainSearchBar';
 import logo from '../../../../public/logo.png';
 import { useState } from 'react';
 import { Sidebar } from '../Sidebar';
-import { Badge, useMediaQuery } from '@mui/material';
+import { Badge, NoSsr, useMediaQuery } from '@mui/material';
 import { useCart } from '@/lib/hooks';
 import { useHideOnScroll } from '@/lib/hooks';
 
@@ -103,19 +103,21 @@ export const Header = () => {
               title="Go to Cart"
               sx={{ padding: 0 }}
             >
-              <Badge
-                badgeContent={totalItems}
-                color="error"
-                overlap="circular"
-                sx={{
-                  '& .MuiBadge-badge': {
-                    transform: 'translate(-40%, 55%)',
-                    color: 'white',
-                  },
-                }}
-              >
-                <LocalMallOutlinedIcon fontSize="medium" />
-              </Badge>
+              <NoSsr>
+                <Badge
+                  badgeContent={totalItems}
+                  color="error"
+                  overlap="circular"
+                  sx={{
+                    '& .MuiBadge-badge': {
+                      transform: 'translate(-40%, 55%)',
+                      color: 'white',
+                    },
+                  }}
+                >
+                  <LocalMallOutlinedIcon fontSize="medium" />
+                </Badge>
+              </NoSsr>
             </IconButton>
             {session && (
               <Link

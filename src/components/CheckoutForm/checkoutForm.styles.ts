@@ -1,5 +1,6 @@
 import { styled } from '@mui/material/styles';
 import { ToggleButton, Button } from '../ui';
+import { Box } from '@mui/material';
 
 export const StyledPaymentMethod = styled(ToggleButton)(({ theme }) => ({
   minWidth: '100%',
@@ -45,4 +46,13 @@ export const StyledChevronButton = styled(Button)(({ theme }) => ({
     transform: 'scale(1.05)',
   },
   color: theme.palette.secondary.main,
+}));
+
+export const StyledBox = styled(Box)(({ theme }) => ({
+  border: `1px solid ${theme.palette.secondary.dark}`,
+  borderRadius: '8px',
+  padding: theme.spacing(2),
+  width: '100%',
+  height: '56px',
+  marginTop: theme.spacing(2),
 }));
