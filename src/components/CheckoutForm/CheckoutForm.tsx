@@ -114,6 +114,7 @@ export const CheckoutForm: FC<CheckoutProps> = ({
           errorMessage={errors.email?.message}
           data-testid="textfield-Email"
           {...register('email')}
+          disabled
         />
         <LabeledTextfield
           label="Phone number"

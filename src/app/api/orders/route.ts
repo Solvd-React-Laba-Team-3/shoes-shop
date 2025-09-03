@@ -33,17 +33,37 @@ async function getChargeDetails(latestChargeId?: string) {
 
 export async function GET(req: Request) {
   const url = new URL(req.url);
-  const userId = url.searchParams.get('userId');
+  const customerMail = url.searchParams.get('customerMail');
   const page = Number.parseInt(url.searchParams.get('page') || '1');
   const limit = Number.parseInt(url.searchParams.get('limit') || '10');
 
-  if (!userId) {
-    return NextResponse.json({ error: 'Missing userId' }, { status: 400 });
+  if (!customerMail) {
+    return NextResponse.json(
+      { error: 'Missing customerMail' },
+      { status: 400 }
+    );
   }
 
   try {
+    const customers = await stripe.customers.list({
+      email: customerMail,
+      limit: 1,
+    });
+
+    if (!customers.data.length) {
+      return NextResponse.json(
+        {
+          orders: [],
+          pagination: { page: 1, limit, total: 0, hasMore: false },
+        },
+        { status: 200 }
+      );
+    }
+
+    const customerId = customers.data[0].id;
+
     const searchResults = await stripe.paymentIntents.search({
-      query: `metadata['userId']:'${userId}'`,
+      query: `customer:'${customerId}'`,
       limit: 100,
     });
 
@@ -53,25 +73,23 @@ export async function GET(req: Request) {
           const products = parseProducts(intent.metadata);
           if (products.length === 0) return null;
 
-          const { receiptUrl, declineReason } = await getChargeDetails(
-            intent.latest_charge as string
-          );
+          const { receiptUrl, declineReason } = intent.latest_charge
+            ? await getChargeDetails(intent.latest_charge as string)
+            : { receiptUrl: null, declineReason: null };
 
           const {
-            userId,
             orderNumber,
             discountAmount,
             discountCode,
             shippingAmount,
             taxPercent,
-            email,
             paymentMethod,
             omitted,
           } = intent.metadata;
+
           const { shipping } = intent;
 
           return {
-            userId: Number(userId),
             orderNumber: Number(orderNumber),
             date: new Date(intent.created * 1000).toISOString(),
             summary: intent.amount / 100,
@@ -80,7 +98,7 @@ export async function GET(req: Request) {
             delivery: shipping?.address?.line1 ?? '',
             contactFullName: shipping?.name ?? '',
             contactPhone: shipping?.phone ?? '',
-            contactEmail: email ?? '',
+            contactEmail: intent.receipt_email ?? '',
             status: intent.status,
             shippingAmount: shippingAmount ? Number(shippingAmount) : 0,
             taxPercent: taxPercent ? Number(taxPercent) : 0,
@@ -106,6 +124,7 @@ export async function GET(req: Request) {
     const sortedOrders = allOrders.sort(
       (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
     );
+
     const startIndex = (page - 1) * limit;
     const endIndex = startIndex + limit;
     const paginatedOrders = sortedOrders.slice(startIndex, endIndex);
