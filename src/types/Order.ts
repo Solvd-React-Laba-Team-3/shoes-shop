@@ -1,7 +1,7 @@
 import { CartProduct } from './CartProduct';
 
 export interface Order {
-  userId: number;
+  userId?: number;
   orderNumber: number;
   date: string;
   summary: number;

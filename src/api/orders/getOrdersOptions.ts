@@ -32,7 +32,9 @@ export const getOrdersOptions = () =>
       }
 
       const response = await fetchApi<OrderResponse>({
-        endpoint: `/orders?userId=${session.user.id}&page=${pageParam}&limit=10`,
+        endpoint: `/orders?customerMail=${encodeURIComponent(
+          session.user.email
+        )}&page=${pageParam}&limit=10`,
         method: 'GET',
         apiRoute: true,
       });
