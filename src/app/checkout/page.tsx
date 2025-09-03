@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import { CheckoutForm } from '@/components/CheckoutForm';
 import { Header } from '@/components/common/Header';
-import { Box, LinearProgress, Stack, styled } from '@mui/material';
+import { Box, LinearProgress, NoSsr, Stack, styled } from '@mui/material';
 import { CartSummary } from '@/components/CartSummary';
 import { useCart } from '@/lib/hooks';
 import { useQuery } from '@tanstack/react-query';
@@ -373,16 +373,18 @@ export default function Checkout() {
               width: { xs: '100%', xl: '400px' },
             }}
           >
-            <CartSummary
-              paymentMethod={paymentMethod}
-              paymentRequest={paymentRequest}
-              checkout
-              taxPercent={taxPercent}
-              shippingAmount={shippingAmount}
-              onOrderComplete={handleOrderComplete}
-              isProcessing={isProcessing}
-              isFetching={isFetching}
-            />
+            <NoSsr>
+              <CartSummary
+                paymentMethod={paymentMethod}
+                paymentRequest={paymentRequest}
+                checkout
+                taxPercent={taxPercent}
+                shippingAmount={shippingAmount}
+                onOrderComplete={handleOrderComplete}
+                isProcessing={isProcessing}
+                isFetching={isFetching}
+              />
+            </NoSsr>
             {(isProcessing || isFetching) && (
               <LinearProgress sx={{ marginTop: 2 }} />
             )}
