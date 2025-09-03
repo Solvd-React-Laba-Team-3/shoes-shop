@@ -128,7 +128,14 @@ export const Filters: FC<DrawerProps> = ({ ...props }) => {
           </StyledHeaderBox>
         </>
       ) : (
-        <Box sx={{ width: '100%', padding: '24px 48px' }}>
+        <Box
+          sx={{
+            width: '100%',
+            padding: '24px 48px',
+            display: 'flex',
+            flexDirection: 'column',
+          }}
+        >
           {search && (
             <Typography variant="caption" component={'span'}>
               Shoes/{search}

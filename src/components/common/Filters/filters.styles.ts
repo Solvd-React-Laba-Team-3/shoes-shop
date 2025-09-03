@@ -82,10 +82,11 @@ export const StyledBox = styled('div')(({ theme }) => ({
   flexDirection: 'column',
   width: '320px',
   gap: theme.spacing(3.5),
-  overflow: 'visible',
+  overflowY: 'visible',
   flex: 'unset',
   paddingBottom: 0,
   minHeight: 'auto',
+  overflowX: 'hidden',
 
   [theme.breakpoints.down('md')]: {
     gap: theme.spacing(1.5, 3.5),
