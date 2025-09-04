@@ -4,14 +4,14 @@ import { useForm } from 'react-hook-form';
 import Typography from '@mui/material/Typography';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { settingsSchema, SettingsSchema } from './settings.schema';
-import { Avatar, Box, FormLabel } from '@mui/material';
+import { Avatar, Box } from '@mui/material';
 import { signOut, useSession } from 'next-auth/react';
 import { Button, LabeledTextfield } from '@/components/ui';
-import WarningAmberIcon from '@mui/icons-material/WarningAmber';
 import { useEffect, useRef, useState } from 'react';
 import { useUpdateProfile } from '@/api/profile/useUpdateProfile';
 import { useUploadFile } from '@/api/uploadFile/useUploadFile';
 import { useChangePassword } from '@/api/profile/useChangePassword';
+import { FormErrorMessage } from '@/components/ui';
 
 export default function Settings() {
   const { data: session } = useSession();
@@ -163,45 +163,34 @@ export default function Settings() {
             session?.user?.avatar?.alternativeText || session?.user?.username
           }
         />
-        <Box sx={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-          <Button
-            variant="outlined"
-            size="small"
-            onClick={() => inputRef.current?.click()}
-          >
-            Change photo
-          </Button>
-          <input
-            type="file"
-            ref={inputRef}
-            style={{ display: 'none' }}
-            onChange={handleFileChange}
-            accept="image/*"
-            data-testid="file-input"
-          />
-          <Button
-            variant="contained"
-            size="small"
-            onClick={() => setAvatarUrl(null)}
-          >
-            Delete
-          </Button>
+        <Box>
+          <Box sx={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+            <Button
+              variant="outlined"
+              size="small"
+              onClick={() => inputRef.current?.click()}
+            >
+              Change photo
+            </Button>
+            <input
+              type="file"
+              ref={inputRef}
+              style={{ display: 'none' }}
+              onChange={handleFileChange}
+              accept="image/*"
+              data-testid="file-input"
+            />
+            <Button
+              variant="contained"
+              size="small"
+              onClick={() => setAvatarUrl(null)}
+            >
+              Delete
+            </Button>
+          </Box>
         </Box>
+        <FormErrorMessage message={uploadingFileError?.message} />
       </Box>
-      {uploadingFileError && (
-        <FormLabel
-          sx={{
-            fontSize: '13px',
-            display: 'flex',
-            alignItems: 'center',
-            gap: 1,
-          }}
-          error
-        >
-          <WarningAmberIcon fontSize="small" />
-          {uploadingFileError.message}
-        </FormLabel>
-      )}
       <Typography variant="caption" component={'p'}>
         Welcome back! Please enter your details to log into your account.
       </Typography>
@@ -220,72 +209,26 @@ export default function Settings() {
             placeholder="Jane Meldrum"
             {...register('username')}
             error={!!errors.username}
+            errorMessage={errors.username?.message}
           />
-          {errors.username && (
-            <FormLabel
-              sx={{
-                fontSize: '13px',
-                display: 'flex',
-                alignItems: 'center',
-                gap: 1,
-              }}
-              error
-            >
-              <WarningAmberIcon fontSize="small" /> {errors.username.message}
-            </FormLabel>
-          )}
+
           <LabeledTextfield
             label="Email"
             placeholder="example@gmail.com"
             {...register('email')}
             error={!!errors.email}
+            errorMessage={errors.email?.message}
           />
-          {errors.email && (
-            <FormLabel
-              sx={{
-                fontSize: '13px',
-                display: 'flex',
-                alignItems: 'center',
-                gap: 1,
-              }}
-              error
-            >
-              <WarningAmberIcon fontSize="small" /> {errors.email.message}
-            </FormLabel>
-          )}
+
           <LabeledTextfield
             label="Phone number"
             placeholder="(949) 354-2574"
             {...register('phoneNumber')}
-            error={!!errors.phoneNumber}
+            error={!!errors.phoneNumber || !!updatingProfileError}
+            errorMessage={
+              errors.phoneNumber?.message || updatingProfileError?.message
+            }
           />
-          {errors.phoneNumber && (
-            <FormLabel
-              sx={{
-                fontSize: '13px',
-                display: 'flex',
-                alignItems: 'center',
-                gap: 1,
-              }}
-              error
-            >
-              <WarningAmberIcon fontSize="small" /> {errors.phoneNumber.message}
-            </FormLabel>
-          )}
-          {updatingProfileError && (
-            <FormLabel
-              sx={{
-                fontSize: '13px',
-                display: 'flex',
-                alignItems: 'center',
-                gap: 1,
-              }}
-              error
-            >
-              <WarningAmberIcon fontSize="small" />
-              {updatingProfileError.message}
-            </FormLabel>
-          )}
         </Box>
 
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
@@ -295,76 +238,28 @@ export default function Settings() {
             placeholder="********"
             {...register('currentPassword')}
             error={!!errors.currentPassword}
+            errorMessage={changingPasswordError?.message}
           />
-          {errors.currentPassword && (
-            <FormLabel
-              sx={{
-                fontSize: '13px',
-                display: 'flex',
-                alignItems: 'center',
-                gap: 1,
-              }}
-              error
-            >
-              <WarningAmberIcon fontSize="small" />
-              {errors.currentPassword.message}
-            </FormLabel>
-          )}
+
           <LabeledTextfield
             label="New password"
             placeholder="********"
             type="password"
             {...register('password')}
             error={!!errors.password}
+            errorMessage={errors.password?.message}
           />
-          {errors.password && (
-            <FormLabel
-              sx={{
-                fontSize: '13px',
-                display: 'flex',
-                alignItems: 'center',
-                gap: 1,
-              }}
-              error
-            >
-              <WarningAmberIcon fontSize="small" /> {errors.password.message}
-            </FormLabel>
-          )}
+
           <LabeledTextfield
             label="Confirm password"
             placeholder="********"
             type="password"
             {...register('confirmPassword')}
-            error={!!errors.confirmPassword}
+            error={!!errors.confirmPassword || !!changingPasswordError}
+            errorMessage={
+              errors.confirmPassword?.message || changingPasswordError?.message
+            }
           />
-          {errors.confirmPassword && (
-            <FormLabel
-              sx={{
-                fontSize: '13px',
-                display: 'flex',
-                alignItems: 'center',
-                gap: 1,
-              }}
-              error
-            >
-              <WarningAmberIcon fontSize="small" />
-              {errors.confirmPassword.message}
-            </FormLabel>
-          )}
-          {changingPasswordError && (
-            <FormLabel
-              sx={{
-                fontSize: '13px',
-                display: 'flex',
-                alignItems: 'center',
-                gap: 1,
-              }}
-              error
-            >
-              <WarningAmberIcon fontSize="small" />
-              {changingPasswordError.message}
-            </FormLabel>
-          )}
 
           <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
             <Button

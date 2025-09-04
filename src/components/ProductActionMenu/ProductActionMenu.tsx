@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, MouseEvent, FC } from 'react';
-import { Menu, MenuItem, ListItemText } from '@mui/material';
+import { ListItemText } from '@mui/material';
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import { IconButton } from '@/components/ui';
 import { EditProductModal } from '../common/EditProductModal';
@@ -11,6 +11,7 @@ import { useCreateProduct } from '@/api/products/useCreateProduct';
 import LinearProgress from '@mui/material/LinearProgress';
 import { useRouter } from 'next/navigation';
 import { ConfirmActionModal } from '../common/ConfirmActionModal';
+import { MenuItem, PopUpMenu } from '../ui';
 
 interface ProductActionMenuProps {
   product: Product;
@@ -116,7 +117,7 @@ export const ProductActionMenu: FC<ProductActionMenuProps> = ({ product }) => {
         <MoreHorizIcon />
       </IconButton>
 
-      <Menu
+      <PopUpMenu
         anchorEl={anchorEl}
         open={isOpen}
         onClose={handleClose}
@@ -129,6 +130,7 @@ export const ProductActionMenu: FC<ProductActionMenuProps> = ({ product }) => {
           horizontal: 'right',
         }}
         sx={{
+          padding: '5px',
           '& .MuiListItemText-primary': {
             fontSize: '13px',
             fontWeight: 300,
@@ -152,7 +154,7 @@ export const ProductActionMenu: FC<ProductActionMenuProps> = ({ product }) => {
             <ListItemText primary={item.label} />
           </MenuItem>
         ))}
-      </Menu>
+      </PopUpMenu>
       {isEditModalOpen && (
         <EditProductModal
           open={isEditModalOpen}

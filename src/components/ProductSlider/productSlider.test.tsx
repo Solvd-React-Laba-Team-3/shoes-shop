@@ -8,18 +8,11 @@ import {
   StyledThumbsWrapper,
   StyledWrapper,
 } from './productSlider.styles';
-import '@testing-library/jest-dom';
 
 jest.mock('swiper/css', () => ({}));
 jest.mock('swiper/css/navigation', () => ({}));
 jest.mock('swiper/css/pagination', () => ({}));
 jest.mock('swiper/css/thumbs', () => ({}));
-
-jest.mock('next/image', () => {
-  const Image = (props: any) => <img {...props} alt={props.alt} />;
-  Image.displayName = 'NextImage';
-  return Image;
-});
 
 jest.mock('swiper/react', () => {
   const Swiper = ({ children }: any) => (

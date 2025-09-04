@@ -12,12 +12,6 @@ jest.mock('../MessageFallback', () => ({
   ),
 }));
 
-jest.mock('@/components/ui', () => ({
-  Link: ({ href, children }: { href: string; children: React.ReactNode }) => (
-    <a href={href}>{children}</a>
-  ),
-}));
-
 jest.mock('react-markdown', () => {
   const MockReactMarkdown = ({ children }: { children: React.ReactNode }) => (
     <div data-testid="react-markdown">{children}</div>

@@ -25,25 +25,6 @@ jest.mock('@/components/ProductList', () => ({
   },
 }));
 
-jest.mock('next/image', () => ({
-  __esModule: true,
-  default: ({
-    src,
-    alt,
-    width,
-    height,
-  }: {
-    src: string | { src: string };
-    alt: string;
-    width: number;
-    height: number;
-  }) => {
-    const imgSrc = typeof src === 'object' ? src.src : src;
-    // eslint-disable-next-line @next/next/no-img-element
-    return <img src={imgSrc} alt={alt} width={width} height={height} />;
-  },
-}));
-
 jest.mock('../../../../public/profile-banner.png', () => ({
   src: '/profile-banner.png',
 }));

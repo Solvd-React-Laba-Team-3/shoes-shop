@@ -9,8 +9,6 @@ import { Filters } from './Filters';
 import { useSearchParams, useDebounce, useFilters } from '@/lib/hooks';
 import { useSuspenseQueries } from '@tanstack/react-query';
 
-import '@testing-library/jest-dom';
-
 const mockUseMediaQuery = jest.fn();
 jest.mock('@mui/material/useMediaQuery', () => ({
   __esModule: true,

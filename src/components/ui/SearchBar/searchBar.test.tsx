@@ -1,6 +1,5 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 import { SearchBar } from './SearchBar';
-import '@testing-library/jest-dom';
 
 describe('SearchBar', () => {
   const setup = (props?: Partial<React.ComponentProps<typeof SearchBar>>) => {

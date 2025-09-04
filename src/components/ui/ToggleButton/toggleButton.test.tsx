@@ -1,6 +1,5 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 import { ToggleButton } from './ToggleButton';
-import '@testing-library/jest-dom';
 
 describe('ToggleButton', () => {
   test('renders correctly', () => {

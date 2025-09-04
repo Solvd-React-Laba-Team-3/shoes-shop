@@ -11,7 +11,7 @@ import FavoriteIcon from '@mui/icons-material/FavoriteBorderOutlined';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui';
 import { styled } from '@mui/material/styles';
-import { EmptyProductList } from '@/components/EmptyProductList';
+import { EmptyContent } from '@/components/EmptyContent';
 
 const StyledFavoriteIcon = styled(FavoriteIcon)(({ theme }) => ({
   color: theme.palette.grey[600],
@@ -47,7 +47,7 @@ export default function Wishlist() {
       <ProductList products={products} variant="wishlist" />
     </Box>
   ) : (
-    <EmptyProductList
+    <EmptyContent
       icon={<StyledFavoriteIcon />}
       message="You don't have any products in your wishlist yet"
       caption="Start adding products to your wishlist"
@@ -55,6 +55,6 @@ export default function Wishlist() {
       <Button size="small" onClick={() => router.push('/')}>
         Go to Catalog
       </Button>
-    </EmptyProductList>
+    </EmptyContent>
   );
 }

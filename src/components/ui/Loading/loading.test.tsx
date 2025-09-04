@@ -1,5 +1,4 @@
 import { render, screen } from '@testing-library/react';
-import '@testing-library/jest-dom';
 import { ThemeProvider } from '@mui/material/styles';
 import { theme } from '@/providers/ThemeProvider';
 import { Loading } from './Loading';

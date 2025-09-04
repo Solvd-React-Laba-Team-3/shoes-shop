@@ -7,13 +7,27 @@ import {
   Box,
   Typography,
   Alert,
-  Button,
   CircularProgress,
+  styled,
 } from '@mui/material';
 import { OrdersFallback } from '@/components/common/OrdersFallback';
 import { useIntersectionObserver } from '@/lib/hooks';
+import { EmptyContent } from '@/components/EmptyContent';
+import AccessTimeIcon from '@mui/icons-material/AccessTimeFilled';
+import { Button } from '@/components/ui';
+import { useRouter } from 'next/navigation';
+
+const StyledAccessTimeIcon = styled(AccessTimeIcon)(({ theme }) => ({
+  color: theme.palette.grey[600],
+  backgroundColor: theme.palette.grey[200],
+  padding: '20px',
+  borderRadius: '50%',
+  width: '72px',
+  height: '72px',
+}));
 
 export default function Orders() {
+  const router = useRouter();
   const {
     data,
     isLoading,
@@ -52,7 +66,7 @@ export default function Orders() {
 
   return isLoading ? (
     <OrdersFallback />
-  ) : (
+  ) : orders.length > 0 ? (
     <Box sx={{ pb: 10 }}>
       <Typography variant="h5" component={'h1'} sx={{ mb: 3 }}>
         Order History
@@ -96,5 +110,15 @@ export default function Orders() {
         )}
       </Box>
     </Box>
+  ) : (
+    <EmptyContent
+      icon={<StyledAccessTimeIcon />}
+      message="You don't have any orders yet."
+      caption="Start shopping to see your order history."
+    >
+      <Button size="small" onClick={() => router.push('/')}>
+        Go to Catalog
+      </Button>
+    </EmptyContent>
   );
 }

@@ -1,33 +1,25 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { CartItem } from './CartItem';
 import { useCart } from '@/lib/hooks';
-import { useRouter } from 'next/navigation';
-import { JSX, ClassAttributes, ImgHTMLAttributes } from 'react';
 
 jest.mock('@/lib/hooks', () => ({
   useCart: jest.fn(),
 }));
 
+const mockPush = jest.fn();
 jest.mock('next/navigation', () => ({
-  useRouter: jest.fn(),
+  useRouter: () => ({
+    push: mockPush,
+    replace: jest.fn(),
+    prefetch: jest.fn(),
+    back: jest.fn(),
+  }),
 }));
 
-jest.mock('next/image', () => ({
-  __esModule: true,
-  default: (
-    props: JSX.IntrinsicAttributes &
-      ClassAttributes<HTMLImageElement> &
-      ImgHTMLAttributes<HTMLImageElement>
-  ) => {
-    // eslint-disable-next-line @next/next/no-img-element
-    return <img {...props} alt={props.alt || 'product image'} />;
-  },
-}));
 describe('CartItem', () => {
   const mockRemoveItem = jest.fn();
   const mockDecreaseQuantity = jest.fn();
   const mockIncreaseQuantity = jest.fn();
-  const mockPush = jest.fn();
 
   beforeEach(() => {
     (useCart as jest.Mock).mockReturnValue({
@@ -35,7 +27,6 @@ describe('CartItem', () => {
       decreaseQuantity: mockDecreaseQuantity,
       increaseQuantity: mockIncreaseQuantity,
     });
-    (useRouter as jest.Mock).mockReturnValue({ push: mockPush });
     jest.clearAllMocks();
   });
 

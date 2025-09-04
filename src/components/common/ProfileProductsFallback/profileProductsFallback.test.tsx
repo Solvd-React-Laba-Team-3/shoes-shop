@@ -1,6 +1,5 @@
 import { render, screen } from '@testing-library/react';
 import { ProfileProductsFallback } from './ProfileProductsFallback';
-import '@testing-library/jest-dom';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 
 const renderWithTheme = (ui: React.ReactElement) => {

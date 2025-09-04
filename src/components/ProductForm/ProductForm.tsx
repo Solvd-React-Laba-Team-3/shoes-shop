@@ -208,6 +208,7 @@ export const ProductForm: FC<ProductFormProps> = ({
             display: 'flex',
             gap: { xs: '16px', xl: '100px', xxl: '200px' },
             flexDirection: { xs: 'column', xl: 'row' },
+            maxWidth: '1600px',
           }}
         >
           <Box

@@ -1,6 +1,5 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 import { Header } from './Header';
-import '@testing-library/jest-dom';
 import { ThemeProvider } from '@mui/material/styles';
 import { theme } from '@/providers/ThemeProvider';
 
@@ -17,24 +16,6 @@ jest.mock('next-auth/react', () => ({
 jest.mock('next/navigation', () => ({
   useRouter: () => ({ push: mockRouter }),
   usePathname: () => '/',
-}));
-
-jest.mock('next/image', () => ({
-  __esModule: true,
-  default: ({
-    src,
-    alt,
-    width,
-    height,
-  }: {
-    src: string;
-    alt: string;
-    width: number;
-    height: number;
-  }) => (
-    // eslint-disable-next-line @next/next/no-img-element
-    <img src={src} alt={alt} width={width} height={height} />
-  ),
 }));
 
 jest.mock('@/components/MainSearchBar', () => ({

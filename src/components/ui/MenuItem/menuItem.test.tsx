@@ -1,6 +1,5 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 import { MenuItem } from './MenuItem';
-import '@testing-library/jest-dom';
 
 describe('MenuItem', () => {
   test('renders with correct text', () => {

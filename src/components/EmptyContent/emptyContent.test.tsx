@@ -1,12 +1,12 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
-import { EmptyProductList } from './';
+import { EmptyContent } from '.';
 import BlockIcon from '@mui/icons-material/Block';
 
-describe('EmptyProductList', () => {
+describe('EmptyContent', () => {
   it('displays the correct messages', () => {
     render(
-      <EmptyProductList
+      <EmptyContent
         message="Test empty list message"
         caption="Test empty list caption"
         icon={<BlockIcon />}
@@ -18,7 +18,7 @@ describe('EmptyProductList', () => {
 
   it('renders an icon if present', () => {
     render(
-      <EmptyProductList
+      <EmptyContent
         message="Test empty list message"
         caption="Test empty list caption"
         icon={<BlockIcon data-testid="empty-icon" />}

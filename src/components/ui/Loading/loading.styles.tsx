@@ -1,12 +1,9 @@
 import { Box, styled } from '@mui/material';
-
-interface LoadingContainerProps {
-  fullScreen?: boolean;
-}
+import { LoadingProps } from './Loading';
 
 export const LoadingContainer = styled(Box, {
   shouldForwardProp: (prop) => prop !== 'fullScreen',
-})<LoadingContainerProps>(({ fullScreen, theme }) => ({
+})<LoadingProps>(({ fullScreen, theme }) => ({
   display: 'flex',
   flexDirection: 'column',
   alignItems: 'center',

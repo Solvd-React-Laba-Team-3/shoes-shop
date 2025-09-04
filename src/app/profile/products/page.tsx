@@ -13,7 +13,7 @@ import { ProductList } from '@/components/ProductList';
 import profileBanner from '../../../../public/profile-banner.png';
 import { useSuspenseQuery } from '@tanstack/react-query';
 import { getUserProductsOptions } from '@/api/products/getUserProductsOptions';
-import { EmptyProductList } from '@/components/EmptyProductList';
+import { EmptyContent } from '@/components/EmptyContent';
 
 const StyledBusinessCenterIcon = styled(BusinessCenterIcon)(({ theme }) => ({
   color: theme.palette.grey[600],
@@ -98,7 +98,7 @@ export default function MyProducts() {
           {products?.length ? (
             <ProductList products={products} variant="actionMenu" />
           ) : (
-            <EmptyProductList
+            <EmptyContent
               icon={<StyledBusinessCenterIcon />}
               message="You don't have any products yet"
               caption="Start adding products to your profile"
@@ -109,7 +109,7 @@ export default function MyProducts() {
               >
                 Add Product
               </Button>
-            </EmptyProductList>
+            </EmptyContent>
           )}
         </Box>
       </Box>

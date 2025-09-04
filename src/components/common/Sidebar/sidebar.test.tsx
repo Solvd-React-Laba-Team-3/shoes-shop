@@ -1,5 +1,4 @@
 import { render, screen, fireEvent } from '@testing-library/react';
-import '@testing-library/jest-dom';
 import { Sidebar } from './Sidebar';
 import { useSession, signOut } from 'next-auth/react';
 import { usePathname } from 'next/navigation';

@@ -1,4 +1,3 @@
-import '@testing-library/jest-dom';
 import { render, screen, waitFor, fireEvent } from '@testing-library/react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { useResetPassword } from '@/api/auth/useResetPassword';
@@ -16,17 +15,6 @@ jest.mock('next/navigation', () => ({
 jest.mock('@/api/auth/useResetPassword', () => ({
   useResetPassword: jest.fn(),
 }));
-
-jest.mock('@/components/ui', () => {
-  const originalModule = jest.requireActual('@/components/ui');
-  return {
-    __esModule: true,
-    ...originalModule,
-    Link: ({ href, children }: { href: string; children: React.ReactNode }) => (
-      <a href={href}>{children}</a>
-    ),
-  };
-});
 
 const queryClient = new QueryClient({
   defaultOptions: {

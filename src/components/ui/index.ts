@@ -12,3 +12,4 @@ export { ReviewPanel } from './ReviewPanel/ReviewPanel';
 export { SearchBar } from './SearchBar/SearchBar';
 export { FormErrorMessage } from './FormErrorMessage/FormErrorMessage';
 export { Tooltip } from './Tooltip/Tooltip';
+export { Loading } from './Loading/Loading';

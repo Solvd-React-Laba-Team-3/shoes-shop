@@ -12,7 +12,7 @@ import { Button } from '@/components/ui';
 import { styled } from '@mui/material/styles';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import { Product } from '@/types/Product';
-import { EmptyProductList } from '@/components/EmptyProductList';
+import { EmptyContent } from '@/components/EmptyContent';
 
 const StyledVisibilityIcon = styled(VisibilityIcon)(({ theme }) => ({
   color: theme.palette.grey[600],
@@ -52,7 +52,7 @@ export default function RecentlyViewed() {
       <ProductList products={sortedProducts} variant="catalog" />
     </Box>
   ) : (
-    <EmptyProductList
+    <EmptyContent
       icon={<StyledVisibilityIcon />}
       message="You haven't look at any products yet"
       caption="Start searching for shoes in our catalog"
@@ -60,6 +60,6 @@ export default function RecentlyViewed() {
       <Button size="small" onClick={() => router.push('/')}>
         Go to Catalog
       </Button>
-    </EmptyProductList>
+    </EmptyContent>
   );
 }

@@ -1,13 +1,13 @@
 import { Box, styled, Typography } from '@mui/material';
 import { FC, PropsWithChildren, ReactNode } from 'react';
 
-interface EmptyProductListProps extends PropsWithChildren {
+interface EmptyContentProps extends PropsWithChildren {
   icon: ReactNode;
   message: string;
   caption: string;
 }
 
-const StyledNoProductsWrapper = styled(Box)(() => ({
+const StyledEmptyContentWrapper = styled(Box)(() => ({
   display: 'flex',
   justifyContent: 'center',
   flexDirection: 'column',
@@ -17,14 +17,14 @@ const StyledNoProductsWrapper = styled(Box)(() => ({
   textAlign: 'center',
 }));
 
-export const EmptyProductList: FC<EmptyProductListProps> = ({
+export const EmptyContent: FC<EmptyContentProps> = ({
   icon,
   message,
   caption,
   children,
 }) => {
   return (
-    <StyledNoProductsWrapper>
+    <StyledEmptyContentWrapper>
       <Box
         sx={{
           display: 'flex',
@@ -42,6 +42,6 @@ export const EmptyProductList: FC<EmptyProductListProps> = ({
         </Typography>
       </Box>
       {children}
-    </StyledNoProductsWrapper>
+    </StyledEmptyContentWrapper>
   );
 };

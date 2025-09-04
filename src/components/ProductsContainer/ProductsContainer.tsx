@@ -15,7 +15,7 @@ import { useRouter } from 'next/navigation';
 import { styled, useTheme } from '@mui/material/styles';
 import LocalMallIcon from '@mui/icons-material/LocalMall';
 import { useIntersectionObserver } from '@/lib/hooks';
-import { EmptyProductList } from '../EmptyProductList';
+import { EmptyContent } from '../EmptyContent';
 
 interface ProductsContainerProps {
   isFiltersOpen: boolean;
@@ -160,7 +160,7 @@ export const ProductsContainer: FC<ProductsContainerProps> = ({
           <Box ref={ref} />
         </>
       ) : (
-        <EmptyProductList
+        <EmptyContent
           icon={<StyledLocalMallIcon />}
           message="There are no products match search"
           caption="Try to change search query"

@@ -4,7 +4,7 @@ import { CircularProgress, Typography } from '@mui/material';
 import { FC } from 'react';
 import { LoadingContainer } from './loading.styles';
 
-interface LoadingProps {
+export interface LoadingProps {
   fullScreen?: boolean;
 }
 

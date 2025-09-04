@@ -1,29 +1,8 @@
 import { fireEvent, render, screen } from '@testing-library/react';
-import '@testing-library/jest-dom';
 import { ProductCard } from './ProductCard';
 import { Product } from '@/types/Product';
-import { ReactNode } from 'react';
 import { getGenderText } from './ProductCard';
 import { useWishlist } from '@/lib/hooks';
-
-jest.mock('next/image', () => {
-  return function NextImage({ src, alt }: { src: string; alt: string }) {
-    // eslint-disable-next-line @next/next/no-img-element
-    return <img src={src} alt={alt} />;
-  };
-});
-
-jest.mock('next/link', () => {
-  const MockNextLink = ({
-    children,
-    href,
-  }: {
-    children: ReactNode;
-    href: string;
-  }) => <a href={href}>{children}</a>;
-  MockNextLink.displayName = 'MockNextLink';
-  return MockNextLink;
-});
 
 jest.mock('../ProductActionMenu', () => {
   const MockProductActionMenu = () => <div data-testid="product-action-menu" />;
