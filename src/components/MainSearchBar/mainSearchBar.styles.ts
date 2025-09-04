@@ -54,14 +54,22 @@ export const IconButtonRight = styled(Box)(({ theme }) => ({
 
 export const PopularTermsContainer = styled(Box)(({ theme }) => ({
   width: '100%',
-  paddingLeft: '22%',
-  paddingBottom: theme.spacing(5),
+  marginTop: theme.spacing(2),
   color: theme.palette.grey[600],
   zIndex: 1001,
   backgroundColor: '#fff',
-  [theme.breakpoints.down('md')]: {
-    paddingLeft: '20px',
-    paddingRight: '80px',
+  display: 'flex',
+  flexDirection: 'column',
+  alignItems: 'flex-start',
+  padding: `0 ${theme.spacing(2)}`,
+  maxWidth: 1071,
+  marginLeft: 'auto',
+  marginRight: 'auto',
+  paddingBottom: theme.spacing(5),
+
+  [theme.breakpoints.down('lg')]: {
+    padding: '0 20px',
+    maxWidth: '100%',
   },
 }));
 
