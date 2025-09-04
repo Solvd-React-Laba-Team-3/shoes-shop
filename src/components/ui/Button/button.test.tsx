@@ -1,6 +1,6 @@
-import { render, screen, fireEvent } from '@testing-library/react';
+import { screen, fireEvent } from '@testing-library/react';
 import { Button } from './Button';
-import '@testing-library/jest-dom';
+import { render } from '@/testing/utils';
 
 describe('Button', () => {
   test('renders with correct text', () => {

@@ -34,7 +34,7 @@ export const ProductSlider: FC<ProductSliderProps> = ({
   const renderSlides = (isThumbs: boolean = false) => {
     if (hasImages) {
       return images!.map((image) => (
-        <SwiperSlide key={image.id}>
+        <SwiperSlide key={image.id} data-testid="swiper-slide">
           <Box
             sx={{
               position: 'relative',
@@ -75,7 +75,7 @@ export const ProductSlider: FC<ProductSliderProps> = ({
     }
 
     return (
-      <SwiperSlide>
+      <SwiperSlide data-testid="swiper-slide">
         <Box
           sx={{
             position: 'relative',
@@ -101,6 +101,7 @@ export const ProductSlider: FC<ProductSliderProps> = ({
       <StyledSliderContainer>
         <StyledThumbsWrapper>
           <Swiper
+            data-testid="swiper"
             onSwiper={setThumbsSwiper}
             freeMode
             watchSlidesProgress

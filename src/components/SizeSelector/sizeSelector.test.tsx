@@ -1,6 +1,7 @@
-import { render, screen } from '@testing-library/react';
+import { screen } from '@testing-library/react';
 import { SizeSelector } from './SizeSelector';
 import { useSuspenseQuery } from '@tanstack/react-query';
+import { render } from '@/testing/utils';
 
 jest.mock('@tanstack/react-query', () => ({
   useSuspenseQuery: jest.fn(),

@@ -1,6 +1,6 @@
 import { Product } from '@/types/Product';
 
-export const ProductMock: Product = {
+export const productMock: Product = {
   id: 1,
   name: 'Test Shoes',
   price: 199.99,

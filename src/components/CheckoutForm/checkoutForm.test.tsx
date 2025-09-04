@@ -1,8 +1,9 @@
-import { render, screen, fireEvent } from '@testing-library/react';
+import { screen, fireEvent } from '@testing-library/react';
 import { useFormContext, useWatch } from 'react-hook-form';
 import { shippingCountries } from '@/constants/shippingCountries';
 import { CardElement } from '@stripe/react-stripe-js';
 import { CheckoutForm } from './CheckoutForm';
+import { render } from '@/testing/utils';
 
 jest.mock('react-hook-form', () => ({
   useFormContext: jest.fn(),
@@ -14,10 +15,6 @@ jest.mock('react-hook-form', () => ({
     };
     return render({ field: mockField });
   }),
-}));
-
-jest.mock('@stripe/react-stripe-js', () => ({
-  CardElement: jest.fn(() => <div data-testid="card-element" />),
 }));
 
 describe('CheckoutForm', () => {

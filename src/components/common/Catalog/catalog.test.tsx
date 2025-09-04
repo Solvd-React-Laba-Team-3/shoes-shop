@@ -1,54 +1,23 @@
-import { render, screen, fireEvent } from '@testing-library/react';
+import { screen, fireEvent } from '@testing-library/react';
 import { Catalog } from './Catalog';
-import React from 'react';
 import { useSearchParams } from '@/lib/hooks';
-
-jest.mock('@/components/ProductsContainer', () => ({
-  ProductsContainer: ({
-    isFiltersOpen,
-    onFiltersToggle,
-  }: {
-    isFiltersOpen: boolean;
-    onFiltersToggle: () => void;
-  }) => (
-    <div>
-      ProductsContainer - FiltersOpen: {isFiltersOpen.toString()}
-      <button onClick={onFiltersToggle}>Toggle Filters</button>
-    </div>
-  ),
-}));
-
-jest.mock('@/components/common/Filters', () => ({
-  Filters: ({ open, onClose }: { open: boolean; onClose: () => void }) => (
-    <div>
-      Filters - Open:{open.toString()}
-      <button onClick={onClose}>Close Filters</button>
-    </div>
-  ),
-}));
-
-jest.mock('@/components/common/ProductListFallback', () => ({
-  ProductListFallback: () => <div>ProductListFallback</div>,
-}));
-
-jest.mock('@/components/common/FiltersFallback', () => ({
-  FiltersFallback: () => <div>FiltersFallback</div>,
-}));
+import { render } from '@/testing/utils';
+import { lazy } from 'react';
 
 jest.mock('@/lib/hooks', () => ({
   useDeviceSize: jest.fn(),
   useSearchParams: jest.fn(),
 }));
 
-const mockUseMediaQuery = jest.fn();
+const useMediaQueryMock = jest.fn();
 jest.mock('@mui/material', () => ({
   ...jest.requireActual('@mui/material'),
-  useMediaQuery: (query: string) => mockUseMediaQuery(query),
+  useMediaQuery: (query: string) => useMediaQueryMock(query),
 }));
 
 describe('Catalog Component', () => {
   beforeEach(() => {
-    mockUseMediaQuery.mockReturnValue(false);
+    useMediaQueryMock.mockReturnValue(false);
     (useSearchParams as jest.Mock).mockImplementation(() => ({
       get: () => undefined,
     }));
@@ -73,10 +42,10 @@ describe('Catalog Component', () => {
   });
 
   it('renders FiltersFallback on desktop when Suspense is pending', () => {
-    mockUseMediaQuery.mockReturnValue(false);
+    useMediaQueryMock.mockReturnValue(false);
 
     jest.mock('@/components/common/Filters', () => ({
-      Filters: React.lazy(() => new Promise(() => {})),
+      Filters: lazy(() => new Promise(() => {})),
     }));
 
     render(<Catalog />);
@@ -85,7 +54,7 @@ describe('Catalog Component', () => {
   });
 
   it('does not render FiltersFallback on mobile', () => {
-    mockUseMediaQuery.mockReturnValue(true);
+    useMediaQueryMock.mockReturnValue(true);
     render(<Catalog />);
 
     fireEvent.click(screen.getByText('Toggle Filters'));

@@ -1,12 +1,10 @@
-import { fireEvent, render, screen } from '@testing-library/react';
+import { fireEvent, screen } from '@testing-library/react';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import MyProducts from './page';
-import {
-  QueryClient,
-  QueryClientProvider,
-  useSuspenseQuery,
-} from '@tanstack/react-query';
+import { useSuspenseQuery } from '@tanstack/react-query';
+import { render } from '@/testing/utils';
+import { productMock, sessionMock } from '@/testing/mocks';
 
 jest.mock('next-auth/react');
 jest.mock('next/navigation', () => ({
@@ -17,6 +15,10 @@ jest.mock('@tanstack/react-query', () => ({
   useSuspenseQuery: jest.fn(),
 }));
 
+jest.mock('../../../../public/profile-banner.png', () => ({
+  src: '/profile-banner.png',
+}));
+
 const ProductListMock = jest.fn();
 jest.mock('@/components/ProductList', () => ({
   ProductList: (props: unknown) => {
@@ -25,73 +27,16 @@ jest.mock('@/components/ProductList', () => ({
   },
 }));
 
-jest.mock('next/image', () => ({
-  __esModule: true,
-  default: ({
-    src,
-    alt,
-    width,
-    height,
-  }: {
-    src: string | { src: string };
-    alt: string;
-    width: number;
-    height: number;
-  }) => {
-    const imgSrc = typeof src === 'object' ? src.src : src;
-    // eslint-disable-next-line @next/next/no-img-element
-    return <img src={imgSrc} alt={alt} width={width} height={height} />;
-  },
-}));
-
-jest.mock('../../../../public/profile-banner.png', () => ({
-  src: '/profile-banner.png',
-}));
-
-const createWrapper = () => {
-  const queryClient = new QueryClient({
-    defaultOptions: {
-      queries: {
-        retry: false,
-      },
-    },
-  });
-
-  const TestWrapper = ({ children }: { children: React.ReactNode }) => (
-    <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
-  );
-  TestWrapper.displayName = 'TestWrapper';
-  return TestWrapper;
-};
-
 describe('MyProducts', () => {
   const mockRouter = {
     push: jest.fn(),
   };
 
-  const mockProducts = [
-    {
-      id: 1,
-      name: 'Test Product',
-      description: 'Test Description',
-      price: 99,
-    },
-  ];
-
-  const mockSession = {
-    user: {
-      username: 'testUser',
-      avatar: {
-        url: 'https://example.com/avatar.jpg',
-      },
-      createdAt: '2024-01-01',
-      accessToken: 'test-token',
-    },
-  };
+  const mockProducts = [productMock];
 
   beforeEach(() => {
     (useRouter as jest.Mock).mockReturnValue(mockRouter);
-    (useSession as jest.Mock).mockReturnValue({ data: mockSession });
+    (useSession as jest.Mock).mockReturnValue({ data: sessionMock });
     (useSuspenseQuery as jest.Mock).mockReturnValue({ data: mockProducts });
     ProductListMock.mockClear();
   });
@@ -101,9 +46,9 @@ describe('MyProducts', () => {
   });
 
   it('renders the page with user information', () => {
-    render(<MyProducts />, { wrapper: createWrapper() });
+    render(<MyProducts />, { isLoggedIn: true });
 
-    expect(screen.getByText('testUser')).toBeInTheDocument();
+    expect(screen.getByText('testuser')).toBeInTheDocument();
     expect(screen.getByAltText('Avatar')).toHaveAttribute(
       'src',
       'https://example.com/avatar.jpg'
@@ -115,7 +60,7 @@ describe('MyProducts', () => {
   });
 
   it('renders profile banner image', () => {
-    render(<MyProducts />, { wrapper: createWrapper() });
+    render(<MyProducts />, { isLoggedIn: true });
 
     const banner = screen.getByAltText('My Products');
     expect(banner).toBeInTheDocument();
@@ -123,19 +68,16 @@ describe('MyProducts', () => {
   });
 
   it('renders ProductList when user has products', () => {
-    render(<MyProducts />, { wrapper: createWrapper() });
+    render(<MyProducts />, { isLoggedIn: true });
 
     expect(screen.getByTestId('product-list')).toBeInTheDocument();
-    expect(ProductListMock).toHaveBeenCalledWith({
-      products: mockProducts,
-      variant: 'actionMenu',
-    });
+    expect(screen.getByText(productMock.name)).toBeInTheDocument();
   });
 
   it('renders empty state when user has no products', () => {
     (useSuspenseQuery as jest.Mock).mockReturnValue({ data: [] });
 
-    render(<MyProducts />, { wrapper: createWrapper() });
+    render(<MyProducts />, { isLoggedIn: true });
 
     expect(
       screen.getByText("You don't have any products yet")
@@ -146,7 +88,7 @@ describe('MyProducts', () => {
   });
 
   it('navigates to create product page when top Add Product button is clicked', () => {
-    render(<MyProducts />, { wrapper: createWrapper() });
+    render(<MyProducts />, { isLoggedIn: true });
 
     const addButton = screen.getAllByRole('button', { name: 'Add Product' })[0];
     fireEvent.click(addButton);
@@ -156,7 +98,7 @@ describe('MyProducts', () => {
 
   it('navigates to create product page when bottom Add Product button is clicked in empty state', async () => {
     (useSuspenseQuery as jest.Mock).mockReturnValue({ data: [] });
-    render(<MyProducts />, { wrapper: createWrapper() });
+    render(<MyProducts />, { isLoggedIn: true });
 
     const addButton = screen.getAllByRole('button', { name: 'Add Product' })[1];
     fireEvent.click(addButton);
@@ -165,20 +107,20 @@ describe('MyProducts', () => {
   });
 
   it('formats joined date correctly when createdAt is defined', () => {
-    render(<MyProducts />, { wrapper: createWrapper() });
+    render(<MyProducts />, { isLoggedIn: true });
 
     const joinedText = screen.getByText(/^Joined in/);
-    const date = new Date(mockSession.user.createdAt).toLocaleDateString();
+    const date = new Date(sessionMock.user.createdAt).toLocaleDateString();
     expect(joinedText).toHaveTextContent(`Joined in ${date}`);
   });
 
   it('renders correctly when createdAt is undefined', () => {
     const mockSessionNoDate = {
-      user: { ...mockSession.user, createdAt: undefined },
+      user: { ...sessionMock.user, createdAt: undefined },
     };
     (useSession as jest.Mock).mockReturnValue({ data: mockSessionNoDate });
 
-    render(<MyProducts />, { wrapper: createWrapper() });
+    render(<MyProducts />, { isLoggedIn: true });
 
     const joinedText = screen.getByText(/^Joined in/);
     expect(joinedText).toHaveTextContent('Joined in');

@@ -3,7 +3,7 @@ import { ProductAttributes } from '@/types/api/ProductAttributes';
 
 describe('formatProductAttributes', () => {
   it('should correctly map complete ProductAttributes to a clean Product', () => {
-    const mockAttributes: ProductAttributes = {
+    const productResponseMock: ProductAttributes = {
       id: 1,
       name: 'Test Product',
       description: 'A sample description',
@@ -104,7 +104,7 @@ describe('formatProductAttributes', () => {
       },
     };
 
-    const result = formatProductAttributes(1, mockAttributes);
+    const result = formatProductAttributes(1, productResponseMock);
 
     expect(result).toEqual({
       id: 1,
@@ -179,7 +179,7 @@ describe('formatProductAttributes', () => {
   });
 
   it('should handle missing optional fields', () => {
-    const mockAttributes: ProductAttributes = {
+    const productResponseMock: ProductAttributes = {
       id: 1,
       name: 'Test Product',
       description: 'A description',
@@ -226,7 +226,7 @@ describe('formatProductAttributes', () => {
       sizes: { data: [] },
     };
 
-    const result = formatProductAttributes(1, mockAttributes);
+    const result = formatProductAttributes(1, productResponseMock);
 
     expect(result).toEqual({
       id: 1,
@@ -262,7 +262,7 @@ describe('formatProductAttributes', () => {
   });
 
   it('should handle empty arrays', () => {
-    const mockAttributes: ProductAttributes = {
+    const productResponseMock: ProductAttributes = {
       id: 1,
       name: 'Test Product',
       description: 'A sample description',
@@ -309,7 +309,7 @@ describe('formatProductAttributes', () => {
       sizes: { data: [] },
     };
 
-    const result = formatProductAttributes(1, mockAttributes);
+    const result = formatProductAttributes(1, productResponseMock);
 
     expect(result).toEqual({
       id: 1,

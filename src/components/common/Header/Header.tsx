@@ -53,6 +53,7 @@ export const Header = () => {
   return (
     <>
       <StyledContainer
+        data-testid="header"
         sx={{
           transform: hidden ? 'translateY(-100%)' : 'translateY(0)',
         }}

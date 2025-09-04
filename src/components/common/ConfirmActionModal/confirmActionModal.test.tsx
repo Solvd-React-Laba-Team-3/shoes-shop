@@ -1,6 +1,6 @@
-import { render, screen, fireEvent } from '@testing-library/react';
+import { screen, fireEvent } from '@testing-library/react';
 import { ConfirmActionModal } from './ConfirmActionModal';
-import React from 'react';
+import { render } from '@/testing/utils';
 
 describe('ConfirmActionModal', () => {
   const title = 'Delete Item';

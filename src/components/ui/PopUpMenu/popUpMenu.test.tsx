@@ -1,7 +1,7 @@
-import { render, screen, fireEvent } from '@testing-library/react';
+import { screen, fireEvent } from '@testing-library/react';
 import { PopUpMenu } from './PopUpMenu';
 import { MenuItem } from '@mui/material';
-import '@testing-library/jest-dom';
+import { render } from '@/testing/utils';
 
 describe('PopUpMenu', () => {
   test('renders when open and displays children', () => {

@@ -1,14 +1,12 @@
-import { render, screen, fireEvent } from '@testing-library/react';
+import { screen, fireEvent } from '@testing-library/react';
 import Order from './page';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useRouter, useSearchParams, usePathname } from 'next/navigation';
+import { render } from '@/testing/utils';
 
 jest.mock('next/navigation', () => ({
   useRouter: jest.fn(),
   useSearchParams: jest.fn(),
-}));
-
-jest.mock('@/components/common/Header', () => ({
-  Header: () => <div data-testid="mock-header">Header</div>,
+  usePathname: jest.fn(),
 }));
 
 describe('Order', () => {
@@ -24,12 +22,14 @@ describe('Order', () => {
     jest.clearAllMocks();
     (useRouter as jest.Mock).mockReturnValue(mockRouter);
     (useSearchParams as jest.Mock).mockReturnValue(mockSearchParams);
+    (usePathname as jest.Mock).mockReturnValue('/order');
   });
 
   it('redirects to home if no order number is present', () => {
     mockSearchParams.get.mockReturnValue(null);
     render(<Order />);
     expect(mockRouter.replace).toHaveBeenCalledWith('/');
+    expect(screen.queryByTestId('header')).not.toBeInTheDocument();
   });
 
   it('displays order number from search params', () => {

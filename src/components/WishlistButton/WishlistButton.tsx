@@ -10,7 +10,11 @@ interface WishlistButtonProps {
 
 export const WishlistButton: FC<WishlistButtonProps> = ({ onRemove }) => {
   return (
-    <IconButton color="secondary" onClick={onRemove}>
+    <IconButton
+      data-testid="wishlist-button"
+      color="secondary"
+      onClick={onRemove}
+    >
       <HeartBrokenOutlinedIcon />
     </IconButton>
   );

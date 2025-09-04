@@ -12,15 +12,15 @@ jest.mock('@/lib/hooks');
 jest.mock('@/api/products/getProductsOptions');
 jest.mock('@tanstack/react-query');
 
-const mockedUseSearchParams = useSearchParams as jest.Mock;
-const mockedGetProductsOptions = getProductsOptions as jest.Mock;
-const mockedUseSuspenseInfiniteQuery = useSuspenseInfiniteQuery as jest.Mock;
-const mockedUseWishlist = useWishlist as jest.Mock;
-const mockedUseIntersectionObserver = useIntersectionObserver as jest.Mock;
+const useSearchParamsMock = useSearchParams as jest.Mock;
+const useGetProductOptionsMock = getProductsOptions as jest.Mock;
+const useSuspenseInfiniteQueryMock = useSuspenseInfiniteQuery as jest.Mock;
+const useWishlistMock = useWishlist as jest.Mock;
+const useIntersectionObserverMock = useIntersectionObserver as jest.Mock;
 
 describe('<ProductsContainer />', () => {
   beforeEach(() => {
-    mockedUseSuspenseInfiniteQuery.mockReturnValue({
+    useSuspenseInfiniteQueryMock.mockReturnValue({
       data: {
         pages: [
           {
@@ -32,27 +32,27 @@ describe('<ProductsContainer />', () => {
       },
     });
 
-    mockedGetProductsOptions.mockReturnValue({
+    useGetProductOptionsMock.mockReturnValue({
       queryKey: ['products'],
       queryFn: jest.fn(),
       initialPageParam: 0,
       getNextPageParam: jest.fn(),
     });
 
-    mockedUseWishlist.mockReturnValue({
+    useWishlistMock.mockReturnValue({
       items: [],
       addItem: jest.fn(),
       removeItem: jest.fn(),
       isLoading: false,
     });
-    mockedUseIntersectionObserver.mockReturnValue({
+    useIntersectionObserverMock.mockReturnValue({
       ref: document.createElement('div'),
     });
   });
 
   it('should display "Catalog" when there is no search or filters', () => {
     const params = new URLSearchParams();
-    mockedUseSearchParams.mockReturnValue({
+    useSearchParamsMock.mockReturnValue({
       get: (key: string) => params.get(key),
       set: jest.fn(),
       delete: jest.fn(),
@@ -71,7 +71,7 @@ describe('<ProductsContainer />', () => {
     const params = new URLSearchParams();
     params.set('search', 'test');
 
-    mockedUseSearchParams.mockReturnValue({
+    useSearchParamsMock.mockReturnValue({
       get: (key: string) => params.get(key),
       set: jest.fn(),
       delete: jest.fn(),

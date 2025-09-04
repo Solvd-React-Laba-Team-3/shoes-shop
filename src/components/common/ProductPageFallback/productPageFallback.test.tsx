@@ -1,23 +1,21 @@
-import { render } from '@testing-library/react';
+import { render } from '@/testing/utils';
 import { ProductPageFallback } from './ProductPageFallback';
-import {
-  StyledContainer,
-  StyledFallbackWrapper,
-} from './productPageFallback.styles';
-
-jest.mock('./productPageFallback.styles', () => ({
-  StyledContainer: jest.fn(({ children }) => <div>{children}</div>),
-  StyledFallbackWrapper: jest.fn(({ children }) => <div>{children}</div>),
-}));
 
 describe('ProductPageFallback', () => {
   it('renders without crashing', () => {
     render(<ProductPageFallback />);
   });
 
-  it('renders StyledContainer and StyledFallbackWrapper', () => {
-    render(<ProductPageFallback />);
-    expect(StyledContainer).toHaveBeenCalled();
-    expect(StyledFallbackWrapper).toHaveBeenCalled();
+  it('renders skeleton elements for loading state', () => {
+    const { container } = render(<ProductPageFallback />);
+
+    const skeletons = container.querySelectorAll('.MuiSkeleton-root');
+    expect(skeletons.length).toBeGreaterThan(0);
+  });
+
+  it('renders the main container structure', () => {
+    const { container } = render(<ProductPageFallback />);
+
+    expect(container.firstChild).toBeInTheDocument();
   });
 });

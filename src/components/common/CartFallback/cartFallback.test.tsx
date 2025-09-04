@@ -1,6 +1,6 @@
-import { render, screen } from '@testing-library/react';
-import '@testing-library/jest-dom';
+import { screen } from '@testing-library/react';
 import { CartFallback } from './CartFallback';
+import { render } from '@/testing/utils';
 
 describe('CartFallback', () => {
   it('renders without crashing', () => {

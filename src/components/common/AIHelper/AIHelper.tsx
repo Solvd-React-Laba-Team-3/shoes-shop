@@ -115,6 +115,7 @@ export const AIHelper = () => {
                   sender={message.sender}
                 >
                   <ReactMarkdown
+                    data-testid="react-markdown"
                     components={{
                       a({ href, children }) {
                         return (

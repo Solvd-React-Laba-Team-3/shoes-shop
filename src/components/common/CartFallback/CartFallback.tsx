@@ -41,7 +41,7 @@ const StyledSkeletonContainer = styled(Box)(({ theme }) => ({
 
 export const CartFallback = () => {
   return (
-    <StyledContainer>
+    <StyledContainer data-testid="cart-fallback">
       <Stack
         sx={{
           flex: 2,

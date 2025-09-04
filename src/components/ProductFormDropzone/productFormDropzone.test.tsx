@@ -1,38 +1,7 @@
-import { render, screen, fireEvent } from '@testing-library/react';
+import { screen, fireEvent } from '@testing-library/react';
 import { ProductFormDropzone } from './ProductFormDropzone';
 import { TempImage } from '@/types/TempImage';
-
-jest.mock('@/components/FileDropZone', () => ({
-  FileDropzone: jest.fn(() => <div>Mocked FileDropzone</div>),
-}));
-
-jest.mock('../common/ConfirmActionModal', () => ({
-  ConfirmActionModal: jest.fn(
-    ({ open, onClose, onConfirm, title, description }) =>
-      open ? (
-        <div>
-          <h1>{title}</h1>
-          <p>{description}</p>
-          <button onClick={onClose}>Cancel</button>
-          <button onClick={onConfirm}>Delete</button>
-        </div>
-      ) : null
-  ),
-}));
-
-jest.mock('next/image', () => ({
-  __esModule: true,
-  default: ({ src, alt }: { src: string; alt: string }) => (
-    // eslint-disable-next-line @next/next/no-img-element
-    <img src={src} alt={alt} />
-  ),
-}));
-
-jest.mock('@mui/icons-material/Delete', () => {
-  const MockDeleteIcon = () => <span>DeleteIcon</span>;
-  MockDeleteIcon.displayName = 'DeleteIcon';
-  return MockDeleteIcon;
-});
+import { render } from '@/testing/utils';
 
 describe('ProductFormDropzone', () => {
   const images: TempImage[] = [
@@ -56,7 +25,9 @@ describe('ProductFormDropzone', () => {
       />
     );
 
-    expect(screen.getByText('Mocked FileDropzone')).toBeInTheDocument();
+    expect(
+      screen.getByText('Drop your image here, or click to select a file')
+    ).toBeInTheDocument();
   });
 
   it('opens ConfirmActionModal when delete button is clicked', () => {
