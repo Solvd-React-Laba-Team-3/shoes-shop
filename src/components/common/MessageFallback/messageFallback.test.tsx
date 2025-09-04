@@ -1,6 +1,6 @@
-import { render, screen } from '@testing-library/react';
+import { screen } from '@testing-library/react';
 import { MessageFallback } from './MessageFallback';
-import '@testing-library/jest-dom';
+import { render } from '@/testing/utils';
 
 describe('MessageFallback', () => {
   it('renders with align="left" correctly', () => {

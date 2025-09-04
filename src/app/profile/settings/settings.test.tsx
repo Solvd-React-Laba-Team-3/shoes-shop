@@ -4,59 +4,46 @@ import Settings from './page';
 import { useUpdateProfile } from '@/api/profile/useUpdateProfile';
 import { useUploadFile } from '@/api/uploadFile/useUploadFile';
 import { useChangePassword } from '@/api/profile/useChangePassword';
+import { sessionMock } from '@/testing/mocks';
 
 jest.mock('next-auth/react');
 jest.mock('@/api/profile/useUpdateProfile');
 jest.mock('@/api/uploadFile/useUploadFile');
 jest.mock('@/api/profile/useChangePassword');
 
-const mockSession = {
-  user: {
-    id: '1',
-    username: 'testuser',
-    email: 'test@example.com',
-    phoneNumber: '(123) 456-7890',
-    accessToken: 'mock-token',
-    avatar: {
-      url: 'https://example.com/avatar.jpg',
-      alternativeText: 'Test Avatar',
-    },
-  },
-};
-
 describe('Settings Page', () => {
-  const mockUpdateProfile = jest.fn();
-  const mockUploadFile = jest.fn();
-  const mockChangePassword = jest.fn();
-  const mockSignOut = jest.fn();
+  const updateProfileMock = jest.fn();
+  const uploadFileMock = jest.fn();
+  const changePasswordMock = jest.fn();
+  const signOutMock = jest.fn();
 
   beforeEach(() => {
     jest.clearAllMocks();
 
     (useSession as jest.Mock).mockReturnValue({
-      data: mockSession,
+      data: sessionMock,
       status: 'authenticated',
     });
 
     (useUpdateProfile as jest.Mock).mockReturnValue({
-      mutate: mockUpdateProfile,
+      mutate: updateProfileMock,
       isPending: false,
       error: null,
     });
 
     (useUploadFile as jest.Mock).mockReturnValue({
-      mutate: mockUploadFile,
+      mutate: uploadFileMock,
       isPending: false,
       error: null,
     });
 
     (useChangePassword as jest.Mock).mockReturnValue({
-      mutate: mockChangePassword,
+      mutate: changePasswordMock,
       isPending: false,
       error: null,
     });
 
-    (signOut as jest.Mock).mockImplementation(mockSignOut);
+    (signOut as jest.Mock).mockImplementation(signOutMock);
   });
 
   it('renders with user data from session', () => {
@@ -90,15 +77,15 @@ describe('Settings Page', () => {
       fireEvent.click(screen.getByText('Save changes'));
     });
 
-    expect(mockUpdateProfile).toHaveBeenCalledWith({
+    expect(updateProfileMock).toHaveBeenCalledWith({
       body: {
         username: 'newusername',
         email: 'newemail@example.com',
         phoneNumber: '(123) 456-7890',
         avatar: undefined,
       },
-      token: mockSession.user.accessToken,
-      id: mockSession.user.id,
+      token: sessionMock.user.accessToken,
+      id: sessionMock.user.id,
     });
   });
 
@@ -119,7 +106,7 @@ describe('Settings Page', () => {
       fireEvent.click(screen.getByText('Save changes'));
     });
 
-    expect(mockChangePassword).toHaveBeenCalledWith(
+    expect(changePasswordMock).toHaveBeenCalledWith(
       {
         currentPassword: 'currentpass',
         password: 'newpass123',
@@ -138,15 +125,15 @@ describe('Settings Page', () => {
       fireEvent.click(screen.getByText('Save changes'));
     });
 
-    expect(mockUpdateProfile).toHaveBeenCalledWith({
+    expect(updateProfileMock).toHaveBeenCalledWith({
       body: {
-        username: mockSession.user.username,
-        email: mockSession.user.email,
-        phoneNumber: mockSession.user.phoneNumber,
+        username: sessionMock.user.username,
+        email: sessionMock.user.email,
+        phoneNumber: sessionMock.user.phoneNumber,
         avatar: null,
       },
-      token: mockSession.user.accessToken,
-      id: mockSession.user.id,
+      token: sessionMock.user.accessToken,
+      id: sessionMock.user.id,
     });
   });
 
@@ -157,7 +144,7 @@ describe('Settings Page', () => {
     const input = screen.getByTestId('file-input');
     fireEvent.change(input, { target: { files: [file] } });
 
-    mockUploadFile.mockImplementationOnce((file, { onSuccess }) => {
+    uploadFileMock.mockImplementationOnce((file, { onSuccess }) => {
       onSuccess([{ id: 'new-avatar-id' }]);
     });
 
@@ -165,17 +152,17 @@ describe('Settings Page', () => {
       fireEvent.click(screen.getByText('Save changes'));
     });
 
-    expect(mockUploadFile).toHaveBeenCalledWith(file, expect.any(Object));
+    expect(uploadFileMock).toHaveBeenCalledWith(file, expect.any(Object));
     await waitFor(() => {
-      expect(mockUpdateProfile).toHaveBeenCalledWith({
+      expect(updateProfileMock).toHaveBeenCalledWith({
         body: {
-          username: mockSession.user.username,
-          email: mockSession.user.email,
-          phoneNumber: mockSession.user.phoneNumber,
+          username: sessionMock.user.username,
+          email: sessionMock.user.email,
+          phoneNumber: sessionMock.user.phoneNumber,
           avatar: 'new-avatar-id',
         },
-        token: mockSession.user.accessToken,
-        id: mockSession.user.id,
+        token: sessionMock.user.accessToken,
+        id: sessionMock.user.id,
       });
     });
   });
@@ -200,7 +187,7 @@ describe('Settings Page', () => {
   it('handles API errors', async () => {
     const errorMessage = 'Failed to update profile';
     (useUpdateProfile as jest.Mock).mockReturnValue({
-      mutate: mockUpdateProfile,
+      mutate: updateProfileMock,
       isPending: false,
       error: { message: errorMessage },
     });
@@ -212,7 +199,7 @@ describe('Settings Page', () => {
 
   it('shows loading state during submission', async () => {
     (useUpdateProfile as jest.Mock).mockReturnValue({
-      mutate: mockUpdateProfile,
+      mutate: updateProfileMock,
       isPending: true,
       error: null,
     });

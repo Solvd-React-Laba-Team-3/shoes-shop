@@ -1,37 +1,27 @@
-import { render, screen } from '@testing-library/react';
-import '@testing-library/jest-dom';
-import { ThemeProvider } from '@mui/material/styles';
-import { theme } from '@/providers/ThemeProvider';
+import { screen } from '@testing-library/react';
 import { Loading } from './Loading';
-
-const renderLoadingWithTheme = (fullScreen?: boolean) => {
-  return render(
-    <ThemeProvider theme={theme}>
-      <Loading fullScreen={fullScreen} />
-    </ThemeProvider>
-  );
-};
+import { render } from '@/testing/utils';
 
 describe('Loading component', () => {
   it('renders the CircularProgress', () => {
-    renderLoadingWithTheme();
+    render(<Loading />);
     const progress = screen.getByRole('progressbar');
     expect(progress).toBeInTheDocument();
   });
 
   it('renders the "Loading..." text', () => {
-    renderLoadingWithTheme();
+    render(<Loading />);
     expect(screen.getByText('Loading...')).toBeInTheDocument();
   });
 
   it('renders the Box container with full viewport height when fullScreen is true', () => {
-    renderLoadingWithTheme(true);
+    render(<Loading fullScreen={true} />);
     const box = screen.getByText('Loading...').parentElement;
     expect(box).toHaveStyle('height: 100vh');
   });
 
   it('renders the Box container with 100% height by default', () => {
-    renderLoadingWithTheme();
+    render(<Loading />);
     const box = screen.getByText('Loading...').parentElement;
     expect(box).toHaveStyle('height: 100%');
   });

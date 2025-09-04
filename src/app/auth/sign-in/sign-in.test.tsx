@@ -1,4 +1,3 @@
-import '@testing-library/jest-dom';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import SignIn from './page';
 import { signIn } from 'next-auth/react';
@@ -7,25 +6,12 @@ jest.mock('next-auth/react', () => ({
   signIn: jest.fn(),
 }));
 
-const mockRouter = {
-  replace: jest.fn(),
-};
+const replaceMock = jest.fn();
 
 jest.mock('next/navigation', () => ({
-  useRouter: () => mockRouter,
+  useRouter: () => ({ replace: replaceMock }),
   useSearchParams: () => new URLSearchParams(),
 }));
-
-jest.mock('@/components/ui', () => {
-  const originalModule = jest.requireActual('@/components/ui');
-  return {
-    __esModule: true,
-    ...originalModule,
-    Link: ({ href, children }: { href: string; children: React.ReactNode }) => (
-      <a href={href}>{children}</a>
-    ),
-  };
-});
 
 describe('SignIn', () => {
   beforeEach(() => {
@@ -101,7 +87,7 @@ describe('SignIn', () => {
       );
     });
 
-    expect(mockRouter.replace).toHaveBeenCalledWith('/profile/products');
+    expect(replaceMock).toHaveBeenCalledWith('/profile/products');
   });
 
   it('shows error message on failed login', async () => {
@@ -126,7 +112,7 @@ describe('SignIn', () => {
       expect(screen.getByText(/Invalid credentials/i)).toBeInTheDocument();
     });
 
-    expect(mockRouter.replace).not.toHaveBeenCalled();
+    expect(replaceMock).not.toHaveBeenCalled();
   });
 
   it('clears error message when form inputs change', async () => {

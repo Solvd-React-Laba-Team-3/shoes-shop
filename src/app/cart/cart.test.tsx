@@ -1,12 +1,22 @@
 import { useCart } from '@/lib/hooks';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { fireEvent, render, screen } from '@testing-library/react';
-import { SessionProvider } from 'next-auth/react';
+import { cartMock } from '@/testing/mocks';
+import { render } from '@/testing/utils';
+import { fireEvent, screen } from '@testing-library/react';
 import Cart from './page';
 
-jest.mock('@/lib/hooks/useCart/useCart');
-jest.mock('@/components/common/CartFallback', () => ({
-  CartFallback: jest.fn(() => <div data-testid="cart-fallback" />),
+jest.mock('next/navigation', () => ({
+  useRouter: () => ({
+    push: jest.fn(),
+    replace: jest.fn(),
+    back: jest.fn(),
+  }),
+  usePathname: () => '/cart',
+  useSearchParams: () => new URLSearchParams(),
+}));
+
+jest.mock('@/lib/hooks', () => ({
+  ...jest.requireActual('@/lib/hooks'),
+  useCart: jest.fn(),
 }));
 
 const increaseQuantityMock = jest.fn();
@@ -16,18 +26,9 @@ const getTotalMock = jest.fn().mockReturnValue(100);
 
 describe('Cart', () => {
   beforeEach(() => {
+    jest.clearAllMocks();
     (useCart as jest.Mock).mockReturnValue({
-      items: [
-        {
-          id: 1,
-          quantity: 2,
-          gender: 'male',
-          image: '/img1.jpg',
-          size: 42,
-          name: 'Test Shoe',
-          price: 50,
-        },
-      ],
+      items: cartMock,
       subtotal: 100,
       isLoading: false,
       increaseQuantity: increaseQuantityMock,
@@ -38,38 +39,14 @@ describe('Cart', () => {
   });
 
   it('renders the page with cart item information', () => {
-    const queryClient = new QueryClient({
-      defaultOptions: {
-        queries: { retry: false },
-      },
-    });
-
-    render(
-      <SessionProvider session={null}>
-        <QueryClientProvider client={queryClient}>
-          <Cart />
-        </QueryClientProvider>
-      </SessionProvider>
-    );
-
+    render(<Cart />);
     expect(screen.getByText('Cart')).toBeInTheDocument();
     expect(screen.getByText('Summary')).toBeInTheDocument();
     expect(screen.getByText('Test Shoe')).toBeInTheDocument();
   });
 
   it('calls increaseQuantity when increase button clicked', () => {
-    const queryClient = new QueryClient({
-      defaultOptions: {
-        queries: { retry: false },
-      },
-    });
-    render(
-      <SessionProvider session={null}>
-        <QueryClientProvider client={queryClient}>
-          <Cart />
-        </QueryClientProvider>
-      </SessionProvider>
-    );
+    render(<Cart />);
     const increaseButton = screen
       .getAllByRole('button')
       .find((button) => button.querySelector('[data-testid="AddIcon"]'));
@@ -78,18 +55,7 @@ describe('Cart', () => {
   });
 
   it('calls decreaseQuantity when decrease button is clicked', () => {
-    const queryClient = new QueryClient({
-      defaultOptions: {
-        queries: { retry: false },
-      },
-    });
-    render(
-      <SessionProvider session={null}>
-        <QueryClientProvider client={queryClient}>
-          <Cart />
-        </QueryClientProvider>
-      </SessionProvider>
-    );
+    render(<Cart />);
 
     const decreaseButton = screen
       .getAllByRole('button')
@@ -108,17 +74,7 @@ describe('Cart', () => {
       removeItem: removeItemMock,
     });
 
-    const queryClient = new QueryClient({
-      defaultOptions: { queries: { retry: false } },
-    });
-
-    render(
-      <SessionProvider session={null}>
-        <QueryClientProvider client={queryClient}>
-          <Cart />
-        </QueryClientProvider>
-      </SessionProvider>
-    );
+    render(<Cart />);
 
     expect(screen.getByText('Your cart is empty.')).toBeInTheDocument();
   });
@@ -133,17 +89,7 @@ describe('Cart', () => {
       removeItem: removeItemMock,
     });
 
-    const queryClient = new QueryClient({
-      defaultOptions: { queries: { retry: false } },
-    });
-
-    render(
-      <SessionProvider session={null}>
-        <QueryClientProvider client={queryClient}>
-          <Cart />
-        </QueryClientProvider>
-      </SessionProvider>
-    );
+    render(<Cart />);
     expect(screen.getByTestId('cart-fallback')).toBeInTheDocument();
   });
 });

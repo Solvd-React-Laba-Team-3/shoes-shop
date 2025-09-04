@@ -1,5 +1,6 @@
-import { render, screen, fireEvent } from '@testing-library/react';
+import { screen, fireEvent } from '@testing-library/react';
 import { Accordion } from './Accordion';
+import { render } from '@/testing/utils';
 
 describe('Accordion', () => {
   it('renders with label', () => {

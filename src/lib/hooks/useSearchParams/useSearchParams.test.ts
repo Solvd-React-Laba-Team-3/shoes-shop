@@ -5,24 +5,23 @@ import {
   useSearchParams as useNextSearchParams,
 } from 'next/navigation';
 
-const mockSearchParams = new URLSearchParams(
+const searchParamsMock = new URLSearchParams(
   'search=Shoes&filters=%7B%22size%22%3A13%7D'
 );
 
 const replaceState = jest.fn();
-
-const mockReplace = jest.fn();
+const replaceMock = jest.fn();
 
 jest.mock('next/navigation', () => ({
   useSearchParams: jest.fn(),
   usePathname: jest.fn(),
   useRouter: () => ({
-    replace: mockReplace,
+    replace: replaceMock,
   }),
 }));
 
 beforeEach(() => {
-  (useNextSearchParams as jest.Mock).mockReturnValue(mockSearchParams);
+  (useNextSearchParams as jest.Mock).mockReturnValue(searchParamsMock);
   (usePathname as jest.Mock).mockReturnValue('/products');
 
   Object.defineProperty(window, 'history', {

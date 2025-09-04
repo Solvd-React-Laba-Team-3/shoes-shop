@@ -299,7 +299,7 @@ export const CheckoutForm: FC<CheckoutProps> = ({
         <>
           <StyledBox>
             <CardElement
-              data-cy="card-element"
+              data-testid="card-element"
               onChange={(e) => {
                 if (e.error) {
                   setCardError(e.error.message);

@@ -1,8 +1,8 @@
-import { render, screen, fireEvent } from '@testing-library/react';
+import { screen, fireEvent } from '@testing-library/react';
 import { Link } from './Link';
-import '@testing-library/jest-dom';
 import { ThemeProvider } from '@emotion/react';
 import { theme } from '@/providers/ThemeProvider';
+import { render } from '@/testing/utils';
 
 describe('Link component', () => {
   it('renders with correct text', () => {

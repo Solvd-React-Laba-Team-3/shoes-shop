@@ -1,10 +1,10 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 import { ReviewPanel } from './ReviewPanel';
-import { mockReview } from '@/testing/mocks/';
+import { reviewMock } from '@/testing/mocks';
 
 describe('ReviewPanel', () => {
   it('renders quote, name, location and rating correctly', () => {
-    const { container } = render(<ReviewPanel {...mockReview} />);
+    const { container } = render(<ReviewPanel {...reviewMock} />);
 
     expect(
       screen.getByText(/Pain changes shape, but it never disappears./i)
@@ -20,7 +20,7 @@ describe('ReviewPanel', () => {
     const onPrev = jest.fn();
     const onNext = jest.fn();
 
-    render(<ReviewPanel {...mockReview} onPrev={onPrev} onNext={onNext} />);
+    render(<ReviewPanel {...reviewMock} onPrev={onPrev} onNext={onNext} />);
 
     const buttons = screen.getAllByRole('button');
     fireEvent.click(buttons[0]);

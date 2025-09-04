@@ -1,10 +1,11 @@
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
-import { ProductActionMenu } from '.';
+import { screen, fireEvent, waitFor } from '@testing-library/react';
+import { ProductActionMenu } from './ProductActionMenu';
 import { useDeleteProduct } from '@/api/products/useDeleteProduct';
 import { useCreateProduct } from '@/api/products/useCreateProduct';
 import { useRouter } from 'next/navigation';
-import { Product } from '@/types/Product';
+import { productMock } from '@/testing/mocks';
 import { useSession } from 'next-auth/react';
+import { render } from '@/testing/utils';
 
 jest.mock('@/api/products/useDeleteProduct');
 jest.mock('@/api/products/useCreateProduct');
@@ -12,119 +13,25 @@ jest.mock('@/api/products/useCreateProduct');
 jest.mock('next/navigation', () => ({
   useRouter: jest.fn(),
 }));
-
 jest.mock('next-auth/react', () => ({
   useSession: jest.fn(),
 }));
 
-jest.mock('../common/EditProductModal', () => ({
-  EditProductModal: ({ open }: { open: boolean }) => (
-    <div>{open ? 'EditProductModalOpen' : null}</div>
-  ),
-}));
-
-jest.mock('../common/ConfirmActionModal', () => ({
-  ConfirmActionModal: ({
-    open,
-    onConfirm,
-    onClose,
-    title,
-  }: {
-    open: boolean;
-    onConfirm: () => void;
-    onClose: () => void;
-    title: string;
-  }) => (
-    <div>
-      {open && (
-        <>
-          <span>{title}</span>
-          <button onClick={onConfirm}>DeleteConfirm</button>
-          <button onClick={onClose}>CloseModal</button>
-        </>
-      )}
-    </div>
-  ),
-}));
-
-const mockProduct: Product = {
-  id: 1,
-  name: 'Test Product',
-  price: 100,
-  brand: { id: 1, name: '', createdAt: '', updatedAt: '', publishedAt: '' },
-  color: { id: 2, name: '', createdAt: '', updatedAt: '', publishedAt: '' },
-  gender: { id: 3, name: '', createdAt: '', updatedAt: '', publishedAt: '' },
-  sizes: [
-    { id: 4, value: 0, createdAt: '', updatedAt: '', publishedAt: '' },
-    { id: 5, value: 0, createdAt: '', updatedAt: '', publishedAt: '' },
-  ],
-  images: [
-    {
-      id: 6,
-      name: '',
-      alternativeText: null,
-      caption: null,
-      width: 0,
-      height: 0,
-      formats: {},
-      hash: '',
-      ext: '',
-      mime: '',
-      size: 0,
-      url: '',
-      previewUrl: null,
-      provider: '',
-      provider_metadata: { public_id: 'mock', resource_type: 'image' },
-      createdAt: '',
-      updatedAt: '',
-    },
-    {
-      id: 7,
-      name: '',
-      alternativeText: null,
-      caption: null,
-      width: 0,
-      height: 0,
-      formats: {},
-      hash: '',
-      ext: '',
-      mime: '',
-      size: 0,
-      url: '',
-      previewUrl: null,
-      provider: '',
-      provider_metadata: { public_id: 'mock', resource_type: 'image' },
-      createdAt: '',
-      updatedAt: '',
-    },
-  ],
-  description: 'Test description',
-  categories: [
-    {
-      id: 8,
-      name: 'Category 1',
-      createdAt: '',
-      updatedAt: '',
-      publishedAt: '',
-    },
-  ],
-};
-
 describe('ProductActionMenu', () => {
-  const mockDelete = jest.fn();
-  const mockCreate = jest.fn();
-  const mockPush = jest.fn();
+  const deleteProductMock = jest.fn();
+  const createProductMock = jest.fn();
+  const useRouterMock = jest.fn();
 
   beforeEach(() => {
     (useDeleteProduct as jest.Mock).mockReturnValue({
-      mutate: mockDelete,
+      mutate: deleteProductMock,
       isPending: false,
     });
     (useCreateProduct as jest.Mock).mockReturnValue({
-      mutate: mockCreate,
+      mutate: createProductMock,
       isPending: false,
     });
-    (useRouter as jest.Mock).mockReturnValue({ push: mockPush });
+    (useRouter as jest.Mock).mockReturnValue({ push: useRouterMock });
     (useSession as jest.Mock).mockReturnValue({
       data: { user: { name: 'Test User' } },
       status: 'authenticated',
@@ -133,12 +40,12 @@ describe('ProductActionMenu', () => {
   });
 
   it('renders the IconButton', () => {
-    render(<ProductActionMenu product={mockProduct} />);
+    render(<ProductActionMenu product={productMock} />);
     expect(screen.getByRole('button')).toBeInTheDocument();
   });
 
   it('opens the menu on IconButton click', () => {
-    render(<ProductActionMenu product={mockProduct} />);
+    render(<ProductActionMenu product={productMock} />);
     fireEvent.click(screen.getByRole('button'));
     expect(screen.getByText('View')).toBeInTheDocument();
     expect(screen.getByText('Edit')).toBeInTheDocument();
@@ -147,17 +54,17 @@ describe('ProductActionMenu', () => {
   });
 
   it('navigates to product page when clicking "View"', () => {
-    render(<ProductActionMenu product={mockProduct} />);
+    render(<ProductActionMenu product={productMock} />);
     fireEvent.click(screen.getByRole('button'));
     fireEvent.click(screen.getByText('View'));
-    expect(mockPush).toHaveBeenCalledWith(`/products/${mockProduct.id}`);
+    expect(useRouterMock).toHaveBeenCalledWith(`/products/${productMock.id}`);
   });
 
   it('calls createProduct when clicking "Duplicate"', () => {
-    render(<ProductActionMenu product={mockProduct} />);
+    render(<ProductActionMenu product={productMock} />);
     fireEvent.click(screen.getByRole('button'));
     fireEvent.click(screen.getByText('Duplicate'));
-    expect(mockCreate).toHaveBeenCalledWith({
+    expect(createProductMock).toHaveBeenCalledWith({
       body: {
         data: {
           images: [6, 7],
@@ -174,7 +81,7 @@ describe('ProductActionMenu', () => {
   });
 
   it('opens ConfirmActionModal when clicking "Delete"', () => {
-    render(<ProductActionMenu product={mockProduct} />);
+    render(<ProductActionMenu product={productMock} />);
     fireEvent.click(screen.getByRole('button'));
     fireEvent.click(screen.getByText('Delete'));
     expect(
@@ -183,15 +90,15 @@ describe('ProductActionMenu', () => {
   });
 
   it('calls deleteProduct when confirming Delete', () => {
-    render(<ProductActionMenu product={mockProduct} />);
+    render(<ProductActionMenu product={productMock} />);
     fireEvent.click(screen.getByRole('button'));
     fireEvent.click(screen.getByText('Delete'));
     fireEvent.click(screen.getByText('DeleteConfirm'));
-    expect(mockDelete).toHaveBeenCalledWith({ id: mockProduct.id });
+    expect(deleteProductMock).toHaveBeenCalledWith({ id: productMock.id });
   });
 
   it('closes ConfirmActionModal on close', () => {
-    render(<ProductActionMenu product={mockProduct} />);
+    render(<ProductActionMenu product={productMock} />);
     fireEvent.click(screen.getByRole('button'));
     fireEvent.click(screen.getByText('Delete'));
     fireEvent.click(screen.getByText('CloseModal'));
@@ -202,15 +109,15 @@ describe('ProductActionMenu', () => {
 
   it('shows LinearProgress when create or delete is pending', () => {
     (useDeleteProduct as jest.Mock).mockReturnValue({
-      mutate: mockDelete,
+      mutate: deleteProductMock,
       isPending: true,
     });
-    render(<ProductActionMenu product={mockProduct} />);
+    render(<ProductActionMenu product={productMock} />);
     expect(screen.getByRole('progressbar')).toBeInTheDocument();
   });
 
   it('opens EditProductModal when clicking "Edit" and closes it', () => {
-    render(<ProductActionMenu product={mockProduct} />);
+    render(<ProductActionMenu product={productMock} />);
     fireEvent.click(screen.getByRole('button'));
     fireEvent.click(screen.getByText('Edit'));
     expect(screen.getByText('EditProductModalOpen')).toBeInTheDocument();
@@ -218,7 +125,7 @@ describe('ProductActionMenu', () => {
     fireEvent.click(screen.getByText('EditProductModalOpen'));
   });
   it('closes the menu when handleClose is triggered', async () => {
-    render(<ProductActionMenu product={mockProduct} />);
+    render(<ProductActionMenu product={productMock} />);
 
     fireEvent.click(screen.getByRole('button'));
     expect(screen.getByText('View')).toBeInTheDocument();

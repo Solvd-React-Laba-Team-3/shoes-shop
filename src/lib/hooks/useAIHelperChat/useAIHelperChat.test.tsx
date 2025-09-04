@@ -6,14 +6,16 @@ import { AI_HELPER_PROMPT } from '@/constants/aihelperPrompt';
 jest.mock('../useLocalStorage/useLocalStorage', () => ({
   useLocalStorage: jest.fn(),
 }));
-import { useLocalStorage } from '../useLocalStorage/useLocalStorage';
-const mockUseLocalStorage = useLocalStorage as jest.Mock;
 
-const mockSendMessage = jest.fn();
+import { useLocalStorage } from '../useLocalStorage/useLocalStorage';
+
+const useLocalStorageMock = useLocalStorage as jest.Mock;
+
+const sendMessageMock = jest.fn();
 jest.mock('@/constants/geminiConfig', () => ({
   geminiModel: {
     startChat: jest.fn(() => ({
-      sendMessage: mockSendMessage,
+      sendMessage: sendMessageMock,
     })),
   },
 }));
@@ -32,7 +34,7 @@ describe('useAIHelperChat', () => {
   beforeEach(() => {
     jest.clearAllMocks();
 
-    mockUseLocalStorage.mockReturnValue({
+    useLocalStorageMock.mockReturnValue({
       value: initialChat,
       setValue: jest.fn(),
       isLoading: false,
@@ -62,7 +64,7 @@ describe('useAIHelperChat', () => {
 
   it('toggles isCollapsed and calls setChat in toggleCollapsed', () => {
     const setChatMock = jest.fn();
-    mockUseLocalStorage.mockReturnValue({
+    useLocalStorageMock.mockReturnValue({
       value: initialChat,
       setValue: setChatMock,
       isLoading: false,
@@ -87,10 +89,10 @@ describe('useAIHelperChat', () => {
         text: () => aiResponseText,
       }),
     };
-    mockSendMessage.mockResolvedValue(sendResponse);
+    sendMessageMock.mockResolvedValue(sendResponse);
 
     const setChatMock = jest.fn();
-    mockUseLocalStorage.mockReturnValue({
+    useLocalStorageMock.mockReturnValue({
       value: initialChat,
       setValue: setChatMock,
       isLoading: false,
@@ -124,7 +126,7 @@ describe('useAIHelperChat', () => {
       | ((value: { response: Promise<{ text: () => string }> }) => void)
       | undefined;
 
-    mockSendMessage.mockReturnValue(
+    sendMessageMock.mockReturnValue(
       new Promise((resolve) => {
         resolveSend = resolve;
       })
@@ -146,10 +148,10 @@ describe('useAIHelperChat', () => {
   });
 
   it('handles errors gracefully', async () => {
-    mockSendMessage.mockRejectedValue(new Error('AI error'));
+    sendMessageMock.mockRejectedValue(new Error('AI error'));
 
     const setChatMock = jest.fn();
-    mockUseLocalStorage.mockReturnValue({
+    useLocalStorageMock.mockReturnValue({
       value: initialChat,
       setValue: setChatMock,
       isLoading: false,

@@ -1,29 +1,16 @@
-import { render, screen, act } from '@testing-library/react';
+import { screen, act } from '@testing-library/react';
 import { AIHelper } from './';
 import { useAIHelperChat } from '@/lib/hooks';
+import { render } from '@/testing/utils';
 
 jest.mock('@/lib/hooks', () => ({
   useAIHelperChat: jest.fn(),
 }));
 
-jest.mock('../MessageFallback', () => ({
-  MessageFallback: ({ align }: { align: string }) => (
-    <div data-testid={`fallback-${align}`} />
-  ),
-}));
-
-jest.mock('@/components/ui', () => ({
-  Link: ({ href, children }: { href: string; children: React.ReactNode }) => (
-    <a href={href}>{children}</a>
-  ),
-}));
-
 jest.mock('react-markdown', () => {
-  const MockReactMarkdown = ({ children }: { children: React.ReactNode }) => (
-    <div data-testid="react-markdown">{children}</div>
-  );
-  MockReactMarkdown.displayName = 'MockReactMarkdown';
-  return MockReactMarkdown;
+  return function ReactMarkdown({ children }: { children: string }) {
+    return <div data-testid="react-markdown">{children}</div>;
+  };
 });
 
 describe('AIHelper', () => {
@@ -48,7 +35,7 @@ describe('AIHelper', () => {
       isPending: true,
     });
     render(<AIHelper />);
-    expect(screen.getAllByTestId(/fallback-/)).toHaveLength(1);
+    expect(screen.getByTestId('message-skeleton')).toBeInTheDocument();
   });
 
   it('renders chat messages after loading', () => {
@@ -74,7 +61,7 @@ describe('AIHelper', () => {
     act(() => {
       jest.advanceTimersByTime(1000);
     });
-    expect(screen.getByTestId('fallback-left')).toBeInTheDocument();
+    expect(screen.getByTestId('message-skeleton')).toBeInTheDocument();
   });
 
   it('shows CircularProgress instead of SendIcon when isPending is true', () => {
@@ -100,6 +87,7 @@ describe('AIHelper', () => {
     act(() => {
       jest.advanceTimersByTime(1000);
     });
+    expect(screen.getByTestId('react-markdown')).toBeInTheDocument();
     expect(
       screen.getByText('[OpenAI](https://openai.com)')
     ).toBeInTheDocument();

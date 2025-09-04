@@ -1,29 +1,14 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { act, fireEvent, render, screen } from '@testing-library/react';
+import { act, fireEvent, screen } from '@testing-library/react';
 import { EditProductModal } from './';
-import { SessionProvider } from 'next-auth/react';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { Product } from '@/types/Product';
-import React from 'react';
 import { Box, CircularProgress, Dialog } from '@mui/material';
+import { render } from '@/testing/utils';
+import { productMock } from '@/testing/mocks';
 
 const editProductMock = jest.fn();
 const uploadFileMock = jest.fn();
 const useUpdateProductMock = jest.fn();
 const useUploadFileMock = jest.fn();
-
-jest.mock('@/components/ProductForm', () => ({
-  ProductForm: (props: any) => {
-    (global as any).lastProductFormProps = props;
-    return (
-      <div data-testid="mock-product-form">
-        <h1>{props.title}</h1>
-        <p>{props.editingProduct.name}</p>
-        <button disabled={props.isPending}>Submit</button>
-      </div>
-    );
-  },
-}));
 
 jest.mock('@/api/products/useUpdateProduct', () => ({
   useUpdateProduct: () => useUpdateProductMock(),
@@ -37,66 +22,8 @@ useUpdateProductMock.mockReturnValue({
   mutate: editProductMock,
   isPending: false,
 });
+
 useUploadFileMock.mockReturnValue({ mutate: uploadFileMock, isPending: false });
-
-const renderWithProviders = (ui: React.ReactNode) => {
-  const queryClient = new QueryClient({
-    defaultOptions: { queries: { retry: false } },
-  });
-  return render(
-    <SessionProvider session={null}>
-      <QueryClientProvider client={queryClient}>{ui}</QueryClientProvider>
-    </SessionProvider>
-  );
-};
-
-const mockProduct: Product = {
-  id: 1,
-  name: 'Test Product',
-  price: 100,
-  gender: {
-    id: 1,
-    name: 'Male',
-    createdAt: '',
-    updatedAt: '',
-    publishedAt: '',
-  },
-  color: { id: 1, name: 'Blue', createdAt: '', updatedAt: '', publishedAt: '' },
-  brand: { id: 1, name: 'Nike', createdAt: '', updatedAt: '', publishedAt: '' },
-  description: 'Test description',
-  sizes: [{ id: 1, value: 35, createdAt: '', updatedAt: '', publishedAt: '' }],
-  categories: [
-    { id: 1, name: 'Shoes', createdAt: '', updatedAt: '', publishedAt: '' },
-    {
-      id: 2,
-      name: 'Sportswear',
-      createdAt: '',
-      updatedAt: '',
-      publishedAt: '',
-    },
-  ],
-  images: [
-    {
-      id: 1,
-      name: 'image',
-      url: 'https://fakestoreapi.com/img/test.jpg',
-      alternativeText: 'test text',
-      caption: 'text',
-      width: 100,
-      height: 100,
-      formats: {} as any,
-      hash: 'test',
-      ext: '.jpg',
-      mime: 'image/jpeg',
-      size: 50,
-      previewUrl: 'https://fakestoreapi.com/img/test.jpg',
-      provider: 'local',
-      provider_metadata: { public_id: 'public-id', resource_type: 'image' },
-      createdAt: '',
-      updatedAt: '',
-    },
-  ],
-};
 
 describe('EditProductModal', () => {
   const handleClose = jest.fn();
@@ -109,11 +36,11 @@ describe('EditProductModal', () => {
   });
 
   it('renders ProductForm with correct title and product name', () => {
-    renderWithProviders(
+    render(
       <EditProductModal
         open={true}
         onClose={handleClose}
-        editingProduct={mockProduct}
+        editingProduct={productMock}
       />
     );
     expect(screen.getByText('Edit product')).toBeInTheDocument();
@@ -121,11 +48,11 @@ describe('EditProductModal', () => {
   });
 
   it('passes initial images from editingProduct to ProductForm', () => {
-    renderWithProviders(
+    render(
       <EditProductModal
         open={true}
         onClose={handleClose}
-        editingProduct={mockProduct}
+        editingProduct={productMock}
       />
     );
     const images = (global as any).lastProductFormProps.images;
@@ -134,11 +61,11 @@ describe('EditProductModal', () => {
   });
 
   it('calls onClose when modal is closed', () => {
-    renderWithProviders(
+    render(
       <EditProductModal
         open={true}
         onClose={handleClose}
-        editingProduct={mockProduct}
+        editingProduct={productMock}
       />
     );
     const dialog = screen.getByRole('dialog');
@@ -151,11 +78,11 @@ describe('EditProductModal', () => {
       mutate: editProductMock,
       isPending: true,
     });
-    renderWithProviders(
+    render(
       <EditProductModal
         open={true}
         onClose={handleClose}
-        editingProduct={mockProduct}
+        editingProduct={productMock}
       />
     );
     const button = screen.getByRole('button', { name: /Submit/i });
@@ -167,11 +94,11 @@ describe('EditProductModal', () => {
       mutate: editProductMock,
       isPending: false,
     });
-    renderWithProviders(
+    render(
       <EditProductModal
         open={true}
         onClose={handleClose}
-        editingProduct={mockProduct}
+        editingProduct={productMock}
       />
     );
     const button = screen.getByRole('button', { name: /Submit/i });
@@ -179,11 +106,11 @@ describe('EditProductModal', () => {
   });
 
   it('adds new images when files are dropped', () => {
-    renderWithProviders(
+    render(
       <EditProductModal
         open={true}
         onClose={handleClose}
-        editingProduct={mockProduct}
+        editingProduct={productMock}
       />
     );
     const productFormProps = (global as any).lastProductFormProps;
@@ -201,11 +128,11 @@ describe('EditProductModal', () => {
   });
 
   it('removes image correctly when handleRemoveImage is called', () => {
-    renderWithProviders(
+    render(
       <EditProductModal
         open={true}
         onClose={handleClose}
-        editingProduct={mockProduct}
+        editingProduct={productMock}
       />
     );
     const productFormProps = (global as any).lastProductFormProps;
@@ -219,11 +146,11 @@ describe('EditProductModal', () => {
   });
 
   it('calls editProduct directly when handleSubmit without files', () => {
-    renderWithProviders(
+    render(
       <EditProductModal
         open={true}
         onClose={handleClose}
-        editingProduct={mockProduct}
+        editingProduct={productMock}
       />
     );
     const productFormProps = (global as any).lastProductFormProps;
@@ -238,18 +165,18 @@ describe('EditProductModal', () => {
         body: expect.objectContaining({
           data: expect.objectContaining({ images: [1] }),
         }),
-        id: mockProduct.id,
+        id: productMock.id,
       }),
       expect.any(Object)
     );
   });
 
   it('closes modal after successful editProduct call in handleSubmit without files', () => {
-    renderWithProviders(
+    render(
       <EditProductModal
         open={true}
         onClose={handleClose}
-        editingProduct={mockProduct}
+        editingProduct={productMock}
       />
     );
 
@@ -278,11 +205,11 @@ describe('EditProductModal', () => {
       isPending: true,
     });
 
-    renderWithProviders(
+    render(
       <EditProductModal
         open={true}
         onClose={handleClose}
-        editingProduct={mockProduct}
+        editingProduct={productMock}
       />
     );
 
@@ -291,11 +218,11 @@ describe('EditProductModal', () => {
   });
 
   it('handles handleRemoveImage when file index out of bounds gracefully', () => {
-    renderWithProviders(
+    render(
       <EditProductModal
         open={true}
         onClose={handleClose}
-        editingProduct={mockProduct}
+        editingProduct={productMock}
       />
     );
 
@@ -310,29 +237,29 @@ describe('EditProductModal', () => {
   });
 
   it('maps editingProduct fields correctly to ProductForm', () => {
-    renderWithProviders(
+    render(
       <EditProductModal
         open={true}
         onClose={handleClose}
-        editingProduct={mockProduct}
+        editingProduct={productMock}
       />
     );
 
     const productFormProps = (global as any).lastProductFormProps;
 
     expect(productFormProps.editingProduct).toEqual({
-      name: mockProduct.name,
-      price: mockProduct.price,
-      gender: mockProduct.gender.id.toString(),
-      color: mockProduct.color.id.toString(),
-      brand: mockProduct.brand.id.toString(),
-      description: mockProduct.description,
-      sizes: mockProduct.sizes.map((size) => size.id),
+      name: productMock.name,
+      price: productMock.price,
+      gender: productMock.gender.id.toString(),
+      color: productMock.color.id.toString(),
+      brand: productMock.brand.id.toString(),
+      description: productMock.description,
+      sizes: productMock.sizes.map((size) => size.id),
     });
   });
 
   it('renders CircularProgress fallback when loading', () => {
-    renderWithProviders(
+    render(
       <Dialog open={true} onClose={handleClose}>
         <Box
           data-testid="fallback-loader"

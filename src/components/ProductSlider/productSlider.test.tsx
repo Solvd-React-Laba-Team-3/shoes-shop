@@ -1,6 +1,4 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-
-import { render, screen } from '@testing-library/react';
+import { screen } from '@testing-library/react';
 import { ProductSlider } from './ProductSlider';
 import { File } from '@/types/api/File';
 import {
@@ -8,28 +6,74 @@ import {
   StyledThumbsWrapper,
   StyledWrapper,
 } from './productSlider.styles';
-import '@testing-library/jest-dom';
+import { render } from '@/testing/utils';
 
 jest.mock('swiper/css', () => ({}));
 jest.mock('swiper/css/navigation', () => ({}));
 jest.mock('swiper/css/pagination', () => ({}));
 jest.mock('swiper/css/thumbs', () => ({}));
 
-jest.mock('next/image', () => {
-  const Image = (props: any) => <img {...props} alt={props.alt} />;
-  Image.displayName = 'NextImage';
-  return Image;
-});
+jest.mock('swiper/react', () => ({
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  Swiper: ({ children, onSwiper, ...props }: any) => {
+    if (onSwiper) {
+      setTimeout(() => {
+        onSwiper({
+          destroy: jest.fn(),
+          update: jest.fn(),
+          slideNext: jest.fn(),
+          slidePrev: jest.fn(),
+          slideTo: jest.fn(),
+          realIndex: 0,
+          activeIndex: 0,
+          slides: [],
+          params: {},
+          modules: {},
+        });
+      }, 0);
+    }
 
-jest.mock('swiper/react', () => {
-  const Swiper = ({ children }: any) => (
-    <div data-testid="swiper">{children}</div>
-  );
-  const SwiperSlide = ({ children }: any) => (
-    <div data-testid="swiper-slide">{children}</div>
-  );
-  return { Swiper, SwiperSlide };
-});
+    const swiperProps = [
+      'modules',
+      'freeMode',
+      'watchSlidesProgress',
+      'loop',
+      'observer',
+      'observeParents',
+      'observeSlideChildren',
+      'breakpoints',
+      'slidesPerView',
+      'spaceBetween',
+      'navigation',
+      'pagination',
+      'thumbs',
+    ];
+
+    const domProps = Object.keys(props).reduce(
+      (acc, key) => {
+        if (!swiperProps.includes(key)) {
+          acc[key] = props[key];
+        }
+        return acc;
+      },
+      {} as Record<string, unknown>
+    );
+
+    return (
+      <div data-testid="swiper" {...domProps}>
+        {children}
+      </div>
+    );
+  },
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  SwiperSlide: ({ children, ...props }: any) => {
+    return (
+      <div data-testid="swiper-slide" {...props}>
+        {children}
+      </div>
+    );
+  },
+}));
 
 jest.mock('swiper/modules', () => ({
   Navigation: {},

@@ -1,8 +1,9 @@
-import { render, screen, fireEvent } from '@testing-library/react';
-import '@testing-library/jest-dom';
+import { screen, fireEvent } from '@testing-library/react';
 import { Sidebar } from './Sidebar';
 import { useSession, signOut } from 'next-auth/react';
 import { usePathname } from 'next/navigation';
+import { sessionMock } from '@/testing/mocks';
+import { render } from '@/testing/utils';
 
 jest.mock('next-auth/react', () => ({
   useSession: jest.fn(),
@@ -18,15 +19,8 @@ jest.mock('@/lib/hooks', () => ({
 }));
 
 describe('Sidebar', () => {
-  const mockSession = {
-    user: {
-      username: 'John Doe',
-      avatar: { url: 'avatar.jpg' },
-    },
-  };
-
   beforeEach(() => {
-    (useSession as jest.Mock).mockReturnValue({ data: mockSession });
+    (useSession as jest.Mock).mockReturnValue({ data: sessionMock });
     (usePathname as jest.Mock).mockReturnValue('/profile/products');
   });
 

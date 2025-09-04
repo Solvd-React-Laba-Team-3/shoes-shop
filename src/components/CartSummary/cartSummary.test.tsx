@@ -1,5 +1,4 @@
-import { render, screen, fireEvent } from '@testing-library/react';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { screen, fireEvent } from '@testing-library/react';
 import { CartSummary } from './CartSummary';
 import { useRouter } from 'next/navigation';
 import { useCart, useLocalStorage } from '@/lib/hooks';
@@ -7,6 +6,7 @@ import { TAX_PERCENT } from '@/constants/taxPercent';
 import { SHIPPING_AMOUNT } from '@/constants/shippingAmount';
 import { useApplyDiscount } from '@/api/discount/useApplyDiscount';
 import { useSession } from 'next-auth/react';
+import { render } from '@/testing/utils';
 
 jest.mock('next/navigation', () => ({ useRouter: jest.fn() }));
 
@@ -38,12 +38,6 @@ const defaultCart = {
   isUpdating: false,
   isApplyingDiscount: false,
 };
-const renderWithClient = (ui: React.ReactElement) => {
-  const queryClient = new QueryClient();
-  return render(
-    <QueryClientProvider client={queryClient}>{ui}</QueryClientProvider>
-  );
-};
 describe('CartSummary', () => {
   beforeEach(() => {
     (useCart as jest.Mock).mockReturnValue(defaultCart);
@@ -59,11 +53,11 @@ describe('CartSummary', () => {
     });
   });
   it('renders an accordion with a promo code', () => {
-    renderWithClient(<CartSummary />);
+    render(<CartSummary />);
     expect(screen.getByText(/Do you have a promo code\?/i)).toBeInTheDocument();
   });
   it('renders a LabeledTextField', () => {
-    renderWithClient(<CartSummary />);
+    render(<CartSummary />);
     expect(
       screen.getByPlaceholderText(/Enter promo code/i)
     ).toBeInTheDocument();
@@ -74,13 +68,13 @@ describe('CartSummary', () => {
       discountAmount: 10,
       discountCode: 'PROMO',
     });
-    renderWithClient(<CartSummary />);
+    render(<CartSummary />);
     fireEvent.click(screen.getByText(/Do you have a promo code\?/i));
     expect(screen.getByText(/Do you have a promo code\?/i)).toBeInTheDocument();
   });
 
   it('renders "Confirm & Pay" when checkout is true and payment method is "Card"', () => {
-    renderWithClient(
+    render(
       <CartSummary
         checkout
         shippingAmount={SHIPPING_AMOUNT}
@@ -94,7 +88,7 @@ describe('CartSummary', () => {
   });
 
   it('renders "Confirm & Pay" when checkout is true', () => {
-    renderWithClient(
+    render(
       <CartSummary
         checkout
         shippingAmount={SHIPPING_AMOUNT}
@@ -110,7 +104,7 @@ describe('CartSummary', () => {
   it('calls router.push("/checkout") on submit when checkout=false', () => {
     const pushMock = jest.fn();
     (useRouter as jest.Mock).mockReturnValue({ push: pushMock });
-    renderWithClient(<CartSummary />);
+    render(<CartSummary />);
     fireEvent.click(screen.getByRole('button', { name: /Checkout/i }));
     expect(pushMock).toHaveBeenCalledWith('/checkout');
   });
@@ -121,12 +115,12 @@ describe('CartSummary', () => {
       discountAmount: 0,
     });
 
-    renderWithClient(<CartSummary />);
+    render(<CartSummary />);
     expect(screen.getByRole('button', { name: /Apply/i })).toBeInTheDocument();
   });
 
   it('converts promo code to uppercase on change', () => {
-    renderWithClient(<CartSummary />);
+    render(<CartSummary />);
     const input = screen.getByPlaceholderText(
       /Enter promo code/i
     ) as HTMLInputElement;
@@ -137,7 +131,7 @@ describe('CartSummary', () => {
   it('calls onOrderComplete when checkout and form submitted', () => {
     const onOrderCompleteMock = jest.fn();
 
-    renderWithClient(
+    render(
       <CartSummary
         checkout
         onOrderComplete={onOrderCompleteMock}
@@ -150,12 +144,12 @@ describe('CartSummary', () => {
 
   it('disables apply button when subtotal is 0 or promo code empty', () => {
     (useCart as jest.Mock).mockReturnValueOnce({ ...defaultCart, subtotal: 0 });
-    renderWithClient(<CartSummary />);
+    render(<CartSummary />);
     expect(screen.getByRole('button', { name: /Apply/i })).toBeDisabled();
   });
 
   it('shows shipping and tax when checkout is true', () => {
-    renderWithClient(
+    render(
       <CartSummary
         checkout
         shippingAmount={SHIPPING_AMOUNT}
@@ -178,13 +172,13 @@ describe('CartSummary', () => {
       value: false,
       setValue: setValueMock,
     });
-    renderWithClient(<CartSummary />);
+    render(<CartSummary />);
     fireEvent.click(screen.getByText(/Do you have a promo code\?/i));
     expect(setValueMock).toHaveBeenCalledWith(true);
   });
 
   it('Apply button is enabled when subtotal > 0 and promo code is non-empty', () => {
-    renderWithClient(<CartSummary />);
+    render(<CartSummary />);
     const input = screen.getByPlaceholderText(
       /Enter promo code/i
     ) as HTMLInputElement;
@@ -210,7 +204,7 @@ describe('CartSummary', () => {
     const subtotal = 108;
     const discountAmount = 10;
 
-    renderWithClient(
+    render(
       <CartSummary
         checkout
         shippingAmount={shippingAmount}
@@ -227,7 +221,7 @@ describe('CartSummary', () => {
   });
 
   it('shows "Shipping and tax will be calculated at checkout" when checkout is false', () => {
-    renderWithClient(<CartSummary />);
+    render(<CartSummary />);
     expect(
       screen.getByText(/Shipping and tax will be calculated at checkout\./i)
     ).toBeInTheDocument();
@@ -247,7 +241,7 @@ describe('CartSummary', () => {
       setValue: jest.fn(),
     });
 
-    renderWithClient(<CartSummary />);
+    render(<CartSummary />);
 
     expect(screen.getByText(/Discount/i)).toBeInTheDocument();
     expect(screen.getByText(/-\$15\.00/)).toBeInTheDocument();
@@ -260,7 +254,7 @@ describe('CartSummary', () => {
       isLoading: true,
     });
 
-    renderWithClient(<CartSummary checkout />);
+    render(<CartSummary checkout />);
     expect(screen.queryByText(/-\$20\.00/)).not.toBeInTheDocument();
   });
 
@@ -277,7 +271,7 @@ describe('CartSummary', () => {
       discountCode: 'PROMO',
     });
 
-    renderWithClient(<CartSummary />);
+    render(<CartSummary />);
 
     const editButton = screen.getByRole('button', { name: /Edit/i });
     fireEvent.click(editButton);
@@ -292,7 +286,7 @@ describe('CartSummary', () => {
       isPending: false,
     });
 
-    renderWithClient(<CartSummary />);
+    render(<CartSummary />);
 
     const input = screen.getByPlaceholderText(
       /Enter promo code/i

@@ -1,20 +1,18 @@
-import { render, screen, fireEvent } from '@testing-library/react';
+import { screen, fireEvent } from '@testing-library/react';
 import {
   normalizeToUniqueArray,
   parseQueryString,
   toQueryString,
 } from '@/lib/utils';
-
 import { Filters } from './Filters';
 import { useSearchParams, useDebounce, useFilters } from '@/lib/hooks';
 import { useSuspenseQueries } from '@tanstack/react-query';
+import { render } from '@/testing/utils';
 
-import '@testing-library/jest-dom';
-
-const mockUseMediaQuery = jest.fn();
-jest.mock('@mui/material/useMediaQuery', () => ({
-  __esModule: true,
-  default: (query: string) => mockUseMediaQuery(query),
+const useMediaQueryMock = jest.fn();
+jest.mock('@mui/material', () => ({
+  ...jest.requireActual('@mui/material'),
+  useMediaQuery: (query: string) => useMediaQueryMock(query),
 }));
 
 jest.mock('@/lib/hooks', () => ({
@@ -79,7 +77,7 @@ describe('Filters component full coverage', () => {
 
     (useDebounce as jest.Mock).mockReturnValue({ debouncedValue: '' });
 
-    mockUseMediaQuery.mockReturnValue(false);
+    useMediaQueryMock.mockReturnValue(false);
 
     (useSuspenseQueries as jest.Mock).mockReturnValue([
       { data: [{ id: 1, name: 'Male' }] },
@@ -153,7 +151,7 @@ describe('Filters component full coverage', () => {
   });
 
   it('clears filters on mobile', () => {
-    mockUseMediaQuery.mockReturnValue(true);
+    useMediaQueryMock.mockReturnValue(true);
     const onClose = jest.fn();
     render(<Filters open onClose={onClose} />);
     fireEvent.click(screen.getByText('Clear'));

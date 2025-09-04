@@ -1,7 +1,7 @@
-import { render, screen, fireEvent } from '@testing-library/react';
+import { screen, fireEvent } from '@testing-library/react';
 import { IconButton } from './IconButton';
 import MoreIcon from '@mui/icons-material/MoreHoriz';
-import '@testing-library/jest-dom';
+import { render } from '@/testing/utils';
 
 describe('IconButton', () => {
   test('renders with the correct icon', () => {

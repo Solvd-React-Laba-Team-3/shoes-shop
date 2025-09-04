@@ -1,37 +1,23 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import SignUp from './page';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
-const mockMutate = jest.fn();
+const mutateMock = jest.fn();
 
 jest.mock('@/api/auth/useRegister', () => ({
   useRegister: jest.fn(() => ({
-    mutate: mockMutate,
+    mutate: mutateMock,
     error: null,
     isPending: false,
   })),
 }));
 
-const mockRouter = {
+const routerMock = {
   push: jest.fn(),
 };
 
 jest.mock('next/navigation', () => ({
-  useRouter: () => mockRouter,
+  useRouter: () => routerMock,
 }));
-
-const createTestQueryClient = () =>
-  new QueryClient({
-    defaultOptions: {
-      queries: { retry: false },
-    },
-  });
-
-const TestWrapper = ({ children }: { children: React.ReactNode }) => (
-  <QueryClientProvider client={createTestQueryClient()}>
-    {children}
-  </QueryClientProvider>
-);
 
 describe('SignUp', () => {
   beforeEach(() => {
@@ -39,7 +25,7 @@ describe('SignUp', () => {
   });
 
   test('renders all expected form fields and text', () => {
-    render(<SignUp />, { wrapper: TestWrapper });
+    render(<SignUp />);
 
     expect(
       screen.getByRole('heading', { name: /create an account/i })
@@ -59,7 +45,7 @@ describe('SignUp', () => {
   });
 
   test('value of the input is updated correctly', () => {
-    render(<SignUp />, { wrapper: TestWrapper });
+    render(<SignUp />);
     const nameInput = screen.getByLabelText(/name/i);
 
     fireEvent.change(nameInput, { target: { value: 'Olha Kucheruk' } });
@@ -67,7 +53,7 @@ describe('SignUp', () => {
   });
 
   test('submits form with valid data', async () => {
-    render(<SignUp />, { wrapper: TestWrapper });
+    render(<SignUp />);
 
     const testData = {
       name: 'Olha Kucheruk',
@@ -91,7 +77,7 @@ describe('SignUp', () => {
     fireEvent.submit(screen.getByRole('button', { name: /sign up/i }));
 
     await waitFor(() => {
-      expect(mockMutate).toHaveBeenCalledWith(
+      expect(mutateMock).toHaveBeenCalledWith(
         {
           username: testData.name,
           email: testData.email,
@@ -103,7 +89,7 @@ describe('SignUp', () => {
   });
 
   test('shows validation errors on empty submit', async () => {
-    render(<SignUp />, { wrapper: TestWrapper });
+    render(<SignUp />);
 
     fireEvent.submit(screen.getByRole('button', { name: /sign up/i }));
 
@@ -120,7 +106,7 @@ describe('SignUp', () => {
   });
 
   test('shows error if passwords do not match', async () => {
-    render(<SignUp />, { wrapper: TestWrapper });
+    render(<SignUp />);
 
     fireEvent.change(screen.getByLabelText(/name/i), {
       target: { value: 'Olha Kucheruk' },
@@ -143,7 +129,7 @@ describe('SignUp', () => {
   });
 
   test('redirects to sign in on successful registration', async () => {
-    render(<SignUp />, { wrapper: TestWrapper });
+    render(<SignUp />);
 
     fireEvent.change(screen.getByLabelText(/name/i), {
       target: { value: 'Olha' },
@@ -161,14 +147,14 @@ describe('SignUp', () => {
     fireEvent.submit(screen.getByRole('button', { name: /sign up/i }));
 
     await waitFor(() => {
-      expect(mockMutate).toHaveBeenCalled();
+      expect(mutateMock).toHaveBeenCalled();
     });
 
-    const [, options] = mockMutate.mock.calls[0];
+    const [, options] = mutateMock.mock.calls[0];
     options.onSuccess();
 
     await waitFor(() => {
-      expect(mockRouter.push).toHaveBeenCalledWith('/auth/sign-in');
+      expect(routerMock.push).toHaveBeenCalledWith('/auth/sign-in');
     });
   });
 });

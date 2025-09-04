@@ -147,6 +147,7 @@ export const ProductForm: FC<ProductFormProps> = ({
         />
       )}
       <Box
+        data-testid="mock-product-form"
         sx={{
           display: 'flex',
           flexDirection: 'column',

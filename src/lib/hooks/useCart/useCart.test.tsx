@@ -1,7 +1,7 @@
 import { renderHook, act } from '@testing-library/react';
 import { useCart } from './useCart';
-import { Product } from '@/types/Product';
 import { useLocalStorage } from '../useLocalStorage/useLocalStorage';
+import { productMock } from '@/testing/mocks';
 
 jest.mock('../useLocalStorage/useLocalStorage', () => ({
   useLocalStorage: jest.fn(),
@@ -11,56 +11,6 @@ describe('useCart', () => {
   let setValueMock: jest.Mock;
 
   const initialCartState = { products: [] };
-
-  const mockProduct: Product = {
-    id: 1,
-    name: 'Sneaker',
-    price: 100,
-    images: [
-      {
-        id: 1,
-        url: '/shoe.png',
-        name: 'image',
-        alternativeText: '',
-        caption: '',
-        width: 100,
-        height: 100,
-        formats: {},
-        hash: '',
-        ext: '',
-        mime: '',
-        size: 0,
-        previewUrl: null,
-        provider: '',
-        provider_metadata: { public_id: 'public-id', resource_type: 'image' },
-        createdAt: '',
-        updatedAt: '',
-      },
-    ],
-    gender: { id: 3, name: '', createdAt: '', updatedAt: '', publishedAt: '' },
-    color: { id: 2, name: '', createdAt: '', updatedAt: '', publishedAt: '' },
-    brand: {
-      id: 1,
-      name: 'Nike',
-      createdAt: '',
-      updatedAt: '',
-      publishedAt: '',
-    },
-    description: 'Test description',
-    sizes: [
-      { id: 1, value: 35, createdAt: '', updatedAt: '', publishedAt: '' },
-    ],
-    categories: [
-      { id: 1, name: 'Shoes', createdAt: '', updatedAt: '', publishedAt: '' },
-      {
-        id: 2,
-        name: 'Sportswear',
-        createdAt: '',
-        updatedAt: '',
-        publishedAt: '',
-      },
-    ],
-  };
 
   beforeEach(() => {
     setValueMock = jest.fn();
@@ -75,13 +25,13 @@ describe('useCart', () => {
   it('adds an item to the cart', () => {
     const { result } = renderHook(() => useCart());
     act(() => {
-      result.current.addItem(mockProduct, 42);
+      result.current.addItem(productMock, 42);
     });
     expect(setValueMock).toHaveBeenCalledWith({
       ...initialCartState,
       products: expect.arrayContaining([
         expect.objectContaining({
-          id: mockProduct.id,
+          id: productMock.id,
           size: 42,
           quantity: 1,
         }),

@@ -1,10 +1,7 @@
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { screen, fireEvent, waitFor } from '@testing-library/react';
 import { ProductForm, handleToggleSize } from './ProductForm';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { ThemeProvider } from '@mui/material';
-import { theme } from '@/providers/ThemeProvider';
-import { ProductFormData } from './productForm.schema';
 import { TempImage } from '@/types/TempImage';
+import { render } from '@/testing/utils';
 
 const mockData = {
   genders: [
@@ -29,6 +26,16 @@ const mockData = {
   ],
 };
 
+const validFormData = {
+  name: 'Test Sneaker',
+  price: 199.99,
+  color: 1,
+  gender: 1,
+  brand: 1,
+  description: 'A test product description',
+  sizes: [1, 2],
+};
+
 jest.mock('@tanstack/react-query', () => ({
   ...jest.requireActual('@tanstack/react-query'),
   useSuspenseQueries: () => [
@@ -43,65 +50,25 @@ jest.mock('@tanstack/react-query', () => ({
   }),
 }));
 
-const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: { retry: false },
-  },
-});
+describe('ProductForm', () => {
+  describe('Rendering', () => {
+    it('should render all form fields and labels', () => {
+      const onSubmit = jest.fn();
+      const handleFilesDropped = jest.fn();
+      const onRemoveImage = jest.fn();
+      const images: TempImage[] = [];
 
-interface RenderOptions {
-  editingProduct?: Partial<ProductFormData>;
-  isPending?: boolean;
-  onSubmit?: jest.Mock;
-  images?: TempImage[];
-  handleFilesDropped?: (files: File[]) => void;
-  onRemoveImage?: (id: number, index: number) => void;
-  title?: string;
-  description?: string;
-}
-
-const renderProductForm = ({
-  editingProduct,
-  isPending = false,
-  onSubmit = jest.fn(),
-  images = [],
-  handleFilesDropped = () => {},
-  onRemoveImage = () => {},
-  title = 'Test Product Form',
-  description = 'Test description',
-}: RenderOptions = {}) => {
-  return render(
-    <QueryClientProvider client={queryClient}>
-      <ThemeProvider theme={theme}>
+      render(
         <ProductForm
-          title={title}
-          description={description}
-          editingProduct={editingProduct}
-          isPending={isPending}
+          isPending={false}
+          title="Test Product Form"
+          description="Test description"
           onSubmit={onSubmit}
           images={images}
           handleFilesDropped={handleFilesDropped}
           onRemoveImage={onRemoveImage}
         />
-      </ThemeProvider>
-    </QueryClientProvider>
-  );
-};
-
-const validFormData = {
-  name: 'Test Sneaker',
-  price: 199.99,
-  color: 1,
-  gender: 1,
-  brand: 1,
-  description: 'A test product description',
-  sizes: [1, 2],
-};
-
-describe('ProductForm', () => {
-  describe('Rendering', () => {
-    it('should render all form fields and labels', () => {
-      renderProductForm();
+      );
 
       expect(
         screen.getByPlaceholderText('Nike Air Max 90')
@@ -121,20 +88,61 @@ describe('ProductForm', () => {
     });
 
     it('should render title and description', () => {
-      renderProductForm();
+      const onSubmit = jest.fn();
+      const handleFilesDropped = jest.fn();
+      const onRemoveImage = jest.fn();
+      const images: TempImage[] = [];
+
+      render(
+        <ProductForm
+          isPending={false}
+          title="Test Product Form"
+          description="Test description"
+          onSubmit={onSubmit}
+          images={images}
+          handleFilesDropped={handleFilesDropped}
+          onRemoveImage={onRemoveImage}
+        />
+      );
       expect(screen.getByText('Test Product Form')).toBeInTheDocument();
       expect(screen.getByText('Test description')).toBeInTheDocument();
     });
 
     it('should pre-fill form when editingProduct is provided', () => {
-      renderProductForm({
-        editingProduct: {
-          ...validFormData,
-          color: validFormData.color.toString(),
-          gender: validFormData.gender.toString(),
-          brand: validFormData.brand.toString(),
-        },
-      });
+      const onSubmit = jest.fn();
+      const handleFilesDropped = jest.fn();
+      const onRemoveImage = jest.fn();
+      const images: TempImage[] = [];
+
+      render(
+        <ProductForm
+          isPending={false}
+          title="Test Product Form"
+          description="Test description"
+          onSubmit={onSubmit}
+          images={images}
+          handleFilesDropped={handleFilesDropped}
+          onRemoveImage={onRemoveImage}
+        />
+      );
+      render(
+        <ProductForm
+          editingProduct={{
+            ...validFormData,
+            ...validFormData,
+            color: validFormData.color.toString(),
+            gender: validFormData.gender.toString(),
+            brand: validFormData.brand.toString(),
+          }}
+          isPending={false}
+          title="Test Product Form"
+          description="Test description"
+          onSubmit={onSubmit}
+          images={images}
+          handleFilesDropped={handleFilesDropped}
+          onRemoveImage={onRemoveImage}
+        />
+      );
 
       expect(screen.getByDisplayValue('Test Sneaker')).toBeInTheDocument();
       expect(screen.getByDisplayValue('199.99')).toBeInTheDocument();
@@ -147,7 +155,21 @@ describe('ProductForm', () => {
   describe('Validation', () => {
     it('should show validation errors for empty required fields', async () => {
       const onSubmit = jest.fn();
-      renderProductForm({ onSubmit });
+      const handleFilesDropped = jest.fn();
+      const onRemoveImage = jest.fn();
+      const images: TempImage[] = [];
+
+      render(
+        <ProductForm
+          onSubmit={onSubmit}
+          isPending={false}
+          title="Test Product Form"
+          description="Test description"
+          images={images}
+          handleFilesDropped={handleFilesDropped}
+          onRemoveImage={onRemoveImage}
+        />
+      );
 
       const submitButton = screen.getAllByText('Save')[0];
       fireEvent.click(submitButton);
@@ -174,7 +196,21 @@ describe('ProductForm', () => {
 
   describe('Interactions', () => {
     it('should handle size toggle selection', () => {
-      renderProductForm();
+      const onSubmit = jest.fn();
+      const handleFilesDropped = jest.fn();
+      const onRemoveImage = jest.fn();
+
+      render(
+        <ProductForm
+          isPending={false}
+          title="Test Product Form"
+          description="Test description"
+          images={[]}
+          handleFilesDropped={handleFilesDropped}
+          onRemoveImage={onRemoveImage}
+          onSubmit={onSubmit}
+        />
+      );
 
       const size36Button = screen.getByRole('button', { name: '36' });
       const size37Button = screen.getByRole('button', { name: '37' });
@@ -191,7 +227,20 @@ describe('ProductForm', () => {
 
     it('should call onSubmit when form is valid', async () => {
       const onSubmit = jest.fn();
-      renderProductForm({ onSubmit });
+      const handleFilesDropped = jest.fn();
+      const onRemoveImage = jest.fn();
+
+      render(
+        <ProductForm
+          onSubmit={onSubmit}
+          isPending={false}
+          title="Test Product Form"
+          description="Test description"
+          images={[]}
+          handleFilesDropped={handleFilesDropped}
+          onRemoveImage={onRemoveImage}
+        />
+      );
 
       fireEvent.change(screen.getByPlaceholderText('Nike Air Max 90'), {
         target: { value: validFormData.name },
@@ -260,7 +309,21 @@ describe('ProductForm', () => {
     });
 
     it('should show LinearProgress when isPending is true', () => {
-      renderProductForm({ isPending: true });
+      const onSubmit = jest.fn();
+      const handleFilesDropped = jest.fn();
+      const onRemoveImage = jest.fn();
+
+      render(
+        <ProductForm
+          isPending={true}
+          title="Test Product Form"
+          description="Test description"
+          images={[]}
+          handleFilesDropped={handleFilesDropped}
+          onRemoveImage={onRemoveImage}
+          onSubmit={onSubmit}
+        />
+      );
 
       const linearProgressBars = screen.getAllByRole('progressbar');
       const linearProgress = linearProgressBars.find((el) =>
@@ -273,7 +336,20 @@ describe('ProductForm', () => {
       const onSubmit = jest.fn(
         async () => new Promise((res) => setTimeout(res, 100))
       );
-      renderProductForm({ onSubmit });
+      const handleFilesDropped = jest.fn();
+      const onRemoveImage = jest.fn();
+
+      render(
+        <ProductForm
+          onSubmit={onSubmit}
+          isPending={false}
+          title="Test Product Form"
+          description="Test description"
+          images={[]}
+          handleFilesDropped={handleFilesDropped}
+          onRemoveImage={onRemoveImage}
+        />
+      );
 
       fireEvent.click(screen.getAllByText('Save', { selector: 'button' })[0]);
 
@@ -285,7 +361,21 @@ describe('ProductForm', () => {
     });
 
     it('should expand suggestion section when toggle button is clicked', () => {
-      renderProductForm();
+      const onSubmit = jest.fn();
+      const handleFilesDropped = jest.fn();
+      const onRemoveImage = jest.fn();
+
+      render(
+        <ProductForm
+          isPending={false}
+          title="Test Product Form"
+          description="Test description"
+          images={[]}
+          handleFilesDropped={handleFilesDropped}
+          onRemoveImage={onRemoveImage}
+          onSubmit={onSubmit}
+        />
+      );
       const toggleButton = screen.getByRole('button', {
         name: /suggestion collapsed/i,
       });
@@ -294,9 +384,22 @@ describe('ProductForm', () => {
     });
 
     it('should call onRemoveImage when remove button clicked', () => {
+      const onSubmit = jest.fn();
       const onRemoveImage = jest.fn();
+      const handleFilesDropped = jest.fn();
       const images = [{ id: 1, url: 'https://fakestoreapi.com/img/test.jpg' }];
-      renderProductForm({ images, onRemoveImage });
+
+      render(
+        <ProductForm
+          images={images}
+          onRemoveImage={onRemoveImage}
+          isPending={false}
+          title="Test Product Form"
+          description="Test description"
+          handleFilesDropped={handleFilesDropped}
+          onSubmit={onSubmit}
+        />
+      );
 
       const fabButton = screen.getByRole('button', { name: /Delete image/i });
       fireEvent.click(fabButton);
@@ -308,7 +411,21 @@ describe('ProductForm', () => {
     });
 
     it('should display placeholder text in selects when value is empty', () => {
-      renderProductForm();
+      const onSubmit = jest.fn();
+      const handleFilesDropped = jest.fn();
+      const onRemoveImage = jest.fn();
+
+      render(
+        <ProductForm
+          isPending={false}
+          title="Test Product Form"
+          description="Test description"
+          images={[]}
+          handleFilesDropped={handleFilesDropped}
+          onRemoveImage={onRemoveImage}
+          onSubmit={onSubmit}
+        />
+      );
       expect(screen.getByText('Select color')).toBeInTheDocument();
       expect(screen.getByText('Select gender')).toBeInTheDocument();
       expect(screen.getByText('Select brand')).toBeInTheDocument();
@@ -318,16 +435,20 @@ describe('ProductForm', () => {
   describe('ProductForm description suggestion', () => {
     it('calls handleDescriptionSuggestion and updates description', async () => {
       const onSubmit = jest.fn();
-      const handleFilesDropped = jest.fn();
       const onRemoveImage = jest.fn();
       const images: TempImage[] = [];
 
-      renderProductForm({
-        onSubmit,
-        handleFilesDropped,
-        onRemoveImage,
-        images,
-      });
+      render(
+        <ProductForm
+          onSubmit={onSubmit}
+          isPending={false}
+          title="Test Product Form"
+          description="Test description"
+          handleFilesDropped={() => {}}
+          onRemoveImage={onRemoveImage}
+          images={images}
+        />
+      );
 
       const aiButton = screen.getByText(/Use AI suggestion/i);
       fireEvent.click(aiButton);

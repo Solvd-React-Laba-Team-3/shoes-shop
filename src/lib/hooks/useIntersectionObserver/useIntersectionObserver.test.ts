@@ -1,13 +1,13 @@
 import { renderHook, act } from '@testing-library/react';
 import { useIntersectionObserver } from './useIntersectionObserver';
 
-type FakeIOInstance = {
+interface FakeIOInstance {
   callback: IntersectionObserverCallback;
   options?: IntersectionObserverInit;
   observe: jest.Mock;
   unobserve: jest.Mock;
   disconnect: jest.Mock;
-};
+}
 
 describe('useIntersectionObserver', () => {
   const originalIO = global.IntersectionObserver;

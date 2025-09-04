@@ -34,7 +34,7 @@ describe('formatDate', () => {
   });
 
   it('should return empty string if unknown format is provided (safety fallback)', () => {
-    // @ts-expect-error testing wrong format
+    // @ts-expect-error testing invalid format
     expect(formatDate('2024-06-05', 'invalidFormat')).toBe('');
   });
 });

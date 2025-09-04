@@ -43,6 +43,7 @@ export const ProductCard: FC<ProductCardProps> = ({
 
   return (
     <StyledCard
+      data-testid="product-card"
       onMouseEnter={() =>
         setImageIndex((product.images?.length ?? 0) > 1 ? 1 : 0)
       }

@@ -1,6 +1,6 @@
-import { render, screen } from '@testing-library/react';
+import { screen } from '@testing-library/react';
 import { FiltersFallback } from './FiltersFallback';
-import '@testing-library/jest-dom';
+import { render } from '@/testing/utils';
 
 describe('FiltersFallback', () => {
   it('renders 5 filter sections', () => {

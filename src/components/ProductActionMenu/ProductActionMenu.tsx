@@ -117,6 +117,7 @@ export const ProductActionMenu: FC<ProductActionMenuProps> = ({ product }) => {
       </IconButton>
 
       <Menu
+        data-testid="product-action-menu"
         anchorEl={anchorEl}
         open={isOpen}
         onClose={handleClose}

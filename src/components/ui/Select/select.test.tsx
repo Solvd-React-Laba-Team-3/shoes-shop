@@ -1,7 +1,7 @@
-import '@testing-library/jest-dom';
-import { fireEvent, render, screen } from '@testing-library/react';
+import { fireEvent, screen } from '@testing-library/react';
 import { MenuItem } from '../MenuItem/MenuItem';
 import { Select } from './Select';
+import { render } from '@/testing/utils';
 
 describe('Select component', () => {
   test('renders with correct selected value', () => {

@@ -1,7 +1,7 @@
-import React from 'react';
-import { render, screen } from '@testing-library/react';
+import { screen } from '@testing-library/react';
 import { EmptyProductList } from './';
 import BlockIcon from '@mui/icons-material/Block';
+import { render } from '@/testing/utils';
 
 describe('EmptyProductList', () => {
   it('displays the correct messages', () => {

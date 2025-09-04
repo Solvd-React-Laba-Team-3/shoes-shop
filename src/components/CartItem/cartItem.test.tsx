@@ -1,8 +1,8 @@
-import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { fireEvent, screen, waitFor } from '@testing-library/react';
 import { CartItem } from './CartItem';
 import { useCart } from '@/lib/hooks';
 import { useRouter } from 'next/navigation';
-import { JSX, ClassAttributes, ImgHTMLAttributes } from 'react';
+import { render } from '@/testing/utils';
 
 jest.mock('@/lib/hooks', () => ({
   useCart: jest.fn(),
@@ -12,17 +12,6 @@ jest.mock('next/navigation', () => ({
   useRouter: jest.fn(),
 }));
 
-jest.mock('next/image', () => ({
-  __esModule: true,
-  default: (
-    props: JSX.IntrinsicAttributes &
-      ClassAttributes<HTMLImageElement> &
-      ImgHTMLAttributes<HTMLImageElement>
-  ) => {
-    // eslint-disable-next-line @next/next/no-img-element
-    return <img {...props} alt={props.alt || 'product image'} />;
-  },
-}));
 describe('CartItem', () => {
   const mockRemoveItem = jest.fn();
   const mockDecreaseQuantity = jest.fn();
