@@ -20,13 +20,11 @@ export const SearchContainer = styled(Box, {
     display: 'flex',
     alignItems: 'center',
     border: `1px solid ${theme.palette.grey[900]}`,
-    transition: 'all 0.5s ease',
     transform: 'scale(1)',
 
     '& svg': {
       width: size === 'small' ? 18 : 21,
       height: size === 'small' ? 18 : 21,
-      transition: 'all 0.5s',
     },
 
     ...(expandOnFocus && {
@@ -43,6 +41,14 @@ export const SearchContainer = styled(Box, {
         },
       },
     }),
+    [theme.breakpoints.down('xl')]: {
+      ...(expandOnFocus && {
+        '&:focus-within': {
+          width: 900,
+          maxWidth: 900,
+        },
+      }),
+    },
     [theme.breakpoints.down('lg')]: {
       ...(expandOnFocus && {
         '&:focus-within': {
@@ -61,6 +67,10 @@ export const SearchContainer = styled(Box, {
           width: '100%',
           maxWidth: '100%',
           margin: '0 80px 0 20px ',
+          '& svg': {
+            width: 20,
+            height: 20,
+          },
         },
       }),
     },
