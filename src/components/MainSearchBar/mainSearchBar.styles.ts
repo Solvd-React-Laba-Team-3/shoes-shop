@@ -22,10 +22,9 @@ export const MainSearchBarContainer = styled(Box, {
   flexWrap: 'wrap',
   gap: 45,
   paddingTop: isFocused ? theme.spacing(5) : 0,
-  transition: 'all 0.3s ease',
   [theme.breakpoints.down('md')]: {
     width: '100%',
-    height: '26px',
+    height: '10px',
   },
 }));
 
@@ -44,24 +43,38 @@ export const IconButtonRight = styled(Box)(({ theme }) => ({
   right: 20,
   top: 34,
   zIndex: 1100,
-  [theme.breakpoints.down('md')]: {
-    top: 40,
-  },
   [theme.breakpoints.down('lg')]: {
     top: 53,
+  },
+  [theme.breakpoints.down('md')]: {
+    top: 40,
+    '& svg': {
+      fontSize: '25rem',
+    },
   },
 }));
 
 export const PopularTermsContainer = styled(Box)(({ theme }) => ({
   width: '100%',
-  paddingLeft: '22%',
-  paddingBottom: theme.spacing(5),
+  marginTop: theme.spacing(2),
   color: theme.palette.grey[600],
   zIndex: 1001,
   backgroundColor: '#fff',
+  display: 'flex',
+  flexDirection: 'column',
+  alignItems: 'flex-start',
+  maxWidth: 1071,
+  marginLeft: 'auto',
+  marginRight: 'auto',
+  paddingBottom: theme.spacing(5),
+
+  [theme.breakpoints.down('xl')]: {
+    maxWidth: 900,
+  },
+
   [theme.breakpoints.down('md')]: {
-    paddingLeft: '20px',
-    paddingRight: '80px',
+    padding: '0 20px 20px',
+    maxWidth: '100%',
   },
 }));
 
