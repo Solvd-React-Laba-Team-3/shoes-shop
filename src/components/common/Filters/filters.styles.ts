@@ -15,7 +15,7 @@ export const StyledCloseWrapper = styled(Box)(() => ({
 export const StyledDrawer = styled(Drawer)(({ theme, open }) => ({
   position: 'sticky',
   height: '90vh',
-  zIndex: 1000,
+  zIndex: 800,
   width: open ? '320px' : '0px',
 
   transition:
@@ -82,10 +82,11 @@ export const StyledBox = styled('div')(({ theme }) => ({
   flexDirection: 'column',
   width: '320px',
   gap: theme.spacing(3.5),
-  overflow: 'visible',
+  overflowY: 'visible',
   flex: 'unset',
   paddingBottom: 0,
   minHeight: 'auto',
+  overflowX: 'hidden',
 
   [theme.breakpoints.down('md')]: {
     gap: theme.spacing(1.5, 3.5),

@@ -107,7 +107,12 @@ export const ProductsContainer: FC<ProductsContainerProps> = ({
             {search ? 'Search Results' : 'Catalog'}
           </Typography>
           {isMobile && search && (
-            <Box>
+            <Box
+              sx={{
+                display: 'flex',
+                flexDirection: 'column',
+              }}
+            >
               <Typography variant="caption" component={'span'}>
                 Shoes/{search}
               </Typography>
