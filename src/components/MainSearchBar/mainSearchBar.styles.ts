@@ -18,10 +18,16 @@ export const MainSearchBarContainer = styled(Box, {
   backgroundColor: isFocused ? '#fff' : 'transparent',
   zIndex: isFocused ? 1000 : 'auto',
   display: 'flex',
+  flexDirection: 'column',
+  alignItems: 'center',
   justifyContent: 'center',
-  flexWrap: 'wrap',
   gap: 45,
   paddingTop: isFocused ? theme.spacing(5) : 0,
+  [theme.breakpoints.down('xxl')]: {
+    flexDirection: 'row',
+    alignItems: 'normal',
+    flexWrap: 'wrap',
+  },
   [theme.breakpoints.down('md')]: {
     width: '100%',
     height: '10px',
