@@ -98,7 +98,12 @@ export const CartItem: FC<CartProduct> = ({
                   variant="h3"
                   component={'p'}
                   sx={{
-                    whiteSpace: { xs: 'nowrap', md: 'normal', lg: 'nowrap' },
+                    width: {
+                      xs: '340px',
+                      sm: '500px',
+                      md: '280px',
+                      lg: '450px',
+                    },
                   }}
                 >
                   {name}
