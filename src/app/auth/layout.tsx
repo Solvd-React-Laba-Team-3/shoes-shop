@@ -31,7 +31,7 @@ export default async function AuthLayout({
           display: 'grid',
           gridTemplateColumns: { xs: '1fr', lg: '1fr 1fr' },
           height: '100vh',
-          overflow: 'hidden',
+          overflowY: 'auto',
         }}
       >
         {children}
