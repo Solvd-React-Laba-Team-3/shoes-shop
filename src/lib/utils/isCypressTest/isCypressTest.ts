@@ -4,7 +4,8 @@
  */
 export const isCypressTest = (): boolean => {
   if (typeof window !== 'undefined') {
-    return !!window.Cypress || !!window.cy;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    return !!(window as any).Cypress || !!(window as any).cy;
   }
 
   return false;
