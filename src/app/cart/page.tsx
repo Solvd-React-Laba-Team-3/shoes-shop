@@ -1,0 +1,94 @@
+'use client';
+
+import { CartItem } from '@/components/CartItem';
+import { CartSummary } from '@/components/CartSummary';
+import { CartFallback } from '@/components/common/CartFallback';
+import { Header } from '@/components/common/Header';
+import { useCart } from '@/lib/hooks';
+import Box from '@mui/material/Box';
+import Stack from '@mui/material/Stack';
+import Typography from '@mui/material/Typography';
+import { styled } from '@mui/material/styles';
+
+const StyledContainer = styled(Box)(({ theme }) => ({
+  display: 'flex',
+  padding: '60px 85px',
+  gap: '48px',
+  [theme.breakpoints.down('sm')]: {
+    padding: '20px 12px',
+    gap: '24px',
+  },
+  [theme.breakpoints.down('md')]: {
+    padding: '30px 16px',
+    gap: '24px',
+  },
+  [theme.breakpoints.down('xl')]: {
+    flexDirection: 'column',
+  },
+  maxWidth: '1600px',
+  margin: '0 auto',
+}));
+
+export default function Cart() {
+  const { items, isLoading } = useCart();
+
+  return (
+    <>
+      <Header />
+      {isLoading ? (
+        <CartFallback />
+      ) : (
+        <StyledContainer>
+          <Stack
+            sx={{
+              flex: 2,
+              minWidth: 0,
+              flexShrink: 1,
+              width: { xs: '100%' },
+            }}
+          >
+            <Typography
+              variant="h2"
+              component={'h1'}
+              sx={{
+                mb: { xs: 2, sm: 3, md: 4 },
+              }}
+            >
+              Cart
+            </Typography>
+            <Stack alignItems="stretch" sx={{ gap: { xs: 1.5, sm: 3, md: 4 } }}>
+              {items.length > 0 ? (
+                items.map((item) => (
+                  <CartItem
+                    key={`${item.id}-${item.size}`}
+                    {...item}
+                    gender={item.gender}
+                    image={item.image}
+                  />
+                ))
+              ) : (
+                <Typography
+                  variant="h6"
+                  component={'p'}
+                  color="text.secondary"
+                  sx={{ textAlign: { xs: 'center', md: 'left' } }}
+                >
+                  Your cart is empty.
+                </Typography>
+              )}
+            </Stack>
+          </Stack>
+
+          <Stack
+            sx={{
+              flex: '0 0 auto',
+              width: { xs: '100%', xl: '400px' },
+            }}
+          >
+            <CartSummary checkout={false} />
+          </Stack>
+        </StyledContainer>
+      )}
+    </>
+  );
+}

@@ -1,0 +1,95 @@
+import { login } from '@/api/auth/login';
+import { AuthOptions } from 'next-auth';
+import { User as UserType } from '@/types/User';
+import CredentialsProvider from 'next-auth/providers/credentials';
+import { SESSION_MAX_AGE } from './sessionMaxAge';
+import { getUserProfile } from '@/api/profile/getUserProfile';
+
+declare module 'next-auth' {
+  interface Session {
+    user: UserType & { accessToken: string };
+  }
+
+  interface User extends UserType {
+    accessToken: string;
+    email: string;
+  }
+}
+
+declare module 'next-auth/jwt' {
+  interface JWT {
+    user: UserType & { accessToken: string };
+  }
+}
+
+export const authOptions: AuthOptions = {
+  pages: {
+    signIn: '/auth/sign-in',
+    newUser: '/auth/sign-up',
+  },
+  providers: [
+    CredentialsProvider({
+      name: 'Credentials',
+      credentials: {
+        identifier: {},
+        password: {},
+      },
+
+      async authorize(credentials) {
+        if (!credentials?.identifier || !credentials?.password) return null;
+
+        const response = await login({
+          identifier: credentials.identifier,
+          password: credentials.password,
+        });
+
+        const user = await getUserProfile(response.jwt);
+
+        return {
+          ...user,
+          id: user.id.toString(),
+          accessToken: response.jwt,
+        };
+      },
+    }),
+  ],
+
+  callbacks: {
+    async jwt({ token, user, trigger }) {
+      if (user) {
+        token.user = {
+          ...user,
+          id: Number(user.id),
+        };
+      }
+
+      if (trigger === 'update') {
+        const updatedUser = await getUserProfile(token.user.accessToken);
+
+        token.user = {
+          ...updatedUser,
+          accessToken: token.user.accessToken,
+          id: Number(token.user.id),
+        };
+      }
+
+      return token;
+    },
+
+    async session({ token, session }) {
+      if (token.user) {
+        session.user = {
+          ...token.user,
+          id: Number(token.user.id),
+        };
+      }
+
+      return session;
+    },
+  },
+
+  session: {
+    strategy: 'jwt',
+    maxAge: SESSION_MAX_AGE,
+  },
+};

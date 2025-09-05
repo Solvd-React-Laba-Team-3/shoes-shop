@@ -1,0 +1,128 @@
+'use client';
+
+import { Header } from '@/components/common/Header';
+import { Button } from '@/components/ui';
+import Box from '@mui/material/Box';
+import Stack from '@mui/material/Stack';
+import Typography from '@mui/material/Typography';
+import { styled } from '@mui/material/styles';
+import Image from 'next/image';
+import { useRouter } from 'next/navigation';
+
+const StyledWrapper = styled(Box)(({ theme }) => ({
+  flex: 1,
+  display: 'flex',
+  justifyContent: 'center',
+  alignItems: 'center',
+  height: '100%',
+  position: 'relative',
+  padding: 0,
+
+  [theme.breakpoints.down('lg')]: {
+    padding: '0 32px',
+    position: 'absolute',
+    alignItems: 'flex-start',
+    top: '150px',
+  },
+
+  [theme.breakpoints.down('sm')]: {
+    padding: '0 16px',
+    alignItems: 'center',
+    top: 'auto',
+  },
+}));
+
+const StyledTextContainer = styled(Stack)(({ theme }) => ({
+  gap: 20,
+  justifyContent: 'center',
+  borderRadius: 10,
+  width: '56%',
+  padding: 0,
+  backgroundColor: 'transparent',
+  backdropFilter: 'none',
+
+  [theme.breakpoints.down('lg')]: {
+    width: '100%',
+    padding: '24px 16px',
+    backgroundColor: 'rgba(242,242,242, 0.5)',
+    backdropFilter: 'blur(10px)',
+  },
+}));
+
+export default function NotFound() {
+  const router = useRouter();
+
+  return (
+    <Box
+      sx={{
+        height: '100vh',
+        overflow: 'hidden',
+        display: 'flex',
+        flexDirection: 'column',
+      }}
+    >
+      <Header />
+      <Box
+        sx={{
+          display: 'flex',
+          flexDirection: { xs: 'column', lg: 'row' },
+          position: 'relative',
+          flex: '1 1 auto',
+        }}
+      >
+        <StyledWrapper>
+          <StyledTextContainer direction="column">
+            <Typography variant="h2" component="h1">
+              Error 404
+            </Typography>
+
+            <Typography variant="h6" component="p" color="text.secondary">
+              Looks like you&apos;ve wandered off the map. The page you&apos;re
+              looking for doesn&apos;t exist, was moved, or might have been
+              retired.
+            </Typography>
+
+            <Typography variant="h6" component="p" color="text.secondary">
+              Don&apos;t worry - use the navigation below
+            </Typography>
+
+            <Stack
+              sx={{
+                flexDirection: { xs: 'column', sm: 'row' },
+                gap: '16px',
+                justifyContent: { xs: 'space-between', sm: 'unset' },
+                marginTop: { xs: '16px', md: '32px' },
+              }}
+            >
+              <Button
+                sx={{ width: { xs: '100%', sm: '152px' }, height: '40px' }}
+                variant="outlined"
+                onClick={() => router.back()}
+              >
+                Go back
+              </Button>
+
+              <Button
+                sx={{ width: { xs: '100%', sm: '152px' }, height: '40px' }}
+                variant="contained"
+                onClick={() => router.push('/')}
+              >
+                Home
+              </Button>
+            </Stack>
+          </StyledTextContainer>
+        </StyledWrapper>
+
+        <Box sx={{ flex: 1 }}>
+          <Image
+            src="/404.png"
+            width={1000}
+            height={1000}
+            alt="404 banner"
+            style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+          />
+        </Box>
+      </Box>
+    </Box>
+  );
+}

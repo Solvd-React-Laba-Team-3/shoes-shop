@@ -1,0 +1,113 @@
+# 📘 Code Style Guide – React/Next.js
+
+This guide defines team conventions to keep the codebase consistent, readable, and easy to maintain.
+
+---
+
+## 📁 Folder Structure
+
+```bash
+src/
+  components/
+    ui/
+      Button/
+        Button.tsx
+        button.test.ts
+        button.styles.ts
+        button.types.ts
+        button.const.ts
+      index.ts
+    ProductCard/
+      ProductCard.tsx
+      productCard.test.ts
+      productCard.styles.ts
+      productCard.types.ts
+      productCard.const.ts
+    index.ts
+  stores/
+  providers/
+  constants/
+  lib/
+    hooks/
+    utils/
+  app/
+  types/
+    Size.ts
+    User.ts
+```
+
+---
+
+## 🔤 File Naming Conventions
+
+| Item              | Naming          | Example                           |
+| ----------------- | --------------- | --------------------------------- |
+| Component folder  | PascalCase      | Button/                           |
+| Component file    | PascalCase.tsx  | Button.tsx                        |
+| Component export  | index.ts        | export { Button } from './Button' |
+| Utility functions | camelCase.ts    | formatDate.ts                     |
+| Types             | UpperCamel.ts   | Size.ts                           |
+
+---
+
+## 📦 Components
+
+- Each component must be placed in its own folder when it includes styles, tests, or multiple files.
+- Use arrow functions for your components
+- Prefer using named exports instead of default
+- For props use `FC<ButtonProps>`
+- The main component file must match the folder name.
+- Each component folder must include an index.ts excluding reusable components (already have index.ts in /ui)
+
+```tsx
+
+// components/common/Header/index.ts
+export { Header } from './Header';
+
+```
+
+## 📌 Best Practices
+
+- Styles count with sx should not exceed 5. In that case you use styled component:
+
+```tsx
+  export const StyledButton = styled(MUIButton)<MUIButtonProps>(
+  ({ size = 'medium' }) => ({
+  borderRadius: '8px',
+  fontSize: '16px',
+  fontWeight: '500',
+  textTransform: 'none',
+  boxShadow: 'none',
+
+      ...(size === 'small' && {
+        width: '150px',
+      }),
+      ...(size === 'medium' && {
+        width: '250px',
+      }),
+      ...(size === 'large' && {
+        width: '400px',
+      }),
+
+      '&:hover': {
+        boxShadow: 'none',
+      },
+
+  })
+  );
+
+  ```
+
+- If styles count in styled components exceed 15 you move them out to `{componentName}.styles.ts`
+- Group shared types in `types/` only if reused across multiple features. Same works for `constants/`
+- Use [tsdoc]('https://tsdoc.org/') to explain your lib/ functions
+
+---
+
+## 🧪 Testing
+
+- Testing applies for `components/ui/`, `lib/` and features as described in project docs
+- Test files should live next to the component: `{componentName}.test.ts`
+- Use one test file per component or hook
+
+---

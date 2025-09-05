@@ -1,0 +1,78 @@
+import Box from '@mui/material/Box';
+import { styled } from '@mui/material/styles';
+import Typography from '@mui/material/Typography';
+import InsertPhotoOutlined from '@mui/icons-material/InsertPhotoOutlined';
+import { DragEvent, FC, useCallback, useRef } from 'react';
+
+interface FileDropzoneProps {
+  onFilesDropped: (files: File[]) => void;
+}
+
+const StyledDropzone = styled(Box)(({ theme }) => ({
+  border: `1px dashed ${theme.palette.text.secondary}`,
+  borderRadius: `${theme.shape.borderRadius}`,
+  display: 'flex',
+  alignItems: 'center',
+  width: '100%',
+  justifyContent: 'center',
+  cursor: 'pointer',
+  padding: '20px',
+  aspectRatio: '300/380',
+}));
+
+export const FileDropzone: FC<FileDropzoneProps> = ({ onFilesDropped }) => {
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const handleDrop = useCallback(
+    (event: DragEvent<HTMLDivElement>) => {
+      event.preventDefault();
+      const droppedFiles = Array.from(event.dataTransfer.files);
+      onFilesDropped(droppedFiles);
+    },
+    [onFilesDropped]
+  );
+
+  return (
+    <>
+      <StyledDropzone
+        onDrop={handleDrop}
+        onDragOver={(e) => e.preventDefault()}
+        onClick={() => fileInputRef.current?.click()}
+      >
+        <Box
+          sx={{
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            gap: '10px',
+            width: '172px',
+          }}
+        >
+          <InsertPhotoOutlined fontSize="large" color="inherit" />
+          <Typography
+            sx={{ lineHeight: '100%' }}
+            variant="caption"
+            component={'p'}
+            color="text.secondary"
+            textAlign="center"
+          >
+            Drop your image here, or click to select a file
+          </Typography>
+        </Box>
+      </StyledDropzone>
+      <input
+        ref={fileInputRef}
+        type="file"
+        style={{ display: 'none' }}
+        name="file"
+        accept="image/*"
+        multiple
+        onChange={(e) => {
+          const { files } = e.target;
+          if (files) {
+            onFilesDropped(Array.from(files));
+          }
+        }}
+      />
+    </>
+  );
+};
