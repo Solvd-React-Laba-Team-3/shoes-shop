@@ -13,7 +13,7 @@
  * parseQueryStringToObject('?filter[user][id]=1&tags=react,nextjs')
  * // => { filter: { user: { id: '1' } }, tags: ['react', 'nextjs'] }
  */
-export function parseQueryString(queryString: string): Record<string, any> {
+export const parseQueryString = (queryString: string): Record<string, any> => {
   const params = new URLSearchParams(
     queryString.startsWith('?') ? queryString.slice(1) : queryString
   );
@@ -44,4 +44,4 @@ export function parseQueryString(queryString: string): Record<string, any> {
   }
 
   return result;
-}
+};

@@ -2,12 +2,13 @@
 
 import { ProductsContainer } from '@/components/ProductsContainer/';
 import Box from '@mui/material/Box';
-import { Filters } from '@/components/common/Filters';
+import { Filters } from '../Filters';
 import { Suspense } from 'react';
-import { ProductListFallback } from '@/components/common/ProductListFallback';
-import { FiltersFallback } from '@/components/common/FiltersFallback';
+import { ProductListFallback } from '../ProductListFallback';
+import { FiltersFallback } from '../FiltersFallback';
 import { useState } from 'react';
-import { useMediaQuery, useTheme } from '@mui/material';
+import useMediaQuery from '@mui/material/useMediaQuery';
+import { useTheme } from '@mui/material/styles';
 import { useSearchParams } from '@/lib/hooks';
 
 export const Catalog = () => {

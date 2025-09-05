@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 
 const HIDE_OFFSET = 200;
 
-export function useHideOnScroll() {
+export const useHideOnScroll = () => {
   const lastY = useRef(0);
   const isTicking = useRef(false);
   const [hidden, setHidden] = useState(false);
@@ -32,4 +32,4 @@ export function useHideOnScroll() {
   }, []);
 
   return hidden;
-}
+};

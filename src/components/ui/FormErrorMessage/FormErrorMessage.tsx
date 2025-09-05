@@ -4,7 +4,7 @@ import Typography from '@mui/material/Typography';
 import FormLabel from '@mui/material/FormLabel';
 import { styled } from '@mui/material/styles';
 import { FC } from 'react';
-import { WarningAmberRounded } from '@mui/icons-material';
+import WarningAmberRounded from '@mui/icons-material/WarningAmberRounded';
 
 interface FormErrorMessageProps {
   message?: string | null;

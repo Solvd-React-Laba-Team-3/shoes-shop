@@ -1,13 +1,14 @@
 'use client';
 
 import { Button, LabeledTextfield, Link, ReviewPanel } from '@/components/ui';
-import { Box, Typography } from '@mui/material';
+import Box from '@mui/material/Box';
+import Typography from '@mui/material/Typography';
 import Image from 'next/image';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useRegister } from '@/api/auth/useRegister';
 import { AuthContainer } from '@/components/AuthContainer';
-import { SignUpSchema, signUpSchema } from './sign-up.schema';
+import { SignUpData, signUpSchema } from './sign-up.schema';
 import { useRouter } from 'next/navigation';
 import registerImage from '../../../../public/register.jpg';
 import { useTheme } from '@mui/material/styles';
@@ -20,7 +21,7 @@ export default function SignUp() {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<SignUpSchema>({
+  } = useForm<SignUpData>({
     resolver: zodResolver(signUpSchema),
     defaultValues: {
       name: '',
@@ -33,7 +34,7 @@ export default function SignUp() {
 
   const { mutate: registerUser, error, isPending } = useRegister();
 
-  const onSubmit = (data: SignUpSchema) => {
+  const onSubmit = (data: SignUpData) => {
     const { name, email, password } = data;
 
     registerUser(

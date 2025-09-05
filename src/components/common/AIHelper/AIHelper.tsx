@@ -15,11 +15,11 @@ import {
   StyledContainer,
   StyledMessageWrapper,
 } from './aihelper.styles';
-import { Link } from '@/components/ui';
+import { Link } from '../../ui';
 import ReactMarkdown from 'react-markdown';
 import { useAIHelperChat } from '@/lib/hooks';
 import { MessageFallback } from '../MessageFallback';
-import { NoSsr } from '@mui/material';
+import NoSsr from '@mui/material/NoSsr';
 
 export const AIHelper = () => {
   const { history, isCollapsed, sendMessage, isPending, toggleCollapsed } =

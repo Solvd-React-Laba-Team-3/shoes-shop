@@ -1,16 +1,18 @@
 'use client';
 
 import { FC } from 'react';
-import { ToggleButtonGroup, Stack, Typography } from '@mui/material';
+import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
+import Stack from '@mui/material/Stack';
+import Typography from '@mui/material/Typography';
 import { useSuspenseQuery } from '@tanstack/react-query';
 import { getSizesOptions } from '@/api/size/getSizesOptions';
 import { ToggleButton } from '../ui';
 
-type SizeSelector = {
+interface SizeSelector {
   availableSizes: number[];
   selectedSize: number | null;
   onSizeChange: (value: number | null) => void;
-};
+}
 
 export const SizeSelector: FC<SizeSelector> = ({
   availableSizes,

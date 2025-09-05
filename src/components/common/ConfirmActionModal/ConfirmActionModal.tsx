@@ -1,6 +1,6 @@
 'use client';
 
-import { Button, IconButton } from '@/components/ui';
+import { Button, IconButton } from '../../ui';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
@@ -9,7 +9,7 @@ import Typography from '@mui/material/Typography';
 import { FC } from 'react';
 import CloseIcon from '@mui/icons-material/Close';
 import { styled } from '@mui/material/styles';
-import { Box } from '@mui/material';
+import Box from '@mui/material/Box';
 
 interface ConfirmActionModalProps {
   open: boolean;

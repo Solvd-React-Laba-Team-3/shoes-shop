@@ -1,6 +1,6 @@
 import { Product } from '@/types/Product';
 import { FC } from 'react';
-import { Grid } from '@mui/material';
+import Grid from '@mui/material/Grid';
 import { CardVariant, ProductCard } from '../ProductCard';
 interface ProductListProps {
   products: Product[];

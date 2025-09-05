@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, MouseEvent, FC } from 'react';
-import { ListItemText } from '@mui/material';
+import ListItemText from '@mui/material/ListItemText';
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import { IconButton } from '@/components/ui';
 import { EditProductModal } from '../common/EditProductModal';

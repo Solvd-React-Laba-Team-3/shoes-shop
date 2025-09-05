@@ -1,7 +1,7 @@
 'use client';
 
-import { ProductForm } from '@/components/ProductForm';
-import type { ProductFormData } from '@/components/ProductForm/productForm.schema';
+import { ProductForm } from '../../ProductForm';
+import type { ProductFormData } from '../../ProductForm/productForm.schema';
 import { Product } from '@/types/Product';
 import Dialog from '@mui/material/Dialog';
 import { FC, useState } from 'react';
@@ -11,7 +11,7 @@ import CircularProgress from '@mui/material/CircularProgress';
 import { useUpdateProduct } from '@/api/products/useUpdateProduct';
 import { useUploadFile } from '@/api/uploadFile/useUploadFile';
 import { TempImage } from '@/types/TempImage';
-import { styled } from '@mui/material';
+import { styled } from '@mui/material/styles';
 
 interface EditPageProps {
   open: boolean;

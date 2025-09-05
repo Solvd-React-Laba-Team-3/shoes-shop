@@ -6,15 +6,15 @@ import { QueryParam } from '@/types/api/QueryParam';
  * @param {Record<string, string | number | boolean>} [queryParams] - The query parameters to convert
  * @returns {string} The URL-encoded query string, starting with '?' if parameters exist, otherwise an empty string
  */
-export function toQueryString(
+export const toQueryString = (
   queryParams?: QueryParam,
   rootKey?: string
-): string {
+): string => {
   if (!queryParams || Object.keys(queryParams).length === 0) {
     return '';
   }
 
-  function buildParams(obj: QueryParam, prefix = ''): string[] {
+  const buildParams = (obj: QueryParam, prefix = ''): string[] => {
     return Object.entries(obj).flatMap(([key, value]) => {
       const paramKey = prefix ? `${prefix}[${key}]` : key;
 
@@ -32,10 +32,10 @@ export function toQueryString(
         return [];
       }
     });
-  }
+  };
 
   const root = rootKey ? { [rootKey]: queryParams } : queryParams;
 
   const params = buildParams(root).join('&');
   return params ? `?${params}` : '';
-}
+};

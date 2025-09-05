@@ -1,5 +1,3 @@
-'use client';
-
 import {
   useSearchParams as useNextSearchParams,
   usePathname,

@@ -1,16 +1,17 @@
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Box, Divider, Typography } from '@mui/material';
+import Box from '@mui/material/Box';
+import Divider from '@mui/material/Divider';
+import Typography from '@mui/material/Typography';
 import { useRouter } from 'next/navigation';
 import { FC, FormEvent, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { Button, LabeledTextfield } from '../ui';
 import { Accordion } from '../ui/Accordion/Accordion';
-import { cartSchema, CartSchema } from './cart.schema';
-import { useCart } from '@/lib/hooks';
+import { cartSchema, CartData } from './cart.schema';
+import { useCart, useLocalStorage } from '@/lib/hooks';
 import { useApplyDiscount } from '@/api/discount/useApplyDiscount';
-import { useLocalStorage } from '@/lib/hooks';
 import { PaymentRequestButtonElement } from '@stripe/react-stripe-js';
 import type { PaymentMethod } from '@/types/PaymentMethod';
 import { PaymentRequest } from '@stripe/stripe-js';
@@ -62,7 +63,7 @@ export const CartSummary: FC<CartSummaryProps> = ({
     clearErrors,
     watch,
     formState: { errors },
-  } = useForm<CartSchema>({
+  } = useForm<CartData>({
     resolver: zodResolver(cartSchema),
     defaultValues: { promoCode: discountCode ?? '' },
     shouldFocusError: true,
@@ -74,7 +75,7 @@ export const CartSummary: FC<CartSummaryProps> = ({
     clearErrors,
   });
 
-  const onApplyPromo = (data: CartSchema) => {
+  const onApplyPromo = (data: CartData) => {
     const promoCode = data.promoCode.trim();
     applyDiscount({ code: promoCode, total: subtotal });
     setIsEditing(false);

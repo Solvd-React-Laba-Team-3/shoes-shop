@@ -1,6 +1,9 @@
 'use client';
-
-import { Box, Card, Skeleton, styled, Typography } from '@mui/material';
+import Box from '@mui/material/Box';
+import Card from '@mui/material/Card';
+import Skeleton from '@mui/material/Skeleton';
+import { styled } from '@mui/material/styles';
+import Typography from '@mui/material/Typography';
 
 const StyledCard = styled(Card)(({ theme }) => ({
   borderRadius: theme.shape.borderRadius,

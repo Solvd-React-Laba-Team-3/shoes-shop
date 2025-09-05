@@ -4,4 +4,4 @@ export const cartSchema = z.object({
   promoCode: z.string().min(1, 'Invalid promo code'),
 });
 
-export type CartSchema = z.infer<typeof cartSchema>;
+export type CartData = z.infer<typeof cartSchema>;

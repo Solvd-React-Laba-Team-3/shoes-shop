@@ -8,16 +8,17 @@ import LocalMallOutlinedIcon from '@mui/icons-material/LocalMallOutlined';
 import MenuIcon from '@mui/icons-material/Menu';
 import Image from 'next/image';
 import { styled, useTheme } from '@mui/material/styles';
-import { Button, IconButton, Link } from '@/components/ui';
+import useMediaQuery from '@mui/material/useMediaQuery';
+import { Button, IconButton, Link } from '../../ui';
 import { HEADER_HEIGHT } from '@/constants/headerHeight';
 import { usePathname, useRouter } from 'next/navigation';
-import { MainSearchBar } from '@/components/MainSearchBar';
+import { MainSearchBar } from '../../MainSearchBar';
 import logo from '../../../../public/logo.png';
 import { useState } from 'react';
 import { Sidebar } from '../Sidebar';
-import { Badge, NoSsr, useMediaQuery } from '@mui/material';
-import { useCart } from '@/lib/hooks';
-import { useHideOnScroll } from '@/lib/hooks';
+import NoSsr from '@mui/material/NoSsr';
+import Badge from '@mui/material/Badge';
+import { useCart, useHideOnScroll } from '@/lib/hooks';
 
 const StyledContainer = styled(Box)(({ theme }) => ({
   display: 'flex',

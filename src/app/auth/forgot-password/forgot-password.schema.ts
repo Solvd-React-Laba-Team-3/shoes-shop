@@ -4,4 +4,4 @@ export const forgotPasswordSchema = z.object({
   email: z.email('Invalid email address'),
 });
 
-export type ForgotPasswordSchema = z.infer<typeof forgotPasswordSchema>;
+export type ForgotPasswordData = z.infer<typeof forgotPasswordSchema>;

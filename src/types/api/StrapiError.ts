@@ -1,4 +1,4 @@
-export type StrapiError<Field extends string = string> = {
+export interface StrapiError<Field extends string = string> {
   error: {
     status: number;
     name: string;
@@ -11,4 +11,4 @@ export type StrapiError<Field extends string = string> = {
       }>;
     };
   };
-};
+}

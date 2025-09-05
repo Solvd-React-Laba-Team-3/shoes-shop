@@ -3,13 +3,11 @@
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { getOrdersOptions } from '@/api/orders/getOrdersOptions';
 import { Order } from '@/components/Order';
-import {
-  Box,
-  Typography,
-  Alert,
-  CircularProgress,
-  styled,
-} from '@mui/material';
+import { styled } from '@mui/material/styles';
+import Box from '@mui/material/Box';
+import Typography from '@mui/material/Typography';
+import Alert from '@mui/material/Alert';
+import CircularProgress from '@mui/material/CircularProgress';
 import { OrdersFallback } from '@/components/common/OrdersFallback';
 import { useIntersectionObserver } from '@/lib/hooks';
 import { EmptyContent } from '@/components/EmptyContent';

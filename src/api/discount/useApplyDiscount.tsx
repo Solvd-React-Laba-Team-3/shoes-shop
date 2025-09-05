@@ -1,6 +1,6 @@
 import { useMutation } from '@tanstack/react-query';
 import { DiscountResponse } from '@/types/api/DiscountResponse';
-import { CartSchema } from '@/components/CartSummary/cart.schema';
+import { CartData } from '@/components/CartSummary/cart.schema';
 import { UseFormClearErrors, UseFormSetError } from 'react-hook-form';
 import { fetchApi } from '@/lib/utils';
 import { useCart } from '@/lib/hooks';
@@ -23,8 +23,8 @@ export const applyDiscount = async (
 
 interface ApplyDiscountArgs {
   subtotal: number;
-  setError: UseFormSetError<CartSchema>;
-  clearErrors: UseFormClearErrors<CartSchema>;
+  setError: UseFormSetError<CartData>;
+  clearErrors: UseFormClearErrors<CartData>;
 }
 
 export const useApplyDiscount = ({

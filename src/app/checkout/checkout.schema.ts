@@ -17,4 +17,4 @@ export const checkoutSchema = z.object({
   paymentMethod: z.enum(['card', 'googlePay', 'applePay', 'link']),
 });
 
-export type CheckoutSchema = z.infer<typeof checkoutSchema>;
+export type CheckoutData = z.infer<typeof checkoutSchema>;

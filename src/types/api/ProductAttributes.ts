@@ -6,7 +6,7 @@ import { Gender } from '@/types/Gender';
 import { Size } from '@/types/Size';
 import { File } from './File';
 
-export type ProductAttributes = {
+export interface ProductAttributes {
   id: number;
   name: string;
   description: string;
@@ -30,4 +30,4 @@ export type ProductAttributes = {
   sizes: {
     data: StrapiResponse<Size>[];
   };
-};
+}

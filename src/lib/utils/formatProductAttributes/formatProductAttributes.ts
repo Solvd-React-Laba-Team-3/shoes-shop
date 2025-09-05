@@ -16,10 +16,10 @@ import { ProductAttributes } from '@/types/api/ProductAttributes';
  * @param attributes - The product attributes object returned by Strapi.
  * @returns A clean, strongly typed `Product` object suitable for UI and business logic.
  */
-export function formatProductAttributes(
+export const formatProductAttributes = (
   id: number,
   attributes: ProductAttributes
-): Product {
+): Product => {
   return {
     id,
     name: attributes.name,
@@ -39,4 +39,4 @@ export function formatProductAttributes(
       ...size.attributes,
     })),
   };
-}
+};

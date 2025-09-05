@@ -1,6 +1,7 @@
 'use client';
 
-import { styled, Typography } from '@mui/material';
+import { styled } from '@mui/material/styles';
+import Typography from '@mui/material/Typography';
 import { FC, ReactNode } from 'react';
 import Box from '@mui/material/Box';
 

@@ -18,11 +18,11 @@ interface SplitResult {
  * @param maxChunks - The maximum number of chunks to allow (default is Infinity).
  * @returns An object with `products` (valid JSON chunks) and `omitted` (whether anything was skipped).
  */
-export function splitProducts(
+export const splitProducts = (
   products: CartProduct[],
   maxChars = 500,
   maxChunks = Infinity
-): SplitResult {
+): SplitResult => {
   const chunks: string[] = [];
   let currentChunk: CartProduct[] = [];
   let omitted = false;
@@ -60,4 +60,4 @@ export function splitProducts(
   }
 
   return { products: chunks, omitted };
-}
+};

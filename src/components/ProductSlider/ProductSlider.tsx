@@ -4,7 +4,7 @@ import { FC, useState } from 'react';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import type { Swiper as SwiperType } from 'swiper';
 import { Navigation, A11y, Thumbs, FreeMode } from 'swiper/modules';
-import { Box } from '@mui/material';
+import Box from '@mui/material/Box';
 import Image from 'next/image';
 import 'swiper/css';
 import 'swiper/css/navigation';

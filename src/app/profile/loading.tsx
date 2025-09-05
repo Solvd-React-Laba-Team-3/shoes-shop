@@ -1,6 +1,6 @@
 'use client';
 import { theme } from '@/providers/ThemeProvider';
-import { useMediaQuery } from '@mui/material';
+import useMediaQuery from '@mui/material/useMediaQuery';
 import { Loading } from '@/components/ui';
 
 export default function LoadingPage() {

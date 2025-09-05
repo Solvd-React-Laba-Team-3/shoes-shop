@@ -1,6 +1,6 @@
 import { styled } from '@mui/material/styles';
 import { ToggleButton, Button } from '../ui';
-import { Box } from '@mui/material';
+import Box from '@mui/material/Box';
 
 export const StyledPaymentMethod = styled(ToggleButton)(({ theme }) => ({
   minWidth: '100%',

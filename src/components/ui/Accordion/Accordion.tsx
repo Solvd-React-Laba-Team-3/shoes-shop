@@ -1,12 +1,9 @@
 'use client';
 
 import { FC, ReactNode } from 'react';
-import {
-  Accordion as MUIAccordion,
-  AccordionProps,
-  AccordionSummary,
-  AccordionDetails,
-} from '@mui/material';
+import AccordionSummary from '@mui/material/AccordionSummary';
+import AccordionDetails from '@mui/material/AccordionDetails';
+import MUIAccordion, { AccordionProps } from '@mui/material/Accordion';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
 interface BaseAccordionProps extends AccordionProps {

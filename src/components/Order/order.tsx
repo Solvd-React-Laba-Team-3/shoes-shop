@@ -1,13 +1,13 @@
 'use client';
 
-import { Box, LinearProgress, useMediaQuery, useTheme } from '@mui/material';
+import Box from '@mui/material/Box';
+import LinearProgress from '@mui/material/LinearProgress';
+import useMediaQuery from '@mui/material/useMediaQuery';
 import Typography from '@mui/material/Typography';
-import {
-  Download,
-  LocalShippingTwoTone,
-  PaymentsTwoTone,
-  PersonSearchTwoTone,
-} from '@mui/icons-material';
+import PaymentsTwoTone from '@mui/icons-material/PaymentsTwoTone';
+import PersonSearchTwoTone from '@mui/icons-material/PersonSearchTwoTone';
+import LocalShippingTwoTone from '@mui/icons-material/LocalShippingTwoTone';
+import Download from '@mui/icons-material/Download';
 import {
   StyledToolsWrapper,
   StyledInfoGrid,
@@ -21,6 +21,7 @@ import { Tooltip, Accordion, FormErrorMessage } from '../ui';
 import { ItemLabel } from '../ItemLabel';
 import { OrderProducts } from '../OrderProducts';
 import { OrderPreview } from '../OrderPreview';
+import { useTheme } from '@mui/material/styles';
 
 interface OrderProps {
   order: OrderType;

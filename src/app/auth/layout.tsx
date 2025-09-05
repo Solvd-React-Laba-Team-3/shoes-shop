@@ -1,11 +1,11 @@
 import { Link } from '@/components/ui';
-import { Box } from '@mui/material';
+import Box from '@mui/material/Box';
 import { getServerSession } from 'next-auth';
 import Image from 'next/image';
 import { redirect } from 'next/navigation';
 import { ReactNode } from 'react';
 import logo from '../../../public/logo.png';
-import './auth-globals.css';
+import '@/styles/auth-globals.css';
 
 export default async function AuthLayout({
   children,

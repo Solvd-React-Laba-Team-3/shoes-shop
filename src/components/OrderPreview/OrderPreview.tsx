@@ -1,14 +1,17 @@
 import { Order as OrderType } from '@/types/Order';
-import { Theme, useMediaQuery } from '@mui/material';
+import { Theme, styled } from '@mui/material/styles';
+import useMediaQuery from '@mui/material/useMediaQuery';
 import { formatDate } from '@/lib/utils';
 import { theme } from '@/providers/ThemeProvider';
 import { FC } from 'react';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
-import { Chip, ChipProps } from '@mui/material';
-import { Check, Close, InventoryTwoTone, Sync } from '@mui/icons-material';
+import Chip, { ChipProps } from '@mui/material/Chip';
+import Close from '@mui/icons-material/Close';
+import InventoryTwoTone from '@mui/icons-material/InventoryTwoTone';
+import Sync from '@mui/icons-material/Sync';
+import Check from '@mui/icons-material/Check';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
-import { styled } from '@mui/material/styles';
 
 interface OrderPreviewProps {
   order: OrderType;

@@ -47,4 +47,4 @@ export const settingsSchema = z
     }
   );
 
-export type SettingsSchema = z.infer<typeof settingsSchema>;
+export type SettingsData = z.infer<typeof settingsSchema>;

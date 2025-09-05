@@ -1,5 +1,6 @@
 import { theme } from '@/providers/ThemeProvider';
-import { Avatar, useMediaQuery } from '@mui/material';
+import Avatar from '@mui/material/Avatar';
+import useMediaQuery from '@mui/material/useMediaQuery';
 import { FC } from 'react';
 import { CartProduct } from '@/types/CartProduct';
 import { ItemLabel } from '../ItemLabel';

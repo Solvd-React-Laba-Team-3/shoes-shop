@@ -1,4 +1,7 @@
-import { Box, Drawer, FormLabel, TextField } from '@mui/material';
+import Box from '@mui/material/Box';
+import Drawer from '@mui/material/Drawer';
+import FormLabel from '@mui/material/FormLabel';
+import TextField from '@mui/material/TextField';
 import { styled } from '@mui/material/styles';
 
 export const StyledCloseWrapper = styled(Box)(() => ({

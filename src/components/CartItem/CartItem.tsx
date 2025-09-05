@@ -1,12 +1,10 @@
 import DeleteIcon from '@mui/icons-material/Delete';
-import {
-  Box,
-  ButtonGroup,
-  Divider,
-  Stack,
-  styled,
-  Typography,
-} from '@mui/material';
+import { styled } from '@mui/material/styles';
+import Box from '@mui/material/Box';
+import ButtonGroup from '@mui/material/ButtonGroup';
+import Divider from '@mui/material/Divider';
+import Stack from '@mui/material/Stack';
+import Typography from '@mui/material/Typography';
 import Image from 'next/image';
 import { FC, useState } from 'react';
 import { Button, IconButton } from '../ui';

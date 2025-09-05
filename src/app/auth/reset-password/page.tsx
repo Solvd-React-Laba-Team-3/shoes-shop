@@ -1,7 +1,8 @@
 'use client';
 
 import { Button, LabeledTextfield, Link } from '@/components/ui';
-import { Box, Typography } from '@mui/material';
+import Box from '@mui/material/Box';
+import Typography from '@mui/material/Typography';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useResetPassword } from '@/api/auth/useResetPassword';
@@ -9,7 +10,7 @@ import { useSearchParams, useRouter } from 'next/navigation';
 import Image from 'next/image';
 import { AuthContainer } from '@/components/AuthContainer';
 import {
-  ResetPasswordSchema,
+  ResetPasswordData,
   resetPasswordSchema,
 } from './reset-password.schema';
 import recoveryImage from '../../../../public/recovery.jpg';
@@ -23,7 +24,7 @@ export default function ResetPassword() {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
-  } = useForm<ResetPasswordSchema>({
+  } = useForm<ResetPasswordData>({
     resolver: zodResolver(resetPasswordSchema),
     defaultValues: {
       password: '',
@@ -39,7 +40,7 @@ export default function ResetPassword() {
     return null;
   }
 
-  const onSubmit = async (data: ResetPasswordSchema) => {
+  const onSubmit = async (data: ResetPasswordData) => {
     resetPassword(
       {
         password: data.password,

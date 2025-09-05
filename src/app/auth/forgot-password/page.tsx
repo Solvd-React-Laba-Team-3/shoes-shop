@@ -1,17 +1,17 @@
 'use client';
 
-import { Button, LabeledTextfield } from '@/components/ui';
-import { Box, Typography } from '@mui/material';
+import { Button, LabeledTextfield, Link } from '@/components/ui';
+import Box from '@mui/material/Box';
+import Typography from '@mui/material/Typography';
 import Image from 'next/image';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { useForgotPassword } from '@/api/auth/useForgotPassword';
 import { AuthContainer } from '@/components/AuthContainer';
 import {
-  ForgotPasswordSchema,
+  ForgotPasswordData,
   forgotPasswordSchema,
 } from './forgot-password.schema';
-import { Link } from '@/components/ui';
 import { useRouter } from 'next/navigation';
 import recoveryImage from '../../../../public/recovery.jpg';
 
@@ -22,7 +22,7 @@ export default function ForgotPassword() {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<ForgotPasswordSchema>({
+  } = useForm<ForgotPasswordData>({
     resolver: zodResolver(forgotPasswordSchema),
     defaultValues: {
       email: '',
@@ -37,7 +37,7 @@ export default function ForgotPassword() {
     isSuccess,
   } = useForgotPassword();
 
-  const onSubmit = (data: ForgotPasswordSchema) => {
+  const onSubmit = (data: ForgotPasswordData) => {
     forgotPassword(data, {
       onSuccess: () => {
         setTimeout(() => {

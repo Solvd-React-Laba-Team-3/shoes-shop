@@ -1,7 +1,11 @@
 'use client';
 
 import { getProductOptions } from '@/api/products/getProductOptions';
-import { Box, NoSsr, Stack, styled, Typography } from '@mui/material';
+import Box from '@mui/material/Box';
+import NoSsr from '@mui/material/NoSsr';
+import Stack from '@mui/material/Stack';
+import { styled } from '@mui/material/styles';
+import Typography from '@mui/material/Typography';
 import { useQuery } from '@tanstack/react-query';
 import { FC, useEffect, useState } from 'react';
 import { Button } from '../ui';

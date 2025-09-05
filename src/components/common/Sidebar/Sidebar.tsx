@@ -11,11 +11,12 @@ import PreviewIcon from '@mui/icons-material/Preview';
 import Avatar from '@mui/material/Avatar';
 import Typography from '@mui/material/Typography';
 import { signOut, useSession } from 'next-auth/react';
-import { Button, IconButton, Link } from '@/components/ui';
+import { Button, IconButton, Link } from '../../ui';
 import { usePathname } from 'next/navigation';
 import { DrawerProps } from '@mui/material/Drawer';
 import { FC } from 'react';
-import { useMediaQuery, useTheme } from '@mui/material';
+import useMediaQuery from '@mui/material/useMediaQuery';
+import { useTheme } from '@mui/material/styles';
 import { StyledDrawer } from './sidebar.styles';
 import { UserInfoContainer } from './sidebar.styles';
 

@@ -1,5 +1,5 @@
 import { FC, useEffect, useState } from 'react';
-import { FileDropzone } from '@/components/FileDropZone';
+import { FileDropzone } from '../FileDropZone';
 import Image from 'next/image';
 import { ConfirmActionModal } from '../common/ConfirmActionModal';
 import DeleteIcon from '@mui/icons-material/Delete';

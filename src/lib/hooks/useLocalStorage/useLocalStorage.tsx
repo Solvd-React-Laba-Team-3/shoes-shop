@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 
-export function useLocalStorage<T>(key: string, initialValue: T) {
+export const useLocalStorage = <T,>(key: string, initialValue: T) => {
   const initialRef = useRef(initialValue);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -107,4 +107,4 @@ export function useLocalStorage<T>(key: string, initialValue: T) {
   }, [key]);
 
   return { value, setValue, isLoading };
-}
+};

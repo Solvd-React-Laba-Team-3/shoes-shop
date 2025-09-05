@@ -1,4 +1,6 @@
-import { Box, styled, Typography } from '@mui/material';
+import Box from '@mui/material/Box';
+import { styled } from '@mui/material/styles';
+import Typography from '@mui/material/Typography';
 import { FC, PropsWithChildren, ReactNode } from 'react';
 
 interface EmptyContentProps extends PropsWithChildren {

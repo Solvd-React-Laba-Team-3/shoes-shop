@@ -11,7 +11,7 @@ import {
   MenuItem,
   Button,
   FormErrorMessage,
-} from '@/components/ui';
+} from '../ui';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useQuery, useSuspenseQueries } from '@tanstack/react-query';
 import { Controller, useForm } from 'react-hook-form';
@@ -21,7 +21,7 @@ import {
   StyledToggleButton,
   StyledAutocompleteButton,
 } from './productForm.styles';
-import { productSchema } from './productForm.schema';
+import { productFormSchema } from './productForm.schema';
 import { ProductFormData } from './productForm.schema';
 import { FC, useState } from 'react';
 import { Size } from '@/types/Size';
@@ -80,7 +80,7 @@ export const ProductForm: FC<ProductFormProps> = ({
     watch,
     setValue,
   } = useForm<ProductFormData>({
-    resolver: zodResolver(productSchema),
+    resolver: zodResolver(productFormSchema),
     defaultValues: {
       name: '',
       price: 0,

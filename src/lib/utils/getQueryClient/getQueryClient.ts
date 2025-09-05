@@ -5,7 +5,7 @@ import {
   isServer,
 } from '@tanstack/react-query';
 
-function makeQueryClient() {
+const initQueryClient = () => {
   return new QueryClient({
     defaultOptions: {
       queries: {
@@ -18,7 +18,7 @@ function makeQueryClient() {
       },
     },
   });
-}
+};
 
 let browserQueryClient: QueryClient | undefined = undefined;
 /**
@@ -31,11 +31,11 @@ let browserQueryClient: QueryClient | undefined = undefined;
  *
  * @returns {QueryClient} The appropriate `QueryClient` instance for the current environment.
  */
-export function getQueryClient() {
+export const getQueryClient = () => {
   if (isServer) {
-    return makeQueryClient();
+    return initQueryClient();
   } else {
-    if (!browserQueryClient) browserQueryClient = makeQueryClient();
+    if (!browserQueryClient) browserQueryClient = initQueryClient();
     return browserQueryClient;
   }
-}
+};

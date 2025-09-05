@@ -17,13 +17,11 @@ import SearchIcon from '@mui/icons-material/Search';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useDebounce, useSearchParams } from '@/lib/hooks';
-import {
-  List,
-  NoSsr,
-  Typography,
-  useMediaQuery,
-  useTheme,
-} from '@mui/material';
+import NoSsr from '@mui/material/NoSsr';
+import useMediaQuery from '@mui/material/useMediaQuery';
+import { useTheme } from '@mui/material/styles';
+import Typography from '@mui/material/Typography';
+import List from '@mui/material/List';
 import { useQuery } from '@tanstack/react-query';
 import { getPopularSearchTermsOptions } from '@/api/gemini/getPopularSearchTermsOptions';
 import { MIN_SEARCH_LENGTH } from '@/constants/minSearchLength';

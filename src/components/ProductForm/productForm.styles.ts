@@ -1,4 +1,5 @@
-import { InputLabel, TextareaAutosize } from '@mui/material';
+import InputLabel from '@mui/material/InputLabel';
+import TextareaAutosize from '@mui/material/TextareaAutosize';
 import { styled } from '@mui/material/styles';
 import { ToggleButton } from '../ui';
 import { Button } from '@/components/ui';

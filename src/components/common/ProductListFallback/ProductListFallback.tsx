@@ -1,5 +1,8 @@
 import { useSearchParams } from '@/lib/hooks';
-import { Box, Divider, Grid, Skeleton } from '@mui/material';
+import Box from '@mui/material/Box';
+import Divider from '@mui/material/Divider';
+import Grid from '@mui/material/Grid';
+import Skeleton from '@mui/material/Skeleton';
 
 export const ProductListFallback = () => {
   const searchParams = useSearchParams();

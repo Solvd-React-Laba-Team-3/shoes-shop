@@ -6,18 +6,15 @@ import {
   useHideOnScroll,
   useSearchParams,
 } from '@/lib/hooks';
-import {
-  Box,
-  Divider,
-  DrawerProps,
-  useMediaQuery,
-  Slider,
-  Typography,
-  useTheme,
-  IconButton,
-} from '@mui/material';
+import useMediaQuery from '@mui/material/useMediaQuery';
+import { useTheme } from '@mui/material/styles';
+import Divider from '@mui/material/Divider';
+import { DrawerProps } from '@mui/material/Drawer';
+import Slider from '@mui/material/Slider';
+import Typography from '@mui/material/Typography';
+import { IconButton } from '../../ui';
 import CloseIcon from '@mui/icons-material/Close';
-import { Accordion, Button, Checkbox, SearchBar } from '@/components/ui';
+import { Accordion, Button, Checkbox, SearchBar } from '../../ui';
 import { useSuspenseQueries } from '@tanstack/react-query';
 import { getGendersOptions } from '@/api/gender/getGendersOptions';
 import { getSizesOptions } from '@/api/size/getSizesOptions';
@@ -35,6 +32,7 @@ import {
   StyledTextField,
 } from './filters.styles';
 import { HEADER_HEIGHT } from '@/constants/headerHeight';
+import Box from '@mui/material/Box';
 
 export const Filters: FC<DrawerProps> = ({ ...props }) => {
   const { currentFilters, updateFilters, clearFilters, toggleSelection } =

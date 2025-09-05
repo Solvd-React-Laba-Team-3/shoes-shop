@@ -1,20 +1,21 @@
 'use client';
 
 import { getProductsOptions } from '@/api/products/getProductsOptions';
-import { useSearchParams } from '@/lib/hooks';
+import { useSearchParams, useIntersectionObserver } from '@/lib/hooks';
 import { parseQueryString } from '@/lib/utils';
 import { useSuspenseInfiniteQuery } from '@tanstack/react-query';
 import React, { FC, useMemo } from 'react';
 import { ProductList } from '../ProductList';
-import { Box, Typography, useMediaQuery } from '@mui/material';
+import Box from '@mui/material/Box';
+import Typography from '@mui/material/Typography';
+import useMediaQuery from '@mui/material/useMediaQuery';
 import FilterAltOffIcon from '@mui/icons-material/FilterAlt';
 import FilterAltIcon from '@mui/icons-material/FilterAltOff';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
-import { Button } from '@/components/ui';
+import { Button } from '../ui';
 import { useRouter } from 'next/navigation';
 import { styled, useTheme } from '@mui/material/styles';
 import LocalMallIcon from '@mui/icons-material/LocalMall';
-import { useIntersectionObserver } from '@/lib/hooks';
 import { EmptyContent } from '../EmptyContent';
 
 interface ProductsContainerProps {

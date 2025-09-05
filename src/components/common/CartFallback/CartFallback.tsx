@@ -5,7 +5,7 @@ import Divider from '@mui/material/Divider';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import Skeleton from '@mui/material/Skeleton';
-import { styled } from '@mui/material';
+import { styled } from '@mui/material/styles';
 
 const StyledContainer = styled(Box)(({ theme }) => ({
   display: 'flex',

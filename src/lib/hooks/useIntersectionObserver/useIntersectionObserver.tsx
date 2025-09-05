@@ -15,11 +15,11 @@ interface IntersectionReturn {
   entry?: IntersectionObserverEntry;
 }
 
-export function useIntersectionObserver({
+export const useIntersectionObserver = ({
   threshold = 0,
   rootMargin = '0%',
   onChange,
-}: IntersectionObserverArgs): IntersectionReturn {
+}: IntersectionObserverArgs): IntersectionReturn => {
   const [ref, setRef] = useState<Element | null>(null);
   const [isIntersecting, setIsIntersecting] = useState(false);
   const [entry, setEntry] = useState<IntersectionObserverEntry | undefined>();
@@ -60,4 +60,4 @@ export function useIntersectionObserver({
     isIntersecting,
     entry,
   };
-}
+};

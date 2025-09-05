@@ -1,9 +1,12 @@
 'use client';
 
 import { Controller, useFormContext, useWatch } from 'react-hook-form';
-import { CheckoutSchema } from '../../app/checkout/checkout.schema';
+import { CheckoutData } from '../../app/checkout/checkout.schema';
 import { FC } from 'react';
-import { Box, Typography, ToggleButtonGroup, Divider } from '@mui/material';
+import Box from '@mui/material/Box';
+import Typography from '@mui/material/Typography';
+import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
+import Divider from '@mui/material/Divider';
 import {
   FormErrorMessage,
   LabeledTextfield,
@@ -47,7 +50,7 @@ export const CheckoutForm: FC<CheckoutProps> = ({
     register,
     control,
     formState: { errors },
-  } = useFormContext<CheckoutSchema>();
+  } = useFormContext<CheckoutData>();
 
   const paymentMethod = useWatch({
     control,

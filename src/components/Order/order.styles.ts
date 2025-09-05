@@ -1,4 +1,7 @@
-import { Box, ButtonProps, Grid, styled } from '@mui/material';
+import { ButtonProps } from '@mui/material/Button';
+import Grid from '@mui/material/Grid';
+import { styled } from '@mui/material/styles';
+import Box from '@mui/material/Box';
 import { Button } from '../ui';
 
 export const StyledInfoGrid = styled(Grid)(({ theme }) => ({

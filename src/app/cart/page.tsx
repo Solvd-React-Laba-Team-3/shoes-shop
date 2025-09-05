@@ -5,7 +5,10 @@ import { CartSummary } from '@/components/CartSummary';
 import { CartFallback } from '@/components/common/CartFallback';
 import { Header } from '@/components/common/Header';
 import { useCart } from '@/lib/hooks';
-import { Box, Stack, styled, Typography } from '@mui/material';
+import Box from '@mui/material/Box';
+import Stack from '@mui/material/Stack';
+import Typography from '@mui/material/Typography';
+import { styled } from '@mui/material/styles';
 
 const StyledContainer = styled(Box)(({ theme }) => ({
   display: 'flex',

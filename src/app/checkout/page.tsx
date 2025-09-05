@@ -5,14 +5,18 @@ import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import { CheckoutForm } from '@/components/CheckoutForm';
 import { Header } from '@/components/common/Header';
-import { Box, LinearProgress, NoSsr, Stack, styled } from '@mui/material';
+import Box from '@mui/material/Box';
+import LinearProgress from '@mui/material/LinearProgress';
+import NoSsr from '@mui/material/NoSsr';
+import Stack from '@mui/material/Stack';
+import { styled } from '@mui/material/styles';
 import { CartSummary } from '@/components/CartSummary';
 import { useCart } from '@/lib/hooks';
 import { useQuery } from '@tanstack/react-query';
 import { getShippingTaxOptions } from '@/api/shippingAndTax/getShippingTaxOptions';
 import { FormProvider, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { checkoutSchema, CheckoutSchema } from './checkout.schema';
+import { checkoutSchema, CheckoutData } from './checkout.schema';
 import { splitProducts, isCypressTest } from '@/lib/utils';
 import { useCreatePayment } from '@/api/payment/useCreatePayment';
 import { CardElement, useElements, useStripe } from '@stripe/react-stripe-js';
@@ -20,10 +24,10 @@ import {
   PaymentRequest,
   PaymentRequestPaymentMethodEvent,
   StripeCardElement,
+  PaymentIntent,
 } from '@stripe/stripe-js';
 import { SHIPPING_AMOUNT } from '@/constants/shippingAmount';
 import { TAX_PERCENT } from '@/constants/taxPercent';
-import type { PaymentIntent } from '@stripe/stripe-js';
 import type { PaymentMethod } from '@/types/PaymentMethod';
 
 const StyledCheckoutContainer = styled(Box)(({ theme }) => ({
@@ -68,7 +72,7 @@ export default function Checkout() {
     discountAmount,
   } = useCart();
 
-  const methods = useForm<CheckoutSchema>({
+  const methods = useForm<CheckoutData>({
     resolver: zodResolver(checkoutSchema),
     defaultValues: {
       name: session?.user?.firstName ?? '',
@@ -138,7 +142,7 @@ export default function Checkout() {
     [reset, clearCart, router]
   );
 
-  const validateForm = useCallback(async (): Promise<CheckoutSchema | null> => {
+  const validateForm = useCallback(async (): Promise<CheckoutData | null> => {
     const isValid = await trigger();
 
     if (!isValid) {
@@ -148,7 +152,7 @@ export default function Checkout() {
     }
   }, [trigger, getValues]);
 
-  const handleOrderComplete = handleSubmit(async (data: CheckoutSchema) => {
+  const handleOrderComplete = handleSubmit(async (data: CheckoutData) => {
     const orderNumber = Date.now();
 
     if (isCypressTest()) {

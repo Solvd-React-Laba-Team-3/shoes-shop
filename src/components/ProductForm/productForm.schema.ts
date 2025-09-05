@@ -1,6 +1,6 @@
 import * as z from 'zod';
 
-export const productSchema = z.object({
+export const productFormSchema = z.object({
   name: z.string().min(3, 'Product name is required'),
   price: z.number().min(1, 'Price is required'),
   color: z.string().min(1, 'Color is required'),
@@ -13,4 +13,4 @@ export const productSchema = z.object({
   sizes: z.array(z.number()).min(1, 'At least one size is required'),
 });
 
-export type ProductFormData = z.infer<typeof productSchema>;
+export type ProductFormData = z.infer<typeof productFormSchema>;

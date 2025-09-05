@@ -5,7 +5,7 @@ import { Category } from './Category';
 import { Size } from './Size';
 import { File } from './api/File';
 
-export type Product = {
+export interface Product {
   id: number;
   name: string;
   description: string;
@@ -17,4 +17,4 @@ export type Product = {
   color: Color;
   gender: Gender;
   sizes: Size[];
-};
+}

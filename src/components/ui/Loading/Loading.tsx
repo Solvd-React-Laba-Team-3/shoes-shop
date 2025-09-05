@@ -1,6 +1,7 @@
 'use client';
 
-import { CircularProgress, Typography } from '@mui/material';
+import CircularProgress from '@mui/material/CircularProgress';
+import Typography from '@mui/material/Typography';
 import { FC } from 'react';
 import { LoadingContainer } from './loading.styles';
 

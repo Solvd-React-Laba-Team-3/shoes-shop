@@ -1,12 +1,13 @@
 'use client';
 
 import { Button, Checkbox, LabeledTextfield, Link } from '@/components/ui';
-import { Box, Typography } from '@mui/material';
+import Box from '@mui/material/Box';
+import Typography from '@mui/material/Typography';
 import Image from 'next/image';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { signIn } from 'next-auth/react';
-import { signInSchema, SignInSchema } from './sign-in.schema';
+import { SignInData, signInSchema } from './sign-in.schema';
 import { useState, useEffect } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { AuthContainer } from '@/components/AuthContainer';
@@ -27,7 +28,7 @@ export default function SignIn() {
     handleSubmit,
     formState: { errors, isSubmitting },
     watch,
-  } = useForm<SignInSchema>({
+  } = useForm<SignInData>({
     resolver: zodResolver(signInSchema),
     defaultValues: {
       email: '',
@@ -36,7 +37,7 @@ export default function SignIn() {
     shouldFocusError: true,
   });
 
-  const onSubmit = async (data: SignInSchema) => {
+  const onSubmit = async (data: SignInData) => {
     try {
       setError(null);
 

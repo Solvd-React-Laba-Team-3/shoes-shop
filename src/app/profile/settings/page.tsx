@@ -3,15 +3,15 @@
 import { useForm } from 'react-hook-form';
 import Typography from '@mui/material/Typography';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { settingsSchema, SettingsSchema } from './settings.schema';
-import { Avatar, Box } from '@mui/material';
+import { settingsSchema, SettingsData } from './settings.schema';
+import Avatar from '@mui/material/Avatar';
+import Box from '@mui/material/Box';
 import { signOut, useSession } from 'next-auth/react';
-import { Button, LabeledTextfield } from '@/components/ui';
+import { Button, LabeledTextfield, FormErrorMessage } from '@/components/ui';
 import { useEffect, useRef, useState } from 'react';
 import { useUpdateProfile } from '@/api/profile/useUpdateProfile';
 import { useUploadFile } from '@/api/uploadFile/useUploadFile';
 import { useChangePassword } from '@/api/profile/useChangePassword';
-import { FormErrorMessage } from '@/components/ui';
 
 export default function Settings() {
   const { data: session } = useSession();
@@ -40,7 +40,7 @@ export default function Settings() {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<SettingsSchema>({
+  } = useForm<SettingsData>({
     defaultValues: {
       username: session?.user?.username,
       email: session?.user?.email,
@@ -66,7 +66,7 @@ export default function Settings() {
   };
 
   const handleUpdateProfile = (
-    data: SettingsSchema,
+    data: SettingsData,
     token: string,
     id: number,
     avatarId?: number | null
@@ -83,7 +83,7 @@ export default function Settings() {
     });
   };
 
-  const handleChangePassword = (data: SettingsSchema) => {
+  const handleChangePassword = (data: SettingsData) => {
     if (!data.password || !data.currentPassword || !data.confirmPassword)
       return;
 
@@ -104,7 +104,7 @@ export default function Settings() {
     );
   };
 
-  const onSubmit = async (data: SettingsSchema) => {
+  const onSubmit = async (data: SettingsData) => {
     if (!session?.user) return;
 
     if (file) {
